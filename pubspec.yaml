@@ -1,0 +1,32 @@
+name: save_points_chart
+description: A modern, high-performance Flutter charting library with full theme support, featuring 7 chart types, Material 3 design, and smooth animations.
+version: 1.0.0+1
+homepage: https://github.com/m7hamed-dev/save_points_repo
+repository: https://github.com/m7hamed-dev/save_points_repo
+issue_tracker: https://github.com/m7hamed-dev/save_points_repo/issues
+
+publish_to: 'none'
+
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  
+  # State management for theme switching
+  provider: ^6.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
