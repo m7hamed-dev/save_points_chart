@@ -45,6 +45,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance optimization guide
 - Architecture documentation
 
+## [1.1.0] - 2025-11-25
+
+### Added
+- **Optional Theme Parameter**: All chart widgets now support optional `theme` parameter
+  - Charts automatically adapt to Material theme (light/dark mode) when theme is not provided
+  - Backward compatible - existing code with explicit themes continues to work
+  - Simplifies usage: `LineChartWidget(dataSets: data)` now works without requiring a theme
+
+### Fixed
+- **Context Menu Tap Issues**: Fixed issue where only the first tap on chart elements was working
+  - Context menus now work correctly on all subsequent taps
+  - Fixed overlay blocking that prevented multiple interactions
+  - Improved tap handling across all chart types (Line, Bar, Area, Pie, Donut, Radial, Sparkline)
+- **Overlay Management**: Improved context menu overlay handling
+  - Proper cleanup of overlays before showing new menus
+  - Better hit test behavior to allow taps through overlays
+  - Fixed selection state management
+
+### Improved
+- **Performance**: Enhanced tap detection and interaction handling
+  - Added proper state clearing when tapping outside elements
+  - Optimized overlay removal timing
+  - Better gesture detector behavior for all chart types
+
+### Changed
+- `theme` parameter is now optional in all chart widgets:
+  - `LineChartWidget`
+  - `BarChartWidget`
+  - `AreaChartWidget`
+  - `PieChartWidget`
+  - `DonutChartWidget`
+  - `RadialChartWidget`
+  - `SparklineChartWidget`
+  - `ChartContainer`
+
 ## [Unreleased]
 
 ### Planned
