@@ -18,7 +18,6 @@ class ChartContextMenu extends StatelessWidget {
   final VoidCallback? onViewDetails;
   final VoidCallback? onExport;
   final VoidCallback? onShare;
-  final VoidCallback? onCompare;
 
   const ChartContextMenu({
     super.key,
@@ -35,7 +34,6 @@ class ChartContextMenu extends StatelessWidget {
     this.onViewDetails,
     this.onExport,
     this.onShare,
-    this.onCompare,
   });
 
   @override
@@ -348,16 +346,6 @@ class ChartContextMenu extends StatelessWidget {
               ),
               _buildMenuItem(
                 context,
-                icon: Icons.compare_arrows,
-                label: 'Compare',
-                onTap: () {
-                  onClose?.call();
-                  onCompare?.call();
-                },
-                isDark: isDark,
-              ),
-              _buildMenuItem(
-                context,
                 icon: Icons.download,
                 label: 'Export Data',
                 onTap: () {
@@ -475,7 +463,6 @@ class ChartContextMenuHelper {
     VoidCallback? onViewDetails,
     VoidCallback? onExport,
     VoidCallback? onShare,
-    VoidCallback? onCompare,
   }) {
     // Close existing menu if any
     hide();
@@ -539,7 +526,6 @@ class ChartContextMenuHelper {
             onViewDetails: onViewDetails,
             onExport: onExport,
             onShare: onShare,
-            onCompare: onCompare,
           ),
         ],
       ),

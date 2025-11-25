@@ -225,9 +225,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 // onShare: () {
                 //   _showExportSnackBar(context, 'Sharing data point...');
                 // },
-                // onCompare: () {
-                //   _showExportSnackBar(context, 'Comparing data point...');
-                // },
               );
             },
             onPointHover: (point, datasetIndex, pointIndex) {
@@ -315,9 +312,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing $userLabel...');
-                },
               );
             },
           ),
@@ -356,9 +350,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 },
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
-                },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing $userLabel...');
                 },
               );
             },
@@ -406,9 +397,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 },
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing bar data...');
-                },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing bar data...');
                 },
               );
             },
@@ -459,9 +447,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing $userLabel...');
-                },
               );
             },
           ),
@@ -508,9 +493,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 },
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing data point...');
-                },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing data point...');
                 },
               );
             },
@@ -566,9 +548,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing $userLabel...');
-                },
               );
             },
           ),
@@ -615,9 +594,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     'Sharing ${segment.label} data...',
                   );
                 },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing ${segment.label}...');
-                },
               );
             },
           ),
@@ -663,9 +639,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     context,
                     'Sharing ${segment.label} data...',
                   );
-                },
-                onCompare: () {
-                  _showExportSnackBar(context, 'Comparing ${segment.label}...');
                 },
               );
             },
@@ -716,12 +689,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 },
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing radial data point...');
-                },
-                onCompare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Comparing radial data point...',
-                  );
                 },
               );
             },
@@ -774,12 +741,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showExportSnackBar(
                     context,
                     'Sharing sparkline data point...',
-                  );
-                },
-                onCompare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Comparing sparkline data point...',
                   );
                 },
               );
@@ -839,12 +800,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                           'Sharing positive trend data...',
                         );
                       },
-                      onCompare: () {
-                        _showExportSnackBar(
-                          context,
-                          'Comparing positive trend...',
-                        );
-                      },
                     );
                   },
                 ),
@@ -899,12 +854,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         _showExportSnackBar(
                           context,
                           'Sharing negative trend data...',
-                        );
-                      },
-                      onCompare: () {
-                        _showExportSnackBar(
-                          context,
-                          'Comparing negative trend...',
                         );
                       },
                     );

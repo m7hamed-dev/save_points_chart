@@ -237,6 +237,9 @@ LineChartWidget(
       onExport: () {
         // Handle export
       },
+      onShare: () {
+        // Handle share
+      },
     );
   },
 )
