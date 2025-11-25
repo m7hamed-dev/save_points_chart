@@ -5,11 +5,12 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/bar_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Modern bar chart with gradient fills and rounded corners
 class BarChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme theme;
+  final ChartTheme? theme;
   final double barWidth;
   final double borderRadius;
   final bool showGrid;
@@ -28,7 +29,7 @@ class BarChartWidget extends StatefulWidget {
   const BarChartWidget({
     super.key,
     required this.dataSets,
-    required this.theme,
+    this.theme,
     this.barWidth = 20.0,
     this.borderRadius = 8.0,
     this.showGrid = true,
@@ -81,8 +82,9 @@ class _BarChartWidgetState extends State<BarChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
-      theme: widget.theme,
+      theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
       useGlassmorphism: widget.useGlassmorphism,
@@ -97,9 +99,12 @@ class _BarChartWidgetState extends State<BarChartWidget>
             return LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onBarTap != null
                       ? (details) {
+                          // Hide any existing context menu first to prevent blocking
+                          ChartContextMenuHelper.hide();
+                          
                           // Use localPosition directly (relative to SizedBox)
                           const leftPadding = 50.0;
                           const topPadding = 20.0;
@@ -156,21 +161,37 @@ class _BarChartWidgetState extends State<BarChartWidget>
                           );
 
                           if (result != null && result.isHit) {
+                            // Clear previous selection first
+                            setState(() {
+                              _selectedBar = null;
+                            });
+                            
+                            // Set new selection
                             setState(() {
                               _selectedBar = result;
                             });
+                            
                             // Get global position for context menu
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            widget.onBarTap?.call(
-                              result.point!,
-                              result.datasetIndex!,
-                              result.elementIndex!,
-                              globalPosition,
-                            );
+                            
+                            // Small delay to ensure overlay is removed before showing new menu
+                            Future.microtask(() {
+                              widget.onBarTap?.call(
+                                result.point!,
+                                result.datasetIndex!,
+                                result.elementIndex!,
+                                globalPosition,
+                              );
+                            });
+                          } else {
+                            // Clear selection if tap is outside any bar
+                            setState(() {
+                              _selectedBar = null;
+                            });
                           }
                         }
                       : null,
@@ -180,7 +201,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                     child: CustomPaint(
                       size: Size(constraints.maxWidth, 300),
                       painter: BarChartPainter(
-                        theme: widget.theme,
+                        theme: effectiveTheme,
                         dataSets: widget.dataSets,
                         barWidth: widget.barWidth,
                         borderRadius: widget.borderRadius,

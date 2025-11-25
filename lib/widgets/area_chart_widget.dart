@@ -5,11 +5,12 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Modern area chart with gradient fills
 class AreaChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme theme;
+  final ChartTheme? theme;
   final double lineWidth;
   final bool showPoints;
   final bool showGrid;
@@ -27,7 +28,7 @@ class AreaChartWidget extends StatefulWidget {
   const AreaChartWidget({
     super.key,
     required this.dataSets,
-    required this.theme,
+    this.theme,
     this.lineWidth = 3.0,
     this.showPoints = true,
     this.showGrid = true,
@@ -79,8 +80,9 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
-      theme: widget.theme,
+      theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
       useGlassmorphism: widget.useGlassmorphism,
@@ -95,9 +97,12 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
             return LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onPointTap != null
                       ? (details) {
+                          // Hide any existing context menu first to prevent blocking
+                          ChartContextMenuHelper.hide();
+                          
                           // Use localPosition directly (relative to SizedBox)
                           const leftPadding = 50.0;
                           const topPadding = 20.0;
@@ -154,21 +159,37 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                           );
 
                           if (result != null && result.isHit) {
+                            // Clear previous selection first
+                            setState(() {
+                              _selectedPoint = null;
+                            });
+                            
+                            // Set new selection
                             setState(() {
                               _selectedPoint = result;
                             });
+                            
                             // Get global position for context menu
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            widget.onPointTap?.call(
-                              result.point!,
-                              result.datasetIndex!,
-                              result.elementIndex!,
-                              globalPosition,
-                            );
+                            
+                            // Small delay to ensure overlay is removed before showing new menu
+                            Future.microtask(() {
+                              widget.onPointTap?.call(
+                                result.point!,
+                                result.datasetIndex!,
+                                result.elementIndex!,
+                                globalPosition,
+                              );
+                            });
+                          } else {
+                            // Clear selection if tap is outside any point
+                            setState(() {
+                              _selectedPoint = null;
+                            });
                           }
                         }
                       : null,
@@ -178,7 +199,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                     child: CustomPaint(
                       size: Size(constraints.maxWidth, 300),
                       painter: LineChartPainter(
-                        theme: widget.theme,
+                        theme: effectiveTheme,
                         dataSets: widget.dataSets,
                         lineWidth: widget.lineWidth,
                         showPoints: widget.showPoints,

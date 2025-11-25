@@ -7,6 +7,7 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// A modern line chart widget with gradient fills and smooth animations.
 ///
@@ -47,7 +48,7 @@ import 'package:save_points_chart/widgets/chart_container.dart';
 /// - [AreaChartWidget] for area charts
 class LineChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme theme;
+  final ChartTheme? theme;
   final double lineWidth;
   final bool showArea;
   final bool showPoints;
@@ -75,7 +76,7 @@ class LineChartWidget extends StatefulWidget {
   LineChartWidget({
     super.key,
     required this.dataSets,
-    required this.theme,
+    this.theme,
     this.lineWidth = 3.0,
     this.showArea = true,
     this.showPoints = true,
@@ -208,8 +209,9 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
-      theme: widget.theme,
+      theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
       useGlassmorphism: widget.useGlassmorphism,
@@ -243,9 +245,12 @@ class _LineChartWidgetState extends State<LineChartWidget>
                         }
                       : null,
                   child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                    behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                     onTapDown: widget.onPointTap != null
                         ? (details) {
+                            // Hide any existing context menu first to prevent blocking
+                            ChartContextMenuHelper.hide();
+                            
                             // Use localPosition directly (relative to SizedBox)
                             // Account for padding
                             const leftPadding = 50.0;
@@ -278,15 +283,30 @@ class _LineChartWidgetState extends State<LineChartWidget>
                             );
 
                             if (result != null && result.isHit) {
+                              // Clear previous selection first
+                              setState(() {
+                                _selectedPoint = null;
+                              });
+                              
+                              // Set new selection
                               setState(() {
                                 _selectedPoint = result;
                               });
-                              widget.onPointTap?.call(
-                                result.point!,
-                                result.datasetIndex!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
+                              
+                              // Small delay to ensure overlay is removed before showing new menu
+                              Future.microtask(() {
+                                widget.onPointTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              // Clear selection if tap is outside any point
+                              setState(() {
+                                _selectedPoint = null;
+                              });
                             }
                           }
                         : null,
@@ -296,7 +316,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                       child: CustomPaint(
                         size: Size(constraints.maxWidth, 300),
                         painter: LineChartPainter(
-                          theme: widget.theme,
+                          theme: effectiveTheme,
                           dataSets: widget.dataSets,
                           lineWidth: widget.lineWidth,
                           showArea: widget.showArea,

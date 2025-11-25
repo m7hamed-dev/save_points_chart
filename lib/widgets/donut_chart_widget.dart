@@ -6,11 +6,12 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Modern donut chart with gradient sections
 class DonutChartWidget extends StatefulWidget {
   final List<PieData> data;
-  final ChartTheme theme;
+  final ChartTheme? theme;
   final double borderWidth;
   final double centerSpaceRadius;
   final bool showLegend;
@@ -27,7 +28,7 @@ class DonutChartWidget extends StatefulWidget {
   const DonutChartWidget({
     super.key,
     required this.data,
-    required this.theme,
+    this.theme,
     this.borderWidth = 2.0,
     this.centerSpaceRadius = 60,
     this.showLegend = true,
@@ -74,6 +75,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
 
     final Widget content = Row(
@@ -89,9 +91,12 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                     final size =
                         math.min(constraints.maxWidth, 250.0).toDouble();
                     return GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                      behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                       onTapDown: widget.onSegmentTap != null
                           ? (details) {
+                              // Hide any existing context menu first to prevent blocking
+                              ChartContextMenuHelper.hide();
+                              
                               // Use localPosition directly (relative to SizedBox)
                               final result =
                                   ChartInteractionHelper.findPieSegment(
@@ -102,9 +107,16 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               );
 
                               if (result != null && result.isHit) {
+                                // Clear previous selection first
+                                setState(() {
+                                  _selectedSegment = null;
+                                });
+                                
+                                // Set new selection
                                 setState(() {
                                   _selectedSegment = result;
                                 });
+                                
                                 // Get global position for context menu
                                 final RenderBox? renderBox =
                                     context.findRenderObject() as RenderBox?;
@@ -112,11 +124,20 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                                     ? renderBox
                                         .localToGlobal(details.localPosition)
                                     : details.localPosition;
-                                widget.onSegmentTap?.call(
-                                  result.segment!,
-                                  result.elementIndex!,
-                                  globalPosition,
-                                );
+                                
+                                // Small delay to ensure overlay is removed before showing new menu
+                                Future.microtask(() {
+                                  widget.onSegmentTap?.call(
+                                    result.segment!,
+                                    result.elementIndex!,
+                                    globalPosition,
+                                  );
+                                });
+                              } else {
+                                // Clear selection if tap is outside any segment
+                                setState(() {
+                                  _selectedSegment = null;
+                                });
                               }
                             }
                           : null,
@@ -130,7 +151,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               size: Size(size, 250),
                               painter: PieChartPainter(
                                 data: widget.data,
-                                theme: widget.theme,
+                                theme: effectiveTheme,
                                 centerSpaceRadius: widget.centerSpaceRadius,
                                 borderWidth: widget.borderWidth,
                                 showLabel: widget.showLabel,
@@ -145,7 +166,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               Text(
                                 'Total',
                                 style: TextStyle(
-                                  color: widget.theme.textColor
+                                  color: effectiveTheme.textColor
                                       .withValues(alpha: 0.7),
                                   fontSize: 14,
                                 ),
@@ -153,7 +174,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               Text(
                                 total.toStringAsFixed(0),
                                 style: TextStyle(
-                                  color: widget.theme.textColor,
+                                  color: effectiveTheme.textColor,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -169,7 +190,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
             ),
           ),
         ),
-        if (widget.showLegend && widget.theme.showLegend)
+        if (widget.showLegend && effectiveTheme.showLegend)
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -192,7 +213,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                         child: Text(
                           item.label,
                           style: TextStyle(
-                            color: widget.theme.textColor,
+                            color: effectiveTheme.textColor,
                             fontSize: 12,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -201,7 +222,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                       Text(
                         '${((item.value / total) * 100).toStringAsFixed(1)}%',
                         style: TextStyle(
-                          color: widget.theme.textColor.withValues(alpha: 0.7),
+                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -216,7 +237,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     );
 
     return ChartContainer(
-      theme: widget.theme,
+      theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
       useGlassmorphism: widget.useGlassmorphism,

@@ -5,11 +5,12 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Compact sparkline chart for inline data visualization
 class SparklineChartWidget extends StatefulWidget {
   final ChartDataSet dataSet;
-  final ChartTheme theme;
+  final ChartTheme? theme;
   final double lineWidth;
   final bool showArea;
   final bool showLabel;
@@ -27,7 +28,7 @@ class SparklineChartWidget extends StatefulWidget {
   const SparklineChartWidget({
     super.key,
     required this.dataSet,
-    required this.theme,
+    this.theme,
     this.lineWidth = 2.0,
     this.showArea = true,
     this.showLabel = false,
@@ -93,8 +94,9 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       dataPoints: widget.dataSet.dataPoints,
     );
 
+    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
-      theme: widget.theme,
+      theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
       useGlassmorphism: widget.useGlassmorphism,
@@ -135,9 +137,12 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                 }
 
                 return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onPointTap != null
                       ? (details) {
+                          // Hide any existing context menu first to prevent blocking
+                          ChartContextMenuHelper.hide();
+                          
                           final result =
                               ChartInteractionHelper.findNearestPoint(
                             details.localPosition,
@@ -151,21 +156,37 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                           );
 
                           if (result != null && result.isHit) {
+                            // Clear previous selection first
+                            setState(() {
+                              _selectedPoint = null;
+                            });
+                            
+                            // Set new selection
                             setState(() {
                               _selectedPoint = result;
                             });
+                            
                             // Get global position for context menu
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            widget.onPointTap?.call(
-                              result.point!,
-                              result.datasetIndex!,
-                              result.elementIndex!,
-                              globalPosition,
-                            );
+                            
+                            // Small delay to ensure overlay is removed before showing new menu
+                            Future.microtask(() {
+                              widget.onPointTap?.call(
+                                result.point!,
+                                result.datasetIndex!,
+                                result.elementIndex!,
+                                globalPosition,
+                              );
+                            });
+                          } else {
+                            // Clear selection if tap is outside any point
+                            setState(() {
+                              _selectedPoint = null;
+                            });
                           }
                         }
                       : null,
@@ -175,7 +196,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                     child: CustomPaint(
                       size: chartSize,
                       painter: LineChartPainter(
-                        theme: widget.theme
+                        theme: effectiveTheme
                             .copyWith(showGrid: false, showAxis: false),
                         dataSets: [modifiedDataSet],
                         lineWidth: widget.lineWidth,

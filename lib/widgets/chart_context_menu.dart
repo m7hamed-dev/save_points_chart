@@ -502,16 +502,21 @@ class ChartContextMenuHelper {
     _currentMenu = OverlayEntry(
       builder: (context) => Stack(
         children: [
-          // Backdrop
+          // Backdrop - only captures taps outside the menu area
+          // Use a custom approach to allow chart taps to pass through
           Positioned.fill(
             child: GestureDetector(
-              onTap: hide,
+              onTap: () {
+                // Hide menu when tapping outside
+                hide();
+              },
+              behavior: HitTestBehavior.translucent,
               child: Container(
                 color: Colors.transparent,
               ),
             ),
           ),
-          // Context Menu
+          // Context Menu - positioned above backdrop
           ChartContextMenu(
             point: point,
             segment: segment,

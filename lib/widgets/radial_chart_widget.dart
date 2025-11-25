@@ -5,11 +5,12 @@ import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/radial_chart_painter.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Modern radial/radar chart
 class RadialChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme theme;
+  final ChartTheme? theme;
   final double lineWidth;
   final bool showPoints;
   final bool showGrid;
@@ -26,7 +27,7 @@ class RadialChartWidget extends StatefulWidget {
   const RadialChartWidget({
     super.key,
     required this.dataSets,
-    required this.theme,
+    this.theme,
     this.lineWidth = 3.0,
     this.showPoints = true,
     this.showGrid = true,
@@ -72,8 +73,9 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
-      theme: widget.theme,
+      theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
       useGlassmorphism: widget.useGlassmorphism,
@@ -89,9 +91,12 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
               builder: (context, constraints) {
                 final chartSize = Size(constraints.maxWidth, 300);
                 return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onPointTap != null
                       ? (details) {
+                          // Hide any existing context menu first to prevent blocking
+                          ChartContextMenuHelper.hide();
+                          
                           final result = _findNearestRadialPoint(
                             details.localPosition,
                             chartSize,
@@ -104,12 +109,16 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            widget.onPointTap?.call(
-                              result.point!,
-                              result.datasetIndex!,
-                              result.elementIndex!,
-                              globalPosition,
-                            );
+                            
+                            // Small delay to ensure overlay is removed before showing new menu
+                            Future.microtask(() {
+                              widget.onPointTap?.call(
+                                result.point!,
+                                result.datasetIndex!,
+                                result.elementIndex!,
+                                globalPosition,
+                              );
+                            });
                           }
                         }
                       : null,
@@ -119,7 +128,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
                     child: CustomPaint(
                       size: chartSize,
                       painter: RadialChartPainter(
-                        theme: widget.theme,
+                        theme: effectiveTheme,
                         dataSets: widget.dataSets,
                         lineWidth: widget.lineWidth,
                         showPoints: widget.showPoints,
