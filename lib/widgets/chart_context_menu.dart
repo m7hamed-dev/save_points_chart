@@ -336,28 +336,40 @@ class ChartContextMenu extends StatelessWidget {
                 context,
                 icon: Icons.info_outline,
                 label: 'View Details',
-                onTap: onViewDetails ?? (onClose ?? () {}),
+                onTap: () {
+                  onClose?.call();
+                  onViewDetails?.call();
+                },
                 isDark: isDark,
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.compare_arrows,
                 label: 'Compare',
-                onTap: onCompare ?? (onClose ?? () {}),
+                onTap: () {
+                  onClose?.call();
+                  onCompare?.call();
+                },
                 isDark: isDark,
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.download,
                 label: 'Export Data',
-                onTap: onExport ?? (onClose ?? () {}),
+                onTap: () {
+                  onClose?.call();
+                  onExport?.call();
+                },
                 isDark: isDark,
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.share,
                 label: 'Share',
-                onTap: onShare ?? (onClose ?? () {}),
+                onTap: () {
+                  onClose?.call();
+                  onShare?.call();
+                },
                 isDark: isDark,
                 isLast: true,
               ),

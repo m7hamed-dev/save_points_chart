@@ -213,25 +213,21 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
                     datasetLabel: dataSet.label,
                   );
                 },
-                onExport: () {
-                  ChartContextMenuHelper.hide();
-                  _showExportSnackBar(context, 'Exporting data point...');
-                },
-                onShare: () {
-                  ChartContextMenuHelper.hide();
-                  _showExportSnackBar(context, 'Sharing data point...');
-                },
-                onCompare: () {
-                  ChartContextMenuHelper.hide();
-                  _showExportSnackBar(context, 'Comparing data point...');
-                },
+                // onExport: () {
+                //   _showExportSnackBar(context, 'Exporting data point...');
+                // },
+                // onShare: () {
+                //   _showExportSnackBar(context, 'Sharing data point...');
+                // },
+                // onCompare: () {
+                //   _showExportSnackBar(context, 'Comparing data point...');
+                // },
               );
             },
             onPointHover: (point, datasetIndex, pointIndex) {
@@ -306,7 +302,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -315,15 +310,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Exporting $userLabel data...');
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing $userLabel...');
                 },
               );
@@ -352,7 +344,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -361,15 +352,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Exporting $userLabel data...');
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing $userLabel...');
                 },
               );
@@ -407,7 +395,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -415,15 +402,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Exporting bar data...');
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing bar data...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing bar data...');
                 },
               );
@@ -462,7 +446,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -471,15 +454,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Exporting $userLabel data...');
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing $userLabel...');
                 },
               );
@@ -517,7 +497,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -525,15 +504,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Exporting data point...');
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing data point...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing data point...');
                 },
               );
@@ -577,7 +553,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -586,15 +561,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Exporting $userLabel data...');
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing $userLabel data...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing $userLabel...');
                 },
               );
@@ -629,25 +601,21 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(context, segment: segment);
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Exporting ${segment.label} data...',
                   );
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Sharing ${segment.label} data...',
                   );
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing ${segment.label}...');
                 },
               );
@@ -682,25 +650,21 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(context, segment: segment);
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Exporting ${segment.label} data...',
                   );
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Sharing ${segment.label} data...',
                   );
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Comparing ${segment.label}...');
                 },
               );
@@ -738,7 +702,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -746,18 +709,15 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Exporting radial data point...',
                   );
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(context, 'Sharing radial data point...');
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Comparing radial data point...',
@@ -798,7 +758,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  ChartContextMenuHelper.hide();
                   _showDetailsDialog(
                     context,
                     point: point,
@@ -806,21 +765,18 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   );
                 },
                 onExport: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Exporting sparkline data point...',
                   );
                 },
                 onShare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Sharing sparkline data point...',
                   );
                 },
                 onCompare: () {
-                  ChartContextMenuHelper.hide();
                   _showExportSnackBar(
                     context,
                     'Comparing sparkline data point...',
@@ -865,7 +821,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       useGlassmorphism: _useGlassmorphism,
                       useNeumorphism: _useNeumorphism,
                       onViewDetails: () {
-                        ChartContextMenuHelper.hide();
                         _showDetailsDialog(
                           context,
                           point: point,
@@ -873,21 +828,18 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         );
                       },
                       onExport: () {
-                        ChartContextMenuHelper.hide();
                         _showExportSnackBar(
                           context,
                           'Exporting positive trend data...',
                         );
                       },
                       onShare: () {
-                        ChartContextMenuHelper.hide();
                         _showExportSnackBar(
                           context,
                           'Sharing positive trend data...',
                         );
                       },
                       onCompare: () {
-                        ChartContextMenuHelper.hide();
                         _showExportSnackBar(
                           context,
                           'Comparing positive trend...',
@@ -931,7 +883,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       useGlassmorphism: _useGlassmorphism,
                       useNeumorphism: _useNeumorphism,
                       onViewDetails: () {
-                        ChartContextMenuHelper.hide();
                         _showDetailsDialog(
                           context,
                           point: point,
@@ -939,21 +890,18 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         );
                       },
                       onExport: () {
-                        ChartContextMenuHelper.hide();
                         _showExportSnackBar(
                           context,
                           'Exporting negative trend data...',
                         );
                       },
                       onShare: () {
-                        ChartContextMenuHelper.hide();
                         _showExportSnackBar(
                           context,
                           'Sharing negative trend data...',
                         );
                       },
                       onCompare: () {
-                        ChartContextMenuHelper.hide();
                         _showExportSnackBar(
                           context,
                           'Comparing negative trend...',
