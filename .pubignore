@@ -35,6 +35,9 @@ lib/data/
 # Documentation
 doc/
 
+# Screenshots (referenced via GitHub URLs in README, don't need to be in package)
+screenshots/
+
 # Miscellaneous
 *.log
 .DS_Store
