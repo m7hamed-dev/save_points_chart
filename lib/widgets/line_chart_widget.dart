@@ -237,6 +237,12 @@ class _LineChartWidgetState extends State<LineChartWidget>
                               details.localPosition.dy - topPadding,
                             );
                             
+                            // Get global position for context menu
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
+                            
                             // Calculate chart bounds
                             final bounds = _calculateBounds();
                             
@@ -259,6 +265,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                                 result.point!,
                                 result.datasetIndex!,
                                 result.elementIndex!,
+                                globalPosition,
                               );
                             }
                           }

@@ -1,13 +1,17 @@
+import 'package:flutter/material.dart';
 import 'chart_data.dart';
 
 /// Callback for chart point interactions
-typedef ChartPointCallback = void Function(ChartDataPoint point, int datasetIndex, int pointIndex);
+/// [position] is the global tap position for showing context menus
+typedef ChartPointCallback = void Function(ChartDataPoint point, int datasetIndex, int pointIndex, Offset position);
 
 /// Callback for pie chart segment interactions
-typedef PieSegmentCallback = void Function(PieData segment, int segmentIndex);
+/// [position] is the global tap position for showing context menus
+typedef PieSegmentCallback = void Function(PieData segment, int segmentIndex, Offset position);
 
 /// Callback for bar chart interactions
-typedef BarCallback = void Function(ChartDataPoint point, int datasetIndex, int barIndex);
+/// [position] is the global tap position for showing context menus
+typedef BarCallback = void Function(ChartDataPoint point, int datasetIndex, int barIndex, Offset position);
 
 /// Callback for mouse hover events on chart points
 /// Called when mouse enters a point area

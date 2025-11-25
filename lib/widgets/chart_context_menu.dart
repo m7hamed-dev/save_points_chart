@@ -1,0 +1,524 @@
+import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
+import '../models/chart_data.dart';
+import '../theme/chart_theme.dart';
+
+/// An awesome context menu that appears when tapping on chart elements
+class ChartContextMenu extends StatelessWidget {
+  final ChartDataPoint? point;
+  final PieData? segment;
+  final int? datasetIndex;
+  final int? elementIndex;
+  final String? datasetLabel;
+  final Offset position;
+  final ChartTheme? theme;
+  final bool useGlassmorphism;
+  final bool useNeumorphism;
+  final VoidCallback? onClose;
+  final VoidCallback? onViewDetails;
+  final VoidCallback? onExport;
+  final VoidCallback? onShare;
+  final VoidCallback? onCompare;
+
+  const ChartContextMenu({
+    super.key,
+    this.point,
+    this.segment,
+    this.datasetIndex,
+    this.elementIndex,
+    this.datasetLabel,
+    required this.position,
+    this.theme,
+    this.useGlassmorphism = false,
+    this.useNeumorphism = false,
+    this.onClose,
+    this.onViewDetails,
+    this.onExport,
+    this.onShare,
+    this.onCompare,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Positioned(
+      left: position.dx,
+      top: position.dy,
+      child: Material(
+        color: Colors.transparent,
+        child: TweenAnimationBuilder<double>(
+          duration: const Duration(milliseconds: 300),
+          tween: Tween(begin: 0.0, end: 1.0),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, child) {
+            return Transform.scale(
+              scale: 0.8 + (0.2 * value),
+              child: Opacity(
+                opacity: value,
+                child: child,
+              ),
+            );
+          },
+          child: _buildMenuContent(context, isDark),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuContent(BuildContext context, bool isDark) {
+    if (useGlassmorphism) {
+      return _buildGlassmorphismMenu(context, isDark);
+    } else if (useNeumorphism) {
+      return _buildNeumorphismMenu(context, isDark);
+    } else {
+      return _buildDefaultMenu(context, isDark);
+    }
+  }
+
+  Widget _buildGlassmorphismMenu(BuildContext context, bool isDark) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          width: 280,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [
+                      Colors.white.withOpacity(0.1),
+                      Colors.white.withOpacity(0.05),
+                    ]
+                  : [
+                      Colors.white.withOpacity(0.8),
+                      Colors.white.withOpacity(0.6),
+                    ],
+            ),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withOpacity(0.2)
+                  : Colors.black.withOpacity(0.1),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: _buildMenuItems(context, isDark),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNeumorphismMenu(BuildContext context, bool isDark) {
+    final baseColor = isDark ? const Color(0xFF2D2D2D) : const Color(0xFFE0E0E0);
+    
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: baseColor,
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withOpacity(0.5)
+                : Colors.white.withOpacity(0.9),
+            blurRadius: 20,
+            offset: const Offset(-8, -8),
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withOpacity(0.8)
+                : Colors.grey.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(8, 8),
+          ),
+        ],
+      ),
+      child: _buildMenuItems(context, isDark),
+    );
+  }
+
+  Widget _buildDefaultMenu(BuildContext context, bool isDark) {
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: isDark
+            ? const Color(0xFF1E1E1E)
+            : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
+              : Colors.grey.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: _buildMenuItems(context, isDark),
+    );
+  }
+
+  Widget _buildMenuItems(BuildContext context, bool isDark) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Header
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                (point?.y != null
+                        ? _getColorForValue(point!.y)
+                        : segment?.color ?? Colors.blue)
+                    .withOpacity(0.2),
+                (point?.y != null
+                        ? _getColorForValue(point!.y)
+                        : segment?.color ?? Colors.blue)
+                    .withOpacity(0.1),
+              ],
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: (point?.y != null
+                              ? _getColorForValue(point!.y)
+                              : segment?.color ?? Colors.blue)
+                          .withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      point != null ? Icons.show_chart : Icons.pie_chart,
+                      color: point?.y != null
+                          ? _getColorForValue(point!.y)
+                          : segment?.color ?? Colors.blue,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          point != null
+                              ? (point!.label ?? 'Data Point')
+                              : (segment?.label ?? 'Segment'),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        if (datasetLabel != null)
+                          Text(
+                            datasetLabel!,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark
+                                  ? Colors.white70
+                                  : Colors.black54,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 18),
+                    onPressed: onClose,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withOpacity(0.1)
+                      : Colors.black.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Value',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isDark
+                                ? Colors.white60
+                                : Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          point != null
+                              ? point!.y.toStringAsFixed(2)
+                              : segment?.value.toStringAsFixed(2) ?? '0.00',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: point?.y != null
+                                ? _getColorForValue(point!.y)
+                                : segment?.color ?? Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (point != null)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'X',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark
+                                  ? Colors.white60
+                                  : Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            point!.x.toStringAsFixed(1),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Menu Items
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            children: [
+              _buildMenuItem(
+                context,
+                icon: Icons.info_outline,
+                label: 'View Details',
+                onTap: onViewDetails ?? (onClose ?? () {}),
+                isDark: isDark,
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.compare_arrows,
+                label: 'Compare',
+                onTap: onCompare ?? (onClose ?? () {}),
+                isDark: isDark,
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.download,
+                label: 'Export Data',
+                onTap: onExport ?? (onClose ?? () {}),
+                isDark: isDark,
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.share,
+                label: 'Share',
+                onTap: onShare ?? (onClose ?? () {}),
+                isDark: isDark,
+                isLast: true,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuItem(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    required bool isDark,
+    bool isLast = false,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: isDark
+                ? Colors.white.withOpacity(0.05)
+                : Colors.black.withOpacity(0.02),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: (point?.y != null
+                          ? _getColorForValue(point!.y)
+                          : segment?.color ?? Colors.blue)
+                      .withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: point?.y != null
+                      ? _getColorForValue(point!.y)
+                      : segment?.color ?? Colors.blue,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                size: 20,
+                color: isDark ? Colors.white38 : Colors.black26,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _getColorForValue(double value) {
+    // Color based on value - green for high, red for low, etc.
+    if (value > 80) return Colors.green;
+    if (value > 50) return Colors.blue;
+    if (value > 30) return Colors.orange;
+    return Colors.red;
+  }
+}
+
+/// Helper class to show context menu as overlay
+class ChartContextMenuHelper {
+  static OverlayEntry? _currentMenu;
+
+  static void show(
+    BuildContext context, {
+    required ChartDataPoint? point,
+    required PieData? segment,
+    required Offset position,
+    int? datasetIndex,
+    int? elementIndex,
+    String? datasetLabel,
+    ChartTheme? theme,
+    bool useGlassmorphism = false,
+    bool useNeumorphism = false,
+    VoidCallback? onViewDetails,
+    VoidCallback? onExport,
+    VoidCallback? onShare,
+    VoidCallback? onCompare,
+  }) {
+    // Close existing menu if any
+    hide();
+
+    final overlay = Overlay.of(context);
+    final renderBox = context.findRenderObject() as RenderBox?;
+    final globalPosition = renderBox != null
+        ? renderBox.localToGlobal(position)
+        : position;
+
+    // Adjust position to keep menu on screen
+    final adjustedPosition = Offset(
+      globalPosition.dx.clamp(16.0, MediaQuery.of(context).size.width - 296),
+      globalPosition.dy.clamp(16.0, MediaQuery.of(context).size.height - 400),
+    );
+
+    _currentMenu = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Backdrop
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: hide,
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+          ),
+          // Context Menu
+          ChartContextMenu(
+            point: point,
+            segment: segment,
+            datasetIndex: datasetIndex,
+            elementIndex: elementIndex,
+            datasetLabel: datasetLabel,
+            position: adjustedPosition,
+            theme: theme,
+            useGlassmorphism: useGlassmorphism,
+            useNeumorphism: useNeumorphism,
+            onClose: hide,
+            onViewDetails: onViewDetails,
+            onExport: onExport,
+            onShare: onShare,
+            onCompare: onCompare,
+          ),
+        ],
+      ),
+    );
+
+    overlay.insert(_currentMenu!);
+  }
+
+  static void hide() {
+    _currentMenu?.remove();
+    _currentMenu = null;
+  }
+}
+

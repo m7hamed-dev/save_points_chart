@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import '../models/chart_data.dart';
+import '../models/chart_interaction.dart';
 import '../theme/chart_theme.dart';
 import '../painters/radial_chart_painter.dart';
 import 'chart_container.dart';
@@ -19,6 +21,7 @@ class RadialChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final ChartPointCallback? onPointTap;
 
   const RadialChartWidget({
     super.key,
@@ -35,6 +38,7 @@ class RadialChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.onPointTap,
   });
 
   @override
@@ -83,19 +87,45 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
             builder: (context, constraints) {
-              return SizedBox(
-                width: constraints.maxWidth,
-                height: 300,
-                child: CustomPaint(
-                  size: Size(constraints.maxWidth, 300),
-                  painter: RadialChartPainter(
-                    theme: widget.theme,
-                    dataSets: widget.dataSets,
-                    lineWidth: widget.lineWidth,
-                    showPoints: widget.showPoints,
-                    showGrid: widget.showGrid,
-                    showLabel: widget.showLabel,
-                    animationProgress: _animation.value,
+              final chartSize = Size(constraints.maxWidth, 300);
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: widget.onPointTap != null
+                    ? (details) {
+                        final result = _findNearestRadialPoint(
+                          details.localPosition,
+                          chartSize,
+                        );
+                        
+                        if (result != null && result.isHit) {
+                          // Get global position for context menu
+                          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                          final globalPosition = renderBox != null
+                              ? renderBox.localToGlobal(details.localPosition)
+                              : details.localPosition;
+                          widget.onPointTap?.call(
+                            result.point!,
+                            result.datasetIndex!,
+                            result.elementIndex!,
+                            globalPosition,
+                          );
+                        }
+                      }
+                    : null,
+                child: SizedBox(
+                  width: constraints.maxWidth,
+                  height: 300,
+                  child: CustomPaint(
+                    size: chartSize,
+                    painter: RadialChartPainter(
+                      theme: widget.theme,
+                      dataSets: widget.dataSets,
+                      lineWidth: widget.lineWidth,
+                      showPoints: widget.showPoints,
+                      showGrid: widget.showGrid,
+                      showLabel: widget.showLabel,
+                      animationProgress: _animation.value,
+                    ),
                   ),
                 ),
               );
@@ -105,5 +135,44 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
         ),
       ),
     );
+  }
+
+  ChartInteractionResult? _findNearestRadialPoint(Offset tapPosition, Size chartSize) {
+    if (widget.dataSets.isEmpty || widget.dataSets.first.dataPoints.isEmpty) {
+      return null;
+    }
+
+    final center = Offset(chartSize.width / 2, chartSize.height / 2);
+    final radius = math.min(chartSize.width, chartSize.height) / 2 - 40;
+    final dataSet = widget.dataSets.first;
+    final points = dataSet.dataPoints;
+    final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
+    final angleStep = 2 * math.pi / points.length;
+    
+    double minDistance = double.infinity;
+    ChartInteractionResult? nearestResult;
+    const tapRadius = 25.0;
+
+    for (int i = 0; i < points.length; i++) {
+      final angle = i * angleStep - math.pi / 2;
+      final valueRadius = radius * (points[i].y / maxValue);
+      final pointX = center.dx + math.cos(angle) * valueRadius;
+      final pointY = center.dy + math.sin(angle) * valueRadius;
+      final point = Offset(pointX, pointY);
+      
+      final distance = (tapPosition - point).distance;
+      
+      if (distance < tapRadius && distance < minDistance) {
+        minDistance = distance;
+        nearestResult = ChartInteractionResult(
+          point: points[i],
+          datasetIndex: 0,
+          elementIndex: i,
+          isHit: true,
+        );
+      }
+    }
+
+    return nearestResult;
   }
 }

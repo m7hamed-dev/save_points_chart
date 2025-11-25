@@ -139,10 +139,16 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             setState(() {
                               _selectedBar = result;
                             });
+                            // Get global position for context menu
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
                             widget.onBarTap?.call(
                               result.point!,
                               result.datasetIndex!,
                               result.elementIndex!,
+                              globalPosition,
                             );
                           }
                         }

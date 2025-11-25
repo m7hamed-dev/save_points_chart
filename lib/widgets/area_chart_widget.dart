@@ -137,10 +137,16 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                             setState(() {
                               _selectedPoint = result;
                             });
+                            // Get global position for context menu
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
                             widget.onPointTap?.call(
                               result.point!,
                               result.datasetIndex!,
                               result.elementIndex!,
+                              globalPosition,
                             );
                           }
                         }

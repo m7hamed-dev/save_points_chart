@@ -101,9 +101,15 @@ class _PieChartWidgetState extends State<PieChartWidget>
                                 setState(() {
                                   _selectedSegment = result;
                                 });
+                                // Get global position for context menu
+                                final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                                final globalPosition = renderBox != null
+                                    ? renderBox.localToGlobal(details.localPosition)
+                                    : details.localPosition;
                                 widget.onSegmentTap?.call(
                                   result.segment!,
                                   result.elementIndex!,
+                                  globalPosition,
                                 );
                               }
                             }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/chart_data.dart';
+import '../models/chart_interaction.dart';
 import '../theme/chart_theme.dart';
 import '../painters/line_chart_painter.dart';
+import '../utils/chart_interaction_helper.dart';
 import 'chart_container.dart';
 
 /// Compact sparkline chart for inline data visualization
@@ -20,6 +22,7 @@ class SparklineChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final ChartPointCallback? onPointTap;
 
   const SparklineChartWidget({
     super.key,
@@ -37,6 +40,7 @@ class SparklineChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.onPointTap,
   });
 
   @override
@@ -47,6 +51,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  ChartInteractionResult? _selectedPoint;
 
   @override
   void initState() {
@@ -101,21 +106,69 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
             builder: (context, constraints) {
-              return SizedBox(
-                width: constraints.maxWidth,
-                height: 100,
-                child: CustomPaint(
-                  size: Size(constraints.maxWidth, 100),
-                  painter: LineChartPainter(
-                    theme: widget.theme.copyWith(showGrid: false, showAxis: false),
-                    dataSets: [modifiedDataSet],
-                    lineWidth: widget.lineWidth,
-                    showArea: widget.showArea,
-                    showPoints: false,
-                    showGrid: false,
-                    showAxis: false,
-                    showLabel: widget.showLabel,
-                    animationProgress: _animation.value,
+              final chartSize = Size(constraints.maxWidth, 100);
+              
+              // Calculate bounds for tap detection
+              double minX = double.infinity;
+              double maxX = double.negativeInfinity;
+              double maxY = double.negativeInfinity;
+              
+              for (final point in widget.dataSet.dataPoints) {
+                if (point.x < minX) minX = point.x;
+                if (point.x > maxX) maxX = point.x;
+                if (point.y > maxY) maxY = point.y;
+              }
+              
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: widget.onPointTap != null
+                    ? (details) {
+                        final result = ChartInteractionHelper.findNearestPoint(
+                          details.localPosition,
+                          [modifiedDataSet],
+                          chartSize,
+                          minX,
+                          maxX,
+                          0.0,
+                          maxY * 1.15,
+                          20.0, // tap radius
+                        );
+                        
+                        if (result != null && result.isHit) {
+                          setState(() {
+                            _selectedPoint = result;
+                          });
+                          // Get global position for context menu
+                          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                          final globalPosition = renderBox != null
+                              ? renderBox.localToGlobal(details.localPosition)
+                              : details.localPosition;
+                          widget.onPointTap?.call(
+                            result.point!,
+                            result.datasetIndex!,
+                            result.elementIndex!,
+                            globalPosition,
+                          );
+                        }
+                      }
+                    : null,
+                child: SizedBox(
+                  width: constraints.maxWidth,
+                  height: 100,
+                  child: CustomPaint(
+                    size: chartSize,
+                    painter: LineChartPainter(
+                      theme: widget.theme.copyWith(showGrid: false, showAxis: false),
+                      dataSets: [modifiedDataSet],
+                      lineWidth: widget.lineWidth,
+                      showArea: widget.showArea,
+                      showPoints: false,
+                      showGrid: false,
+                      showAxis: false,
+                      showLabel: widget.showLabel,
+                      animationProgress: _animation.value,
+                      selectedPoint: _selectedPoint,
+                    ),
                   ),
                 ),
               );
