@@ -41,6 +41,7 @@ export 'widgets/donut_chart_widget.dart';
 export 'widgets/radial_chart_widget.dart';
 export 'widgets/sparkline_chart_widget.dart';
 export 'widgets/chart_container.dart';
+export 'widgets/chart_context_menu.dart';
 
 // Providers
 export 'providers/theme_provider.dart';
@@ -49,4 +50,3 @@ export 'providers/theme_provider.dart';
 export 'utils/chart_interaction_helper.dart';
 export 'utils/performance_utils.dart';
 export 'utils/chart_cache.dart';
-

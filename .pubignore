@@ -1,0 +1,44 @@
+# Files and directories created by pub
+.dart_tool/
+.packages
+.pub/
+build/
+pubspec.lock
+
+# Flutter/Dart related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE related
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Platform specific folders (not needed for package)
+android/
+ios/
+linux/
+macos/
+web/
+windows/
+
+# Example app files (not part of the package)
+example/
+lib/main.dart
+lib/screens/
+lib/data/
+
+# Documentation
+doc/
+
+# Miscellaneous
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+

@@ -1,15 +1,59 @@
-# Modern Flutter Charts with Full Theme Support
+# Save Points Chart 📊
 
-A comprehensive Flutter charting solution featuring modern design principles, full light & dark theme support, and high performance.
+A modern, high-performance Flutter charting library with full theme support, featuring 7 chart types, Material 3 design, smooth animations, and interactive context menus.
+
+[![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 🎯 Features
 
 - **7 Chart Types**: Line, Bar, Area, Pie, Donut, Radial, and Sparkline charts
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
 - **Full Theme Support**: Automatic light/dark theme adaptation
-- **High Performance**: Optimized rendering with minimal rebuilds
+- **Interactive Context Menus**: Awesome context menus on tap with actions
+- **High Performance**: Optimized rendering with cached calculations and minimal rebuilds
+- **Smooth Animations**: Beautiful entrance animations for all chart types
 - **Clean Architecture**: Modular, reusable, and maintainable code
 - **Highly Customizable**: Extensive configuration options
+
+## 📦 Installation
+
+Add this to your package's `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  save_points_chart: ^1.0.0
+  provider: ^6.1.1  # Required for theme management
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+## 🚀 Quick Start
+
+```dart
+import 'package:save_points_chart/save_points_chart.dart';
+
+LineChartWidget(
+  dataSets: [
+    ChartDataSet(
+      label: 'Sales',
+      color: Colors.blue,
+      dataPoints: [
+        ChartDataPoint(x: 0, y: 10),
+        ChartDataPoint(x: 1, y: 20),
+        ChartDataPoint(x: 2, y: 15),
+      ],
+    ),
+  ],
+  theme: ChartTheme.light(),
+  title: 'Sales Trend',
+  subtitle: 'Last 3 months',
+)
+```
 
 ## 📦 Dependencies
 
@@ -62,9 +106,7 @@ lib/
 
 ```dart
 import 'package:flutter/material.dart';
-import 'widgets/line_chart_widget.dart';
-import 'models/chart_data.dart';
-import 'theme/chart_theme.dart';
+import 'package:save_points_chart/save_points_chart.dart';
 
 LineChartWidget(
   dataSets: [
@@ -87,12 +129,43 @@ LineChartWidget(
 ### With Theme Provider
 
 ```dart
+import 'package:provider/provider.dart';
+import 'package:save_points_chart/save_points_chart.dart';
+
 Consumer<ThemeProvider>(
   builder: (context, themeProvider, _) {
     return LineChartWidget(
       dataSets: dataSets,
       theme: themeProvider.chartTheme,
       useGlassmorphism: true,
+    );
+  },
+)
+```
+
+### Interactive Context Menu
+
+All charts support interactive context menus on tap:
+
+```dart
+LineChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  onPointTap: (point, datasetIndex, pointIndex, position) {
+    ChartContextMenuHelper.show(
+      context,
+      point: point,
+      position: position,
+      datasetIndex: datasetIndex,
+      elementIndex: pointIndex,
+      datasetLabel: 'Sales',
+      theme: chartTheme,
+      onViewDetails: () {
+        // Handle view details
+      },
+      onExport: () {
+        // Handle export
+      },
     );
   },
 )
@@ -128,12 +201,9 @@ The app includes a theme toggle button that switches between:
 - Dark mode
 - System mode (follows device settings)
 
-## 📱 Running the App
+## 📱 Example App
 
-```bash
-flutter pub get
-flutter run
-```
+Check out the example app in the repository to see all chart types in action.
 
 ## 📊 Chart Types
 
