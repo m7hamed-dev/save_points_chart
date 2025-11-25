@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../models/chart_data.dart';
-import '../models/chart_interaction.dart';
-import '../theme/chart_theme.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Custom painter for pie and donut charts
 class PieChartPainter extends CustomPainter {
@@ -40,7 +40,7 @@ class PieChartPainter extends CustomPainter {
       
       // Animate each segment with stagger
       final segmentProgress = math.max(0.0, math.min(1.0, 
-        (animationProgress - (index / data.length) * 0.5) / 0.5));
+        (animationProgress - (index / data.length) * 0.5) / 0.5,),);
       final animatedSweepAngle = sweepAngle * segmentProgress;
       
       // Check if this segment is selected
@@ -59,8 +59,8 @@ class PieChartPainter extends CustomPainter {
       // Adjust colors if selected
       final baseColor = isSelected ? item.color : item.color;
       final secondaryColor = isSelected 
-          ? item.color.withOpacity(0.85)
-          : item.color.withOpacity(0.75);
+          ? item.color.withValues(alpha: 0.85)
+          : item.color.withValues(alpha: 0.75);
       
       final paint = Paint()
         ..shader = RadialGradient(
@@ -166,7 +166,7 @@ class PieChartPainter extends CustomPainter {
           height: textPainter.height + 4,
         );
         final bgPaint = Paint()
-          ..color = item.color.withOpacity(0.2)
+          ..color = item.color.withValues(alpha: 0.2)
           ..style = PaintingStyle.fill;
         canvas.drawRRect(
           RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),

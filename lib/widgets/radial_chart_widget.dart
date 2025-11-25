@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../models/chart_data.dart';
-import '../models/chart_interaction.dart';
-import '../theme/chart_theme.dart';
-import '../painters/radial_chart_painter.dart';
-import 'chart_container.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/painters/radial_chart_painter.dart';
+import 'package:save_points_chart/widgets/chart_container.dart';
 
 /// Modern radial/radar chart
 class RadialChartWidget extends StatefulWidget {

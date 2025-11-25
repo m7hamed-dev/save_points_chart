@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../theme/chart_theme.dart';
-import '../models/chart_data.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 
 /// Base painter for all chart types with common utilities
 abstract class BaseChartPainter extends CustomPainter {
@@ -100,7 +100,7 @@ abstract class BaseChartPainter extends CustomPainter {
 
     // Create paint once
     final paint = Paint()
-      ..color = theme.gridColor.withOpacity(0.5)
+      ..color = theme.gridColor.withValues(alpha: 0.5)
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
 
@@ -131,7 +131,7 @@ abstract class BaseChartPainter extends CustomPainter {
     if (!showAxis || !theme.showAxis) return;
 
     final paint = Paint()
-      ..color = theme.axisColor.withOpacity(0.6)
+      ..color = theme.axisColor.withValues(alpha: 0.6)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -143,7 +143,7 @@ abstract class BaseChartPainter extends CustomPainter {
     );
 
     // Y-axis (left)
-    canvas.drawLine(Offset(0, 0), Offset(0, size.height), paint);
+    canvas.drawLine(const Offset(0, 0), Offset(0, size.height), paint);
   }
 
   /// Draw axis labels (optimized with text style caching)
@@ -159,7 +159,7 @@ abstract class BaseChartPainter extends CustomPainter {
 
     // Cache text style
     final textStyle = TextStyle(
-      color: theme.axisColor.withOpacity(0.8),
+      color: theme.axisColor.withValues(alpha: 0.8),
       fontSize: 11,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.2,

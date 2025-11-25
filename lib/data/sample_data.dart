@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/chart_data.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 
 /// Sample data generators for demonstration
 class SampleData {
@@ -101,11 +101,11 @@ class SampleData {
 
   static List<ChartDataSet> generateUsersData() {
     final data = [
-      ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
-      ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
-      ChartDataPoint(x: 2, y: 300, label: 'ali'),
-      ChartDataPoint(x: 3, y: 400, label: 'omar'),
-      ChartDataPoint(x: 4, y: 500, label: 'khalid'),
+      const ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
+      const ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
+      const ChartDataPoint(x: 2, y: 300, label: 'ali'),
+      const ChartDataPoint(x: 3, y: 400, label: 'omar'),
+      const ChartDataPoint(x: 4, y: 500, label: 'khalid'),
     ];
     return [
       ChartDataSet(

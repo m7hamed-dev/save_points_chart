@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../providers/theme_provider.dart';
-import '../theme/chart_theme.dart';
-import '../widgets/line_chart_widget.dart';
-import '../widgets/bar_chart_widget.dart';
-import '../widgets/area_chart_widget.dart';
-import '../widgets/pie_chart_widget.dart';
-import '../widgets/donut_chart_widget.dart';
-import '../widgets/radial_chart_widget.dart';
-import '../widgets/sparkline_chart_widget.dart';
-import '../widgets/chart_context_menu.dart';
-import '../models/chart_data.dart';
-import '../data/sample_data.dart';
+import 'package:save_points_chart/providers/theme_provider.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/widgets/line_chart_widget.dart';
+import 'package:save_points_chart/widgets/bar_chart_widget.dart';
+import 'package:save_points_chart/widgets/area_chart_widget.dart';
+import 'package:save_points_chart/widgets/pie_chart_widget.dart';
+import 'package:save_points_chart/widgets/donut_chart_widget.dart';
+import 'package:save_points_chart/widgets/radial_chart_widget.dart';
+import 'package:save_points_chart/widgets/sparkline_chart_widget.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/data/sample_data.dart';
 
 class ChartDemoScreen extends StatefulWidget {
   const ChartDemoScreen({super.key});
@@ -192,7 +192,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             theme: chartTheme,
             title: 'Sales & Revenue Trend',
             subtitle: 'Last 12 months performance - Hover or tap on points!',
-            showLabel: true,
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             isLoading: _isLoading,
@@ -290,7 +289,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             theme: chartTheme,
             title: 'Users by Name (No Labels)',
             subtitle: 'User data without axis labels',
-            showLabel: true,
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
@@ -547,7 +545,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               ChartDataSet(
                 label: 'Growth',
                 color: const Color(0xFF10B981),
-                dataPoints: SampleData.generateLineData(count: 15, maxY: 100),
+                dataPoints: SampleData.generateLineData(count: 15),
               ),
             ],
             theme: chartTheme,

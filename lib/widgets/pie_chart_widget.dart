@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../models/chart_data.dart';
-import '../models/chart_interaction.dart';
-import '../theme/chart_theme.dart';
-import '../painters/pie_chart_painter.dart';
-import '../utils/chart_interaction_helper.dart';
-import 'chart_container.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/painters/pie_chart_painter.dart';
+import 'package:save_points_chart/utils/chart_interaction_helper.dart';
+import 'package:save_points_chart/widgets/chart_container.dart';
 
 /// Modern pie chart with gradient sections and animations
 class PieChartWidget extends StatefulWidget {
@@ -74,7 +74,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
   Widget build(BuildContext context) {
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
 
-    Widget content = Row(
+    final Widget content = Row(
       children: [
         Expanded(
           flex: 2,
@@ -122,7 +122,6 @@ class _PieChartWidgetState extends State<PieChartWidget>
                           painter: PieChartPainter(
                             data: widget.data,
                             theme: widget.theme,
-                            centerSpaceRadius: 0,
                             borderWidth: widget.borderWidth,
                             showLabel: widget.showLabel,
                             animationProgress: _animation.value,
@@ -139,7 +138,6 @@ class _PieChartWidgetState extends State<PieChartWidget>
         ),
         if (widget.showLegend && widget.theme.showLegend)
           Expanded(
-            flex: 1,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +168,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
                       Text(
                         '${((item.value / total) * 100).toStringAsFixed(1)}%',
                         style: TextStyle(
-                          color: widget.theme.textColor.withOpacity(0.7),
+                          color: widget.theme.textColor.withValues(alpha: 0.7),
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../models/chart_interaction.dart';
-import 'base_chart_painter.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/base_chart_painter.dart';
 
 /// Custom painter for bar charts
 class BarChartPainter extends BaseChartPainter {
@@ -170,9 +170,9 @@ class BarChartPainter extends BaseChartPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0.9),
+          color.withValues(alpha: 0.9),
           color,
-          color.withOpacity(0.8),
+          color.withValues(alpha: 0.8),
         ],
         stops: const [0.0, 0.5, 1.0],
       ).createShader(rect.outerRect)
@@ -186,14 +186,14 @@ class BarChartPainter extends BaseChartPainter {
       Radius.circular(borderRadius),
     );
     final highlightPaint = Paint()
-      ..color = Colors.white.withOpacity(isSelected ? 0.4 : 0.2)
+      ..color = Colors.white.withValues(alpha: isSelected ? 0.4 : 0.2)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(highlightRect, highlightPaint);
     
     // Add border if selected
     if (isSelected) {
       final borderPaint = Paint()
-        ..color = color.withOpacity(0.8)
+        ..color = color.withValues(alpha: 0.8)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.5;
       canvas.drawRRect(rect, borderPaint);

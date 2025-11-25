@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../theme/chart_theme.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Modern container wrapper for charts with glassmorphism and neumorphism effects
 class ChartContainer extends StatelessWidget {
@@ -38,7 +38,7 @@ class ChartContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(theme.borderRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: theme.shadowElevation * 2,
             offset: Offset(0, theme.shadowElevation),
           ),
@@ -70,7 +70,7 @@ class ChartContainer extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 14,
-                          color: theme.textColor.withOpacity(0.7),
+                          color: theme.textColor.withValues(alpha: 0.7),
                         ),
                       ),
                     ),
@@ -95,7 +95,7 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         'Loading chart data...',
                         style: TextStyle(
-                          color: theme.textColor.withOpacity(0.7),
+                          color: theme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -117,13 +117,13 @@ class ChartContainer extends StatelessWidget {
                       Icon(
                         Icons.error_outline,
                         size: 48,
-                        color: Colors.red.withOpacity(0.7),
+                        color: Colors.red.withValues(alpha: 0.7),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         errorMessage ?? 'Failed to load chart data',
                         style: TextStyle(
-                          color: theme.textColor.withOpacity(0.7),
+                          color: theme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                         textAlign: TextAlign.center,
@@ -152,16 +152,15 @@ class ChartContainer extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.backgroundColor.withOpacity(0.9),
-              theme.backgroundColor.withOpacity(0.7),
+              theme.backgroundColor.withValues(alpha: 0.9),
+              theme.backgroundColor.withValues(alpha: 0.7),
             ],
           ),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 20,
-              spreadRadius: 0,
             ),
           ],
         ),
@@ -178,11 +177,11 @@ class ChartContainer extends StatelessWidget {
     if (useNeumorphism) {
       final isDark = theme.backgroundColor.computeLuminance() < 0.5;
       final shadowColor = isDark
-          ? Colors.black.withOpacity(0.5)
-          : Colors.white.withOpacity(0.8);
+          ? Colors.black.withValues(alpha: 0.5)
+          : Colors.white.withValues(alpha: 0.8);
       final highlightColor = isDark
-          ? Colors.white.withOpacity(0.1)
-          : Colors.black.withOpacity(0.1);
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1);
 
       container = Container(
         padding: padding,
@@ -228,7 +227,7 @@ class ChartContainer extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color: theme.textColor.withOpacity(0.7),
+                            color: theme.textColor.withValues(alpha: 0.7),
                           ),
                         ),
                       ),
@@ -251,7 +250,7 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         'Loading chart data...',
                         style: TextStyle(
-                          color: theme.textColor.withOpacity(0.7),
+                          color: theme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -269,13 +268,13 @@ class ChartContainer extends StatelessWidget {
                       Icon(
                         Icons.error_outline,
                         size: 48,
-                        color: Colors.red.withOpacity(0.7),
+                        color: Colors.red.withValues(alpha: 0.7),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         errorMessage ?? 'Failed to load chart data',
                         style: TextStyle(
-                          color: theme.textColor.withOpacity(0.7),
+                          color: theme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                         textAlign: TextAlign.center,

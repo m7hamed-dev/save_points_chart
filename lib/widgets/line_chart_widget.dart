@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../models/chart_data.dart';
-import '../models/chart_interaction.dart';
-import '../theme/chart_theme.dart';
-import '../painters/line_chart_painter.dart';
-import '../utils/chart_interaction_helper.dart';
-import 'chart_container.dart';
+import 'package:save_points_chart/save_points_chart.dart' show BarChartWidget, AreaChartWidget;
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/painters/line_chart_painter.dart';
+import 'package:save_points_chart/utils/chart_interaction_helper.dart';
+import 'package:save_points_chart/widgets/chart_container.dart';
 
 /// A modern line chart widget with gradient fills and smooth animations.
 ///

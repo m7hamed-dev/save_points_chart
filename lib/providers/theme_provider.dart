@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/chart_theme.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// InheritedWidget that provides theme state to descendant widgets
 class _ThemeProviderInherited extends InheritedWidget {

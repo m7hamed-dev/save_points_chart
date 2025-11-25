@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'providers/theme_provider.dart';
-import 'screens/chart_demo_screen.dart';
+import 'package:save_points_chart/providers/theme_provider.dart';
+import 'package:save_points_chart/screens/chart_demo_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeProvider(
+    return const ThemeProvider(
       child: _MaterialAppWithTheme(),
     );
   }
@@ -32,7 +32,6 @@ class _MaterialAppWithTheme extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF6366F1),
-          brightness: Brightness.light,
         ),
         cardTheme: CardThemeData(
           elevation: 0,

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'base_chart_painter.dart';
+import 'package:save_points_chart/painters/base_chart_painter.dart';
 
 /// Custom painter for radial/radar charts
 class RadialChartPainter extends BaseChartPainter {
@@ -31,7 +31,7 @@ class RadialChartPainter extends BaseChartPainter {
     // Draw grid circles with professional styling
     if (showGrid && theme.showGrid) {
       final gridPaint = Paint()
-        ..color = theme.gridColor.withOpacity(0.4)
+        ..color = theme.gridColor.withValues(alpha: 0.4)
         ..strokeWidth = 0.5
         ..style = PaintingStyle.stroke;
 
@@ -49,7 +49,7 @@ class RadialChartPainter extends BaseChartPainter {
       final endY = center.dy + math.sin(angle) * radius;
 
       final gridPaint = Paint()
-        ..color = theme.gridColor.withOpacity(0.4)
+        ..color = theme.gridColor.withValues(alpha: 0.4)
         ..strokeWidth = 0.5
         ..style = PaintingStyle.stroke;
 
@@ -63,7 +63,7 @@ class RadialChartPainter extends BaseChartPainter {
         final textSpan = TextSpan(
           text: points[i].label!,
           style: TextStyle(
-            color: theme.textColor.withOpacity(0.9),
+            color: theme.textColor.withValues(alpha: 0.9),
             fontSize: 12,
             fontWeight: FontWeight.w500,
             letterSpacing: 0.2,
@@ -102,10 +102,9 @@ class RadialChartPainter extends BaseChartPainter {
     // Fill with professional gradient
     final fillPaint = Paint()
       ..shader = RadialGradient(
-        center: Alignment.center,
         colors: [
-          dataSet.color.withOpacity(0.3),
-          dataSet.color.withOpacity(0.1),
+          dataSet.color.withValues(alpha: 0.3),
+          dataSet.color.withValues(alpha: 0.1),
         ],
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.fill;
@@ -132,7 +131,7 @@ class RadialChartPainter extends BaseChartPainter {
 
         // Outer glow
         final glowPaint = Paint()
-          ..color = dataSet.color.withOpacity(0.2)
+          ..color = dataSet.color.withValues(alpha: 0.2)
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 6, glowPaint);
         
@@ -144,7 +143,7 @@ class RadialChartPainter extends BaseChartPainter {
         
         // Inner highlight
         final highlightPaint = Paint()
-          ..color = Colors.white.withOpacity(0.8)
+          ..color = Colors.white.withValues(alpha: 0.8)
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 2, highlightPaint);
         

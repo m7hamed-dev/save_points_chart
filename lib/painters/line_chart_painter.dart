@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../models/chart_interaction.dart';
-import 'base_chart_painter.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/base_chart_painter.dart';
 
 /// Custom painter for line charts
 class LineChartPainter extends BaseChartPainter {
@@ -39,7 +39,7 @@ class LineChartPainter extends BaseChartPainter {
       size.width - leftPadding - rightPadding,
       size.height - topPadding - bottomPadding,
     );
-    final chartOffset = Offset(leftPadding, topPadding);
+    final chartOffset = const Offset(leftPadding, topPadding);
 
     // Calculate bounds (optimized single pass)
     if (dataSets.isEmpty) return;
@@ -155,9 +155,9 @@ class LineChartPainter extends BaseChartPainter {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              dataSet.color.withOpacity(0.4 * animationProgress),
-              dataSet.color.withOpacity(0.15 * animationProgress),
-              dataSet.color.withOpacity(0.0),
+              dataSet.color.withValues(alpha: 0.4 * animationProgress),
+              dataSet.color.withValues(alpha: 0.15 * animationProgress),
+              dataSet.color.withValues(alpha: 0.0),
             ],
             stops: const [0.0, 0.5, 1.0],
           ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
@@ -218,7 +218,7 @@ class LineChartPainter extends BaseChartPainter {
       
       // Draw a brighter overlay for depth
       final overlayPaint = Paint()
-        ..color = dataSet.color.withOpacity(0.6)
+        ..color = dataSet.color.withValues(alpha: 0.6)
         ..strokeWidth = lineWidth * 0.5
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -250,20 +250,20 @@ class LineChartPainter extends BaseChartPainter {
           final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);
           final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
           final glowPaint = Paint()
-            ..color = dataSet.color.withOpacity(glowOpacity * pointOpacity)
+            ..color = dataSet.color.withValues(alpha: glowOpacity * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, glowRadius, glowPaint);
           
           // Main point with animation (larger if selected or hovered)
           final pointRadius = isSelected ? 6.5 : (isHovered ? 5.5 : 4.5);
           final pointPaint = Paint()
-            ..color = dataSet.color.withOpacity(pointOpacity)
+            ..color = dataSet.color.withValues(alpha: pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, pointRadius, pointPaint);
           
           // Inner highlight with animation
           final highlightPaint = Paint()
-            ..color = Colors.white.withOpacity(0.8 * pointOpacity)
+            ..color = Colors.white.withValues(alpha: 0.8 * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, 2, highlightPaint);
           

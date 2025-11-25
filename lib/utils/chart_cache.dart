@@ -24,7 +24,7 @@ class ChartCache {
     StrokeJoin? strokeJoin,
     MaskFilter? maskFilter,
   }) {
-    final key = 'paint_${color.value}_${strokeWidth}_${style}_${strokeCap}_${strokeJoin}_$maskFilter';
+    final key = 'paint_${color.toARGB32()}_${strokeWidth}_${style}_${strokeCap}_${strokeJoin}_$maskFilter';
     
     if (_paintCache.containsKey(key)) {
       final paint = _paintCache[key]!;

@@ -11,9 +11,9 @@ void main() {
         label: 'Sales',
         color: Colors.blue,
         dataPoints: [
-          ChartDataPoint(x: 0, y: 10),
-          ChartDataPoint(x: 1, y: 20),
-          ChartDataPoint(x: 2, y: 15),
+          const ChartDataPoint(x: 0, y: 10),
+          const ChartDataPoint(x: 1, y: 20),
+          const ChartDataPoint(x: 2, y: 15),
         ],
       ),
     ];

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'chart_data.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 
 /// Callback for chart point interactions
 /// [position] is the global tap position for showing context menus

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
-import '../models/chart_data.dart';
-import '../theme/chart_theme.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// An awesome context menu that appears when tapping on chart elements
 class ChartContextMenu extends StatelessWidget {
@@ -41,7 +41,7 @@ class ChartContextMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Positioned(
       left: position.dx,
       top: position.dy,
@@ -93,23 +93,23 @@ class ChartContextMenu extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: isDark
                   ? [
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.05),
+                      Colors.white.withValues(alpha: 0.1),
+                      Colors.white.withValues(alpha: 0.05),
                     ]
                   : [
-                      Colors.white.withOpacity(0.8),
-                      Colors.white.withOpacity(0.6),
+                      Colors.white.withValues(alpha: 0.8),
+                      Colors.white.withValues(alpha: 0.6),
                     ],
             ),
             border: Border.all(
               color: isDark
-                  ? Colors.white.withOpacity(0.2)
-                  : Colors.black.withOpacity(0.1),
+                  ? Colors.white.withValues(alpha: 0.2)
+                  : Colors.black.withValues(alpha: 0.1),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -122,8 +122,9 @@ class ChartContextMenu extends StatelessWidget {
   }
 
   Widget _buildNeumorphismMenu(BuildContext context, bool isDark) {
-    final baseColor = isDark ? const Color(0xFF2D2D2D) : const Color(0xFFE0E0E0);
-    
+    final baseColor =
+        isDark ? const Color(0xFF2D2D2D) : const Color(0xFFE0E0E0);
+
     return Container(
       width: 280,
       decoration: BoxDecoration(
@@ -132,15 +133,15 @@ class ChartContextMenu extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: isDark
-                ? Colors.black.withOpacity(0.5)
-                : Colors.white.withOpacity(0.9),
+                ? Colors.black.withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.9),
             blurRadius: 20,
             offset: const Offset(-8, -8),
           ),
           BoxShadow(
             color: isDark
-                ? Colors.black.withOpacity(0.8)
-                : Colors.grey.withOpacity(0.3),
+                ? Colors.black.withValues(alpha: 0.8)
+                : Colors.grey.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(8, 8),
           ),
@@ -155,21 +156,18 @@ class ChartContextMenu extends StatelessWidget {
       width: 280,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: isDark
-            ? const Color(0xFF1E1E1E)
-            : Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
         border: Border.all(
           color: isDark
-              ? Colors.white.withOpacity(0.1)
-              : Colors.grey.withOpacity(0.2),
-          width: 1,
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: _buildMenuItems(context, isDark),
@@ -196,11 +194,11 @@ class ChartContextMenu extends StatelessWidget {
                 (point?.y != null
                         ? _getColorForValue(point!.y)
                         : segment?.color ?? Colors.blue)
-                    .withOpacity(0.2),
+                    .withValues(alpha: 0.2),
                 (point?.y != null
                         ? _getColorForValue(point!.y)
                         : segment?.color ?? Colors.blue)
-                    .withOpacity(0.1),
+                    .withValues(alpha: 0.1),
               ],
             ),
           ),
@@ -215,7 +213,7 @@ class ChartContextMenu extends StatelessWidget {
                       color: (point?.y != null
                               ? _getColorForValue(point!.y)
                               : segment?.color ?? Colors.blue)
-                          .withOpacity(0.2),
+                          .withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -246,9 +244,7 @@ class ChartContextMenu extends StatelessWidget {
                             datasetLabel!,
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDark
-                                  ? Colors.white70
-                                  : Colors.black54,
+                              color: isDark ? Colors.white70 : Colors.black54,
                             ),
                           ),
                       ],
@@ -265,11 +261,12 @@ class ChartContextMenu extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? Colors.white.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.05),
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.black.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -282,9 +279,7 @@ class ChartContextMenu extends StatelessWidget {
                           'Value',
                           style: TextStyle(
                             fontSize: 11,
-                            color: isDark
-                                ? Colors.white60
-                                : Colors.black54,
+                            color: isDark ? Colors.white60 : Colors.black54,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -311,9 +306,7 @@ class ChartContextMenu extends StatelessWidget {
                             'X',
                             style: TextStyle(
                               fontSize: 11,
-                              color: isDark
-                                  ? Colors.white60
-                                  : Colors.black54,
+                              color: isDark ? Colors.white60 : Colors.black54,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -394,8 +387,8 @@ class ChartContextMenu extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: isDark
-                ? Colors.white.withOpacity(0.05)
-                : Colors.black.withOpacity(0.02),
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.02),
           ),
           child: Row(
             children: [
@@ -405,7 +398,7 @@ class ChartContextMenu extends StatelessWidget {
                   color: (point?.y != null
                           ? _getColorForValue(point!.y)
                           : segment?.color ?? Colors.blue)
-                      .withOpacity(0.1),
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -473,9 +466,8 @@ class ChartContextMenuHelper {
 
     final overlay = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox?;
-    final globalPosition = renderBox != null
-        ? renderBox.localToGlobal(position)
-        : position;
+    final globalPosition =
+        renderBox != null ? renderBox.localToGlobal(position) : position;
 
     // Adjust position to keep menu on screen
     final adjustedPosition = Offset(
@@ -524,4 +516,3 @@ class ChartContextMenuHelper {
     _currentMenu = null;
   }
 }
-

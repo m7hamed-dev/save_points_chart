@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/chart_data.dart';
-import '../models/chart_interaction.dart';
-import '../theme/chart_theme.dart';
-import '../painters/line_chart_painter.dart';
-import '../utils/chart_interaction_helper.dart';
-import 'chart_container.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/painters/line_chart_painter.dart';
+import 'package:save_points_chart/utils/chart_interaction_helper.dart';
+import 'package:save_points_chart/widgets/chart_container.dart';
 
 /// Modern area chart with gradient fills
 class AreaChartWidget extends StatefulWidget {
@@ -180,7 +180,6 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                         theme: widget.theme,
                         dataSets: widget.dataSets,
                         lineWidth: widget.lineWidth,
-                        showArea: true,
                         showPoints: widget.showPoints,
                         showGrid: widget.showGrid,
                         showAxis: widget.showAxis,
