@@ -5,15 +5,15 @@ class PerformanceUtils {
   /// Efficiently calculate min/max in a single pass
   static ({double min, double max}) calculateBounds(List<double> values) {
     if (values.isEmpty) return (min: 0.0, max: 0.0);
-    
+
     double min = double.infinity;
     double max = double.negativeInfinity;
-    
+
     for (final value in values) {
       if (value < min) min = value;
       if (value > max) max = value;
     }
-    
+
     return (min: min, max: max);
   }
 
@@ -48,4 +48,3 @@ class PerformanceUtils {
     canvas.drawPath(path, paint);
   }
 }
-

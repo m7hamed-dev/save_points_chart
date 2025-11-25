@@ -54,7 +54,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedBar;
-  
+
   // Cache bounds to avoid recalculation
   Map<String, double>? _cachedBounds;
   List<ChartDataSet>? _cachedDataSets;
@@ -107,21 +107,21 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             details.localPosition.dx - leftPadding,
                             details.localPosition.dy - topPadding,
                           );
-                          
+
                           // Calculate chart bounds (with caching)
                           if (widget.dataSets.isEmpty) return;
-                          
+
                           // Use cached bounds if available
                           Map<String, double> bounds;
-                          if (_cachedBounds != null && 
-                              _cachedDataSets != null && 
+                          if (_cachedBounds != null &&
+                              _cachedDataSets != null &&
                               _cachedDataSets == widget.dataSets) {
                             bounds = _cachedBounds!;
                           } else {
                             double minX = double.infinity;
                             double maxX = double.negativeInfinity;
                             double maxY = double.negativeInfinity;
-                            
+
                             for (final dataSet in widget.dataSets) {
                               for (final point in dataSet.dataPoints) {
                                 if (point.x < minX) minX = point.x;
@@ -129,7 +129,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                                 if (point.y > maxY) maxY = point.y;
                               }
                             }
-                            
+
                             bounds = {
                               'minX': minX,
                               'maxX': maxX,
@@ -138,12 +138,12 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             _cachedBounds = bounds;
                             _cachedDataSets = List.from(widget.dataSets);
                           }
-                          
+
                           final chartSize = Size(
                             constraints.maxWidth - 70,
                             240,
                           );
-                          
+
                           final result = ChartInteractionHelper.findBar(
                             chartPosition,
                             widget.dataSets,
@@ -154,13 +154,14 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             bounds['maxY']! * 1.2,
                             widget.barWidth,
                           );
-                          
+
                           if (result != null && result.isHit) {
                             setState(() {
                               _selectedBar = result;
                             });
                             // Get global position for context menu
-                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;

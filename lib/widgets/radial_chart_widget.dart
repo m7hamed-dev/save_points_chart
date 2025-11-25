@@ -86,58 +86,60 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
           animation: _animation,
           builder: (context, child) {
             return LayoutBuilder(
-            builder: (context, constraints) {
-              final chartSize = Size(constraints.maxWidth, 300);
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: widget.onPointTap != null
-                    ? (details) {
-                        final result = _findNearestRadialPoint(
-                          details.localPosition,
-                          chartSize,
-                        );
-                        
-                        if (result != null && result.isHit) {
-                          // Get global position for context menu
-                          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-                          final globalPosition = renderBox != null
-                              ? renderBox.localToGlobal(details.localPosition)
-                              : details.localPosition;
-                          widget.onPointTap?.call(
-                            result.point!,
-                            result.datasetIndex!,
-                            result.elementIndex!,
-                            globalPosition,
+              builder: (context, constraints) {
+                final chartSize = Size(constraints.maxWidth, 300);
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: widget.onPointTap != null
+                      ? (details) {
+                          final result = _findNearestRadialPoint(
+                            details.localPosition,
+                            chartSize,
                           );
+
+                          if (result != null && result.isHit) {
+                            // Get global position for context menu
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
+                            widget.onPointTap?.call(
+                              result.point!,
+                              result.datasetIndex!,
+                              result.elementIndex!,
+                              globalPosition,
+                            );
+                          }
                         }
-                      }
-                    : null,
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  height: 300,
-                  child: CustomPaint(
-                    size: chartSize,
-                    painter: RadialChartPainter(
-                      theme: widget.theme,
-                      dataSets: widget.dataSets,
-                      lineWidth: widget.lineWidth,
-                      showPoints: widget.showPoints,
-                      showGrid: widget.showGrid,
-                      showLabel: widget.showLabel,
-                      animationProgress: _animation.value,
+                      : null,
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    height: 300,
+                    child: CustomPaint(
+                      size: chartSize,
+                      painter: RadialChartPainter(
+                        theme: widget.theme,
+                        dataSets: widget.dataSets,
+                        lineWidth: widget.lineWidth,
+                        showPoints: widget.showPoints,
+                        showGrid: widget.showGrid,
+                        showLabel: widget.showLabel,
+                        animationProgress: _animation.value,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
+                );
+              },
+            );
           },
         ),
       ),
     );
   }
 
-  ChartInteractionResult? _findNearestRadialPoint(Offset tapPosition, Size chartSize) {
+  ChartInteractionResult? _findNearestRadialPoint(
+      Offset tapPosition, Size chartSize,) {
     if (widget.dataSets.isEmpty || widget.dataSets.first.dataPoints.isEmpty) {
       return null;
     }
@@ -148,7 +150,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     final points = dataSet.dataPoints;
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
     final angleStep = 2 * math.pi / points.length;
-    
+
     // Use squared distance to avoid expensive sqrt
     const tapRadius = 25.0;
     final tapRadiusSquared = tapRadius * tapRadius;
@@ -160,18 +162,19 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
       final valueRadius = radius * (points[i].y / maxValue);
       final pointX = center.dx + math.cos(angle) * valueRadius;
       final pointY = center.dy + math.sin(angle) * valueRadius;
-      
+
       // Quick bounds check before distance calculation
       final dx = tapPosition.dx - pointX;
       final dy = tapPosition.dy - pointY;
-      
+
       // Early exit if point is clearly outside radius
       if (dx.abs() > tapRadius || dy.abs() > tapRadius) continue;
-      
+
       // Calculate squared distance (faster than distance)
       final distanceSquared = dx * dx + dy * dy;
-      
-      if (distanceSquared < tapRadiusSquared && distanceSquared < minDistanceSquared) {
+
+      if (distanceSquared < tapRadiusSquared &&
+          distanceSquared < minDistanceSquared) {
         minDistanceSquared = distanceSquared;
         nearestResult = ChartInteractionResult(
           point: points[i],

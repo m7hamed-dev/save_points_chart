@@ -74,7 +74,7 @@ class PieData {
   ///
   /// [value] should be non-negative. If negative, it will be treated as 0.
   const PieData({required this.label, required this.value, required this.color})
-    : assert(value >= 0, 'PieData value must be non-negative');
+      : assert(value >= 0, 'PieData value must be non-negative');
 
   @override
   String toString() => 'PieData(label: $label, value: $value)';
@@ -129,9 +129,9 @@ class ChartDataSet {
     required this.dataPoints,
     required this.color,
   }) : assert(
-         dataPoints.isNotEmpty,
-         'ChartDataSet must have at least one data point',
-       );
+          dataPoints.isNotEmpty,
+          'ChartDataSet must have at least one data point',
+        );
 
   @override
   String toString() =>

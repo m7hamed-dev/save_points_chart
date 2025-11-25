@@ -37,12 +37,17 @@ class PieChartPainter extends CustomPainter {
     for (int index = 0; index < data.length; index++) {
       final item = data[index];
       final sweepAngle = (item.value / total) * 2 * math.pi;
-      
+
       // Animate each segment with stagger
-      final segmentProgress = math.max(0.0, math.min(1.0, 
-        (animationProgress - (index / data.length) * 0.5) / 0.5,),);
+      final segmentProgress = math.max(
+        0.0,
+        math.min(
+          1.0,
+          (animationProgress - (index / data.length) * 0.5) / 0.5,
+        ),
+      );
       final animatedSweepAngle = sweepAngle * segmentProgress;
-      
+
       // Check if this segment is selected
       final isSelected = selectedSegment != null &&
           selectedSegment!.isHit &&
@@ -55,13 +60,13 @@ class PieChartPainter extends CustomPainter {
         center.dx + math.cos(midAngle) * (radius * 0.3),
         center.dy + math.sin(midAngle) * (radius * 0.3),
       );
-      
+
       // Adjust colors if selected
       final baseColor = isSelected ? item.color : item.color;
-      final secondaryColor = isSelected 
+      final secondaryColor = isSelected
           ? item.color.withValues(alpha: 0.85)
           : item.color.withValues(alpha: 0.75);
-      
+
       final paint = Paint()
         ..shader = RadialGradient(
           center: Alignment(
@@ -84,10 +89,12 @@ class PieChartPainter extends CustomPainter {
           ..lineTo(center.dx, center.dy)
           ..close();
 
-        final innerRect = Rect.fromCircle(center: center, radius: centerSpaceRadius);
+        final innerRect =
+            Rect.fromCircle(center: center, radius: centerSpaceRadius);
         final innerPath = Path()
           ..moveTo(center.dx, center.dy)
-          ..arcTo(innerRect, startAngle + animatedSweepAngle, -animatedSweepAngle, false)
+          ..arcTo(innerRect, startAngle + animatedSweepAngle,
+              -animatedSweepAngle, false,)
           ..lineTo(center.dx, center.dy)
           ..close();
 
@@ -98,7 +105,7 @@ class PieChartPainter extends CustomPainter {
         );
 
         canvas.drawPath(combinedPath, paint);
-        
+
         // Add border if selected
         if (isSelected) {
           final borderPaint = Paint()
@@ -116,7 +123,7 @@ class PieChartPainter extends CustomPainter {
           true,
           paint,
         );
-        
+
         // Add border if selected
         if (isSelected) {
           final borderPaint = Paint()
@@ -136,12 +143,14 @@ class PieChartPainter extends CustomPainter {
       // Draw percentage label - only for larger segments
       if (showLabel && animatedSweepAngle > 0.3 && segmentProgress > 0.5) {
         final labelAngle = startAngle + animatedSweepAngle / 2;
-        final labelRadius = centerSpaceRadius > 0 ? (radius + centerSpaceRadius) / 2 : radius * 0.7;
+        final labelRadius = centerSpaceRadius > 0
+            ? (radius + centerSpaceRadius) / 2
+            : radius * 0.7;
         final labelX = center.dx + math.cos(labelAngle) * labelRadius;
         final labelY = center.dy + math.sin(labelAngle) * labelRadius;
 
         final percentage = ((item.value / total) * 100).toStringAsFixed(1);
-        
+
         // Background for better readability
         final textSpan = TextSpan(
           text: '$percentage%',
@@ -158,7 +167,7 @@ class PieChartPainter extends CustomPainter {
           textAlign: TextAlign.center,
         );
         textPainter.layout();
-        
+
         // Draw text background
         final bgRect = Rect.fromCenter(
           center: Offset(labelX, labelY),
@@ -172,10 +181,11 @@ class PieChartPainter extends CustomPainter {
           RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
           bgPaint,
         );
-        
+
         textPainter.paint(
           canvas,
-          Offset(labelX - textPainter.width / 2, labelY - textPainter.height / 2),
+          Offset(
+              labelX - textPainter.width / 2, labelY - textPainter.height / 2,),
         );
       }
 
@@ -193,4 +203,3 @@ class PieChartPainter extends CustomPainter {
         oldDelegate.showLabel != showLabel;
   }
 }
-

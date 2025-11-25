@@ -28,14 +28,16 @@ class ThemeProvider extends StatefulWidget {
 
   /// Get the ThemeProviderState from the widget tree
   static ThemeProviderState of(BuildContext context) {
-    final inherited = context.dependOnInheritedWidgetOfExactType<_ThemeProviderInherited>();
+    final inherited =
+        context.dependOnInheritedWidgetOfExactType<_ThemeProviderInherited>();
     assert(inherited != null, 'ThemeProvider not found in widget tree');
     return inherited!.state;
   }
 
   /// Get the ThemeProviderState from the widget tree (without listening)
   static ThemeProviderState? maybeOf(BuildContext context) {
-    final inherited = context.dependOnInheritedWidgetOfExactType<_ThemeProviderInherited>();
+    final inherited =
+        context.dependOnInheritedWidgetOfExactType<_ThemeProviderInherited>();
     return inherited?.state;
   }
 
@@ -73,8 +75,10 @@ class ThemeProviderState extends State<ThemeProvider> {
       setThemeMode(ThemeMode.light);
     } else {
       // If system, check current system brightness
-      final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-      setThemeMode(brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark);
+      final brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      setThemeMode(
+          brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark,);
     }
   }
 
@@ -85,8 +89,11 @@ class ThemeProviderState extends State<ThemeProvider> {
       _chartTheme = ChartTheme.light();
     } else {
       // System mode - use current system brightness
-      final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-      _chartTheme = brightness == Brightness.dark ? ChartTheme.dark() : ChartTheme.light();
+      final brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      _chartTheme = brightness == Brightness.dark
+          ? ChartTheme.dark()
+          : ChartTheme.light();
     }
   }
 
@@ -104,4 +111,3 @@ class ThemeProviderState extends State<ThemeProvider> {
     );
   }
 }
-

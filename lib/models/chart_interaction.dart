@@ -3,27 +3,33 @@ import 'package:save_points_chart/models/chart_data.dart';
 
 /// Callback for chart point interactions
 /// [position] is the global tap position for showing context menus
-typedef ChartPointCallback = void Function(ChartDataPoint point, int datasetIndex, int pointIndex, Offset position);
+typedef ChartPointCallback = void Function(
+    ChartDataPoint point, int datasetIndex, int pointIndex, Offset position,);
 
 /// Callback for pie chart segment interactions
 /// [position] is the global tap position for showing context menus
-typedef PieSegmentCallback = void Function(PieData segment, int segmentIndex, Offset position);
+typedef PieSegmentCallback = void Function(
+    PieData segment, int segmentIndex, Offset position,);
 
 /// Callback for bar chart interactions
 /// [position] is the global tap position for showing context menus
-typedef BarCallback = void Function(ChartDataPoint point, int datasetIndex, int barIndex, Offset position);
+typedef BarCallback = void Function(
+    ChartDataPoint point, int datasetIndex, int barIndex, Offset position,);
 
 /// Callback for mouse hover events on chart points
 /// Called when mouse enters a point area
-typedef ChartPointHoverCallback = void Function(ChartDataPoint? point, int? datasetIndex, int? pointIndex);
+typedef ChartPointHoverCallback = void Function(
+    ChartDataPoint? point, int? datasetIndex, int? pointIndex,);
 
 /// Callback for mouse hover events on pie segments
 /// Called when mouse enters a segment area
-typedef PieSegmentHoverCallback = void Function(PieData? segment, int? segmentIndex);
+typedef PieSegmentHoverCallback = void Function(
+    PieData? segment, int? segmentIndex,);
 
 /// Callback for mouse hover events on bars
 /// Called when mouse enters a bar area
-typedef BarHoverCallback = void Function(ChartDataPoint? point, int? datasetIndex, int? barIndex);
+typedef BarHoverCallback = void Function(
+    ChartDataPoint? point, int? datasetIndex, int? barIndex,);
 
 /// Result of a chart interaction
 class ChartInteractionResult {
@@ -48,4 +54,3 @@ class ChartInteractionResult {
         elementIndex = null,
         isHit = false;
 }
-

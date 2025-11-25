@@ -52,7 +52,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
-  
+
   // Cache bounds to avoid recalculation
   Map<String, double>? _cachedBounds;
 
@@ -108,87 +108,90 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
           animation: _animation,
           builder: (context, child) {
             return LayoutBuilder(
-            builder: (context, constraints) {
-              final chartSize = Size(constraints.maxWidth, 100);
-              
-              // Calculate bounds for tap detection (with caching)
-              Map<String, double> bounds;
-              if (_cachedBounds != null) {
-                bounds = _cachedBounds!;
-              } else {
-                double minX = double.infinity;
-                double maxX = double.negativeInfinity;
-                double maxY = double.negativeInfinity;
-                
-                for (final point in widget.dataSet.dataPoints) {
-                  if (point.x < minX) minX = point.x;
-                  if (point.x > maxX) maxX = point.x;
-                  if (point.y > maxY) maxY = point.y;
+              builder: (context, constraints) {
+                final chartSize = Size(constraints.maxWidth, 100);
+
+                // Calculate bounds for tap detection (with caching)
+                Map<String, double> bounds;
+                if (_cachedBounds != null) {
+                  bounds = _cachedBounds!;
+                } else {
+                  double minX = double.infinity;
+                  double maxX = double.negativeInfinity;
+                  double maxY = double.negativeInfinity;
+
+                  for (final point in widget.dataSet.dataPoints) {
+                    if (point.x < minX) minX = point.x;
+                    if (point.x > maxX) maxX = point.x;
+                    if (point.y > maxY) maxY = point.y;
+                  }
+
+                  bounds = {
+                    'minX': minX,
+                    'maxX': maxX,
+                    'maxY': maxY,
+                  };
+                  _cachedBounds = bounds;
                 }
-                
-                bounds = {
-                  'minX': minX,
-                  'maxX': maxX,
-                  'maxY': maxY,
-                };
-                _cachedBounds = bounds;
-              }
-              
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: widget.onPointTap != null
-                    ? (details) {
-                        final result = ChartInteractionHelper.findNearestPoint(
-                          details.localPosition,
-                          [modifiedDataSet],
-                          chartSize,
-                          bounds['minX']!,
-                          bounds['maxX']!,
-                          0.0,
-                          bounds['maxY']! * 1.15,
-                          20.0, // tap radius
-                        );
-                        
-                        if (result != null && result.isHit) {
-                          setState(() {
-                            _selectedPoint = result;
-                          });
-                          // Get global position for context menu
-                          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-                          final globalPosition = renderBox != null
-                              ? renderBox.localToGlobal(details.localPosition)
-                              : details.localPosition;
-                          widget.onPointTap?.call(
-                            result.point!,
-                            result.datasetIndex!,
-                            result.elementIndex!,
-                            globalPosition,
+
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: widget.onPointTap != null
+                      ? (details) {
+                          final result =
+                              ChartInteractionHelper.findNearestPoint(
+                            details.localPosition,
+                            [modifiedDataSet],
+                            chartSize,
+                            bounds['minX']!,
+                            bounds['maxX']!,
+                            0.0,
+                            bounds['maxY']! * 1.15,
+                            20.0, // tap radius
                           );
+
+                          if (result != null && result.isHit) {
+                            setState(() {
+                              _selectedPoint = result;
+                            });
+                            // Get global position for context menu
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
+                            widget.onPointTap?.call(
+                              result.point!,
+                              result.datasetIndex!,
+                              result.elementIndex!,
+                              globalPosition,
+                            );
+                          }
                         }
-                      }
-                    : null,
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  height: 100,
-                  child: CustomPaint(
-                    size: chartSize,
-                    painter: LineChartPainter(
-                      theme: widget.theme.copyWith(showGrid: false, showAxis: false),
-                      dataSets: [modifiedDataSet],
-                      lineWidth: widget.lineWidth,
-                      showArea: widget.showArea,
-                      showPoints: false,
-                      showGrid: false,
-                      showAxis: false,
-                      showLabel: widget.showLabel,
-                      animationProgress: _animation.value,
-                      selectedPoint: _selectedPoint,
+                      : null,
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    height: 100,
+                    child: CustomPaint(
+                      size: chartSize,
+                      painter: LineChartPainter(
+                        theme: widget.theme
+                            .copyWith(showGrid: false, showAxis: false),
+                        dataSets: [modifiedDataSet],
+                        lineWidth: widget.lineWidth,
+                        showArea: widget.showArea,
+                        showPoints: false,
+                        showGrid: false,
+                        showAxis: false,
+                        showLabel: widget.showLabel,
+                        animationProgress: _animation.value,
+                        selectedPoint: _selectedPoint,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
+                );
+              },
+            );
           },
         ),
       ),

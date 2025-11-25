@@ -43,11 +43,11 @@ class LineChartPainter extends BaseChartPainter {
 
     // Calculate bounds (optimized single pass)
     if (dataSets.isEmpty) return;
-    
+
     double minX = double.infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
-    
+
     // Single pass through all points for better performance
     for (final dataSet in dataSets) {
       for (final point in dataSet.dataPoints) {
@@ -56,12 +56,12 @@ class LineChartPainter extends BaseChartPainter {
         if (point.y > maxY) maxY = point.y;
       }
     }
-    
+
     if (minX == double.infinity) return; // No valid data
-    
+
     final minY = 0.0; // Always start from 0 for better visualization
     final maxYAdjusted = maxY * 1.15;
-    
+
     // Add small padding for X axis
     final xRange = maxX - minX;
     final xPadding = xRange * 0.05;
@@ -96,11 +96,11 @@ class LineChartPainter extends BaseChartPainter {
       if (showArea) {
         final areaPath = Path();
         areaPath.moveTo(points.first.dx, chartSize.height);
-        
+
         // Use same animated points as line
         final totalPoints = points.length;
         final animatedPoints = (totalPoints * animationProgress).ceil();
-        
+
         // Create smooth bezier curve
         for (int i = 0; i < animatedPoints; i++) {
           if (i == 0) {
@@ -108,14 +108,16 @@ class LineChartPainter extends BaseChartPainter {
           } else {
             final prevPoint = points[i - 1];
             final currentPoint = points[i];
-            
+
             // Interpolate the last point if animation is in progress
             Offset targetPoint = currentPoint;
             if (i == animatedPoints - 1 && animationProgress < 1.0) {
-              final partialProgress = (animationProgress * totalPoints) - (i - 1);
-              targetPoint = Offset.lerp(prevPoint, currentPoint, partialProgress)!;
+              final partialProgress =
+                  (animationProgress * totalPoints) - (i - 1);
+              targetPoint =
+                  Offset.lerp(prevPoint, currentPoint, partialProgress)!;
             }
-            
+
             final dx = targetPoint.dx - prevPoint.dx;
             final controlPoint1 = Offset(
               prevPoint.dx + dx * curveSmoothness,
@@ -135,13 +137,13 @@ class LineChartPainter extends BaseChartPainter {
             );
           }
         }
-        
+
         // Complete the area path
         if (animatedPoints > 0) {
-          final lastPoint = animatedPoints == points.length 
-              ? points.last 
+          final lastPoint = animatedPoints == points.length
+              ? points.last
               : Offset.lerp(
-                  points[animatedPoints - 1], 
+                  points[animatedPoints - 1],
                   points[math.min(animatedPoints, points.length - 1)],
                   animationProgress,
                 )!;
@@ -169,23 +171,23 @@ class LineChartPainter extends BaseChartPainter {
       // Draw line with smooth bezier curves and animation
       final linePath = Path();
       linePath.moveTo(points.first.dx, points.first.dy);
-      
+
       // Calculate how many points to draw based on animation progress
       final totalPoints = points.length;
       final animatedPoints = (totalPoints * animationProgress).ceil();
-      
+
       for (int i = 1; i < animatedPoints; i++) {
         final prevPoint = points[i - 1];
         final currentPoint = points[i];
         final dx = currentPoint.dx - prevPoint.dx;
-        
+
         // Interpolate the last point if animation is in progress
         Offset targetPoint = currentPoint;
         if (i == animatedPoints - 1 && animationProgress < 1.0) {
           final partialProgress = (animationProgress * totalPoints) - (i - 1);
           targetPoint = Offset.lerp(prevPoint, currentPoint, partialProgress)!;
         }
-        
+
         // Better bezier control points for smoother curves
         final controlPoint1 = Offset(
           prevPoint.dx + dx * curveSmoothness,
@@ -215,7 +217,7 @@ class LineChartPainter extends BaseChartPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.0);
 
       canvas.drawPath(linePath, linePaint);
-      
+
       // Draw a brighter overlay for depth
       final overlayPaint = Paint()
         ..color = dataSet.color.withValues(alpha: 0.6)
@@ -223,50 +225,51 @@ class LineChartPainter extends BaseChartPainter {
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round;
-      
+
       canvas.drawPath(linePath, overlayPaint);
 
       // Draw points with professional styling and animation
       if (showPoints) {
         final totalPoints = points.length;
         final animatedPoints = (totalPoints * animationProgress).ceil();
-        
+
         for (int i = 0; i < animatedPoints; i++) {
           final point = points[i];
           final pointOpacity = i < animatedPoints - 1 ? 1.0 : animationProgress;
-          
+
           // Check if this point is selected or hovered
           final isSelected = selectedPoint != null &&
               selectedPoint!.isHit &&
               selectedPoint!.datasetIndex == dataSets.indexOf(dataSet) &&
               selectedPoint!.elementIndex == i;
-          
+
           final isHovered = hoveredPoint != null &&
               hoveredPoint!.isHit &&
               hoveredPoint!.datasetIndex == dataSets.indexOf(dataSet) &&
               hoveredPoint!.elementIndex == i;
-          
+
           // Outer glow with animation (larger if selected or hovered)
           final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);
           final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
           final glowPaint = Paint()
-            ..color = dataSet.color.withValues(alpha: glowOpacity * pointOpacity)
+            ..color =
+                dataSet.color.withValues(alpha: glowOpacity * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, glowRadius, glowPaint);
-          
+
           // Main point with animation (larger if selected or hovered)
           final pointRadius = isSelected ? 6.5 : (isHovered ? 5.5 : 4.5);
           final pointPaint = Paint()
             ..color = dataSet.color.withValues(alpha: pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, pointRadius, pointPaint);
-          
+
           // Inner highlight with animation
           final highlightPaint = Paint()
             ..color = Colors.white.withValues(alpha: 0.8 * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, 2, highlightPaint);
-          
+
           // Border with animation (thicker if selected or hovered)
           final borderWidth = isSelected ? 2.5 : (isHovered ? 2.0 : 1.5);
           final borderPaint = Paint()
@@ -283,7 +286,8 @@ class LineChartPainter extends BaseChartPainter {
     // Draw axis labels with proper bounds
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(canvas, chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted);
+    drawAxisLabels(canvas, chartSize, minX - xPadding, maxX + xPadding, minY,
+        maxYAdjusted,);
     canvas.restore();
   }
 
@@ -296,9 +300,8 @@ class LineChartPainter extends BaseChartPainter {
     if (oldDelegate.curveSmoothness != curveSmoothness) return true;
     if (oldDelegate.selectedPoint != selectedPoint) return true;
     if (oldDelegate.hoveredPoint != hoveredPoint) return true;
-    
+
     // Use parent's shouldRepaint for theme and data
     return super.shouldRepaint(oldDelegate);
   }
 }
-

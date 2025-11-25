@@ -22,7 +22,7 @@ abstract class BaseChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant BaseChartPainter oldDelegate) {
     // Quick reference equality check first (most common case)
-    if (identical(oldDelegate.dataSets, dataSets) && 
+    if (identical(oldDelegate.dataSets, dataSets) &&
         identical(oldDelegate.theme, theme)) {
       if (oldDelegate.showGrid == showGrid &&
           oldDelegate.showAxis == showAxis &&
@@ -30,7 +30,7 @@ abstract class BaseChartPainter extends CustomPainter {
         return false; // Nothing changed
       }
     }
-    
+
     if (oldDelegate.theme != theme) return true;
     if (oldDelegate.dataSets.length != dataSets.length) return true;
     if (oldDelegate.showGrid != showGrid) return true;
@@ -42,7 +42,7 @@ abstract class BaseChartPainter extends CustomPainter {
       if (i >= oldDelegate.dataSets.length) return true;
       final oldDs = oldDelegate.dataSets[i];
       final newDs = dataSets[i];
-      
+
       // Quick reference check for each dataset
       if (identical(oldDs, newDs)) continue;
       if (oldDs.label != newDs.label ||
@@ -173,9 +173,8 @@ abstract class BaseChartPainter extends CustomPainter {
     for (int i = 0; i <= xLabels; i++) {
       final x = xStep * i;
       final value = minX + xRange * (i / xLabels);
-      final displayValue = value % 1 == 0
-          ? value.toInt().toString()
-          : value.toStringAsFixed(1);
+      final displayValue =
+          value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
 
       final textPainter = TextPainter(
         text: TextSpan(text: displayValue, style: textStyle),
@@ -196,9 +195,8 @@ abstract class BaseChartPainter extends CustomPainter {
     for (int i = 0; i <= yLabels; i++) {
       final y = size.height - yStep * i;
       final value = minY + yRange * (i / yLabels);
-      final displayValue = value % 1 == 0
-          ? value.toInt().toString()
-          : value.toStringAsFixed(1);
+      final displayValue =
+          value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
 
       final textPainter = TextPainter(
         text: TextSpan(text: displayValue, style: textStyle),

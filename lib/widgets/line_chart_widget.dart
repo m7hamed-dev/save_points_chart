@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:save_points_chart/save_points_chart.dart' show BarChartWidget, AreaChartWidget;
+import 'package:save_points_chart/save_points_chart.dart'
+    show BarChartWidget, AreaChartWidget;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
@@ -90,9 +91,11 @@ class LineChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
-  }) : assert(dataSets.isNotEmpty, 'LineChartWidget requires at least one data set'),
-       assert(lineWidth > 0, 'Line width must be positive'),
-       assert(!isLoading || !isError, 'Cannot be both loading and in error state');
+  })  : assert(dataSets.isNotEmpty,
+            'LineChartWidget requires at least one data set',),
+        assert(lineWidth > 0, 'Line width must be positive'),
+        assert(!isLoading || !isError,
+            'Cannot be both loading and in error state',);
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
@@ -104,7 +107,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
   ChartInteractionResult? _hoveredPoint;
-  
+
   // Cache bounds to avoid recalculation
   Map<String, double>? _cachedBounds;
   List<ChartDataSet>? _cachedDataSets;
@@ -132,12 +135,12 @@ class _LineChartWidgetState extends State<LineChartWidget>
   /// Calculate chart bounds from data sets (with caching)
   Map<String, double> _calculateBounds() {
     // Return cached bounds if data hasn't changed
-    if (_cachedBounds != null && 
-        _cachedDataSets != null && 
+    if (_cachedBounds != null &&
+        _cachedDataSets != null &&
         _cachedDataSets == widget.dataSets) {
       return _cachedBounds!;
     }
-    
+
     double minX = double.infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
@@ -156,7 +159,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
       'maxY': maxY,
     };
     _cachedDataSets = List.from(widget.dataSets);
-    
+
     return _cachedBounds!;
   }
 
@@ -251,17 +254,19 @@ class _LineChartWidgetState extends State<LineChartWidget>
                               details.localPosition.dx - leftPadding,
                               details.localPosition.dy - topPadding,
                             );
-                            
+
                             // Get global position for context menu
-                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            
+
                             // Calculate chart bounds
                             final bounds = _calculateBounds();
-                            
-                            final result = ChartInteractionHelper.findNearestPoint(
+
+                            final result =
+                                ChartInteractionHelper.findNearestPoint(
                               chartPosition,
                               widget.dataSets,
                               chartSize,
@@ -271,7 +276,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                               bounds['maxY']! * 1.15,
                               20.0, // tap radius
                             );
-                            
+
                             if (result != null && result.isHit) {
                               setState(() {
                                 _selectedPoint = result;

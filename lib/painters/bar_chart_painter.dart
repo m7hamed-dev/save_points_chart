@@ -39,11 +39,11 @@ class BarChartPainter extends BaseChartPainter {
 
     // Calculate bounds (optimized single pass)
     if (dataSets.isEmpty) return;
-    
+
     double minX = double.infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
-    
+
     // Single pass through all points for better performance
     for (final dataSet in dataSets) {
       for (final point in dataSet.dataPoints) {
@@ -52,9 +52,9 @@ class BarChartPainter extends BaseChartPainter {
         if (point.y > maxY) maxY = point.y;
       }
     }
-    
+
     if (minX == double.infinity) return; // No valid data
-    
+
     final minXAdjusted = minX * 0.95;
     final maxXAdjusted = maxX * 1.05;
     final minY = 0.0;
@@ -71,7 +71,8 @@ class BarChartPainter extends BaseChartPainter {
 
     if (isGrouped && dataSets.length > 1) {
       // Grouped bars
-      final maxLength = dataSets.map((ds) => ds.dataPoints.length).reduce(math.max);
+      final maxLength =
+          dataSets.map((ds) => ds.dataPoints.length).reduce(math.max);
       final groupSpacing = chartSize.width / (maxLength + 1);
       final barSpacing = barWidth * 0.2;
 
@@ -85,14 +86,15 @@ class BarChartPainter extends BaseChartPainter {
 
             // Stagger animation for grouped bars
             final barIndex = i / maxLength;
-            final barProgress = math.max(0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7));
-            
+            final barProgress = math.max(
+                0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),);
+
             // Check if this bar is selected
             final isSelected = selectedBar != null &&
                 selectedBar!.isHit &&
                 selectedBar!.datasetIndex == dataSets.indexOf(dataSet) &&
                 selectedBar!.elementIndex == i;
-            
+
             _drawRoundedBar(
               canvas,
               Offset(currentX - barWidth / 2, barY),
@@ -114,13 +116,16 @@ class BarChartPainter extends BaseChartPainter {
       for (int i = 0; i < dataSet.dataPoints.length; i++) {
         final point = dataSet.dataPoints[i];
         final xRange = maxXAdjusted - minXAdjusted;
-        final x = xRange > 0 ? ((point.x - minXAdjusted) / xRange) * chartSize.width : chartSize.width / 2;
+        final x = xRange > 0
+            ? ((point.x - minXAdjusted) / xRange) * chartSize.width
+            : chartSize.width / 2;
         final barHeight = (point.y / maxYAdjusted) * chartSize.height;
         final barY = chartSize.height - barHeight;
 
         // Stagger animation for each bar
         final barIndex = i / totalBars;
-        final barProgress = math.max(0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7));
+        final barProgress = math.max(
+            0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),);
 
         // Check if this bar is selected
         final isSelected = selectedBar != null &&
@@ -145,20 +150,23 @@ class BarChartPainter extends BaseChartPainter {
     // Draw axis labels
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(canvas, chartSize, minXAdjusted, maxXAdjusted, minY, maxYAdjusted);
+    drawAxisLabels(
+        canvas, chartSize, minXAdjusted, maxXAdjusted, minY, maxYAdjusted,);
     canvas.restore();
   }
 
-  void _drawRoundedBar(Canvas canvas, Offset position, double width, double height, Color color, double barProgress, {bool isSelected = false}) {
+  void _drawRoundedBar(Canvas canvas, Offset position, double width,
+      double height, Color color, double barProgress,
+      {bool isSelected = false,}) {
     // Animate bar height
     final animatedHeight = height * barProgress;
     final animatedY = position.dy + (height - animatedHeight);
-    
+
     // Add elevation if selected
     final elevation = isSelected ? 4.0 : 0.0;
     final adjustedY = animatedY - elevation;
     final adjustedHeight = animatedHeight + elevation;
-    
+
     final rect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight),
       Radius.circular(borderRadius),
@@ -179,7 +187,7 @@ class BarChartPainter extends BaseChartPainter {
       ..style = PaintingStyle.fill;
 
     canvas.drawRRect(rect, paint);
-    
+
     // Add subtle highlight on top (brighter if selected)
     final highlightRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight * 0.2),
@@ -189,7 +197,7 @@ class BarChartPainter extends BaseChartPainter {
       ..color = Colors.white.withValues(alpha: isSelected ? 0.4 : 0.2)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(highlightRect, highlightPaint);
-    
+
     // Add border if selected
     if (isSelected) {
       final borderPaint = Paint()
@@ -207,9 +215,8 @@ class BarChartPainter extends BaseChartPainter {
     if (oldDelegate.borderRadius != borderRadius) return true;
     if (oldDelegate.isGrouped != isGrouped) return true;
     if (oldDelegate.selectedBar != selectedBar) return true;
-    
+
     // Use parent's shouldRepaint for theme and data
     return super.shouldRepaint(oldDelegate);
   }
 }
-

@@ -84,27 +84,31 @@ class _PieChartWidgetState extends State<PieChartWidget>
               builder: (context, child) {
                 return LayoutBuilder(
                   builder: (context, constraints) {
-                    final size = math.min(constraints.maxWidth, 250.0).toDouble();
+                    final size =
+                        math.min(constraints.maxWidth, 250.0).toDouble();
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTapDown: widget.onSegmentTap != null
                           ? (details) {
                               // Use localPosition directly (relative to SizedBox)
-                              final result = ChartInteractionHelper.findPieSegment(
+                              final result =
+                                  ChartInteractionHelper.findPieSegment(
                                 details.localPosition,
                                 widget.data,
                                 Size(size, 250),
                                 0.0,
                               );
-                              
+
                               if (result != null && result.isHit) {
                                 setState(() {
                                   _selectedSegment = result;
                                 });
                                 // Get global position for context menu
-                                final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                                final RenderBox? renderBox =
+                                    context.findRenderObject() as RenderBox?;
                                 final globalPosition = renderBox != null
-                                    ? renderBox.localToGlobal(details.localPosition)
+                                    ? renderBox
+                                        .localToGlobal(details.localPosition)
                                     : details.localPosition;
                                 widget.onSegmentTap?.call(
                                   result.segment!,

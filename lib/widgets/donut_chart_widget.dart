@@ -86,27 +86,31 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               builder: (context, child) {
                 return LayoutBuilder(
                   builder: (context, constraints) {
-                    final size = math.min(constraints.maxWidth, 250.0).toDouble();
+                    final size =
+                        math.min(constraints.maxWidth, 250.0).toDouble();
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTapDown: widget.onSegmentTap != null
                           ? (details) {
                               // Use localPosition directly (relative to SizedBox)
-                              final result = ChartInteractionHelper.findPieSegment(
+                              final result =
+                                  ChartInteractionHelper.findPieSegment(
                                 details.localPosition,
                                 widget.data,
                                 Size(size, 250),
                                 widget.centerSpaceRadius,
                               );
-                              
+
                               if (result != null && result.isHit) {
                                 setState(() {
                                   _selectedSegment = result;
                                 });
                                 // Get global position for context menu
-                                final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                                final RenderBox? renderBox =
+                                    context.findRenderObject() as RenderBox?;
                                 final globalPosition = renderBox != null
-                                    ? renderBox.localToGlobal(details.localPosition)
+                                    ? renderBox
+                                        .localToGlobal(details.localPosition)
                                     : details.localPosition;
                                 widget.onSegmentTap?.call(
                                   result.segment!,
@@ -141,7 +145,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               Text(
                                 'Total',
                                 style: TextStyle(
-                                  color: widget.theme.textColor.withValues(alpha: 0.7),
+                                  color: widget.theme.textColor
+                                      .withValues(alpha: 0.7),
                                   fontSize: 14,
                                 ),
                               ),

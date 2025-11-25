@@ -77,7 +77,8 @@ class RadialChartPainter extends BaseChartPainter {
         textPainter.layout();
         textPainter.paint(
           canvas,
-          Offset(labelX - textPainter.width / 2, labelY - textPainter.height / 2),
+          Offset(
+              labelX - textPainter.width / 2, labelY - textPainter.height / 2,),
         );
       }
     }
@@ -134,19 +135,19 @@ class RadialChartPainter extends BaseChartPainter {
           ..color = dataSet.color.withValues(alpha: 0.2)
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 6, glowPaint);
-        
+
         // Main point
         final pointPaint = Paint()
           ..color = dataSet.color
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 4.5, pointPaint);
-        
+
         // Inner highlight
         final highlightPaint = Paint()
           ..color = Colors.white.withValues(alpha: 0.8)
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 2, highlightPaint);
-        
+
         // Border
         final borderPaint = Paint()
           ..color = theme.backgroundColor
@@ -162,9 +163,8 @@ class RadialChartPainter extends BaseChartPainter {
     if (oldDelegate.animationProgress != animationProgress) return true;
     if (oldDelegate.lineWidth != lineWidth) return true;
     if (oldDelegate.showPoints != showPoints) return true;
-    
+
     // Use parent's shouldRepaint for theme and data
     return super.shouldRepaint(oldDelegate);
   }
 }
-

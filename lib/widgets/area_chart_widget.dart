@@ -52,7 +52,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
-  
+
   // Cache bounds to avoid recalculation
   Map<String, double>? _cachedBounds;
   List<ChartDataSet>? _cachedDataSets;
@@ -110,8 +110,8 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
                           // Use cached bounds if available
                           Map<String, double> bounds;
-                          if (_cachedBounds != null && 
-                              _cachedDataSets != null && 
+                          if (_cachedBounds != null &&
+                              _cachedDataSets != null &&
                               _cachedDataSets == widget.dataSets) {
                             bounds = _cachedBounds!;
                           } else {
@@ -143,22 +143,23 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
                           final result =
                               ChartInteractionHelper.findNearestPoint(
-                                chartPosition,
-                                widget.dataSets,
-                                chartSize,
-                                bounds['minX']!,
-                                bounds['maxX']!,
-                                0.0,
-                                bounds['maxY']! * 1.15,
-                                20.0,
-                              );
+                            chartPosition,
+                            widget.dataSets,
+                            chartSize,
+                            bounds['minX']!,
+                            bounds['maxX']!,
+                            0.0,
+                            bounds['maxY']! * 1.15,
+                            20.0,
+                          );
 
                           if (result != null && result.isHit) {
                             setState(() {
                               _selectedPoint = result;
                             });
                             // Get global position for context menu
-                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
