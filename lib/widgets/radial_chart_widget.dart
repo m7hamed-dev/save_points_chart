@@ -143,12 +143,29 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     if (widget.dataSets.isEmpty || widget.dataSets.first.dataPoints.isEmpty) {
       return null;
     }
+    
+    // Validate inputs
+    if (!chartSize.width.isFinite || !chartSize.height.isFinite ||
+        chartSize.width <= 0 || chartSize.height <= 0) {
+      return null;
+    }
+    if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
+      return null;
+    }
 
     final center = Offset(chartSize.width / 2, chartSize.height / 2);
     final radius = math.min(chartSize.width, chartSize.height) / 2 - 40;
+    
+    // Validate radius
+    if (radius <= 0 || !radius.isFinite) return null;
+    
     final dataSet = widget.dataSets.first;
     final points = dataSet.dataPoints;
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
+    
+    // Validate maxValue
+    if (maxValue <= 0 || !maxValue.isFinite || points.isEmpty) return null;
+    
     final angleStep = 2 * math.pi / points.length;
 
     // Use squared distance to avoid expensive sqrt
@@ -158,20 +175,36 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     ChartInteractionResult? nearestResult;
 
     for (int i = 0; i < points.length; i++) {
+      // Validate point values
+      if (!points[i].x.isFinite || !points[i].y.isFinite) continue;
+      
       final angle = i * angleStep - math.pi / 2;
       final valueRadius = radius * (points[i].y / maxValue);
+      
+      // Validate valueRadius
+      if (!valueRadius.isFinite || valueRadius < 0) continue;
+      
       final pointX = center.dx + math.cos(angle) * valueRadius;
       final pointY = center.dy + math.sin(angle) * valueRadius;
+      
+      // Validate calculated positions
+      if (!pointX.isFinite || !pointY.isFinite) continue;
 
       // Quick bounds check before distance calculation
       final dx = tapPosition.dx - pointX;
       final dy = tapPosition.dy - pointY;
+      
+      // Validate dx and dy
+      if (!dx.isFinite || !dy.isFinite) continue;
 
       // Early exit if point is clearly outside radius
       if (dx.abs() > tapRadius || dy.abs() > tapRadius) continue;
 
       // Calculate squared distance (faster than distance)
       final distanceSquared = dx * dx + dy * dy;
+      
+      // Validate distance
+      if (!distanceSquared.isFinite) continue;
 
       if (distanceSquared < tapRadiusSquared &&
           distanceSquared < minDistanceSquared) {

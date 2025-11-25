@@ -42,9 +42,13 @@ class ChartContextMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Validate position to prevent NaN errors
+    final safeDx = position.dx.isFinite ? position.dx : 0.0;
+    final safeDy = position.dy.isFinite ? position.dy : 0.0;
+
     return Positioned(
-      left: position.dx,
-      top: position.dy,
+      left: safeDx,
+      top: safeDy,
       child: Material(
         color: Colors.transparent,
         child: TweenAnimationBuilder<double>(
@@ -478,13 +482,34 @@ class ChartContextMenuHelper {
 
     final overlay = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox?;
-    final globalPosition =
-        renderBox != null ? renderBox.localToGlobal(position) : position;
 
-    // Adjust position to keep menu on screen
+    // Safely calculate global position with NaN checks
+    Offset globalPosition;
+    try {
+      globalPosition =
+          renderBox != null ? renderBox.localToGlobal(position) : position;
+
+      // Validate position values (check for NaN or Infinity)
+      if (!globalPosition.dx.isFinite || !globalPosition.dy.isFinite) {
+        globalPosition = position; // Fallback to original position
+      }
+    } catch (e) {
+      globalPosition = position; // Fallback to original position on error
+    }
+
+    // Get screen size safely
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
+    final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
+
+    // Adjust position to keep menu on screen with NaN protection
     final adjustedPosition = Offset(
-      globalPosition.dx.clamp(16.0, MediaQuery.of(context).size.width - 296),
-      globalPosition.dy.clamp(16.0, MediaQuery.of(context).size.height - 400),
+      globalPosition.dx.isFinite
+          ? globalPosition.dx.clamp(16.0, screenWidth - 296)
+          : 16.0,
+      globalPosition.dy.isFinite
+          ? globalPosition.dy.clamp(16.0, screenHeight - 400)
+          : 16.0,
     );
 
     _currentMenu = OverlayEntry(
