@@ -29,8 +29,9 @@ A modern, high-performance Flutter charting library with full theme support, fea
 ## 🎯 Features
 
 - **7 Chart Types**: Line, Bar, Area, Pie, Donut, Radial, and Sparkline charts
+- **Zero Dependencies**: No external packages required - uses only Flutter SDK
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
-- **Full Theme Support**: Automatic light/dark theme adaptation
+- **Full Theme Support**: Automatic light/dark theme adaptation with InheritedWidget
 - **Interactive Context Menus**: Awesome context menus on tap with actions
 - **High Performance**: Optimized rendering with cached calculations and minimal rebuilds
 - **Smooth Animations**: Beautiful entrance animations for all chart types
@@ -153,39 +154,65 @@ LineChartWidget(
 
 If you want to use the included `ThemeProvider` for automatic theme switching, wrap your app with it:
 
+**Complete App Setup:**
+
 ```dart
+import 'package:flutter/material.dart';
 import 'package:save_points_chart/save_points_chart.dart';
 
-ThemeProvider(
-  child: Builder(
-    builder: (context) {
-      final themeProvider = ThemeProvider.of(context);
-      return LineChartWidget(
-        dataSets: dataSets,
-        theme: themeProvider.chartTheme,
-        useGlassmorphism: true,
-      );
-    },
-  ),
-)
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemeProvider(
+      child: _MaterialAppWithTheme(),
+    );
+  }
+}
+
+class _MaterialAppWithTheme extends StatelessWidget {
+  const _MaterialAppWithTheme();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context);
+    
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.themeMode,
+      home: MyHomePage(),
+    );
+  }
+}
 ```
 
-Or in your app setup:
+**Using ThemeProvider in Widgets:**
 
 ```dart
-ThemeProvider(
-  child: MaterialApp(
-    // ... your app config
-    home: MyHomePage(),
-  ),
+// Get theme provider anywhere in your widget tree
+final themeProvider = ThemeProvider.of(context);
+
+// Access chart theme
+LineChartWidget(
+  dataSets: dataSets,
+  theme: themeProvider.chartTheme,
+  useGlassmorphism: true,
 )
 
-// Then in your widgets:
-final themeProvider = ThemeProvider.of(context);
-themeProvider.toggleTheme(); // Toggle between light/dark
+// Toggle theme
+IconButton(
+  icon: Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+  onPressed: () => themeProvider.toggleTheme(),
+)
 ```
 
-**Note:** `ThemeProvider` uses Flutter's built-in `InheritedWidget`, so no external dependencies are required!
+**Note:** `ThemeProvider` uses Flutter's built-in `InheritedWidget`, so no external dependencies are required! The widget automatically rebuilds when the theme changes.
 
 ### Interactive Context Menu
 
@@ -240,10 +267,12 @@ All charts support extensive customization:
 
 ## 🌓 Theme Switching
 
-The app includes a theme toggle button that switches between:
-- Light mode
-- Dark mode
-- System mode (follows device settings)
+The `ThemeProvider` supports automatic theme switching between:
+- **Light mode** - Always use light theme
+- **Dark mode** - Always use dark theme  
+- **System mode** - Follows device system settings
+
+The theme automatically updates all charts and widgets that use `ThemeProvider.of(context).chartTheme`.
 
 ## 📱 Example App
 
@@ -317,5 +346,11 @@ To add new chart types:
 ## 📄 License
 
 This project is open source and available for use.
-# save_points_chart
-# save_points_chart
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Support
+
+For issues, questions, or suggestions, please open an issue on [GitHub](https://github.com/m7hamed-dev/save_points_repo/issues).
