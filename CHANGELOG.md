@@ -80,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SparklineChartWidget`
   - `ChartContainer`
 
-## [1.2.0] - 2025-01-XX
+## [1.2.0] - 2025-11-25
 
 ### Added
 - **Haptic Feedback**: All chart interactions now provide haptic feedback on successful taps

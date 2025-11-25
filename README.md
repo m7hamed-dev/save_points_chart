@@ -5,27 +5,6 @@ A modern, high-performance Flutter charting library with full theme support, fea
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 📸 Screenshots
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.01%20AM.png" width="200" alt="Chart Screenshot 1"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.04%20AM.png" width="200" alt="Chart Screenshot 2"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.07%20AM.png" width="200" alt="Chart Screenshot 3"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.09%20AM.png" width="200" alt="Chart Screenshot 4"/>
-</div>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.12%20AM.png" width="200" alt="Chart Screenshot 5"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.14%20AM.png" width="200" alt="Chart Screenshot 6"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.16%20AM.png" width="200" alt="Chart Screenshot 7"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.18%20AM.png" width="200" alt="Chart Screenshot 8"/>
-</div>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.33%20AM.png" width="200" alt="Chart Screenshot 9"/>
-  <img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/Screenshot%201447-06-04%20at%209.06.36%20AM.png" width="200" alt="Chart Screenshot 10"/>
-</div>
-
 ## 🎯 Features
 
 - **7 Chart Types**: Line, Bar, Area, Pie, Donut, Radial, and Sparkline charts
@@ -33,6 +12,8 @@ A modern, high-performance Flutter charting library with full theme support, fea
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
 - **Full Theme Support**: Automatic light/dark theme adaptation with InheritedWidget
 - **Interactive Context Menus**: Awesome context menus on tap with actions
+- **Haptic Feedback**: Tactile feedback on all chart interactions for better UX
+- **Hover Support**: Mouse hover effects on Line, Bar, and Radial charts
 - **High Performance**: Optimized rendering with cached calculations and minimal rebuilds
 - **Smooth Animations**: Beautiful entrance animations for all chart types
 - **Clean Architecture**: Modular, reusable, and maintainable code
@@ -44,7 +25,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.1.1
+  save_points_chart: ^1.2.0
 ```
 
 Then run:
@@ -216,7 +197,7 @@ IconButton(
 
 ### Interactive Context Menu
 
-All charts support interactive context menus on tap:
+All charts support interactive context menus on tap with haptic feedback:
 
 ```dart
 LineChartWidget(
@@ -241,6 +222,34 @@ LineChartWidget(
         // Handle share
       },
     );
+  },
+)
+```
+
+### Hover Support
+
+Line, Bar, and Radial charts support mouse hover with visual feedback:
+
+```dart
+LineChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  onPointHover: (point, datasetIndex, pointIndex) {
+    // Handle hover - point is null when mouse exits
+    if (point != null) {
+      print('Hovering over: ${point.y}');
+    }
+  },
+)
+
+BarChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  onBarHover: (point, datasetIndex, barIndex) {
+    // Handle bar hover
+    if (point != null) {
+      print('Hovering over bar: ${point.y}');
+    }
   },
 )
 ```
@@ -286,7 +295,8 @@ Check out the example app in the repository to see all chart types in action.
 ### Line Chart
 - Smooth curves
 - Gradient area fills
-- Interactive tooltips
+- Interactive tooltips with haptic feedback
+- Mouse hover support with visual feedback
 - Multiple datasets
 
 ### Bar Chart
@@ -294,6 +304,8 @@ Check out the example app in the repository to see all chart types in action.
 - Rounded corners
 - Gradient fills
 - Customizable spacing
+- Mouse hover support with elevation effects
+- Haptic feedback on tap
 
 ### Area Chart
 - Filled areas with gradients
@@ -315,6 +327,8 @@ Check out the example app in the repository to see all chart types in action.
 - Multi-dimensional data
 - Radar/spider chart
 - Performance metrics visualization
+- Mouse hover support with glow effects
+- Haptic feedback on tap
 
 ### Sparkline Chart
 - Compact inline charts
