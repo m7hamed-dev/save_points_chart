@@ -232,6 +232,34 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               // Points will highlight when you hover over them
               if (point != null) {
                 // Optional: You can add custom tooltip or other UI feedback here
+                final position = Offset(point.x, point.y);
+                final dataSet =
+                    SampleData.generateMultiLineData()[datasetIndex!];
+                ChartContextMenuHelper.show(
+                  context,
+                  point: point,
+                  segment: null,
+                  position: position,
+                  datasetIndex: datasetIndex,
+                  elementIndex: pointIndex,
+                  datasetLabel: dataSet.label,
+                  theme: chartTheme,
+                  useGlassmorphism: _useGlassmorphism,
+                  useNeumorphism: _useNeumorphism,
+                  onViewDetails: () {
+                    _showDetailsDialog(
+                      context,
+                      point: point,
+                      datasetLabel: dataSet.label,
+                    );
+                  },
+                  // onExport: () {
+                  //   _showExportSnackBar(context, 'Exporting data point...');
+                  // },
+                  // onShare: () {
+                  //   _showExportSnackBar(context, 'Sharing data point...');
+                  // },
+                );
               }
             },
           ),
