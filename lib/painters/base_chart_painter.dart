@@ -21,17 +21,30 @@ abstract class BaseChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BaseChartPainter oldDelegate) {
+    // Quick reference equality check first (most common case)
+    if (identical(oldDelegate.dataSets, dataSets) && 
+        identical(oldDelegate.theme, theme)) {
+      if (oldDelegate.showGrid == showGrid &&
+          oldDelegate.showAxis == showAxis &&
+          oldDelegate.showLabel == showLabel) {
+        return false; // Nothing changed
+      }
+    }
+    
     if (oldDelegate.theme != theme) return true;
     if (oldDelegate.dataSets.length != dataSets.length) return true;
     if (oldDelegate.showGrid != showGrid) return true;
     if (oldDelegate.showAxis != showAxis) return true;
     if (oldDelegate.showLabel != showLabel) return true;
 
-    // Deep comparison of datasets
+    // Deep comparison of datasets (only if reference equality failed)
     for (int i = 0; i < dataSets.length; i++) {
       if (i >= oldDelegate.dataSets.length) return true;
       final oldDs = oldDelegate.dataSets[i];
       final newDs = dataSets[i];
+      
+      // Quick reference check for each dataset
+      if (identical(oldDs, newDs)) continue;
       if (oldDs.label != newDs.label ||
           oldDs.color != newDs.color ||
           oldDs.dataPoints.length != newDs.dataPoints.length) {

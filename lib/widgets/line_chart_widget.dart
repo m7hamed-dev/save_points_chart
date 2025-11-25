@@ -103,6 +103,10 @@ class _LineChartWidgetState extends State<LineChartWidget>
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
   ChartInteractionResult? _hoveredPoint;
+  
+  // Cache bounds to avoid recalculation
+  Map<String, double>? _cachedBounds;
+  List<ChartDataSet>? _cachedDataSets;
 
   @override
   void initState() {
@@ -124,8 +128,15 @@ class _LineChartWidgetState extends State<LineChartWidget>
     super.dispose();
   }
 
-  /// Calculate chart bounds from data sets
+  /// Calculate chart bounds from data sets (with caching)
   Map<String, double> _calculateBounds() {
+    // Return cached bounds if data hasn't changed
+    if (_cachedBounds != null && 
+        _cachedDataSets != null && 
+        _cachedDataSets == widget.dataSets) {
+      return _cachedBounds!;
+    }
+    
     double minX = double.infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
@@ -138,11 +149,14 @@ class _LineChartWidgetState extends State<LineChartWidget>
       }
     }
 
-    return {
+    _cachedBounds = {
       'minX': minX,
       'maxX': maxX,
       'maxY': maxY,
     };
+    _cachedDataSets = List.from(widget.dataSets);
+    
+    return _cachedBounds!;
   }
 
   /// Handle mouse hover events

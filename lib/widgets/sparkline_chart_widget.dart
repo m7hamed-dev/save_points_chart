@@ -52,6 +52,9 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
+  
+  // Cache bounds to avoid recalculation
+  Map<String, double>? _cachedBounds;
 
   @override
   void initState() {
@@ -108,15 +111,27 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
             builder: (context, constraints) {
               final chartSize = Size(constraints.maxWidth, 100);
               
-              // Calculate bounds for tap detection
-              double minX = double.infinity;
-              double maxX = double.negativeInfinity;
-              double maxY = double.negativeInfinity;
-              
-              for (final point in widget.dataSet.dataPoints) {
-                if (point.x < minX) minX = point.x;
-                if (point.x > maxX) maxX = point.x;
-                if (point.y > maxY) maxY = point.y;
+              // Calculate bounds for tap detection (with caching)
+              Map<String, double> bounds;
+              if (_cachedBounds != null) {
+                bounds = _cachedBounds!;
+              } else {
+                double minX = double.infinity;
+                double maxX = double.negativeInfinity;
+                double maxY = double.negativeInfinity;
+                
+                for (final point in widget.dataSet.dataPoints) {
+                  if (point.x < minX) minX = point.x;
+                  if (point.x > maxX) maxX = point.x;
+                  if (point.y > maxY) maxY = point.y;
+                }
+                
+                bounds = {
+                  'minX': minX,
+                  'maxX': maxX,
+                  'maxY': maxY,
+                };
+                _cachedBounds = bounds;
               }
               
               return GestureDetector(
@@ -127,10 +142,10 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                           details.localPosition,
                           [modifiedDataSet],
                           chartSize,
-                          minX,
-                          maxX,
+                          bounds['minX']!,
+                          bounds['maxX']!,
                           0.0,
-                          maxY * 1.15,
+                          bounds['maxY']! * 1.15,
                           20.0, // tap radius
                         );
                         

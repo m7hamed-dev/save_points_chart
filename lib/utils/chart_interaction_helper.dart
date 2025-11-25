@@ -5,7 +5,7 @@ import '../models/chart_interaction.dart';
 
 /// Helper class for detecting chart interactions
 class ChartInteractionHelper {
-  /// Find nearest point to tap location
+  /// Find nearest point to tap location (optimized with early exit and squared distance)
   static ChartInteractionResult? findNearestPoint(
     Offset tapPosition,
     List<ChartDataSet> dataSets,
@@ -16,29 +16,41 @@ class ChartInteractionHelper {
     double maxY,
     double tapRadius,
   ) {
-    double minDistance = double.infinity;
+    // Early exit if no data
+    if (dataSets.isEmpty) return null;
+    
+    final xRange = maxX - minX;
+    final yRange = maxY - minY;
+    if (xRange == 0 || yRange == 0) return null;
+    
+    // Use squared distance to avoid expensive sqrt calculation
+    final tapRadiusSquared = tapRadius * tapRadius;
+    double minDistanceSquared = double.infinity;
     ChartInteractionResult? nearestResult;
 
     for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
       final dataSet = dataSets[dsIndex];
+      if (dataSet.dataPoints.isEmpty) continue;
       
       for (int ptIndex = 0; ptIndex < dataSet.dataPoints.length; ptIndex++) {
         final point = dataSet.dataPoints[ptIndex];
         
         // Convert to canvas coordinates
-        final xRange = maxX - minX;
-        final yRange = maxY - minY;
-        if (xRange == 0 || yRange == 0) continue;
-        
         final canvasX = ((point.x - minX) / xRange) * chartSize.width;
         final canvasY = chartSize.height - ((point.y - minY) / yRange) * chartSize.height;
-        final canvasPoint = Offset(canvasX, canvasY);
         
-        // Calculate distance
-        final distance = (tapPosition - canvasPoint).distance;
+        // Quick bounds check before distance calculation
+        final dx = tapPosition.dx - canvasX;
+        final dy = tapPosition.dy - canvasY;
         
-        if (distance < tapRadius && distance < minDistance) {
-          minDistance = distance;
+        // Early exit if point is clearly outside radius
+        if (dx.abs() > tapRadius || dy.abs() > tapRadius) continue;
+        
+        // Calculate squared distance (faster than distance)
+        final distanceSquared = dx * dx + dy * dy;
+        
+        if (distanceSquared < tapRadiusSquared && distanceSquared < minDistanceSquared) {
+          minDistanceSquared = distanceSquared;
           nearestResult = ChartInteractionResult(
             point: point,
             datasetIndex: dsIndex,
@@ -52,7 +64,7 @@ class ChartInteractionHelper {
     return nearestResult;
   }
 
-  /// Find bar at tap location
+  /// Find bar at tap location (optimized with early exit)
   static ChartInteractionResult? findBar(
     Offset tapPosition,
     List<ChartDataSet> dataSets,
@@ -63,30 +75,36 @@ class ChartInteractionHelper {
     double maxY,
     double barWidth,
   ) {
+    // Early exit if no data
+    if (dataSets.isEmpty) return null;
+    
     final xRange = maxX - minX;
     if (xRange == 0) return null;
+    
+    // Pre-calculate half bar width
+    final halfBarWidth = barWidth / 2;
 
     for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
       final dataSet = dataSets[dsIndex];
+      if (dataSet.dataPoints.isEmpty) continue;
       
       for (int barIndex = 0; barIndex < dataSet.dataPoints.length; barIndex++) {
         final point = dataSet.dataPoints[barIndex];
         
         // Calculate bar position
         final canvasX = ((point.x - minX) / xRange) * chartSize.width;
+        
+        // Early exit if tap is clearly to the left or right of bar
+        if (tapPosition.dx < canvasX - halfBarWidth || 
+            tapPosition.dx > canvasX + halfBarWidth) {
+          continue;
+        }
+        
         final barHeight = (point.y / maxY) * chartSize.height;
         final barY = chartSize.height - barHeight;
         
-        // Check if tap is within bar bounds
-        final barLeft = canvasX - barWidth / 2;
-        final barRight = canvasX + barWidth / 2;
-        final barTop = barY;
-        final barBottom = chartSize.height;
-        
-        if (tapPosition.dx >= barLeft &&
-            tapPosition.dx <= barRight &&
-            tapPosition.dy >= barTop &&
-            tapPosition.dy <= barBottom) {
+        // Check if tap is within bar vertical bounds
+        if (tapPosition.dy >= barY && tapPosition.dy <= chartSize.height) {
           return ChartInteractionResult(
             point: point,
             datasetIndex: dsIndex,

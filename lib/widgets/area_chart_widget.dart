@@ -52,6 +52,10 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
+  
+  // Cache bounds to avoid recalculation
+  Map<String, double>? _cachedBounds;
+  List<ChartDataSet>? _cachedDataSets;
 
   @override
   void initState() {
@@ -104,16 +108,32 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
                           if (widget.dataSets.isEmpty) return;
 
-                          double minX = double.infinity;
-                          double maxX = double.negativeInfinity;
-                          double maxY = double.negativeInfinity;
+                          // Use cached bounds if available
+                          Map<String, double> bounds;
+                          if (_cachedBounds != null && 
+                              _cachedDataSets != null && 
+                              _cachedDataSets == widget.dataSets) {
+                            bounds = _cachedBounds!;
+                          } else {
+                            double minX = double.infinity;
+                            double maxX = double.negativeInfinity;
+                            double maxY = double.negativeInfinity;
 
-                          for (final dataSet in widget.dataSets) {
-                            for (final point in dataSet.dataPoints) {
-                              if (point.x < minX) minX = point.x;
-                              if (point.x > maxX) maxX = point.x;
-                              if (point.y > maxY) maxY = point.y;
+                            for (final dataSet in widget.dataSets) {
+                              for (final point in dataSet.dataPoints) {
+                                if (point.x < minX) minX = point.x;
+                                if (point.x > maxX) maxX = point.x;
+                                if (point.y > maxY) maxY = point.y;
+                              }
                             }
+
+                            bounds = {
+                              'minX': minX,
+                              'maxX': maxX,
+                              'maxY': maxY,
+                            };
+                            _cachedBounds = bounds;
+                            _cachedDataSets = List.from(widget.dataSets);
                           }
 
                           final chartSize = Size(
@@ -126,10 +146,10 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                                 chartPosition,
                                 widget.dataSets,
                                 chartSize,
-                                minX,
-                                maxX,
+                                bounds['minX']!,
+                                bounds['maxX']!,
                                 0.0,
-                                maxY * 1.15,
+                                bounds['maxY']! * 1.15,
                                 20.0,
                               );
 

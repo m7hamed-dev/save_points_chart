@@ -54,6 +54,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedBar;
+  
+  // Cache bounds to avoid recalculation
+  Map<String, double>? _cachedBounds;
+  List<ChartDataSet>? _cachedDataSets;
 
   @override
   void initState() {
@@ -104,19 +108,35 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             details.localPosition.dy - topPadding,
                           );
                           
-                          // Calculate chart bounds
+                          // Calculate chart bounds (with caching)
                           if (widget.dataSets.isEmpty) return;
                           
-                          double minX = double.infinity;
-                          double maxX = double.negativeInfinity;
-                          double maxY = double.negativeInfinity;
-                          
-                          for (final dataSet in widget.dataSets) {
-                            for (final point in dataSet.dataPoints) {
-                              if (point.x < minX) minX = point.x;
-                              if (point.x > maxX) maxX = point.x;
-                              if (point.y > maxY) maxY = point.y;
+                          // Use cached bounds if available
+                          Map<String, double> bounds;
+                          if (_cachedBounds != null && 
+                              _cachedDataSets != null && 
+                              _cachedDataSets == widget.dataSets) {
+                            bounds = _cachedBounds!;
+                          } else {
+                            double minX = double.infinity;
+                            double maxX = double.negativeInfinity;
+                            double maxY = double.negativeInfinity;
+                            
+                            for (final dataSet in widget.dataSets) {
+                              for (final point in dataSet.dataPoints) {
+                                if (point.x < minX) minX = point.x;
+                                if (point.x > maxX) maxX = point.x;
+                                if (point.y > maxY) maxY = point.y;
+                              }
                             }
+                            
+                            bounds = {
+                              'minX': minX,
+                              'maxX': maxX,
+                              'maxY': maxY,
+                            };
+                            _cachedBounds = bounds;
+                            _cachedDataSets = List.from(widget.dataSets);
                           }
                           
                           final chartSize = Size(
@@ -128,10 +148,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             chartPosition,
                             widget.dataSets,
                             chartSize,
-                            minX * 0.95,
-                            maxX * 1.05,
+                            bounds['minX']! * 0.95,
+                            bounds['maxX']! * 1.05,
                             0.0,
-                            maxY * 1.2,
+                            bounds['maxY']! * 1.2,
                             widget.barWidth,
                           );
                           

@@ -149,21 +149,30 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
     final angleStep = 2 * math.pi / points.length;
     
-    double minDistance = double.infinity;
-    ChartInteractionResult? nearestResult;
+    // Use squared distance to avoid expensive sqrt
     const tapRadius = 25.0;
+    final tapRadiusSquared = tapRadius * tapRadius;
+    double minDistanceSquared = double.infinity;
+    ChartInteractionResult? nearestResult;
 
     for (int i = 0; i < points.length; i++) {
       final angle = i * angleStep - math.pi / 2;
       final valueRadius = radius * (points[i].y / maxValue);
       final pointX = center.dx + math.cos(angle) * valueRadius;
       final pointY = center.dy + math.sin(angle) * valueRadius;
-      final point = Offset(pointX, pointY);
       
-      final distance = (tapPosition - point).distance;
+      // Quick bounds check before distance calculation
+      final dx = tapPosition.dx - pointX;
+      final dy = tapPosition.dy - pointY;
       
-      if (distance < tapRadius && distance < minDistance) {
-        minDistance = distance;
+      // Early exit if point is clearly outside radius
+      if (dx.abs() > tapRadius || dy.abs() > tapRadius) continue;
+      
+      // Calculate squared distance (faster than distance)
+      final distanceSquared = dx * dx + dy * dy;
+      
+      if (distanceSquared < tapRadiusSquared && distanceSquared < minDistanceSquared) {
+        minDistanceSquared = distanceSquared;
         nearestResult = ChartInteractionResult(
           point: points[i],
           datasetIndex: 0,

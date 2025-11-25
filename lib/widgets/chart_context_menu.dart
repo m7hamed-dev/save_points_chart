@@ -52,11 +52,14 @@ class ChartContextMenu extends StatelessWidget {
           tween: Tween(begin: 0.0, end: 1.0),
           curve: Curves.easeOutCubic,
           builder: (context, value, child) {
-            return Transform.scale(
-              scale: 0.8 + (0.2 * value),
-              child: Opacity(
-                opacity: value,
-                child: child,
+            // Use RepaintBoundary to prevent unnecessary repaints
+            return RepaintBoundary(
+              child: Transform.scale(
+                scale: 0.8 + (0.2 * value),
+                child: Opacity(
+                  opacity: value,
+                  child: child,
+                ),
               ),
             );
           },
