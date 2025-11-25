@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import '../theme/chart_theme.dart';
 import '../widgets/line_chart_widget.dart';
@@ -29,7 +28,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = ThemeProvider.of(context);
     final chartTheme = themeProvider.chartTheme;
 
     return Scaffold(

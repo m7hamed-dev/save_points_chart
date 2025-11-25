@@ -1,8 +1,50 @@
 import 'package:flutter/material.dart';
 import '../theme/chart_theme.dart';
 
-/// Theme provider for managing app theme state
-class ThemeProvider extends ChangeNotifier {
+/// InheritedWidget that provides theme state to descendant widgets
+class _ThemeProviderInherited extends InheritedWidget {
+  final ThemeProviderState state;
+
+  const _ThemeProviderInherited({
+    required this.state,
+    required super.child,
+  });
+
+  @override
+  bool updateShouldNotify(_ThemeProviderInherited oldWidget) {
+    return state.themeMode != oldWidget.state.themeMode ||
+        state.chartTheme != oldWidget.state.chartTheme;
+  }
+}
+
+/// Theme provider for managing app theme state using InheritedWidget
+class ThemeProvider extends StatefulWidget {
+  final Widget child;
+
+  const ThemeProvider({
+    super.key,
+    required this.child,
+  });
+
+  /// Get the ThemeProviderState from the widget tree
+  static ThemeProviderState of(BuildContext context) {
+    final inherited = context.dependOnInheritedWidgetOfExactType<_ThemeProviderInherited>();
+    assert(inherited != null, 'ThemeProvider not found in widget tree');
+    return inherited!.state;
+  }
+
+  /// Get the ThemeProviderState from the widget tree (without listening)
+  static ThemeProviderState? maybeOf(BuildContext context) {
+    final inherited = context.dependOnInheritedWidgetOfExactType<_ThemeProviderInherited>();
+    return inherited?.state;
+  }
+
+  @override
+  State<ThemeProvider> createState() => ThemeProviderState();
+}
+
+/// State class that holds the theme data
+class ThemeProviderState extends State<ThemeProvider> {
   ThemeMode _themeMode = ThemeMode.system;
   ChartTheme _chartTheme = ChartTheme.light();
 
@@ -11,14 +53,17 @@ class ThemeProvider extends ChangeNotifier {
 
   bool get isDarkMode => _themeMode == ThemeMode.dark;
 
-  ThemeProvider() {
+  @override
+  void initState() {
+    super.initState();
     _updateChartTheme();
   }
 
   void setThemeMode(ThemeMode mode) {
-    _themeMode = mode;
-    _updateChartTheme();
-    notifyListeners();
+    setState(() {
+      _themeMode = mode;
+      _updateChartTheme();
+    });
   }
 
   void toggleTheme() {
@@ -46,8 +91,17 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   void updateChartTheme(ChartTheme theme) {
-    _chartTheme = theme;
-    notifyListeners();
+    setState(() {
+      _chartTheme = theme;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _ThemeProviderInherited(
+      state: this,
+      child: widget.child,
+    );
   }
 }
 

@@ -1,5 +1,5 @@
 name: save_points_chart
-description: A modern, high-performance Flutter charting library with full theme support, featuring 7 chart types (Line, Bar, Area, Pie, Donut, Radial, and Sparkline), Material 3 design, smooth animations, and interactive context menus. Built with custom CustomPainter implementations for zero external dependencies, complete customization control, and optimal performance. Supports light/dark themes, glassmorphism and neumorphism effects, gradient fills, interactive tooltips, and context menus. Perfect for data visualization in Flutter applications requiring beautiful, performant, and highly customizable charts.
+description: A modern, high-performance Flutter charting library with full theme support, featuring 7 chart types (Line, Bar, Area, Pie, Donut, Radial, and Sparkline), Material 3 design, smooth animations, and interactive context menus. Built with custom CustomPainter implementations and Flutter's InheritedWidget for zero external dependencies, complete customization control, and optimal performance. Supports light/dark themes, glassmorphism and neumorphism effects, gradient fills, interactive tooltips, and context menus. Perfect for data visualization in Flutter applications requiring beautiful, performant, and highly customizable charts.
 version: 1.0.0
 homepage: https://github.com/m7hamed-dev/save_points_repo
 repository: https://github.com/m7hamed-dev/save_points_repo
@@ -12,7 +12,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

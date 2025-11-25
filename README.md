@@ -44,7 +44,6 @@ Add this to your package's `pubspec.yaml` file:
 ```yaml
 dependencies:
   save_points_chart: ^1.0.0
-  provider: ^6.1.1  # Required for theme management
 ```
 
 Then run:
@@ -52,6 +51,8 @@ Then run:
 ```bash
 flutter pub get
 ```
+
+> **Note:** This package has **zero external dependencies**! Charts work perfectly without any state management - just pass a `ChartTheme` directly. The included `ThemeProvider` uses Flutter's built-in `InheritedWidget` for theme management.
 
 ## 🚀 Quick Start
 
@@ -78,8 +79,9 @@ LineChartWidget(
 
 ## 📦 Dependencies
 
-- `provider: ^6.1.1` - State management for theme switching
+- **Zero external dependencies!** - Uses only Flutter SDK
 - **No external charting library** - Uses custom `CustomPainter` implementations for full control
+- **Built-in state management** - `ThemeProvider` uses Flutter's `InheritedWidget` (no provider package needed)
 
 ## 🏗️ Architecture
 
@@ -147,22 +149,43 @@ LineChartWidget(
 )
 ```
 
-### With Theme Provider
+### With Theme Provider (Optional)
+
+If you want to use the included `ThemeProvider` for automatic theme switching, wrap your app with it:
 
 ```dart
-import 'package:provider/provider.dart';
 import 'package:save_points_chart/save_points_chart.dart';
 
-Consumer<ThemeProvider>(
-  builder: (context, themeProvider, _) {
-    return LineChartWidget(
-      dataSets: dataSets,
-      theme: themeProvider.chartTheme,
-      useGlassmorphism: true,
-    );
-  },
+ThemeProvider(
+  child: Builder(
+    builder: (context) {
+      final themeProvider = ThemeProvider.of(context);
+      return LineChartWidget(
+        dataSets: dataSets,
+        theme: themeProvider.chartTheme,
+        useGlassmorphism: true,
+      );
+    },
+  ),
 )
 ```
+
+Or in your app setup:
+
+```dart
+ThemeProvider(
+  child: MaterialApp(
+    // ... your app config
+    home: MyHomePage(),
+  ),
+)
+
+// Then in your widgets:
+final themeProvider = ThemeProvider.of(context);
+themeProvider.toggleTheme(); // Toggle between light/dark
+```
+
+**Note:** `ThemeProvider` uses Flutter's built-in `InheritedWidget`, so no external dependencies are required!
 
 ### Interactive Context Menu
 
