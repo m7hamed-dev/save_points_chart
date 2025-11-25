@@ -1,12 +1,15 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
 
 /// Custom painter for radial/radar charts
 class RadialChartPainter extends BaseChartPainter {
   final double lineWidth;
   final bool showPoints;
   final double animationProgress;
+  final ChartInteractionResult? selectedPoint;
+  final ChartInteractionResult? hoveredPoint;
 
   RadialChartPainter({
     required super.theme,
@@ -16,6 +19,8 @@ class RadialChartPainter extends BaseChartPainter {
     this.lineWidth = 3.0,
     this.showPoints = true,
     this.animationProgress = 1.0,
+    this.selectedPoint,
+    this.hoveredPoint,
   });
 
   @override
@@ -132,17 +137,29 @@ class RadialChartPainter extends BaseChartPainter {
         final y = center.dy + math.sin(angle) * valueRadius;
         final point = Offset(x, y);
 
-        // Outer glow
-        final glowPaint = Paint()
-          ..color = dataSet.color.withValues(alpha: 0.2)
-          ..style = PaintingStyle.fill;
-        canvas.drawCircle(point, 6, glowPaint);
+        // Check if this point is selected or hovered
+        final isSelected = selectedPoint != null &&
+            selectedPoint!.isHit &&
+            selectedPoint!.elementIndex == i;
 
-        // Main point
+        final isHovered = hoveredPoint != null &&
+            hoveredPoint!.isHit &&
+            hoveredPoint!.elementIndex == i;
+
+        // Outer glow with animation (larger if selected or hovered)
+        final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);
+        final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
+        final glowPaint = Paint()
+          ..color = dataSet.color.withValues(alpha: glowOpacity)
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(point, glowRadius, glowPaint);
+
+        // Main point with animation (larger if selected or hovered)
+        final pointRadius = isSelected ? 6.5 : (isHovered ? 5.5 : 4.5);
         final pointPaint = Paint()
           ..color = dataSet.color
           ..style = PaintingStyle.fill;
-        canvas.drawCircle(point, 4.5, pointPaint);
+        canvas.drawCircle(point, pointRadius, pointPaint);
 
         // Inner highlight
         final highlightPaint = Paint()
@@ -150,12 +167,13 @@ class RadialChartPainter extends BaseChartPainter {
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 2, highlightPaint);
 
-        // Border
+        // Border (thicker if selected or hovered)
+        final borderWidth = isSelected ? 2.5 : (isHovered ? 2.0 : 1.5);
         final borderPaint = Paint()
           ..color = theme.backgroundColor
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5;
-        canvas.drawCircle(point, 4.5, borderPaint);
+          ..strokeWidth = borderWidth;
+        canvas.drawCircle(point, pointRadius, borderPaint);
       }
     }
   }
@@ -165,6 +183,8 @@ class RadialChartPainter extends BaseChartPainter {
     if (oldDelegate.animationProgress != animationProgress) return true;
     if (oldDelegate.lineWidth != lineWidth) return true;
     if (oldDelegate.showPoints != showPoints) return true;
+    if (oldDelegate.selectedPoint != selectedPoint) return true;
+    if (oldDelegate.hoveredPoint != hoveredPoint) return true;
 
     // Use parent's shouldRepaint for theme and data
     return super.shouldRepaint(oldDelegate);

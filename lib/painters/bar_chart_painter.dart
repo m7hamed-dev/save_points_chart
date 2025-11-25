@@ -10,6 +10,7 @@ class BarChartPainter extends BaseChartPainter {
   final bool isGrouped;
   final double animationProgress;
   final ChartInteractionResult? selectedBar;
+  final ChartInteractionResult? hoveredBar;
 
   BarChartPainter({
     required super.theme,
@@ -22,6 +23,7 @@ class BarChartPainter extends BaseChartPainter {
     this.isGrouped = false,
     this.animationProgress = 1.0,
     this.selectedBar,
+    this.hoveredBar,
   });
 
   @override
@@ -91,11 +93,15 @@ class BarChartPainter extends BaseChartPainter {
               math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
             );
 
-            // Check if this bar is selected
+            // Check if this bar is selected or hovered
             final isSelected = selectedBar != null &&
                 selectedBar!.isHit &&
                 selectedBar!.datasetIndex == dataSets.indexOf(dataSet) &&
                 selectedBar!.elementIndex == i;
+            final isHovered = hoveredBar != null &&
+                hoveredBar!.isHit &&
+                hoveredBar!.datasetIndex == dataSets.indexOf(dataSet) &&
+                hoveredBar!.elementIndex == i;
 
             _drawRoundedBar(
               canvas,
@@ -105,6 +111,7 @@ class BarChartPainter extends BaseChartPainter {
               dataSet.color,
               barProgress,
               isSelected: isSelected,
+              isHovered: isHovered,
             );
 
             currentX += barWidth + barSpacing;
@@ -131,11 +138,15 @@ class BarChartPainter extends BaseChartPainter {
           math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
         );
 
-        // Check if this bar is selected
+        // Check if this bar is selected or hovered
         final isSelected = selectedBar != null &&
             selectedBar!.isHit &&
             selectedBar!.datasetIndex == 0 &&
             selectedBar!.elementIndex == i;
+        final isHovered = hoveredBar != null &&
+            hoveredBar!.isHit &&
+            hoveredBar!.datasetIndex == 0 &&
+            hoveredBar!.elementIndex == i;
 
         _drawRoundedBar(
           canvas,
@@ -145,6 +156,7 @@ class BarChartPainter extends BaseChartPainter {
           dataSet.color,
           barProgress,
           isSelected: isSelected,
+          isHovered: isHovered,
         );
       }
     }
@@ -173,13 +185,14 @@ class BarChartPainter extends BaseChartPainter {
     Color color,
     double barProgress, {
     bool isSelected = false,
+    bool isHovered = false,
   }) {
     // Animate bar height
     final animatedHeight = height * barProgress;
     final animatedY = position.dy + (height - animatedHeight);
 
-    // Add elevation if selected
-    final elevation = isSelected ? 4.0 : 0.0;
+    // Add elevation if selected or hovered
+    final elevation = isSelected ? 4.0 : (isHovered ? 2.0 : 0.0);
     final adjustedY = animatedY - elevation;
     final adjustedHeight = animatedHeight + elevation;
 
@@ -204,22 +217,24 @@ class BarChartPainter extends BaseChartPainter {
 
     canvas.drawRRect(rect, paint);
 
-    // Add subtle highlight on top (brighter if selected)
+    // Add subtle highlight on top (brighter if selected or hovered)
     final highlightRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight * 0.2),
       Radius.circular(borderRadius),
     );
+    final highlightAlpha = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
     final highlightPaint = Paint()
-      ..color = Colors.white.withValues(alpha: isSelected ? 0.4 : 0.2)
+      ..color = Colors.white.withValues(alpha: highlightAlpha)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(highlightRect, highlightPaint);
 
-    // Add border if selected
-    if (isSelected) {
+    // Add border if selected or hovered
+    if (isSelected || isHovered) {
+      final borderWidth = isSelected ? 2.5 : 2.0;
       final borderPaint = Paint()
-        ..color = color.withValues(alpha: 0.8)
+        ..color = color.withValues(alpha: isSelected ? 0.8 : 0.6)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.5;
+        ..strokeWidth = borderWidth;
       canvas.drawRRect(rect, borderPaint);
     }
   }
@@ -231,6 +246,7 @@ class BarChartPainter extends BaseChartPainter {
     if (oldDelegate.borderRadius != borderRadius) return true;
     if (oldDelegate.isGrouped != isGrouped) return true;
     if (oldDelegate.selectedBar != selectedBar) return true;
+    if (oldDelegate.hoveredBar != hoveredBar) return true;
 
     // Use parent's shouldRepaint for theme and data
     return super.shouldRepaint(oldDelegate);

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
@@ -109,12 +110,10 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               );
 
                               if (result != null && result.isHit) {
-                                // Clear previous selection first
-                                setState(() {
-                                  _selectedSegment = null;
-                                });
+                                // Provide haptic feedback
+                                HapticFeedback.selectionClick();
 
-                                // Set new selection
+                                // Set new selection (optimized single setState)
                                 setState(() {
                                   _selectedSegment = result;
                                 });

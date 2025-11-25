@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -23,6 +24,7 @@ class RadialChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final ChartPointCallback? onPointTap;
+  final ChartPointHoverCallback? onPointHover;
 
   const RadialChartWidget({
     super.key,
@@ -40,6 +42,7 @@ class RadialChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.onPointTap,
+    this.onPointHover,
   });
 
   @override
@@ -50,6 +53,8 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  ChartInteractionResult? _selectedPoint;
+  ChartInteractionResult? _hoveredPoint;
 
   @override
   void initState() {
@@ -91,52 +96,87 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
             return LayoutBuilder(
               builder: (context, constraints) {
                 final chartSize = Size(constraints.maxWidth, 300);
-                return GestureDetector(
-                  behavior: HitTestBehavior
-                      .translucent, // Allow taps even when overlay is present
-                  onTapDown: widget.onPointTap != null
-                      ? (details) {
-                          // Hide any existing context menu first to prevent blocking
-                          ChartContextMenuHelper.hide();
-
-                          final result = _findNearestRadialPoint(
-                            details.localPosition,
-                            chartSize,
-                          );
-
-                          if (result != null && result.isHit) {
-                            // Get global position for context menu
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
-                            // Small delay to ensure overlay is removed before showing new menu
-                            Future.microtask(() {
-                              widget.onPointTap?.call(
-                                result.point!,
-                                result.datasetIndex!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
-                            });
-                          }
+                return MouseRegion(
+                  onHover: widget.onPointHover != null
+                      ? (event) {
+                          _handleHover(event.localPosition, chartSize);
                         }
                       : null,
-                  child: SizedBox(
-                    width: constraints.maxWidth,
-                    height: 300,
-                    child: CustomPaint(
-                      size: chartSize,
-                      painter: RadialChartPainter(
-                        theme: effectiveTheme,
-                        dataSets: widget.dataSets,
-                        lineWidth: widget.lineWidth,
-                        showPoints: widget.showPoints,
-                        showGrid: widget.showGrid,
-                        showLabel: widget.showLabel,
-                        animationProgress: _animation.value,
+                  onExit: widget.onPointHover != null
+                      ? (_) {
+                          setState(() {
+                            _hoveredPoint = null;
+                          });
+                          widget.onPointHover?.call(null, null, null);
+                        }
+                      : null,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior
+                        .translucent, // Allow taps even when overlay is present
+                    onTapDown: widget.onPointTap != null
+                        ? (details) {
+                            // Hide any existing context menu first to prevent blocking
+                            ChartContextMenuHelper.hide();
+
+                            final result = _findNearestRadialPoint(
+                              details.localPosition,
+                              chartSize,
+                            );
+
+                            if (result != null && result.isHit) {
+                              // Provide haptic feedback
+                              HapticFeedback.selectionClick();
+
+                              // Clear previous selection first
+                              setState(() {
+                                _selectedPoint = null;
+                              });
+
+                              // Set new selection
+                              setState(() {
+                                _selectedPoint = result;
+                              });
+
+                              // Get global position for context menu
+                              final RenderBox? renderBox =
+                                  context.findRenderObject() as RenderBox?;
+                              final globalPosition = renderBox != null
+                                  ? renderBox.localToGlobal(details.localPosition)
+                                  : details.localPosition;
+
+                              // Small delay to ensure overlay is removed before showing new menu
+                              Future.microtask(() {
+                                widget.onPointTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              // Clear selection if tap is outside any point
+                              setState(() {
+                                _selectedPoint = null;
+                              });
+                            }
+                          }
+                        : null,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: 300,
+                      child: CustomPaint(
+                        size: chartSize,
+                        painter: RadialChartPainter(
+                          theme: effectiveTheme,
+                          dataSets: widget.dataSets,
+                          lineWidth: widget.lineWidth,
+                          showPoints: widget.showPoints,
+                          showGrid: widget.showGrid,
+                          showLabel: widget.showLabel,
+                          animationProgress: _animation.value,
+                          selectedPoint: _selectedPoint,
+                          hoveredPoint: _hoveredPoint,
+                        ),
                       ),
                     ),
                   ),
@@ -149,10 +189,42 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     );
   }
 
+  /// Handle mouse hover events
+  void _handleHover(Offset position, Size chartSize) {
+    if (widget.onPointHover == null) return;
+
+    final result = _findNearestRadialPoint(
+      position,
+      chartSize,
+      useHoverRadius: true,
+    );
+
+    if (result != null && result.isHit) {
+      if (_hoveredPoint?.elementIndex != result.elementIndex) {
+        setState(() {
+          _hoveredPoint = result;
+        });
+        widget.onPointHover?.call(
+          result.point,
+          result.datasetIndex,
+          result.elementIndex,
+        );
+      }
+    } else {
+      if (_hoveredPoint != null) {
+        setState(() {
+          _hoveredPoint = null;
+        });
+        widget.onPointHover?.call(null, null, null);
+      }
+    }
+  }
+
   ChartInteractionResult? _findNearestRadialPoint(
     Offset tapPosition,
-    Size chartSize,
-  ) {
+    Size chartSize, {
+    bool useHoverRadius = false,
+  }) {
     if (widget.dataSets.isEmpty || widget.dataSets.first.dataPoints.isEmpty) {
       return null;
     }
@@ -184,7 +256,9 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     final angleStep = 2 * math.pi / points.length;
 
     // Use squared distance to avoid expensive sqrt
-    const tapRadius = 25.0;
+    final tapRadius = useHoverRadius
+        ? ChartInteractionConstants.hoverRadius
+        : ChartInteractionConstants.tapRadius;
     final tapRadiusSquared = tapRadius * tapRadius;
     double minDistanceSquared = double.infinity;
     ChartInteractionResult? nearestResult;

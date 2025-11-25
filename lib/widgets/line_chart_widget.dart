@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:save_points_chart/save_points_chart.dart'
     show BarChartWidget, AreaChartWidget;
 import 'package:save_points_chart/models/chart_data.dart';
@@ -186,7 +187,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
       bounds['maxX']!,
       0.0,
       bounds['maxY']! * 1.15,
-      30.0, // hover radius (larger than tap)
+      ChartInteractionConstants.hoverRadius,
     );
 
     if (result != null && result.isHit) {
@@ -285,16 +286,14 @@ class _LineChartWidgetState extends State<LineChartWidget>
                               bounds['maxX']!,
                               0.0,
                               bounds['maxY']! * 1.15,
-                              20.0, // tap radius
+                              ChartInteractionConstants.tapRadius,
                             );
 
                             if (result != null && result.isHit) {
-                              // Clear previous selection first
-                              setState(() {
-                                _selectedPoint = null;
-                              });
+                              // Provide haptic feedback
+                              HapticFeedback.selectionClick();
 
-                              // Set new selection
+                              // Set new selection (optimized single setState)
                               setState(() {
                                 _selectedPoint = result;
                               });
