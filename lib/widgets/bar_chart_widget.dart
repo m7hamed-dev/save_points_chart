@@ -272,7 +272,8 @@ class _BarChartWidgetState extends State<BarChartWidget>
                               final RenderBox? renderBox =
                                   context.findRenderObject() as RenderBox?;
                               final globalPosition = renderBox != null
-                                  ? renderBox.localToGlobal(details.localPosition)
+                                  ? renderBox
+                                      .localToGlobal(details.localPosition)
                                   : details.localPosition;
 
                               // Small delay to ensure overlay is removed before showing new menu

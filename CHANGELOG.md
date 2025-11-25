@@ -80,6 +80,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SparklineChartWidget`
   - `ChartContainer`
 
+## [1.2.0] - 2025-01-XX
+
+### Added
+- **Haptic Feedback**: All chart interactions now provide haptic feedback on successful taps
+  - Uses `HapticFeedback.selectionClick()` for better user experience
+  - Applied to all chart types: Line, Bar, Area, Pie, Donut, Radial, Sparkline
+- **Hover Support for Bar Charts**: Added `onBarHover` callback to BarChartWidget
+  - Visual feedback with elevation and border highlighting on hover
+  - Consistent with Line Chart hover behavior
+- **Hover Support for Radial Charts**: Added `onPointHover` callback to RadialChartWidget
+  - Visual feedback with glow effects and size changes on hover
+  - Improved interactivity for radial/radar charts
+- **Chart Interaction Constants**: Standardized interaction parameters
+  - `ChartInteractionConstants.tapRadius = 20.0` for consistent tap detection
+  - `ChartInteractionConstants.hoverRadius = 30.0` for hover detection
+  - All charts now use these standardized constants
+
+### Fixed
+- **Radial Chart Selection State**: Fixed missing selection state management in RadialChartWidget
+  - Added `_selectedPoint` state tracking
+  - Passes `selectedPoint` and `hoveredPoint` to RadialChartPainter
+  - Visual feedback now works correctly for selected/hovered points
+  - Points now show proper glow, size, and border changes when selected
+
+### Improved
+- **Performance Optimization**: Removed redundant `setState()` calls
+  - All charts now use single `setState()` per interaction instead of double calls
+  - Improved rendering performance and reduced unnecessary rebuilds
+- **Code Consistency**: Standardized onClick implementation across all charts
+  - All charts use `ChartInteractionConstants` for tap/hover radius
+  - Consistent haptic feedback pattern across all chart types
+  - Unified selection state management approach
+- **Visual Feedback**: Enhanced hover and selection visual feedback
+  - Bar charts show elevation and border on hover
+  - Radial charts show enhanced glow and size changes
+  - Consistent visual language across all interactive elements
+
+### Changed
+- **Bar Chart Painter**: Added `hoveredBar` parameter to support hover state
+  - Visual feedback includes elevation, border, and highlight changes
+  - Hover state is visually distinct from selected state
+- **Radial Chart Painter**: Added `selectedPoint` and `hoveredPoint` parameters
+  - Points now show visual feedback when selected or hovered
+  - Glow radius, point size, and border width adjust based on state
+
 ## [Unreleased]
 
 ### Planned

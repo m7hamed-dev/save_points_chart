@@ -5,10 +5,10 @@ import 'package:save_points_chart/models/chart_data.dart';
 class ChartInteractionConstants {
   /// Standard tap radius for detecting point taps (in pixels)
   static const double tapRadius = 20.0;
-  
+
   /// Hover radius for detecting point hovers (larger than tap for better UX)
   static const double hoverRadius = 30.0;
-  
+
   /// Long press duration threshold (in milliseconds)
   static const int longPressDuration = 500;
 }
