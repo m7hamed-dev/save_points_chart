@@ -199,7 +199,9 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                       size: chartSize,
                       painter: LineChartPainter(
                         theme: effectiveTheme.copyWith(
-                            showGrid: false, showAxis: false),
+                          showGrid: false,
+                          showAxis: false,
+                        ),
                         dataSets: [modifiedDataSet],
                         lineWidth: widget.lineWidth,
                         showArea: widget.showArea,
