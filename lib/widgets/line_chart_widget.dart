@@ -92,11 +92,15 @@ class LineChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
-  })  : assert(dataSets.isNotEmpty,
-            'LineChartWidget requires at least one data set',),
+  })  : assert(
+          dataSets.isNotEmpty,
+          'LineChartWidget requires at least one data set',
+        ),
         assert(lineWidth > 0, 'Line width must be positive'),
-        assert(!isLoading || !isError,
-            'Cannot be both loading and in error state',);
+        assert(
+          !isLoading || !isError,
+          'Cannot be both loading and in error state',
+        );
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
@@ -209,7 +213,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -245,12 +250,13 @@ class _LineChartWidgetState extends State<LineChartWidget>
                         }
                       : null,
                   child: GestureDetector(
-                    behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                    behavior: HitTestBehavior
+                        .translucent, // Allow taps even when overlay is present
                     onTapDown: widget.onPointTap != null
                         ? (details) {
                             // Hide any existing context menu first to prevent blocking
                             ChartContextMenuHelper.hide();
-                            
+
                             // Use localPosition directly (relative to SizedBox)
                             // Account for padding
                             const leftPadding = 50.0;
@@ -287,12 +293,12 @@ class _LineChartWidgetState extends State<LineChartWidget>
                               setState(() {
                                 _selectedPoint = null;
                               });
-                              
+
                               // Set new selection
                               setState(() {
                                 _selectedPoint = result;
                               });
-                              
+
                               // Small delay to ensure overlay is removed before showing new menu
                               Future.microtask(() {
                                 widget.onPointTap?.call(

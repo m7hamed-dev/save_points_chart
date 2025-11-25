@@ -75,7 +75,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
 
     final Widget content = Row(
@@ -91,12 +92,13 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                     final size =
                         math.min(constraints.maxWidth, 250.0).toDouble();
                     return GestureDetector(
-                      behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                      behavior: HitTestBehavior
+                          .translucent, // Allow taps even when overlay is present
                       onTapDown: widget.onSegmentTap != null
                           ? (details) {
                               // Hide any existing context menu first to prevent blocking
                               ChartContextMenuHelper.hide();
-                              
+
                               // Use localPosition directly (relative to SizedBox)
                               final result =
                                   ChartInteractionHelper.findPieSegment(
@@ -111,12 +113,12 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                                 setState(() {
                                   _selectedSegment = null;
                                 });
-                                
+
                                 // Set new selection
                                 setState(() {
                                   _selectedSegment = result;
                                 });
-                                
+
                                 // Get global position for context menu
                                 final RenderBox? renderBox =
                                     context.findRenderObject() as RenderBox?;
@@ -124,7 +126,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                                     ? renderBox
                                         .localToGlobal(details.localPosition)
                                     : details.localPosition;
-                                
+
                                 // Small delay to ensure overlay is removed before showing new menu
                                 Future.microtask(() {
                                   widget.onSegmentTap?.call(
@@ -222,7 +224,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                       Text(
                         '${((item.value / total) * 100).toStringAsFixed(1)}%',
                         style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color:
+                              effectiveTheme.textColor.withValues(alpha: 0.7),
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),

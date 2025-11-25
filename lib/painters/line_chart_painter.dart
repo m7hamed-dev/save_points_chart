@@ -286,8 +286,14 @@ class LineChartPainter extends BaseChartPainter {
     // Draw axis labels with proper bounds
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(canvas, chartSize, minX - xPadding, maxX + xPadding, minY,
-        maxYAdjusted,);
+    drawAxisLabels(
+      canvas,
+      chartSize,
+      minX - xPadding,
+      maxX + xPadding,
+      minY,
+      maxYAdjusted,
+    );
     canvas.restore();
   }
 

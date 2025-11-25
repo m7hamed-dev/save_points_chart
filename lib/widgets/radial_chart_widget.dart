@@ -73,7 +73,8 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -91,12 +92,13 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
               builder: (context, constraints) {
                 final chartSize = Size(constraints.maxWidth, 300);
                 return GestureDetector(
-                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                  behavior: HitTestBehavior
+                      .translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onPointTap != null
                       ? (details) {
                           // Hide any existing context menu first to prevent blocking
                           ChartContextMenuHelper.hide();
-                          
+
                           final result = _findNearestRadialPoint(
                             details.localPosition,
                             chartSize,
@@ -109,7 +111,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            
+
                             // Small delay to ensure overlay is removed before showing new menu
                             Future.microtask(() {
                               widget.onPointTap?.call(
@@ -148,14 +150,18 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
   }
 
   ChartInteractionResult? _findNearestRadialPoint(
-      Offset tapPosition, Size chartSize,) {
+    Offset tapPosition,
+    Size chartSize,
+  ) {
     if (widget.dataSets.isEmpty || widget.dataSets.first.dataPoints.isEmpty) {
       return null;
     }
-    
+
     // Validate inputs
-    if (!chartSize.width.isFinite || !chartSize.height.isFinite ||
-        chartSize.width <= 0 || chartSize.height <= 0) {
+    if (!chartSize.width.isFinite ||
+        !chartSize.height.isFinite ||
+        chartSize.width <= 0 ||
+        chartSize.height <= 0) {
       return null;
     }
     if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
@@ -164,17 +170,17 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
     final center = Offset(chartSize.width / 2, chartSize.height / 2);
     final radius = math.min(chartSize.width, chartSize.height) / 2 - 40;
-    
+
     // Validate radius
     if (radius <= 0 || !radius.isFinite) return null;
-    
+
     final dataSet = widget.dataSets.first;
     final points = dataSet.dataPoints;
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
-    
+
     // Validate maxValue
     if (maxValue <= 0 || !maxValue.isFinite || points.isEmpty) return null;
-    
+
     final angleStep = 2 * math.pi / points.length;
 
     // Use squared distance to avoid expensive sqrt
@@ -186,23 +192,23 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     for (int i = 0; i < points.length; i++) {
       // Validate point values
       if (!points[i].x.isFinite || !points[i].y.isFinite) continue;
-      
+
       final angle = i * angleStep - math.pi / 2;
       final valueRadius = radius * (points[i].y / maxValue);
-      
+
       // Validate valueRadius
       if (!valueRadius.isFinite || valueRadius < 0) continue;
-      
+
       final pointX = center.dx + math.cos(angle) * valueRadius;
       final pointY = center.dy + math.sin(angle) * valueRadius;
-      
+
       // Validate calculated positions
       if (!pointX.isFinite || !pointY.isFinite) continue;
 
       // Quick bounds check before distance calculation
       final dx = tapPosition.dx - pointX;
       final dy = tapPosition.dy - pointY;
-      
+
       // Validate dx and dy
       if (!dx.isFinite || !dy.isFinite) continue;
 
@@ -211,7 +217,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
       // Calculate squared distance (faster than distance)
       final distanceSquared = dx * dx + dy * dy;
-      
+
       // Validate distance
       if (!distanceSquared.isFinite) continue;
 

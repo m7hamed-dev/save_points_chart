@@ -94,7 +94,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       dataPoints: widget.dataSet.dataPoints,
     );
 
-    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -137,12 +138,13 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                 }
 
                 return GestureDetector(
-                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                  behavior: HitTestBehavior
+                      .translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onPointTap != null
                       ? (details) {
                           // Hide any existing context menu first to prevent blocking
                           ChartContextMenuHelper.hide();
-                          
+
                           final result =
                               ChartInteractionHelper.findNearestPoint(
                             details.localPosition,
@@ -160,19 +162,19 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                             setState(() {
                               _selectedPoint = null;
                             });
-                            
+
                             // Set new selection
                             setState(() {
                               _selectedPoint = result;
                             });
-                            
+
                             // Get global position for context menu
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            
+
                             // Small delay to ensure overlay is removed before showing new menu
                             Future.microtask(() {
                               widget.onPointTap?.call(
@@ -196,8 +198,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                     child: CustomPaint(
                       size: chartSize,
                       painter: LineChartPainter(
-                        theme: effectiveTheme
-                            .copyWith(showGrid: false, showAxis: false),
+                        theme: effectiveTheme.copyWith(
+                            showGrid: false, showAxis: false),
                         dataSets: [modifiedDataSet],
                         lineWidth: widget.lineWidth,
                         showArea: widget.showArea,

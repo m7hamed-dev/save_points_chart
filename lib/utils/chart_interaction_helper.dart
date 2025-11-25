@@ -18,24 +18,26 @@ class ChartInteractionHelper {
   ) {
     // Early exit if no data
     if (dataSets.isEmpty) return null;
-    
+
     // Validate bounds (check for NaN or Infinity)
     if (!minX.isFinite || !maxX.isFinite || !minY.isFinite || !maxY.isFinite) {
       return null;
     }
-    
+
     final xRange = maxX - minX;
     final yRange = maxY - minY;
     if (xRange == 0 || yRange == 0 || !xRange.isFinite || !yRange.isFinite) {
       return null;
     }
-    
+
     // Validate chart size
-    if (!chartSize.width.isFinite || !chartSize.height.isFinite ||
-        chartSize.width <= 0 || chartSize.height <= 0) {
+    if (!chartSize.width.isFinite ||
+        !chartSize.height.isFinite ||
+        chartSize.width <= 0 ||
+        chartSize.height <= 0) {
       return null;
     }
-    
+
     // Validate tap position
     if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
       return null;
@@ -55,19 +57,19 @@ class ChartInteractionHelper {
 
         // Validate point values
         if (!point.x.isFinite || !point.y.isFinite) continue;
-        
+
         // Convert to canvas coordinates with NaN protection
         final canvasX = ((point.x - minX) / xRange) * chartSize.width;
         final canvasY =
             chartSize.height - ((point.y - minY) / yRange) * chartSize.height;
-        
+
         // Validate calculated coordinates
         if (!canvasX.isFinite || !canvasY.isFinite) continue;
 
         // Quick bounds check before distance calculation
         final dx = tapPosition.dx - canvasX;
         final dy = tapPosition.dy - canvasY;
-        
+
         // Validate dx and dy
         if (!dx.isFinite || !dy.isFinite) continue;
 
@@ -76,7 +78,7 @@ class ChartInteractionHelper {
 
         // Calculate squared distance (faster than distance)
         final distanceSquared = dx * dx + dy * dy;
-        
+
         // Validate distance
         if (!distanceSquared.isFinite) continue;
 
@@ -109,26 +111,28 @@ class ChartInteractionHelper {
   ) {
     // Early exit if no data
     if (dataSets.isEmpty) return null;
-    
+
     // Validate bounds (check for NaN or Infinity)
     if (!minX.isFinite || !maxX.isFinite || !minY.isFinite || !maxY.isFinite) {
       return null;
     }
-    
+
     // Validate chart size
-    if (!chartSize.width.isFinite || !chartSize.height.isFinite ||
-        chartSize.width <= 0 || chartSize.height <= 0) {
+    if (!chartSize.width.isFinite ||
+        !chartSize.height.isFinite ||
+        chartSize.width <= 0 ||
+        chartSize.height <= 0) {
       return null;
     }
-    
+
     // Validate tap position
     if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
       return null;
     }
-    
+
     // Validate bar width
     if (!barWidth.isFinite || barWidth <= 0) return null;
-    
+
     final xRange = maxX - minX;
     if (xRange == 0 || !xRange.isFinite) return null;
 
@@ -144,25 +148,25 @@ class ChartInteractionHelper {
 
         // Validate point values
         if (!point.x.isFinite || !point.y.isFinite) continue;
-        
+
         // Calculate bar position with NaN protection
         final canvasX = ((point.x - minX) / xRange) * chartSize.width;
-        
+
         // Validate calculated position
         if (!canvasX.isFinite) continue;
-        
+
         // Early exit if tap is clearly to the left or right of bar
-        if (tapPosition.dx < canvasX - halfBarWidth || 
+        if (tapPosition.dx < canvasX - halfBarWidth ||
             tapPosition.dx > canvasX + halfBarWidth) {
           continue;
         }
-        
+
         // Validate maxY before division
         if (maxY <= 0 || !maxY.isFinite) continue;
-        
+
         final barHeight = (point.y / maxY) * chartSize.height;
         if (!barHeight.isFinite) continue;
-        
+
         final barY = chartSize.height - barHeight;
         if (!barY.isFinite) continue;
 
@@ -190,20 +194,22 @@ class ChartInteractionHelper {
   ) {
     // Validate inputs
     if (data.isEmpty) return null;
-    if (!size.width.isFinite || !size.height.isFinite ||
-        size.width <= 0 || size.height <= 0) {
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
       return null;
     }
     if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
       return null;
     }
-    
+
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width, size.height) / 2 - 20;
-    
+
     // Validate radius
     if (radius <= 0 || !radius.isFinite) return null;
-    
+
     // Check if tap is within chart bounds
     final distanceFromCenter = (tapPosition - center).distance;
     if (!distanceFromCenter.isFinite) return null;
@@ -213,7 +219,7 @@ class ChartInteractionHelper {
 
     final total = data.map((d) => d.value).reduce((a, b) => a + b);
     if (total <= 0 || !total.isFinite) return null;
-    
+
     double startAngle = -math.pi / 2;
 
     // Calculate angle from center to tap point

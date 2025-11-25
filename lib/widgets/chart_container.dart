@@ -31,7 +31,8 @@ class ChartContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     Widget container = Container(
       padding: padding,
       decoration: BoxDecoration(
@@ -71,7 +72,8 @@ class ChartContainer extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 14,
-                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color:
+                              effectiveTheme.textColor.withValues(alpha: 0.7),
                         ),
                       ),
                     ),
@@ -96,7 +98,8 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         'Loading chart data...',
                         style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color:
+                              effectiveTheme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -124,7 +127,8 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         errorMessage ?? 'Failed to load chart data',
                         style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color:
+                              effectiveTheme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                         textAlign: TextAlign.center,
@@ -158,7 +162,9 @@ class ChartContainer extends StatelessWidget {
             ],
           ),
           border: Border.all(
-              color: Colors.white.withValues(alpha: 0.2), width: 1.5,),
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -229,7 +235,8 @@ class ChartContainer extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                            color:
+                                effectiveTheme.textColor.withValues(alpha: 0.7),
                           ),
                         ),
                       ),
@@ -252,7 +259,8 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         'Loading chart data...',
                         style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color:
+                              effectiveTheme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -276,7 +284,8 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         errorMessage ?? 'Failed to load chart data',
                         style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color:
+                              effectiveTheme.textColor.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                         textAlign: TextAlign.center,

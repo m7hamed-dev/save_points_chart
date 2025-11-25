@@ -93,8 +93,12 @@ class PieChartPainter extends CustomPainter {
             Rect.fromCircle(center: center, radius: centerSpaceRadius);
         final innerPath = Path()
           ..moveTo(center.dx, center.dy)
-          ..arcTo(innerRect, startAngle + animatedSweepAngle,
-              -animatedSweepAngle, false,)
+          ..arcTo(
+            innerRect,
+            startAngle + animatedSweepAngle,
+            -animatedSweepAngle,
+            false,
+          )
           ..lineTo(center.dx, center.dy)
           ..close();
 
@@ -185,7 +189,9 @@ class PieChartPainter extends CustomPainter {
         textPainter.paint(
           canvas,
           Offset(
-              labelX - textPainter.width / 2, labelY - textPainter.height / 2,),
+            labelX - textPainter.width / 2,
+            labelY - textPainter.height / 2,
+          ),
         );
       }
 

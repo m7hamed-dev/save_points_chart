@@ -87,7 +87,9 @@ class BarChartPainter extends BaseChartPainter {
             // Stagger animation for grouped bars
             final barIndex = i / maxLength;
             final barProgress = math.max(
-                0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),);
+              0.0,
+              math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
+            );
 
             // Check if this bar is selected
             final isSelected = selectedBar != null &&
@@ -125,7 +127,9 @@ class BarChartPainter extends BaseChartPainter {
         // Stagger animation for each bar
         final barIndex = i / totalBars;
         final barProgress = math.max(
-            0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),);
+          0.0,
+          math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
+        );
 
         // Check if this bar is selected
         final isSelected = selectedBar != null &&
@@ -151,13 +155,25 @@ class BarChartPainter extends BaseChartPainter {
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
     drawAxisLabels(
-        canvas, chartSize, minXAdjusted, maxXAdjusted, minY, maxYAdjusted,);
+      canvas,
+      chartSize,
+      minXAdjusted,
+      maxXAdjusted,
+      minY,
+      maxYAdjusted,
+    );
     canvas.restore();
   }
 
-  void _drawRoundedBar(Canvas canvas, Offset position, double width,
-      double height, Color color, double barProgress,
-      {bool isSelected = false,}) {
+  void _drawRoundedBar(
+    Canvas canvas,
+    Offset position,
+    double width,
+    double height,
+    Color color,
+    double barProgress, {
+    bool isSelected = false,
+  }) {
     // Animate bar height
     final animatedHeight = height * barProgress;
     final animatedY = position.dy + (height - animatedHeight);

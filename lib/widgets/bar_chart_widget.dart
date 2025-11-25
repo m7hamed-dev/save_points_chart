@@ -82,7 +82,8 @@ class _BarChartWidgetState extends State<BarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     return ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -99,12 +100,13 @@ class _BarChartWidgetState extends State<BarChartWidget>
             return LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
-                  behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                  behavior: HitTestBehavior
+                      .translucent, // Allow taps even when overlay is present
                   onTapDown: widget.onBarTap != null
                       ? (details) {
                           // Hide any existing context menu first to prevent blocking
                           ChartContextMenuHelper.hide();
-                          
+
                           // Use localPosition directly (relative to SizedBox)
                           const leftPadding = 50.0;
                           const topPadding = 20.0;
@@ -165,19 +167,19 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             setState(() {
                               _selectedBar = null;
                             });
-                            
+
                             // Set new selection
                             setState(() {
                               _selectedBar = result;
                             });
-                            
+
                             // Get global position for context menu
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
-                            
+
                             // Small delay to ensure overlay is removed before showing new menu
                             Future.microtask(() {
                               widget.onBarTap?.call(

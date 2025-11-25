@@ -78,7 +78,9 @@ class RadialChartPainter extends BaseChartPainter {
         textPainter.paint(
           canvas,
           Offset(
-              labelX - textPainter.width / 2, labelY - textPainter.height / 2,),
+            labelX - textPainter.width / 2,
+            labelY - textPainter.height / 2,
+          ),
         );
       }
     }

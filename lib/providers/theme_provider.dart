@@ -78,7 +78,8 @@ class ThemeProviderState extends State<ThemeProvider> {
       final brightness =
           WidgetsBinding.instance.platformDispatcher.platformBrightness;
       setThemeMode(
-          brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark,);
+        brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark,
+      );
     }
   }
 
