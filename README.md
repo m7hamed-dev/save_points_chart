@@ -63,6 +63,32 @@ LineChartWidget(
 )
 ```
 
+## 📸 Screenshots
+
+<div align="center">
+
+![Screenshot 1](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-01.png)
+
+![Screenshot 2](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-02.png)
+
+![Screenshot 3](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-03.png)
+
+![Screenshot 4](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-04.png)
+
+![Screenshot 5](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-05.png)
+
+![Screenshot 6](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-06.png)
+
+![Screenshot 7](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-07.png)
+
+![Screenshot 8](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-08.png)
+
+![Screenshot 9](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-09.png)
+
+![Screenshot 10](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-10.png)
+
+</div>
+
 ## 📦 Dependencies
 
 - **Zero external dependencies!** - Uses only Flutter SDK

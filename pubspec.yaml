@@ -2,8 +2,8 @@ name: save_points_chart
 description: Modern Flutter charting library with 7 chart types, Material 3 design, smooth animations, and interactive menus. Zero dependencies, supports light/dark themes and glassmorphism effects.
 version: 1.2.0
 homepage: https://www.linkedin.com/in/mohamed-elsyed-967a7b215/
-repository: https://github.com/m7hamed-dev/save_points_chart
-issue_tracker: https://github.com/m7hamed-dev/save_points_chart/issues
+repository: https://github.com/m7hamed-dev/save-points-charts-docs
+issue_tracker: https://github.com/m7hamed-dev/save-points-charts-docs
 
 # Author information is automatically displayed on pub.dev from your publisher account
 # Publisher: m7hamed-dev
