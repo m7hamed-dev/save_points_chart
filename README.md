@@ -5,6 +5,10 @@ A modern, high-performance Flutter charting library with full theme support, fea
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+### 🌐 Live Demo
+
+Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.netlify.app/)**
+
 ## 🎯 Features
 
 - **7 Chart Types**: Line, Bar, Area, Pie, Donut, Radial, and Sparkline charts
@@ -288,7 +292,9 @@ The theme automatically updates all charts and widgets that use `ThemeProvider.o
 
 ## 📱 Example App
 
-Check out the example app in the repository to see all chart types in action.
+Try the live demo: **[https://startling-concha-05444f.netlify.app/](https://startling-concha-05444f.netlify.app/)**
+
+Or check out the example app in the repository to see all chart types in action.
 
 ## 📊 Chart Types
 
