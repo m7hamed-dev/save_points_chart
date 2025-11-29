@@ -57,14 +57,24 @@ class LineChartPainter extends BaseChartPainter {
       }
     }
 
-    if (minX == double.infinity) return; // No valid data
+    if (minX == double.infinity || !minX.isFinite || !maxX.isFinite || !maxY.isFinite) {
+      return; // No valid data
+    }
 
     final minY = 0.0; // Always start from 0 for better visualization
-    final maxYAdjusted = maxY * 1.15;
+    
+    // Ensure maxY is positive and valid
+    final maxYAdjusted = maxY > 0 ? maxY * 1.15 : 1.0;
 
     // Add small padding for X axis
     final xRange = maxX - minX;
-    final xPadding = xRange * 0.05;
+    final xPadding = (xRange > 0 && xRange.isFinite) ? xRange * 0.05 : 0.0;
+    
+    // Validate chart size
+    if (!chartSize.width.isFinite || !chartSize.height.isFinite ||
+        chartSize.width <= 0 || chartSize.height <= 0) {
+      return;
+    }
 
     // Save canvas state
     canvas.save();
@@ -90,7 +100,10 @@ class LineChartPainter extends BaseChartPainter {
           minY,
           maxYAdjusted,
         );
-      }).toList();
+      }).where((offset) => offset.dx.isFinite && offset.dy.isFinite).toList();
+      
+      // Skip if no valid points
+      if (points.isEmpty) continue;
 
       // Draw area fill with professional gradient and animation
       if (showArea) {
@@ -102,23 +115,33 @@ class LineChartPainter extends BaseChartPainter {
         final animatedPoints = (totalPoints * animationProgress).ceil();
 
         // Create smooth bezier curve
-        for (int i = 0; i < animatedPoints; i++) {
+        for (int i = 0; i < animatedPoints && i < points.length; i++) {
+          final currentPoint = points[i];
+          // Validate point before using
+          if (!currentPoint.dx.isFinite || !currentPoint.dy.isFinite) continue;
+          
           if (i == 0) {
-            areaPath.lineTo(points[i].dx, points[i].dy);
+            areaPath.lineTo(currentPoint.dx, currentPoint.dy);
           } else {
             final prevPoint = points[i - 1];
-            final currentPoint = points[i];
+            // Validate previous point
+            if (!prevPoint.dx.isFinite || !prevPoint.dy.isFinite) continue;
 
             // Interpolate the last point if animation is in progress
             Offset targetPoint = currentPoint;
             if (i == animatedPoints - 1 && animationProgress < 1.0) {
               final partialProgress =
                   (animationProgress * totalPoints) - (i - 1);
-              targetPoint =
-                  Offset.lerp(prevPoint, currentPoint, partialProgress)!;
+              final lerpedPoint = Offset.lerp(prevPoint, currentPoint, partialProgress);
+              if (lerpedPoint != null && 
+                  lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite) {
+                targetPoint = lerpedPoint;
+              }
             }
 
             final dx = targetPoint.dx - prevPoint.dx;
+            if (!dx.isFinite) continue;
+            
             final controlPoint1 = Offset(
               prevPoint.dx + dx * curveSmoothness,
               prevPoint.dy,
@@ -127,6 +150,14 @@ class LineChartPainter extends BaseChartPainter {
               targetPoint.dx - dx * curveSmoothness,
               targetPoint.dy,
             );
+            
+            // Validate control points before using
+            if (!controlPoint1.dx.isFinite || !controlPoint1.dy.isFinite ||
+                !controlPoint2.dx.isFinite || !controlPoint2.dy.isFinite ||
+                !targetPoint.dx.isFinite || !targetPoint.dy.isFinite) {
+              continue;
+            }
+            
             areaPath.cubicTo(
               controlPoint1.dx,
               controlPoint1.dy,
@@ -139,15 +170,25 @@ class LineChartPainter extends BaseChartPainter {
         }
 
         // Complete the area path
-        if (animatedPoints > 0) {
-          final lastPoint = animatedPoints == points.length
-              ? points.last
-              : Offset.lerp(
-                  points[animatedPoints - 1],
-                  points[math.min(animatedPoints, points.length - 1)],
-                  animationProgress,
-                )!;
-          areaPath.lineTo(lastPoint.dx, chartSize.height);
+        if (animatedPoints > 0 && points.isNotEmpty) {
+          Offset lastPoint;
+          if (animatedPoints == points.length) {
+            lastPoint = points.last;
+          } else {
+            final lerpedPoint = Offset.lerp(
+              points[animatedPoints - 1],
+              points[math.min(animatedPoints, points.length - 1)],
+              animationProgress,
+            );
+            lastPoint = (lerpedPoint != null && 
+                        lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite)
+                ? lerpedPoint
+                : points.last;
+          }
+          
+          if (lastPoint.dx.isFinite && lastPoint.dy.isFinite) {
+            areaPath.lineTo(lastPoint.dx, chartSize.height);
+          }
         }
         areaPath.close();
 
@@ -170,22 +211,37 @@ class LineChartPainter extends BaseChartPainter {
 
       // Draw line with smooth bezier curves and animation
       final linePath = Path();
-      linePath.moveTo(points.first.dx, points.first.dy);
+      if (points.isNotEmpty && 
+          points.first.dx.isFinite && points.first.dy.isFinite) {
+        linePath.moveTo(points.first.dx, points.first.dy);
+      }
 
       // Calculate how many points to draw based on animation progress
       final totalPoints = points.length;
       final animatedPoints = (totalPoints * animationProgress).ceil();
 
-      for (int i = 1; i < animatedPoints; i++) {
+      for (int i = 1; i < animatedPoints && i < points.length; i++) {
         final prevPoint = points[i - 1];
         final currentPoint = points[i];
+        
+        // Validate points before using
+        if (!prevPoint.dx.isFinite || !prevPoint.dy.isFinite ||
+            !currentPoint.dx.isFinite || !currentPoint.dy.isFinite) {
+          continue;
+        }
+        
         final dx = currentPoint.dx - prevPoint.dx;
+        if (!dx.isFinite) continue;
 
         // Interpolate the last point if animation is in progress
         Offset targetPoint = currentPoint;
         if (i == animatedPoints - 1 && animationProgress < 1.0) {
           final partialProgress = (animationProgress * totalPoints) - (i - 1);
-          targetPoint = Offset.lerp(prevPoint, currentPoint, partialProgress)!;
+          final lerpedPoint = Offset.lerp(prevPoint, currentPoint, partialProgress);
+          if (lerpedPoint != null && 
+              lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite) {
+            targetPoint = lerpedPoint;
+          }
         }
 
         // Better bezier control points for smoother curves
@@ -197,6 +253,14 @@ class LineChartPainter extends BaseChartPainter {
           targetPoint.dx - dx * curveSmoothness,
           targetPoint.dy,
         );
+        
+        // Validate control points before using
+        if (!controlPoint1.dx.isFinite || !controlPoint1.dy.isFinite ||
+            !controlPoint2.dx.isFinite || !controlPoint2.dy.isFinite ||
+            !targetPoint.dx.isFinite || !targetPoint.dy.isFinite) {
+          continue;
+        }
+        
         linePath.cubicTo(
           controlPoint1.dx,
           controlPoint1.dy,
@@ -233,8 +297,12 @@ class LineChartPainter extends BaseChartPainter {
         final totalPoints = points.length;
         final animatedPoints = (totalPoints * animationProgress).ceil();
 
-        for (int i = 0; i < animatedPoints; i++) {
+        for (int i = 0; i < animatedPoints && i < points.length; i++) {
           final point = points[i];
+          
+          // Validate point before using
+          if (!point.dx.isFinite || !point.dy.isFinite) continue;
+          
           final pointOpacity = i < animatedPoints - 1 ? 1.0 : animationProgress;
 
           // Check if this point is selected or hovered

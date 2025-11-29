@@ -73,17 +73,38 @@ abstract class BaseChartPainter extends CustomPainter {
     double minY,
     double maxY,
   ) {
+    // Validate inputs
+    if (!point.x.isFinite || !point.y.isFinite) {
+      return Offset(size.width / 2, size.height / 2);
+    }
+
+    if (!size.width.isFinite || !size.height.isFinite || 
+        size.width <= 0 || size.height <= 0) {
+      return const Offset(0, 0);
+    }
+
+    if (!minX.isFinite || !maxX.isFinite || !minY.isFinite || !maxY.isFinite) {
+      return Offset(size.width / 2, size.height / 2);
+    }
+
     // Pre-calculate ranges for better performance
     final xRange = maxX - minX;
     final yRange = maxY - minY;
 
-    // Avoid division by zero
-    if (xRange == 0 || yRange == 0) {
+    // Avoid division by zero or invalid ranges
+    if (xRange <= 0 || !xRange.isFinite || yRange <= 0 || !yRange.isFinite) {
       return Offset(size.width / 2, size.height / 2);
     }
 
+    // Calculate coordinates with validation
     final x = ((point.x - minX) / xRange) * size.width;
     final y = size.height - ((point.y - minY) / yRange) * size.height;
+
+    // Validate calculated values are finite before returning
+    if (!x.isFinite || !y.isFinite) {
+      return Offset(size.width / 2, size.height / 2);
+    }
+
     return Offset(x, y);
   }
 
@@ -157,6 +178,16 @@ abstract class BaseChartPainter extends CustomPainter {
   ) {
     if (!showLabel || !showAxis || !theme.showAxis) return;
 
+    // Validate size and ranges
+    if (size.width <= 0 || size.height <= 0) return;
+    if (!size.width.isFinite || !size.height.isFinite) return;
+
+    final xRange = maxX - minX;
+    final yRange = maxY - minY;
+
+    // Validate ranges are valid and non-zero
+    if (!xRange.isFinite || !yRange.isFinite) return;
+
     // Cache text style
     final textStyle = TextStyle(
       color: theme.axisColor.withValues(alpha: 0.8),
@@ -166,47 +197,71 @@ abstract class BaseChartPainter extends CustomPainter {
     );
 
     // X-axis labels - better formatting with pre-calculated values
-    final xLabels = math.min(6, (maxX - minX).ceil().toInt());
-    final xRange = maxX - minX;
-    final xStep = size.width / xLabels;
+    final xLabelsCount = math.max(1, math.min(6, (xRange > 0 ? xRange : 1).ceil().toInt()));
+    if (xLabelsCount > 0 && xRange > 0) {
+      final xStep = size.width / xLabelsCount;
 
-    for (int i = 0; i <= xLabels; i++) {
-      final x = xStep * i;
-      final value = minX + xRange * (i / xLabels);
-      final displayValue =
-          value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+      for (int i = 0; i <= xLabelsCount; i++) {
+        final x = xStep * i;
+        if (!x.isFinite) continue;
 
-      final textPainter = TextPainter(
-        text: TextSpan(text: displayValue, style: textStyle),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(x - textPainter.width / 2, size.height + 8),
-      );
+        final value = minX + xRange * (i / xLabelsCount);
+        if (!value.isFinite) continue;
+
+        final displayValue =
+            value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+
+        final textPainter = TextPainter(
+          text: TextSpan(text: displayValue, style: textStyle),
+          textDirection: TextDirection.ltr,
+        );
+        textPainter.layout();
+
+        final offsetX = x - textPainter.width / 2;
+        final offsetY = size.height + 8;
+
+        // Validate offset values before painting
+        if (offsetX.isFinite && offsetY.isFinite) {
+          textPainter.paint(
+            canvas,
+            Offset(offsetX, offsetY),
+          );
+        }
+      }
     }
 
     // Y-axis labels - better formatting with pre-calculated values
     const yLabels = 5;
-    final yRange = maxY - minY;
-    final yStep = size.height / yLabels;
+    if (yLabels > 0 && yRange > 0) {
+      final yStep = size.height / yLabels;
 
-    for (int i = 0; i <= yLabels; i++) {
-      final y = size.height - yStep * i;
-      final value = minY + yRange * (i / yLabels);
-      final displayValue =
-          value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+      for (int i = 0; i <= yLabels; i++) {
+        final y = size.height - yStep * i;
+        if (!y.isFinite) continue;
 
-      final textPainter = TextPainter(
-        text: TextSpan(text: displayValue, style: textStyle),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(-textPainter.width - 8, y - textPainter.height / 2),
-      );
+        final value = minY + yRange * (i / yLabels);
+        if (!value.isFinite) continue;
+
+        final displayValue =
+            value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+
+        final textPainter = TextPainter(
+          text: TextSpan(text: displayValue, style: textStyle),
+          textDirection: TextDirection.ltr,
+        );
+        textPainter.layout();
+
+        final offsetX = -textPainter.width - 8;
+        final offsetY = y - textPainter.height / 2;
+
+        // Validate offset values before painting
+        if (offsetX.isFinite && offsetY.isFinite) {
+          textPainter.paint(
+            canvas,
+            Offset(offsetX, offsetY),
+          );
+        }
+      }
     }
   }
 
