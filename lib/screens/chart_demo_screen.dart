@@ -11,6 +11,7 @@ import 'package:save_points_chart/widgets/sparkline_chart_widget.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/data/sample_data.dart';
+import 'package:save_points_chart/screens/chart_test_screen.dart';
 
 class ChartDemoScreen extends StatefulWidget {
   const ChartDemoScreen({super.key});
@@ -35,6 +36,17 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
       appBar: AppBar(
         title: const Text('Modern Charts'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ChartTestScreen(),
+                ),
+              );
+            },
+            tooltip: 'Test NaN & Edge Cases',
+          ),
           IconButton(
             icon: Icon(
               themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
