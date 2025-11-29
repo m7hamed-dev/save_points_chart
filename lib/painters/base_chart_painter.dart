@@ -78,8 +78,10 @@ abstract class BaseChartPainter extends CustomPainter {
       return Offset(size.width / 2, size.height / 2);
     }
 
-    if (!size.width.isFinite || !size.height.isFinite || 
-        size.width <= 0 || size.height <= 0) {
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
       return const Offset(0, 0);
     }
 
@@ -197,7 +199,8 @@ abstract class BaseChartPainter extends CustomPainter {
     );
 
     // X-axis labels - better formatting with pre-calculated values
-    final xLabelsCount = math.max(1, math.min(6, (xRange > 0 ? xRange : 1).ceil().toInt()));
+    final xLabelsCount =
+        math.max(1, math.min(6, (xRange > 0 ? xRange : 1).ceil().toInt()));
     if (xLabelsCount > 0 && xRange > 0) {
       final xStep = size.width / xLabelsCount;
 
@@ -208,8 +211,9 @@ abstract class BaseChartPainter extends CustomPainter {
         final value = minX + xRange * (i / xLabelsCount);
         if (!value.isFinite) continue;
 
-        final displayValue =
-            value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+        final displayValue = value % 1 == 0
+            ? value.toInt().toString()
+            : value.toStringAsFixed(1);
 
         final textPainter = TextPainter(
           text: TextSpan(text: displayValue, style: textStyle),
@@ -242,8 +246,9 @@ abstract class BaseChartPainter extends CustomPainter {
         final value = minY + yRange * (i / yLabels);
         if (!value.isFinite) continue;
 
-        final displayValue =
-            value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+        final displayValue = value % 1 == 0
+            ? value.toInt().toString()
+            : value.toStringAsFixed(1);
 
         final textPainter = TextPainter(
           text: TextSpan(text: displayValue, style: textStyle),

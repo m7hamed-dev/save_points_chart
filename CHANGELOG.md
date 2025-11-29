@@ -125,6 +125,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Points now show visual feedback when selected or hovered
   - Glow radius, point size, and border width adjust based on state
 
+## [1.2.1] - 2025-01-27
+
+### Fixed
+- **Theme Toggle Issue**: Fixed theme not changing when clicking the theme toggle icon
+  - Fixed `InheritedWidget.updateShouldNotify` to properly compare theme values
+  - Theme changes now immediately update MaterialApp and all dependent widgets
+  - Added proper state management for theme mode changes
+- **NaN Value Handling**: Comprehensive fixes for NaN and invalid value handling
+  - Added validation in `pointToCanvas` to filter out NaN and infinite values
+  - Fixed axis label drawing to handle zero ranges and invalid calculations
+  - Added validation in all chart painters to prevent NaN offsets
+  - Charts now gracefully handle edge cases: empty data, zero ranges, invalid bounds
+  - All drawing operations now validate values before painting to prevent crashes
+- **Line Chart Edge Cases**: Fixed rendering issues with invalid data points
+  - Points with NaN or infinite values are now filtered out
+  - Bezier curve calculations validate all control points
+  - Area path completion handles edge cases properly
+
+### Improved
+- **Error Handling**: Better error handling for edge cases throughout the library
+  - All coordinate calculations validate inputs and outputs
+  - Graceful degradation when encountering invalid data
+  - No crashes when data contains NaN, infinity, or zero ranges
+
+### Documentation
+- Added live demo link to README
+- Added screenshots section to README
+- Updated documentation with edge case handling information
+
 ## [Unreleased]
 
 ### Planned
