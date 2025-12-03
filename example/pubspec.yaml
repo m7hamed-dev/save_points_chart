@@ -2,7 +2,7 @@ name: save_points_chart_example
 description: Example app demonstrating the save_points_chart package
 publish_to: 'none'
 
-version: 1.3.0
+version: 1.3.1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

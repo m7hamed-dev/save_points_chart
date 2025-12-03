@@ -2,16 +2,70 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
+import 'package:save_points_chart/widgets/bar_chart_widget.dart';
 
-/// Custom painter for bar charts
+/// A custom painter for rendering bar charts with animations and interactions.
+///
+/// This painter handles the rendering of bar charts including:
+/// - Single and grouped bar layouts
+/// - Smooth animations with staggered effects
+/// - Interactive selection and hover states
+/// - Rounded corners and gradient fills
+/// - Professional grid and axis rendering
+///
+/// The painter extends [BaseChartPainter] to inherit common chart rendering
+/// functionality like grid, axes, and labels.
+///
+/// See also:
+/// - [BarChartWidget] for the widget that uses this painter
 class BarChartPainter extends BaseChartPainter {
+  /// The width of each bar in pixels.
+  ///
+  /// Defaults to 20.0 pixels. For grouped bars, this determines the width
+  /// of each bar in a group.
   final double barWidth;
+
+  /// The border radius for rounded bar corners.
+  ///
+  /// Defaults to 8.0 pixels. Set to 0.0 for square bars.
   final double borderRadius;
+
+  /// Whether bars should be grouped when multiple data sets are provided.
+  ///
+  /// When true and multiple data sets exist, bars are grouped side-by-side.
+  /// When false, only the first data set is rendered.
+  /// Defaults to false.
   final bool isGrouped;
+
+  /// The animation progress value between 0.0 and 1.0.
+  ///
+  /// Controls the animation state of the bars. 0.0 means no animation,
+  /// 1.0 means fully animated. Used for staggered bar animations.
+  /// Defaults to 1.0.
   final double animationProgress;
+
+  /// The currently selected bar interaction result.
+  ///
+  /// Contains information about which bar is selected, including dataset
+  /// index and element index. Null if no bar is selected.
   final ChartInteractionResult? selectedBar;
+
+  /// The currently hovered bar interaction result.
+  ///
+  /// Contains information about which bar is being hovered over, including
+  /// dataset index and element index. Null if no bar is hovered.
   final ChartInteractionResult? hoveredBar;
 
+  /// Creates a bar chart painter.
+  ///
+  /// [theme] and [dataSets] are required and passed to the base class.
+  /// [barWidth] defaults to 20.0 pixels.
+  /// [borderRadius] defaults to 8.0 pixels.
+  /// [isGrouped] defaults to false.
+  /// [animationProgress] defaults to 1.0 (fully animated).
+  ///
+  /// The painter will render bars with rounded corners, gradients, and
+  /// visual feedback for selected/hovered states.
   BarChartPainter({
     required super.theme,
     required super.dataSets,

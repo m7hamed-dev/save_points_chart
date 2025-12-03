@@ -27,7 +27,7 @@ web/
 windows/
 
 # Example app files (not part of the package)
-example/
+# Note: example/ directory is included for pub.dev to detect the example
 lib/main.dart
 lib/screens/
 lib/data/
