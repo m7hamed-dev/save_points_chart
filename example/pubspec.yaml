@@ -1,0 +1,24 @@
+name: save_points_chart_example
+description: Example app demonstrating the save_points_chart package
+publish_to: 'none'
+
+version: 1.2.1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  save_points_chart:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+

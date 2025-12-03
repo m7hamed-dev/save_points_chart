@@ -2,30 +2,136 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/save_points_chart.dart' show LineChartWidget, BarChartWidget;
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
-/// Modern area chart with gradient fills
+/// A modern area chart widget with gradient fills and smooth animations.
+///
+/// This widget displays one or more data series as filled areas with optional
+/// points and interactive tooltips. Area charts are useful for showing
+/// cumulative values over time.
+///
+/// ## Features
+/// - Multiple data series support
+/// - Smooth animations
+/// - Gradient area fills
+/// - Interactive point tapping
+/// - Loading and error states
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// AreaChartWidget(
+///   dataSets: [
+///     ChartDataSet(
+///       label: 'Users',
+///       color: Colors.blue,
+///       dataPoints: [
+///         ChartDataPoint(x: 0, y: 100),
+///         ChartDataPoint(x: 1, y: 150),
+///       ],
+///     ),
+///   ],
+///   theme: ChartTheme.light(),
+///   title: 'Active Users',
+///   onPointTap: (point, datasetIndex, pointIndex, position) {
+///     print('Tapped: ${point.y}');
+///   },
+/// )
+/// ```
+///
+/// See also:
+/// - [LineChartWidget] for line charts
+/// - [BarChartWidget] for bar charts
 class AreaChartWidget extends StatefulWidget {
+  /// The data sets to display in the chart.
+  ///
+  /// Must not be empty. Each dataset must contain at least one data point.
   final List<ChartDataSet> dataSets;
+
+  /// The theme to use for styling the chart.
+  ///
+  /// If null, the theme will be inferred from the current Material theme.
   final ChartTheme? theme;
+
+  /// The width of the line connecting data points.
+  ///
+  /// Defaults to 3.0 pixels.
   final double lineWidth;
+
+  /// Whether to show data points on the chart.
+  ///
+  /// Defaults to true.
   final bool showPoints;
+
+  /// Whether to show the grid lines.
+  ///
+  /// Defaults to true.
   final bool showGrid;
+
+  /// Whether to show the axis lines.
+  ///
+  /// Defaults to true.
   final bool showAxis;
+
+  /// Whether to show axis labels.
+  ///
+  /// Defaults to true.
   final bool showLabel;
+
+  /// The title displayed above the chart.
+  ///
+  /// Optional. If null, no title is shown.
   final String? title;
+
+  /// The subtitle displayed below the title.
+  ///
+  /// Optional. If null, no subtitle is shown.
   final String? subtitle;
+
+  /// Whether to apply glassmorphism effects to the chart container.
+  ///
+  /// Defaults to false.
   final bool useGlassmorphism;
+
+  /// Whether to apply neumorphism effects to the chart container.
+  ///
+  /// Defaults to false.
   final bool useNeumorphism;
+
+  /// Callback invoked when a data point is tapped.
+  ///
+  /// Provides the tapped point, dataset index, point index, and global position.
+  /// Optional. If null, tapping is disabled.
   final ChartPointCallback? onPointTap;
+
+  /// Whether the chart is in a loading state.
+  ///
+  /// When true, a loading indicator is displayed. Defaults to false.
   final bool isLoading;
+
+  /// Whether the chart is in an error state.
+  ///
+  /// When true, an error message is displayed. Defaults to false.
   final bool isError;
+
+  /// The error message to display when [isError] is true.
+  ///
+  /// If null, a default error message is shown.
   final String? errorMessage;
 
+  /// Creates an area chart widget.
+  ///
+  /// [dataSets] must not be empty. Each dataset must contain at least one
+  /// data point. [theme] is optional and will be inferred from the Material
+  /// theme if not provided.
+  ///
+  /// The [lineWidth] defaults to 3.0 pixels. Use [onPointTap] to handle
+  /// user interactions with data points.
   const AreaChartWidget({
     super.key,
     required this.dataSets,
