@@ -173,6 +173,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Description**: Shortened package description to meet pub.dev requirements (60-180 characters)
   - Description now optimized for search engine display
 
+## [1.3.1] - 2025-01-27
+
+### Improved
+- **Documentation**: Added comprehensive documentation for BarChartPainter
+  - Documented class, constructor, and all public properties
+  - Added examples and usage information
+  - Improved API documentation coverage
+
+### Fixed
+- **Example Detection**: Fixed .pubignore to include example directory for pub.dev detection
+  - Example app is now properly included in published package
+- **Documentation References**: Fixed import for BarChartWidget reference in BarChartPainter documentation
+
 ## [Unreleased]
 
 ### Planned
