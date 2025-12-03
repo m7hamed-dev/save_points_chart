@@ -154,6 +154,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added screenshots section to README
 - Updated documentation with edge case handling information
 
+## [1.3.0] - 2025-01-27
+
+### Added
+- **Example App**: Added comprehensive example application demonstrating all chart types
+  - Example directory with working demo app
+  - Shows Line, Area, Bar, Pie, and Donut charts
+  - Includes interactive callbacks and theme switching
+  - Demonstrates best practices for using the library
+
+### Improved
+- **Documentation**: Enhanced documentation for AreaChartWidget
+  - Added comprehensive class-level documentation with examples
+  - Documented all public properties and constructor parameters
+  - Improved API documentation coverage
+
+### Fixed
+- **Package Description**: Shortened package description to meet pub.dev requirements (60-180 characters)
+  - Description now optimized for search engine display
+
 ## [Unreleased]
 
 ### Planned
