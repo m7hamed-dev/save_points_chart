@@ -9,6 +9,8 @@ A modern, high-performance Flutter charting library with full theme support, fea
 
 Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.netlify.app/)**
 
+## بلاش إندهاش لسه التقيل مجاش
+
 ## 🎯 Features
 
 - **7 Chart Types**: Line, Bar, Area, Pie, Donut, Radial, and Sparkline charts
