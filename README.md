@@ -87,6 +87,8 @@ LineChartWidget(
 
 ![Screenshot 10](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-10.png)
 
+![Screenshot 11](https://raw.githubusercontent.com/m7hamed-dev/save-points-charts-docs/main/screenshots/screenshot-11.png)
+
 </div>
 
 ## 📦 Dependencies
