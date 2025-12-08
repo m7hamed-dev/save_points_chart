@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/save_points_chart.dart';
-
 import 'widgets/area_chart_card.dart';
 import 'widgets/bar_chart_card.dart';
 import 'widgets/donut_chart_card.dart';
@@ -45,16 +44,7 @@ class _ChartExamplePageState extends State<ChartExamplePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Save Points Chart Examples'),
-        actions: [
-          IconButton(
-            icon: Icon(_isDarkMode ? Icons.light_mode : Icons.dark_mode),
-            onPressed: () {
-              setState(() {
-                _isDarkMode = !_isDarkMode;
-              });
-            },
-          ),
-        ],
+        actions: [_iconChangeTheme()],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -70,6 +60,17 @@ class _ChartExamplePageState extends State<ChartExamplePage> {
           DonutChartCard(theme: theme),
         ],
       ),
+    );
+  }
+
+  IconButton _iconChangeTheme() {
+    return IconButton(
+      icon: Icon(_isDarkMode ? Icons.light_mode : Icons.dark_mode),
+      onPressed: () {
+        setState(() {
+          _isDarkMode = !_isDarkMode;
+        });
+      },
     );
   }
 }
