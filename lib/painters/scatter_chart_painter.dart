@@ -23,7 +23,7 @@ class ScatterChartPainter extends BaseChartPainter {
   final ChartInteractionResult? hoveredPoint;
 
   /// Creates a scatter chart painter.
-  ScatterChartPainter({
+  const ScatterChartPainter({
     required super.theme,
     required super.dataSets,
     super.showGrid,
@@ -90,9 +90,12 @@ class ScatterChartPainter extends BaseChartPainter {
       final dataSet = dataSets[datasetIndex];
       final color = dataSet.color;
 
-      for (int pointIndex = 0; pointIndex < dataSet.dataPoints.length; pointIndex++) {
+      for (int pointIndex = 0;
+          pointIndex < dataSet.dataPoints.length;
+          pointIndex++) {
         final point = dataSet.dataPoints[pointIndex];
-        final canvasPoint = pointToCanvas(point, chartSize, minX, maxX, minY, maxY);
+        final canvasPoint =
+            pointToCanvas(point, chartSize, minX, maxX, minY, maxY);
 
         // Check if this point is selected or hovered
         final isSelected = selectedPoint?.datasetIndex == datasetIndex &&
@@ -101,7 +104,8 @@ class ScatterChartPainter extends BaseChartPainter {
             hoveredPoint?.elementIndex == pointIndex;
 
         // Determine point size and color based on state
-        final currentSize = isSelected || isHovered ? pointSize * 1.5 : pointSize;
+        final currentSize =
+            isSelected || isHovered ? pointSize * 1.5 : pointSize;
         final currentColor = isSelected || isHovered
             ? color.withValues(alpha: 1.0)
             : color.withValues(alpha: 0.8);
@@ -146,4 +150,3 @@ class ScatterChartPainter extends BaseChartPainter {
         oldDelegate.hoveredPoint != hoveredPoint;
   }
 }
-

@@ -27,7 +27,7 @@ class BubbleChartPainter extends BaseChartPainter {
   final List<BubbleDataSet> bubbleDataSets;
 
   /// Creates a bubble chart painter.
-  BubbleChartPainter({
+  const BubbleChartPainter({
     required super.theme,
     required this.bubbleDataSets,
     super.showGrid,
@@ -38,7 +38,7 @@ class BubbleChartPainter extends BaseChartPainter {
     this.animationProgress = 1.0,
     this.selectedBubble,
     this.hoveredBubble,
-  }) : super(dataSets: []); // Empty for bubble chart
+  }) : super(dataSets: const []); // Empty for bubble chart
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -83,9 +83,8 @@ class BubbleChartPainter extends BaseChartPainter {
 
     // Calculate size range
     final sizeRange = maxSize - minSize;
-    final sizeScale = sizeRange > 0
-        ? (maxBubbleSize - minBubbleSize) / sizeRange
-        : 1.0;
+    final sizeScale =
+        sizeRange > 0 ? (maxBubbleSize - minBubbleSize) / sizeRange : 1.0;
 
     // Save canvas state
     canvas.save();
@@ -130,10 +129,9 @@ class BubbleChartPainter extends BaseChartPainter {
         final normalizedSize = sizeRange > 0
             ? minBubbleSize + (point.size - minSize) * sizeScale
             : (minBubbleSize + maxBubbleSize) / 2;
-        final currentSize = (isSelected || isHovered
-                ? normalizedSize * 1.2
-                : normalizedSize) *
-            animationProgress;
+        final currentSize =
+            (isSelected || isHovered ? normalizedSize * 1.2 : normalizedSize) *
+                animationProgress;
 
         final currentColor = isSelected || isHovered
             ? color.withValues(alpha: 0.9)
@@ -191,4 +189,3 @@ class BubbleChartPainter extends BaseChartPainter {
         oldDelegate.bubbleDataSets != bubbleDataSets;
   }
 }
-

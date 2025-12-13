@@ -14,7 +14,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
   final ChartInteractionResult? selectedPoint;
   final ChartInteractionResult? hoveredPoint;
 
-  StackedAreaChartPainter({
+  const StackedAreaChartPainter({
     required super.theme,
     required super.dataSets,
     super.showGrid,
@@ -88,14 +88,16 @@ class StackedAreaChartPainter extends BaseChartPainter {
       if (dataSet.dataPoints.isEmpty) continue;
 
       final points = dataSet.dataPoints
-          .map((point) => pointToCanvas(
-                point,
-                chartSize,
-                minX - xPadding,
-                maxX + xPadding,
-                minY,
-                maxYAdjusted,
-              ),)
+          .map(
+            (point) => pointToCanvas(
+              point,
+              chartSize,
+              minX - xPadding,
+              maxX + xPadding,
+              minY,
+              maxYAdjusted,
+            ),
+          )
           .where((p) => p.dx.isFinite && p.dy.isFinite)
           .toList();
 
@@ -124,15 +126,23 @@ class StackedAreaChartPainter extends BaseChartPainter {
         }
 
         final cp1 = Offset(prevPoint.dx + dx * curveSmoothness, prevPoint.dy);
-        final cp2 = Offset(targetPoint.dx - dx * curveSmoothness, targetPoint.dy);
-        upperPath.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, targetPoint.dx,
-            targetPoint.dy,);
+        final cp2 =
+            Offset(targetPoint.dx - dx * curveSmoothness, targetPoint.dy);
+        upperPath.cubicTo(
+          cp1.dx,
+          cp1.dy,
+          cp2.dx,
+          cp2.dy,
+          targetPoint.dx,
+          targetPoint.dy,
+        );
       }
 
       // Build fill path between previous layer and current
       final fillPath = Path();
       final baseline = previousPoints ??
-          List.generate(points.length, (i) => Offset(points[i].dx, chartSize.height));
+          List.generate(
+              points.length, (i) => Offset(points[i].dx, chartSize.height));
 
       // Start at first baseline point
       fillPath.moveTo(baseline.first.dx, baseline.first.dy);
@@ -230,4 +240,3 @@ class StackedAreaChartPainter extends BaseChartPainter {
     return super.shouldRepaint(oldDelegate);
   }
 }
-

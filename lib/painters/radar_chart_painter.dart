@@ -21,7 +21,7 @@ class RadarChartPainter extends BaseChartPainter {
   final double animationProgress;
 
   /// Creates a radar chart painter.
-  RadarChartPainter({
+  const RadarChartPainter({
     required super.theme,
     required this.radarDataSets,
     this.maxValue = 100.0,
@@ -30,7 +30,7 @@ class RadarChartPainter extends BaseChartPainter {
     super.showGrid,
     super.showAxis,
     super.showLabel,
-  }) : super(dataSets: []); // Empty for radar chart
+  }) : super(dataSets: const []); // Empty for radar chart
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -194,4 +194,3 @@ class RadarChartPainter extends BaseChartPainter {
         oldDelegate.animationProgress != animationProgress;
   }
 }
-

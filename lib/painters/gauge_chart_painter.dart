@@ -35,7 +35,7 @@ class GaugeChartPainter extends BaseChartPainter {
   final String? unit;
 
   /// Creates a gauge chart painter.
-  GaugeChartPainter({
+  const GaugeChartPainter({
     required super.theme,
     required this.value,
     this.minValue = 0.0,
@@ -49,7 +49,7 @@ class GaugeChartPainter extends BaseChartPainter {
     super.showGrid,
     super.showAxis,
     super.showLabel,
-  }) : super(dataSets: []); // Empty for gauge chart
+  }) : super(dataSets: const []); // Empty for gauge chart
 
   @override
   void paint(Canvas canvas, Size size) {

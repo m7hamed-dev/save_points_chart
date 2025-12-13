@@ -1011,7 +1011,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: '${dataSet.label} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
+                    datasetLabel:
+                        '${dataSet.label} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
                   );
                 },
               );

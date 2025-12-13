@@ -13,7 +13,7 @@ class LineChartPainter extends BaseChartPainter {
   final ChartInteractionResult? selectedPoint;
   final ChartInteractionResult? hoveredPoint;
 
-  LineChartPainter({
+  const LineChartPainter({
     required super.theme,
     required super.dataSets,
     super.showGrid,

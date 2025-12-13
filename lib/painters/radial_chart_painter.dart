@@ -11,7 +11,7 @@ class RadialChartPainter extends BaseChartPainter {
   final ChartInteractionResult? selectedPoint;
   final ChartInteractionResult? hoveredPoint;
 
-  RadialChartPainter({
+  const RadialChartPainter({
     required super.theme,
     required super.dataSets,
     super.showGrid,

@@ -14,7 +14,7 @@ class PieChartPainter extends CustomPainter {
   final ChartInteractionResult? selectedSegment;
   final bool showLabel;
 
-  PieChartPainter({
+  const PieChartPainter({
     required this.data,
     required this.theme,
     this.centerSpaceRadius = 0.0,

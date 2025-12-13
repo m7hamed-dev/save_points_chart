@@ -5,19 +5,19 @@ import 'package:save_points_chart/models/chart_data.dart';
 
 /// Base painter for all chart types with common utilities
 abstract class BaseChartPainter extends CustomPainter {
-  final ChartTheme theme;
-  final List<ChartDataSet> dataSets;
-  final bool showGrid;
-  final bool showAxis;
-  final bool showLabel;
-
-  BaseChartPainter({
+  const BaseChartPainter({
     required this.theme,
     required this.dataSets,
     this.showGrid = true,
     this.showAxis = true,
     this.showLabel = true,
   });
+
+  final ChartTheme theme;
+  final List<ChartDataSet> dataSets;
+  final bool showGrid;
+  final bool showAxis;
+  final bool showLabel;
 
   @override
   bool shouldRepaint(covariant BaseChartPainter oldDelegate) {
