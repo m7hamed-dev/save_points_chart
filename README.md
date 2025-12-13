@@ -1,6 +1,6 @@
 # Save Points Chart 📊
 
-A modern, high-performance Flutter charting library with full theme support, featuring 8 chart types, Material 3 design, smooth animations, and interactive context menus.
+A modern, high-performance Flutter charting library with full theme support, featuring 12 chart types, Material 3 design, smooth animations, and interactive context menus.
 
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,13 +13,13 @@ Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.ne
 
 ## 🎯 Features
 
-- **8 Chart Types**: Line, Bar, Area, **Stacked Area**, Pie, Donut, Radial, and Sparkline charts
+- **12 Chart Types**: Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, and Gauge charts
 - **Zero Dependencies**: No external packages required - uses only Flutter SDK
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
 - **Full Theme Support**: Automatic light/dark theme adaptation with InheritedWidget
 - **Interactive Context Menus**: Awesome context menus on tap with actions
 - **Haptic Feedback**: Tactile feedback on all chart interactions for better UX
-- **Hover Support**: Mouse hover effects on Line, Bar, and Radial charts
+- **Hover Support**: Mouse hover effects on Line, Bar, Area, Scatter, Bubble, and Radial charts
 - **High Performance**: Optimized rendering with cached calculations and minimal rebuilds
 - **Smooth Animations**: Beautiful entrance animations for all chart types
 - **Clean Architecture**: Modular, reusable, and maintainable code
@@ -106,7 +106,7 @@ lib/
 ├── models/          # Data models (ChartDataPoint, PieData, ChartDataSet)
 ├── theme/           # Theme configuration (ChartTheme)
 ├── painters/        # Custom painters (BaseChartPainter, LineChartPainter, etc.)
-├── widgets/          # Chart widgets (Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline)
+├── widgets/          # Chart widgets (Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, Gauge)
 ├── providers/        # Theme provider for state management
 ├── data/            # Sample data generators
 └── screens/         # Demo screens
@@ -262,7 +262,7 @@ LineChartWidget(
 
 ### Hover Support
 
-Line, Bar, and Radial charts support mouse hover with visual feedback:
+Line, Bar, Area, Scatter, Bubble, and Radial charts support mouse hover with visual feedback:
 
 ```dart
 LineChartWidget(
@@ -347,6 +347,14 @@ Or check out the example app in the repository to see all chart types in action.
 - Filled areas with gradients
 - Smooth curves
 - Multiple datasets overlay
+- Interactive point tapping
+
+### Stacked Area Chart
+- Cumulative multi-series visualization
+- Stacked layers for trend comparison
+- Multiple datasets required
+- Smooth gradient fills
+- Interactive point tapping
 
 ### Pie Chart
 - Percentage labels
@@ -371,6 +379,34 @@ Or check out the example app in the repository to see all chart types in action.
 - Positive/negative color coding
 - Trend visualization
 
+### Scatter Chart
+- Relationship visualization
+- Correlation analysis
+- Multiple data series support
+- Interactive point tapping
+- Mouse hover support
+
+### Bubble Chart
+- Three-dimensional data visualization
+- Size-based encoding
+- Multiple data series
+- Interactive bubble tapping
+- Mouse hover support
+
+### Radar Chart
+- Multi-dimensional data comparison
+- Spider/web chart visualization
+- Multiple series overlay
+- Customizable grid levels
+- Performance metrics display
+
+### Gauge Chart
+- Single metric visualization
+- KPI and progress indicators
+- Customizable segments
+- Semi-circular or circular gauge
+- Center label and unit display
+
 ## 🎨 Design Effects
 
 ### Glassmorphism
@@ -382,7 +418,7 @@ Enable with `useNeumorphism: true` for soft shadows and embossed appearance.
 ## 📝 Example Screens
 
 The demo screen includes:
-- Navigation rail for chart type selection
+- Drawer navigation for chart type selection
 - Theme toggle button
 - Design effect selector (Glassmorphism/Neumorphism)
 - Multiple chart examples per type
