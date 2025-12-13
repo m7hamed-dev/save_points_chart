@@ -69,11 +69,12 @@ LineChartWidget(
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif" alt="Demo Video" width="600"/>
+[![Demo Video](https://img.shields.io/badge/📹-Watch%20Demo%20Video-blue?style=for-the-badge)](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
 
 </div>
 
-> **Note:** If the video doesn't display above, [click here to view it directly](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
+> **📹 [Click here to watch the full demo video](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)**  
+> The demo showcases all 12 chart types with interactive features, animations, and theme switching.
 
 ## 📦 Dependencies
 
