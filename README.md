@@ -69,7 +69,7 @@ LineChartWidget(
 
 <div align="center">
 
-![Demo Video](screenshots/video.gif)
+![Demo Video](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
 
 </div>
 
