@@ -40,17 +40,17 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
       appBar: AppBar(
         title: const Text('Modern Charts'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bug_report),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ChartTestScreen(),
-                ),
-              );
-            },
-            tooltip: 'Test NaN & Edge Cases',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.bug_report),
+          //   onPressed: () {
+          //     Navigator.of(context).push(
+          //       MaterialPageRoute(
+          //         builder: (context) => const ChartTestScreen(),
+          //       ),
+          //     );
+          //   },
+          //   tooltip: 'Test NaN & Edge Cases',
+          // ),
           IconButton(
             icon: Icon(
               themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
