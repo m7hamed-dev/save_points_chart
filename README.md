@@ -71,6 +71,8 @@ LineChartWidget(
 
 [![📹 Watch Demo Video](https://img.shields.io/badge/📹-Watch%20Demo%20Video-6366F1?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
 
+screenshots/video.gif
+
 </div>
 
 > **📹 [Click here to watch the full demo video](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)**  
