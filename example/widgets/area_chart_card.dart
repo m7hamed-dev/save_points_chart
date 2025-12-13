@@ -52,4 +52,3 @@ class AreaChartCard extends StatelessWidget {
     );
   }
 }
-

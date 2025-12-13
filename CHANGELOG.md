@@ -186,6 +186,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Example app is now properly included in published package
 - **Documentation References**: Fixed import for BarChartWidget reference in BarChartPainter documentation
 
+## [1.4.0] - 2025-12-13
+
+### Added
+- **4 New Chart Types**: Expanded from 8 to 12 chart types
+  - **Scatter Chart**: Relationship visualization with correlation analysis
+  - **Bubble Chart**: Three-dimensional data visualization with size encoding
+  - **Radar Chart**: Multi-dimensional data comparison with spider/web visualization
+  - **Gauge Chart**: Single metric visualization for KPIs and progress indicators
+- **Stacked Area Chart**: Cumulative multi-series visualization with stacked layers
+- **Drawer Navigation**: Replaced NavigationRail with Drawer for better mobile experience
+  - Modern drawer with gradient header
+  - Visual selection indicators
+  - Auto-close on selection
+  - Better mobile-friendly navigation
+
+### Improved
+- **Documentation**: Updated README to reflect all 12 chart types
+  - Complete chart type descriptions
+  - Updated feature list
+  - Replaced screenshots with animated demo video
+- **UI/UX**: Enhanced navigation experience with drawer
+  - Better mobile responsiveness
+  - Improved visual hierarchy
+  - Theme-aware drawer styling
+
+### Fixed
+- **Empty Dataset Test**: Fixed test case that was causing assertion errors
+  - Replaced with informative message explaining expected behavior
+  - Better error handling documentation
+
+### Changed
+- **Chart Count**: Library now supports 12 chart types (previously 8)
+- **Navigation**: Changed from NavigationRail to Drawer for better cross-platform support
+- **Demo**: Replaced static screenshots with animated GIF demo
+
 ## [Unreleased]
 
 ### Planned
@@ -196,5 +231,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export functionality (PNG, SVG)
 - Zoom and pan interactions
 - Real-time data streaming support
-- Stacked Area chart widget
 

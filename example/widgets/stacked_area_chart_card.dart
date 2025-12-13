@@ -84,4 +84,3 @@ class StackedAreaChartCard extends StatelessWidget {
     }
   }
 }
-

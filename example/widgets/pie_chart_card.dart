@@ -60,4 +60,3 @@ class PieChartCard extends StatelessWidget {
     );
   }
 }
-

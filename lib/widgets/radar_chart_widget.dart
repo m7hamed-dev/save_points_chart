@@ -143,4 +143,3 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
     );
   }
 }
-

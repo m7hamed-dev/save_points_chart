@@ -159,4 +159,3 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
     );
   }
 }
-

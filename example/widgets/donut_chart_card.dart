@@ -55,4 +55,3 @@ class DonutChartCard extends StatelessWidget {
     );
   }
 }
-

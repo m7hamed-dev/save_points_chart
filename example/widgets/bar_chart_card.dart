@@ -50,4 +50,3 @@ class BarChartCard extends StatelessWidget {
     );
   }
 }
-

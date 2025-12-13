@@ -252,14 +252,15 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
         points.add(ChartDataPoint(x: p.x, y: sum, label: p.label));
       }
 
-      cumulative.add(ChartDataSet(
-        label: dataSet.label,
-        dataPoints: points,
-        color: dataSet.color,
-      ),);
+      cumulative.add(
+        ChartDataSet(
+          label: dataSet.label,
+          dataPoints: points,
+          color: dataSet.color,
+        ),
+      );
     }
 
     return cumulative;
   }
 }
-

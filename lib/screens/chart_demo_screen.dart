@@ -15,7 +15,6 @@ import 'package:save_points_chart/widgets/gauge_chart_widget.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/data/sample_data.dart';
-import 'package:save_points_chart/screens/chart_test_screen.dart';
 
 class ChartDemoScreen extends StatefulWidget {
   const ChartDemoScreen({super.key});

@@ -260,12 +260,15 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                             final bounds = _calculateBounds();
 
                             // Convert bubble datasets to regular datasets
-                            final regularDataSets = widget.dataSets.map((bubbleDataSet) {
+                            final regularDataSets =
+                                widget.dataSets.map((bubbleDataSet) {
                               return ChartDataSet(
                                 label: bubbleDataSet.label,
                                 color: bubbleDataSet.color,
                                 dataPoints: bubbleDataSet.dataPoints
-                                    .map((p) => ChartDataPoint(x: p.x, y: p.y, label: p.label))
+                                    .map((p) => ChartDataPoint(
+                                        x: p.x, y: p.y, label: p.label,
+                                    ),)
                                     .toList(),
                               );
                             }).toList();
@@ -331,4 +334,3 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
     );
   }
 }
-
