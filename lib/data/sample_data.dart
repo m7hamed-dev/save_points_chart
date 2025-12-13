@@ -115,4 +115,89 @@ class SampleData {
       ),
     ];
   }
+
+  static List<ChartDataSet> generateScatterData() {
+    return [
+      ChartDataSet(
+        label: 'Product A',
+        color: const Color(0xFF6366F1),
+        dataPoints: List.generate(20, (index) {
+          return ChartDataPoint(
+            x: 10 + (index * 5) + (index % 3) * 2,
+            y: 20 + (index * 3) + (index % 4) * 5,
+            label: 'P${index + 1}',
+          );
+        }),
+      ),
+      ChartDataSet(
+        label: 'Product B',
+        color: const Color(0xFF10B981),
+        dataPoints: List.generate(20, (index) {
+          return ChartDataPoint(
+            x: 15 + (index * 4) + (index % 2) * 3,
+            y: 25 + (index * 4) + (index % 3) * 4,
+            label: 'P${index + 1}',
+          );
+        }),
+      ),
+    ];
+  }
+
+  static List<BubbleDataSet> generateBubbleData() {
+    return [
+      BubbleDataSet(
+        label: 'Region A',
+        color: const Color(0xFF6366F1),
+        dataPoints: List.generate(15, (index) {
+          return BubbleDataPoint(
+            x: 10 + (index * 8),
+            y: 20 + (index * 6),
+            size: 20 + (index % 5) * 10,
+            label: 'R${index + 1}',
+          );
+        }),
+      ),
+      BubbleDataSet(
+        label: 'Region B',
+        color: const Color(0xFFEC4899),
+        dataPoints: List.generate(15, (index) {
+          return BubbleDataPoint(
+            x: 15 + (index * 7),
+            y: 25 + (index * 5),
+            size: 25 + (index % 4) * 12,
+            label: 'R${index + 1}',
+          );
+        }),
+      ),
+    ];
+  }
+
+  static List<RadarDataSet> generateRadarData() {
+    return [
+      RadarDataSet(
+        label: 'Team A',
+        color: const Color(0xFF6366F1),
+        dataPoints: const [
+          RadarDataPoint(label: 'Speed', value: 85),
+          RadarDataPoint(label: 'Quality', value: 90),
+          RadarDataPoint(label: 'Design', value: 75),
+          RadarDataPoint(label: 'Support', value: 80),
+          RadarDataPoint(label: 'Features', value: 70),
+          RadarDataPoint(label: 'Value', value: 95),
+        ],
+      ),
+      RadarDataSet(
+        label: 'Team B',
+        color: const Color(0xFF10B981),
+        dataPoints: const [
+          RadarDataPoint(label: 'Speed', value: 70),
+          RadarDataPoint(label: 'Quality', value: 85),
+          RadarDataPoint(label: 'Design', value: 90),
+          RadarDataPoint(label: 'Support', value: 75),
+          RadarDataPoint(label: 'Features', value: 85),
+          RadarDataPoint(label: 'Value', value: 80),
+        ],
+      ),
+    ];
+  }
 }

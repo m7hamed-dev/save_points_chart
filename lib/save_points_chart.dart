@@ -41,6 +41,10 @@ export 'widgets/pie_chart_widget.dart';
 export 'widgets/donut_chart_widget.dart';
 export 'widgets/radial_chart_widget.dart';
 export 'widgets/sparkline_chart_widget.dart';
+export 'widgets/scatter_chart_widget.dart';
+export 'widgets/bubble_chart_widget.dart';
+export 'widgets/radar_chart_widget.dart';
+export 'widgets/gauge_chart_widget.dart';
 export 'widgets/chart_container.dart';
 export 'widgets/chart_context_menu.dart';
 

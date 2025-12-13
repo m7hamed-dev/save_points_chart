@@ -8,6 +8,10 @@ import 'package:save_points_chart/widgets/pie_chart_widget.dart';
 import 'package:save_points_chart/widgets/donut_chart_widget.dart';
 import 'package:save_points_chart/widgets/radial_chart_widget.dart';
 import 'package:save_points_chart/widgets/sparkline_chart_widget.dart';
+import 'package:save_points_chart/widgets/scatter_chart_widget.dart';
+import 'package:save_points_chart/widgets/bubble_chart_widget.dart';
+import 'package:save_points_chart/widgets/radar_chart_widget.dart';
+import 'package:save_points_chart/widgets/gauge_chart_widget.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/data/sample_data.dart';
@@ -163,6 +167,26 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 selectedIcon: Icon(Icons.trending_up),
                 label: Text('Sparkline'),
               ),
+              NavigationRailDestination(
+                icon: Icon(Icons.scatter_plot),
+                selectedIcon: Icon(Icons.scatter_plot),
+                label: Text('Scatter'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.bubble_chart),
+                selectedIcon: Icon(Icons.bubble_chart),
+                label: Text('Bubble'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.polyline),
+                selectedIcon: Icon(Icons.polyline),
+                label: Text('Radar'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.speed),
+                selectedIcon: Icon(Icons.speed),
+                label: Text('Gauge'),
+              ),
             ],
           ),
           const VerticalDivider(thickness: 1, width: 1),
@@ -188,6 +212,14 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         return _buildRadialChart(chartTheme);
       case 6:
         return _buildSparklineChart(chartTheme);
+      case 7:
+        return _buildScatterChart(chartTheme);
+      case 8:
+        return _buildBubbleChart(chartTheme);
+      case 9:
+        return _buildRadarChart(chartTheme);
+      case 10:
+        return _buildGaugeChart(chartTheme);
       default:
         return _buildLineChart(chartTheme);
     }
@@ -901,6 +933,151 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScatterChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ScatterChartWidget(
+            dataSets: SampleData.generateScatterData(),
+            theme: chartTheme,
+            title: 'Product Correlation',
+            subtitle: 'Scatter plot showing relationship - Tap on points!',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+            onPointTap: (point, datasetIndex, pointIndex, position) {
+              final dataSet = SampleData.generateScatterData()[datasetIndex];
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: null,
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: pointIndex,
+                datasetLabel: dataSet.label,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(
+                    context,
+                    point: point,
+                    datasetLabel: dataSet.label,
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBubbleChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          BubbleChartWidget(
+            dataSets: SampleData.generateBubbleData(),
+            theme: chartTheme,
+            title: 'Regional Performance',
+            subtitle: 'Bubble chart with size dimension - Tap on bubbles!',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+            onBubbleTap: (point, datasetIndex, pointIndex, position) {
+              final dataSet = SampleData.generateBubbleData()[datasetIndex];
+              final bubblePoint = dataSet.dataPoints[pointIndex];
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: null,
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: pointIndex,
+                datasetLabel: dataSet.label,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(
+                    context,
+                    point: point,
+                    datasetLabel: '${dataSet.label} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRadarChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          RadarChartWidget(
+            dataSets: SampleData.generateRadarData(),
+            theme: chartTheme,
+            title: 'Team Performance Comparison',
+            subtitle: 'Multi-dimensional radar chart',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGaugeChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GaugeChartWidget(
+            value: 75,
+            theme: chartTheme,
+            title: 'Performance Score',
+            subtitle: 'Current performance metric',
+            centerLabel: 'Score',
+            unit: '%',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+          const SizedBox(height: 24),
+          GaugeChartWidget(
+            value: 85,
+            theme: chartTheme,
+            title: 'Customer Satisfaction',
+            subtitle: 'Customer satisfaction rating',
+            centerLabel: 'Satisfaction',
+            unit: '%',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+          const SizedBox(height: 24),
+          GaugeChartWidget(
+            value: 60,
+            theme: chartTheme,
+            title: 'Sales Target',
+            subtitle: 'Progress towards sales goal',
+            centerLabel: 'Progress',
+            unit: '%',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
           ),
         ],
       ),

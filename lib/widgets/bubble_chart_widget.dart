@@ -1,0 +1,334 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/painters/bubble_chart_painter.dart';
+import 'package:save_points_chart/utils/chart_interaction_helper.dart';
+import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
+
+/// A modern bubble chart widget for visualizing three-dimensional data.
+///
+/// This widget displays data points as bubbles where x, y represent position
+/// and size represents a third dimension.
+///
+/// ## Features
+/// - Multiple data series support
+/// - Interactive bubble tapping
+/// - Customizable bubble size range
+/// - Smooth animations
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// BubbleChartWidget(
+///   dataSets: [
+///     BubbleDataSet(
+///       label: 'Products',
+///       color: Colors.blue,
+///       dataPoints: [
+///         BubbleDataPoint(x: 10, y: 20, size: 50),
+///         BubbleDataPoint(x: 15, y: 30, size: 75),
+///       ],
+///     ),
+///   ],
+///   theme: ChartTheme.light(),
+/// )
+/// ```
+class BubbleChartWidget extends StatefulWidget {
+  final List<BubbleDataSet> dataSets;
+  final ChartTheme? theme;
+  final double minBubbleSize;
+  final double maxBubbleSize;
+  final bool showGrid;
+  final bool showAxis;
+  final bool showLabel;
+  final String? title;
+  final String? subtitle;
+  final bool useGlassmorphism;
+  final bool useNeumorphism;
+  final ChartPointCallback? onBubbleTap;
+  final ChartPointHoverCallback? onBubbleHover;
+  final bool isLoading;
+  final bool isError;
+  final String? errorMessage;
+
+  BubbleChartWidget({
+    super.key,
+    required this.dataSets,
+    this.theme,
+    this.minBubbleSize = 5.0,
+    this.maxBubbleSize = 30.0,
+    this.showGrid = true,
+    this.showAxis = true,
+    this.showLabel = true,
+    this.title,
+    this.subtitle,
+    this.useGlassmorphism = false,
+    this.useNeumorphism = false,
+    this.onBubbleTap,
+    this.onBubbleHover,
+    this.isLoading = false,
+    this.isError = false,
+    this.errorMessage,
+  })  : assert(
+          dataSets.isNotEmpty,
+          'BubbleChartWidget requires at least one data set',
+        ),
+        assert(minBubbleSize > 0, 'Min bubble size must be positive'),
+        assert(maxBubbleSize > minBubbleSize, 'Max must be greater than min');
+
+  @override
+  State<BubbleChartWidget> createState() => _BubbleChartWidgetState();
+}
+
+class _BubbleChartWidgetState extends State<BubbleChartWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  ChartInteractionResult? _selectedBubble;
+  ChartInteractionResult? _hoveredBubble;
+
+  Map<String, double>? _cachedBounds;
+  List<BubbleDataSet>? _cachedDataSets;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Map<String, double> _calculateBounds() {
+    if (_cachedBounds != null &&
+        _cachedDataSets != null &&
+        _cachedDataSets == widget.dataSets) {
+      return _cachedBounds!;
+    }
+
+    double minX = double.infinity;
+    double maxX = double.negativeInfinity;
+    double minY = double.infinity;
+    double maxY = double.negativeInfinity;
+
+    for (final dataSet in widget.dataSets) {
+      for (final point in dataSet.dataPoints) {
+        if (point.x < minX) minX = point.x;
+        if (point.x > maxX) maxX = point.x;
+        if (point.y < minY) minY = point.y;
+        if (point.y > maxY) maxY = point.y;
+      }
+    }
+
+    final xRange = maxX - minX;
+    final yRange = maxY - minY;
+    _cachedBounds = {
+      'minX': minX - xRange * 0.1,
+      'maxX': maxX + xRange * 0.1,
+      'minY': minY - yRange * 0.1,
+      'maxY': maxY + yRange * 0.1,
+    };
+    _cachedDataSets = List.from(widget.dataSets);
+
+    return _cachedBounds!;
+  }
+
+  void _handleHover(Offset position, Size chartSize) {
+    if (widget.onBubbleHover == null) return;
+
+    final bounds = _calculateBounds();
+    final chartPosition = Offset(
+      position.dx - 50.0,
+      position.dy - 20.0,
+    );
+
+    // Convert bubble datasets to regular datasets for interaction helper
+    final regularDataSets = widget.dataSets.map((bubbleDataSet) {
+      return ChartDataSet(
+        label: bubbleDataSet.label,
+        color: bubbleDataSet.color,
+        dataPoints: bubbleDataSet.dataPoints
+            .map((p) => ChartDataPoint(x: p.x, y: p.y, label: p.label))
+            .toList(),
+      );
+    }).toList();
+
+    final result = ChartInteractionHelper.findNearestPoint(
+      chartPosition,
+      regularDataSets,
+      chartSize,
+      bounds['minX']!,
+      bounds['maxX']!,
+      bounds['minY']!,
+      bounds['maxY']!,
+      ChartInteractionConstants.hoverRadius * 3,
+    );
+
+    if (result != null && result.isHit) {
+      if (_hoveredBubble?.elementIndex != result.elementIndex ||
+          _hoveredBubble?.datasetIndex != result.datasetIndex) {
+        setState(() {
+          _hoveredBubble = result;
+        });
+        widget.onBubbleHover?.call(
+          result.point,
+          result.datasetIndex,
+          result.elementIndex,
+        );
+      }
+    } else {
+      if (_hoveredBubble != null) {
+        setState(() {
+          _hoveredBubble = null;
+        });
+        widget.onBubbleHover?.call(null, null, null);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    return ChartContainer(
+      theme: effectiveTheme,
+      title: widget.title,
+      subtitle: widget.subtitle,
+      useGlassmorphism: widget.useGlassmorphism,
+      useNeumorphism: widget.useNeumorphism,
+      isLoading: widget.isLoading,
+      isError: widget.isError,
+      errorMessage: widget.errorMessage,
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final chartSize = Size(
+                  constraints.maxWidth - 70,
+                  240,
+                );
+
+                return MouseRegion(
+                  onHover: widget.onBubbleHover != null
+                      ? (event) {
+                          _handleHover(event.localPosition, chartSize);
+                        }
+                      : null,
+                  onExit: widget.onBubbleHover != null
+                      ? (_) {
+                          setState(() {
+                            _hoveredBubble = null;
+                          });
+                          widget.onBubbleHover?.call(null, null, null);
+                        }
+                      : null,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTapDown: widget.onBubbleTap != null
+                        ? (details) {
+                            ChartContextMenuHelper.hide();
+
+                            const leftPadding = 50.0;
+                            const topPadding = 20.0;
+                            final chartPosition = Offset(
+                              details.localPosition.dx - leftPadding,
+                              details.localPosition.dy - topPadding,
+                            );
+
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
+
+                            final bounds = _calculateBounds();
+
+                            // Convert bubble datasets to regular datasets
+                            final regularDataSets = widget.dataSets.map((bubbleDataSet) {
+                              return ChartDataSet(
+                                label: bubbleDataSet.label,
+                                color: bubbleDataSet.color,
+                                dataPoints: bubbleDataSet.dataPoints
+                                    .map((p) => ChartDataPoint(x: p.x, y: p.y, label: p.label))
+                                    .toList(),
+                              );
+                            }).toList();
+
+                            final result =
+                                ChartInteractionHelper.findNearestPoint(
+                              chartPosition,
+                              regularDataSets,
+                              chartSize,
+                              bounds['minX']!,
+                              bounds['maxX']!,
+                              bounds['minY']!,
+                              bounds['maxY']!,
+                              ChartInteractionConstants.tapRadius * 3,
+                            );
+
+                            if (result != null && result.isHit) {
+                              HapticFeedback.selectionClick();
+                              setState(() {
+                                _selectedBubble = result;
+                              });
+                              Future.microtask(() {
+                                widget.onBubbleTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              setState(() {
+                                _selectedBubble = null;
+                              });
+                            }
+                          }
+                        : null,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: 300,
+                      child: CustomPaint(
+                        size: Size(constraints.maxWidth, 300),
+                        painter: BubbleChartPainter(
+                          theme: effectiveTheme,
+                          bubbleDataSets: widget.dataSets,
+                          minBubbleSize: widget.minBubbleSize,
+                          maxBubbleSize: widget.maxBubbleSize,
+                          showGrid: widget.showGrid,
+                          showAxis: widget.showAxis,
+                          showLabel: widget.showLabel,
+                          animationProgress: _animation.value,
+                          selectedBubble: _selectedBubble,
+                          hoveredBubble: _hoveredBubble,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+

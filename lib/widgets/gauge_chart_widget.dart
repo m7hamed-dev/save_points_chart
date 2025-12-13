@@ -1,0 +1,162 @@
+import 'package:flutter/material.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/painters/gauge_chart_painter.dart';
+import 'package:save_points_chart/widgets/chart_container.dart';
+
+/// A modern gauge chart widget for displaying a single metric value.
+///
+/// This widget displays a value on a semi-circular or circular gauge,
+/// useful for KPIs, progress indicators, and single-value metrics.
+///
+/// ## Features
+/// - Customizable value range
+/// - Smooth animations
+/// - Customizable segments
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// GaugeChartWidget(
+///   value: 75,
+///   minValue: 0,
+///   maxValue: 100,
+///   theme: ChartTheme.light(),
+///   title: 'Performance',
+/// )
+/// ```
+class GaugeChartWidget extends StatefulWidget {
+  /// The current value to display on the gauge.
+  final double value;
+
+  /// The minimum value of the gauge.
+  final double minValue;
+
+  /// The maximum value of the gauge.
+  final double maxValue;
+
+  /// The number of segments/divisions on the gauge.
+  final int segments;
+
+  /// The start angle in degrees (0 is right, positive is clockwise).
+  final double startAngleDegrees;
+
+  /// The sweep angle in degrees (how much of the circle to use).
+  final double sweepAngleDegrees;
+
+  final ChartTheme? theme;
+  final bool showGrid;
+  final bool showAxis;
+  final bool showLabel;
+  final String? title;
+  final String? subtitle;
+  final String? centerLabel;
+  final String? unit;
+  final bool useGlassmorphism;
+  final bool useNeumorphism;
+  final bool isLoading;
+  final bool isError;
+  final String? errorMessage;
+
+  const GaugeChartWidget({
+    super.key,
+    required this.value,
+    this.minValue = 0.0,
+    this.maxValue = 100.0,
+    this.segments = 5,
+    this.startAngleDegrees = 180.0,
+    this.sweepAngleDegrees = 180.0,
+    this.theme,
+    this.showGrid = true,
+    this.showAxis = true,
+    this.showLabel = true,
+    this.title,
+    this.subtitle,
+    this.centerLabel,
+    this.unit,
+    this.useGlassmorphism = false,
+    this.useNeumorphism = false,
+    this.isLoading = false,
+    this.isError = false,
+    this.errorMessage,
+  })  : assert(maxValue > minValue, 'Max value must be greater than min value'),
+        assert(segments > 0, 'Segments must be positive');
+
+  @override
+  State<GaugeChartWidget> createState() => _GaugeChartWidgetState();
+}
+
+class _GaugeChartWidgetState extends State<GaugeChartWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    return ChartContainer(
+      theme: effectiveTheme,
+      title: widget.title,
+      subtitle: widget.subtitle,
+      useGlassmorphism: widget.useGlassmorphism,
+      useNeumorphism: widget.useNeumorphism,
+      isLoading: widget.isLoading,
+      isError: widget.isError,
+      errorMessage: widget.errorMessage,
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return SizedBox(
+                  width: constraints.maxWidth,
+                  height: 300,
+                  child: CustomPaint(
+                    size: Size(constraints.maxWidth, 300),
+                    painter: GaugeChartPainter(
+                      theme: effectiveTheme,
+                      value: widget.value,
+                      minValue: widget.minValue,
+                      maxValue: widget.maxValue,
+                      segments: widget.segments,
+                      startAngle: widget.startAngleDegrees * 3.14159 / 180,
+                      sweepAngle: widget.sweepAngleDegrees * 3.14159 / 180,
+                      showGrid: widget.showGrid,
+                      showAxis: widget.showAxis,
+                      showLabel: widget.showLabel,
+                      centerLabel: widget.centerLabel,
+                      unit: widget.unit,
+                      animationProgress: _animation.value,
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+

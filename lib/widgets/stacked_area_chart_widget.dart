@@ -256,7 +256,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
         label: dataSet.label,
         dataPoints: points,
         color: dataSet.color,
-      ));
+      ),);
     }
 
     return cumulative;

@@ -95,7 +95,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
                 maxX + xPadding,
                 minY,
                 maxYAdjusted,
-              ))
+              ),)
           .where((p) => p.dx.isFinite && p.dy.isFinite)
           .toList();
 
@@ -126,7 +126,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
         final cp1 = Offset(prevPoint.dx + dx * curveSmoothness, prevPoint.dy);
         final cp2 = Offset(targetPoint.dx - dx * curveSmoothness, targetPoint.dy);
         upperPath.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, targetPoint.dx,
-            targetPoint.dy);
+            targetPoint.dy,);
       }
 
       // Build fill path between previous layer and current

@@ -92,6 +92,93 @@ class PieData {
   int get hashCode => label.hashCode ^ value.hashCode ^ color.hashCode;
 }
 
+/// Represents a bubble data point with size information.
+///
+/// Extends [ChartDataPoint] with an additional size property for bubble charts.
+/// The size represents the third dimension of data visualization.
+///
+/// Example:
+/// ```dart
+/// BubbleDataPoint(
+///   x: 10,
+///   y: 20,
+///   size: 50,
+///   label: 'Product A',
+/// )
+/// ```
+class BubbleDataPoint extends ChartDataPoint {
+  /// The size of the bubble (third dimension).
+  ///
+  /// This value is used to determine the radius of the bubble.
+  /// Should be positive. Defaults to 10.0.
+  final double size;
+
+  /// Creates a bubble data point.
+  ///
+  /// [x], [y], and [size] are required. [label] is optional.
+  const BubbleDataPoint({
+    required super.x,
+    required super.y,
+    required this.size,
+    super.label,
+  }) : assert(size > 0, 'Bubble size must be positive');
+
+  @override
+  String toString() =>
+      'BubbleDataPoint(x: $x, y: $y, size: $size, label: $label)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is BubbleDataPoint &&
+          runtimeType == other.runtimeType &&
+          size == other.size;
+
+  @override
+  int get hashCode => super.hashCode ^ size.hashCode;
+}
+
+/// Represents a collection of bubble data points.
+///
+/// Similar to [ChartDataSet] but specifically for bubble charts.
+class BubbleDataSet {
+  /// The label for this data series.
+  final String label;
+
+  /// The list of bubble data points in this series.
+  final List<BubbleDataPoint> dataPoints;
+
+  /// The color used to render this data series.
+  final Color color;
+
+  /// Creates a bubble data set.
+  BubbleDataSet({
+    required this.label,
+    required this.dataPoints,
+    required this.color,
+  }) : assert(
+          dataPoints.isNotEmpty,
+          'BubbleDataSet must have at least one data point',
+        );
+
+  @override
+  String toString() =>
+      'BubbleDataSet(label: $label, points: ${dataPoints.length})';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BubbleDataSet &&
+          runtimeType == other.runtimeType &&
+          label == other.label &&
+          dataPoints == other.dataPoints &&
+          color == other.color;
+
+  @override
+  int get hashCode => label.hashCode ^ dataPoints.hashCode ^ color.hashCode;
+}
+
 /// Represents a collection of data points that form a single series in a chart.
 ///
 /// Multiple [ChartDataSet] instances can be used to create multi-series charts
@@ -141,6 +228,85 @@ class ChartDataSet {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ChartDataSet &&
+          runtimeType == other.runtimeType &&
+          label == other.label &&
+          dataPoints == other.dataPoints &&
+          color == other.color;
+
+  @override
+  int get hashCode => label.hashCode ^ dataPoints.hashCode ^ color.hashCode;
+}
+
+/// Represents a radar/spider chart data point.
+///
+/// Each point has a label (axis name) and a value (distance from center).
+///
+/// Example:
+/// ```dart
+/// RadarDataPoint(
+///   label: 'Speed',
+///   value: 80,
+/// )
+/// ```
+class RadarDataPoint {
+  /// The label for this axis (e.g., "Speed", "Quality").
+  final String label;
+
+  /// The value on this axis (0.0 to maxValue).
+  final double value;
+
+  /// Creates a radar data point.
+  const RadarDataPoint({
+    required this.label,
+    required this.value,
+  }) : assert(value >= 0, 'Radar value must be non-negative');
+
+  @override
+  String toString() => 'RadarDataPoint(label: $label, value: $value)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RadarDataPoint &&
+          runtimeType == other.runtimeType &&
+          label == other.label &&
+          value == other.value;
+
+  @override
+  int get hashCode => label.hashCode ^ value.hashCode;
+}
+
+/// Represents a radar/spider chart data set.
+///
+/// Contains multiple axes with values forming a polygon shape.
+class RadarDataSet {
+  /// The label for this data series.
+  final String label;
+
+  /// The list of radar data points (one per axis).
+  final List<RadarDataPoint> dataPoints;
+
+  /// The color used to render this data series.
+  final Color color;
+
+  /// Creates a radar data set.
+  RadarDataSet({
+    required this.label,
+    required this.dataPoints,
+    required this.color,
+  }) : assert(
+          dataPoints.isNotEmpty,
+          'RadarDataSet must have at least one data point',
+        );
+
+  @override
+  String toString() =>
+      'RadarDataSet(label: $label, points: ${dataPoints.length})';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RadarDataSet &&
           runtimeType == other.runtimeType &&
           label == other.label &&
           dataPoints == other.dataPoints &&
