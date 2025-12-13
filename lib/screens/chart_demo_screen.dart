@@ -121,78 +121,135 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
         ],
       ),
-      body: Row(
+      drawer: _buildDrawer(),
+      body: _buildChartContent(chartTheme),
+    );
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            labelType: NavigationRailLabelType.all,
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.show_chart),
-                selectedIcon: Icon(Icons.show_chart),
-                label: Text('Line'),
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF6366F1),
+                  Color(0xFF8B5CF6),
+                ],
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.bar_chart),
-                selectedIcon: Icon(Icons.bar_chart),
-                label: Text('Bar'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.area_chart),
-                selectedIcon: Icon(Icons.area_chart),
-                label: Text('Area'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.pie_chart),
-                selectedIcon: Icon(Icons.pie_chart),
-                label: Text('Pie'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.donut_large),
-                selectedIcon: Icon(Icons.donut_large),
-                label: Text('Donut'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.radar),
-                selectedIcon: Icon(Icons.radar),
-                label: Text('Radial'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.trending_up),
-                selectedIcon: Icon(Icons.trending_up),
-                label: Text('Sparkline'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.scatter_plot),
-                selectedIcon: Icon(Icons.scatter_plot),
-                label: Text('Scatter'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.bubble_chart),
-                selectedIcon: Icon(Icons.bubble_chart),
-                label: Text('Bubble'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.polyline),
-                selectedIcon: Icon(Icons.polyline),
-                label: Text('Radar'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.speed),
-                selectedIcon: Icon(Icons.speed),
-                label: Text('Gauge'),
-              ),
-            ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.show_chart,
+                  size: 48,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Modern Charts',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '12 Chart Types',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(child: _buildChartContent(chartTheme)),
+          _buildDrawerItem(
+            icon: Icons.show_chart,
+            title: 'Line Chart',
+            index: 0,
+          ),
+          _buildDrawerItem(
+            icon: Icons.bar_chart,
+            title: 'Bar Chart',
+            index: 1,
+          ),
+          _buildDrawerItem(
+            icon: Icons.area_chart,
+            title: 'Area Chart',
+            index: 2,
+          ),
+          _buildDrawerItem(
+            icon: Icons.pie_chart,
+            title: 'Pie Chart',
+            index: 3,
+          ),
+          _buildDrawerItem(
+            icon: Icons.donut_large,
+            title: 'Donut Chart',
+            index: 4,
+          ),
+          _buildDrawerItem(
+            icon: Icons.radar,
+            title: 'Radial Chart',
+            index: 5,
+          ),
+          _buildDrawerItem(
+            icon: Icons.trending_up,
+            title: 'Sparkline Chart',
+            index: 6,
+          ),
+          _buildDrawerItem(
+            icon: Icons.scatter_plot,
+            title: 'Scatter Chart',
+            index: 7,
+          ),
+          _buildDrawerItem(
+            icon: Icons.bubble_chart,
+            title: 'Bubble Chart',
+            index: 8,
+          ),
+          _buildDrawerItem(
+            icon: Icons.polyline,
+            title: 'Radar Chart',
+            index: 9,
+          ),
+          _buildDrawerItem(
+            icon: Icons.speed,
+            title: 'Gauge Chart',
+            index: 10,
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required int index,
+  }) {
+    final isSelected = _selectedIndex == index;
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isSelected ? Theme.of(context).colorScheme.primary : null,
+      ),
+      title: Text(title),
+      selected: isSelected,
+      selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+        });
+        Navigator.of(context).pop(); // Close drawer
+      },
     );
   }
 
