@@ -142,7 +142,9 @@ class StackedAreaChartPainter extends BaseChartPainter {
       final fillPath = Path();
       final baseline = previousPoints ??
           List.generate(
-              points.length, (i) => Offset(points[i].dx, chartSize.height));
+            points.length,
+            (i) => Offset(points[i].dx, chartSize.height),
+          );
 
       // Start at first baseline point
       fillPath.moveTo(baseline.first.dx, baseline.first.dy);
