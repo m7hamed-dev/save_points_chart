@@ -96,35 +96,71 @@ class GaugeChartPainter extends BaseChartPainter {
     final clampedValue = value.clamp(minValue, maxValue);
     final normalizedValue = (clampedValue - minValue) / (maxValue - minValue);
     final animatedValue = normalizedValue * animationProgress;
-    final valueAngle = startAngle + (sweepAngle * animatedValue);
+    final sweepAmount = sweepAngle * animatedValue;
+    final valueAngle = startAngle + sweepAmount;
 
-    // Draw value arc with gradient
+    // Validate angles
+    if (!startAngle.isFinite || !valueAngle.isFinite || !sweepAmount.isFinite) {
+      return; // Skip rendering if angles are invalid
+    }
+
+    // Draw value arc with gradient or solid color
     final valueRect = Rect.fromCircle(center: center, radius: radius);
     final primaryColor = theme.gradientColors.isNotEmpty
         ? theme.gradientColors[0]
         : const Color(0xFF6366F1);
-    final gradient = SweepGradient(
-      startAngle: startAngle,
-      endAngle: valueAngle,
-      colors: [
-        primaryColor,
-        primaryColor.withValues(alpha: 0.7),
-      ],
-    );
 
     final valuePaint = Paint()
-      ..shader = gradient.createShader(valueRect)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 20.0
       ..strokeCap = StrokeCap.round;
 
-    canvas.drawArc(
-      valueRect,
-      startAngle,
-      sweepAngle * animatedValue,
-      false,
-      valuePaint,
-    );
+    // Use gradient only if sweep is significant, otherwise use solid color
+    if (sweepAmount.abs() > 0.01 && (valueAngle - startAngle).abs() > 0.01) {
+      // Ensure endAngle is different from startAngle for gradient
+      final effectiveEndAngle = math.max(
+        startAngle + 0.01,
+        valueAngle,
+      );
+
+      // Validate angles are finite and in reasonable range
+      if (effectiveEndAngle.isFinite &&
+          startAngle.isFinite &&
+          (effectiveEndAngle - startAngle).abs() > 0.01) {
+        try {
+          // Use Alignment.center as default (gauge is centered)
+          final gradient = SweepGradient(
+            startAngle: startAngle,
+            endAngle: effectiveEndAngle,
+            colors: [
+              primaryColor,
+              primaryColor.withValues(alpha: 0.7),
+            ],
+          );
+          valuePaint.shader = gradient.createShader(valueRect);
+        } catch (e) {
+          // Fallback to solid color if gradient creation fails
+          valuePaint.color = primaryColor;
+        }
+      } else {
+        // Use solid color if angles are invalid
+        valuePaint.color = primaryColor;
+      }
+    } else {
+      // Use solid color for very small sweeps
+      valuePaint.color = primaryColor;
+    }
+
+    // Only draw arc if sweep is positive
+    if (sweepAmount > 0) {
+      canvas.drawArc(
+        valueRect,
+        startAngle,
+        sweepAmount,
+        false,
+        valuePaint,
+      );
+    }
 
     // Draw value indicator (needle)
     final needleLength = radius * 0.8;
