@@ -69,12 +69,12 @@ LineChartWidget(
 
 <div align="center">
 
-![Demo Video](screenshots/video.gif)
+<img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif" alt="Demo Video" width="600"/>
 
 </div>
 
-> **Note:** The demo video is included in the published package and will display on [pub.dev](https://pub.dev/packages/save_points_chart).  
-> The demo showcases all 12 chart types with interactive features, animations, and theme switching.
+> **Note:** The demo showcases all 12 chart types with interactive features, animations, and theme switching.  
+> The video is also included in the published package on [pub.dev](https://pub.dev/packages/save_points_chart).
 
 ## 📦 Dependencies
 
