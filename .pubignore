@@ -35,8 +35,8 @@ lib/data/
 # Documentation
 doc/
 
-# Screenshots (referenced via GitHub URLs in README, don't need to be in package)
-screenshots/
+# Screenshots - include video.gif for package display
+# screenshots/
 
 # Miscellaneous
 *.log

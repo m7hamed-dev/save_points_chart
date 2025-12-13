@@ -69,9 +69,11 @@ LineChartWidget(
 
 <div align="center">
 
-![Demo Video](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
+<img src="https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif" alt="Demo Video" width="600"/>
 
 </div>
+
+> **Note:** If the video doesn't display above, [click here to view it directly](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
 
 ## 📦 Dependencies
 
