@@ -3,7 +3,7 @@
 A modern, high-performance Flutter charting library with full theme support, featuring 12 chart types, Material 3 design, smooth animations, and interactive context menus.
 
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ### 🌐 Live Demo
 
