@@ -1,6 +1,6 @@
 # Save Points Chart 📊
 
-A modern, high-performance Flutter charting library with full theme support, featuring 7 chart types, Material 3 design, smooth animations, and interactive context menus.
+A modern, high-performance Flutter charting library with full theme support, featuring 8 chart types, Material 3 design, smooth animations, and interactive context menus.
 
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,7 +13,7 @@ Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.ne
 
 ## 🎯 Features
 
-- **7 Chart Types**: Line, Bar, Area, Pie, Donut, Radial, and Sparkline charts
+- **8 Chart Types**: Line, Bar, Area, **Stacked Area**, Pie, Donut, Radial, and Sparkline charts
 - **Zero Dependencies**: No external packages required - uses only Flutter SDK
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
 - **Full Theme Support**: Automatic light/dark theme adaptation with InheritedWidget
@@ -106,7 +106,7 @@ lib/
 ├── models/          # Data models (ChartDataPoint, PieData, ChartDataSet)
 ├── theme/           # Theme configuration (ChartTheme)
 ├── painters/        # Custom painters (BaseChartPainter, LineChartPainter, etc.)
-├── widgets/          # Chart widgets (Line, Bar, Area, Pie, Donut, Radial, Sparkline)
+├── widgets/          # Chart widgets (Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline)
 ├── providers/        # Theme provider for state management
 ├── data/            # Sample data generators
 └── screens/         # Demo screens

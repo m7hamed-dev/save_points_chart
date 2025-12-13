@@ -196,4 +196,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export functionality (PNG, SVG)
 - Zoom and pan interactions
 - Real-time data streaming support
+- Stacked Area chart widget
 

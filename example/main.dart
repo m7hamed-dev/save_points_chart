@@ -5,6 +5,7 @@ import 'widgets/bar_chart_card.dart';
 import 'widgets/donut_chart_card.dart';
 import 'widgets/line_chart_card.dart';
 import 'widgets/pie_chart_card.dart';
+import 'widgets/stacked_area_chart_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,6 +53,8 @@ class _ChartExamplePageState extends State<ChartExamplePage> {
           LineChartCard(theme: theme),
           const SizedBox(height: 16),
           AreaChartCard(theme: theme),
+          const SizedBox(height: 16),
+          StackedAreaChartCard(theme: theme),
           const SizedBox(height: 16),
           BarChartCard(theme: theme),
           const SizedBox(height: 16),

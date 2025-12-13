@@ -65,4 +65,3 @@ class LineChartCard extends StatelessWidget {
     );
   }
 }
-

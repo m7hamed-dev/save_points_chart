@@ -36,6 +36,7 @@ export 'theme/chart_theme.dart';
 export 'widgets/line_chart_widget.dart';
 export 'widgets/bar_chart_widget.dart';
 export 'widgets/area_chart_widget.dart';
+export 'widgets/stacked_area_chart_widget.dart';
 export 'widgets/pie_chart_widget.dart';
 export 'widgets/donut_chart_widget.dart';
 export 'widgets/radial_chart_widget.dart';
