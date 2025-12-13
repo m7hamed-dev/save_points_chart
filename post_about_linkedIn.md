@@ -36,6 +36,6 @@ dependencies:
 
 ---
 
-🔗 **GitHub:** https://github.com/m7hamed-dev/save_points_repo
+<!-- 🔗 **GitHub:** https://github.com/m7hamed-dev/save_points_repo -->
 📦 **Pub.dev:** https://pub.dev/packages/save_points_chart
 
