@@ -11,6 +11,11 @@ Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.ne
 
 <!-- ## بلاش إندهاش لسه التقيل مجاش -->
 
+
+## Preview
+
+![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)
+
 ## 🎯 Features
 
 - **12 Chart Types**: Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, and Gauge charts
@@ -70,9 +75,7 @@ LineChartWidget(
 <!-- <div align="center"> -->
 
 
-## Preview
 
-![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)
 
 > The demo showcases all 12 chart types with interactive features, animations, and theme switching.  
 > The video is also included in the published package on [pub.dev](https://pub.dev/packages/save_points_chart).
