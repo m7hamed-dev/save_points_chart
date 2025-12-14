@@ -266,9 +266,13 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                                 label: bubbleDataSet.label,
                                 color: bubbleDataSet.color,
                                 dataPoints: bubbleDataSet.dataPoints
-                                    .map((p) => ChartDataPoint(
-                                        x: p.x, y: p.y, label: p.label,
-                                    ),)
+                                    .map(
+                                      (p) => ChartDataPoint(
+                                        x: p.x,
+                                        y: p.y,
+                                        label: p.label,
+                                      ),
+                                    )
                                     .toList(),
                               );
                             }).toList();
