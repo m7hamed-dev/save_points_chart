@@ -69,8 +69,9 @@ LineChartWidget(
 
 <!-- <div align="center"> -->
 
-<!-- [![📹 Watch Demo Video](https://img.shields.io/badge/📹-Watch%20Demo%20Video-6366F1?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif) -->
-<!-- </div> -->
+
+## Preview
+![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save-points-showcaseview/main/assets/video.gif)
 
 ![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)
 
