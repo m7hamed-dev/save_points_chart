@@ -71,11 +71,9 @@ LineChartWidget(
 
 
 ## Preview
-![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save-points-showcaseview/main/assets/video.gif)
 
 ![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)
 
-> **📹 [Click here to watch the full demo video](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)**  
 > The demo showcases all 12 chart types with interactive features, animations, and theme switching.  
 > The video is also included in the published package on [pub.dev](https://pub.dev/packages/save_points_chart).
 
