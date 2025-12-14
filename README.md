@@ -9,7 +9,7 @@ A modern, high-performance Flutter charting library with full theme support, fea
 
 Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.netlify.app/)**
 
-## بلاش إندهاش لسه التقيل مجاش
+<!-- ## بلاش إندهاش لسه التقيل مجاش -->
 
 ## 🎯 Features
 
@@ -31,7 +31,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.4.0
+  save_points_chart: ^1.4.1
 ```
 
 Then run:

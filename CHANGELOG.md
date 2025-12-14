@@ -221,6 +221,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Navigation**: Changed from NavigationRail to Drawer for better cross-platform support
 - **Demo**: Replaced static screenshots with animated GIF demo
 
+## [1.4.1] - 2025-12-13
+
+### Fixed
+- **Code Formatting**: Fixed Dart formatter compliance in `bubble_chart_widget.dart`
+  - Corrected multi-line constructor formatting
+  - Ensures package passes static analysis checks
+
 ## [Unreleased]
 
 ### Planned
