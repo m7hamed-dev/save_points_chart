@@ -69,12 +69,12 @@ LineChartWidget(
 
 <!-- <div align="center"> -->
 
-<!-- [![📹 Watch Demo Video](https://img.shields.io/badge/📹-Watch%20Demo%20Video-6366F1?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif) -->
+<!-- [![📹 Watch Demo Video](https://img.shields.io/badge/📹-Watch%20Demo%20Video-6366F1?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif) -->
 <!-- </div> -->
 
-![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)
+![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)
 
-> **📹 [Click here to watch the full demo video](https://raw.githubusercontent.com/m7hamed-dev/save_points_chart/main/screenshots/video.gif)**  
+> **📹 [Click here to watch the full demo video](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)**  
 > The demo showcases all 12 chart types with interactive features, animations, and theme switching.  
 > The video is also included in the published package on [pub.dev](https://pub.dev/packages/save_points_chart).
 
