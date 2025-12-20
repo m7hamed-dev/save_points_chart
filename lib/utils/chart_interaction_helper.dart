@@ -503,7 +503,9 @@ class ChartInteractionHelper {
 
         if (!dx.isFinite || !dy.isFinite) continue;
         if (dx.abs() > ChartInteractionConstants.tapRadius ||
-            dy.abs() > ChartInteractionConstants.tapRadius) continue;
+            dy.abs() > ChartInteractionConstants.tapRadius) {
+          continue;
+        }
 
         final distanceSquared = dx * dx + dy * dy;
         if (!distanceSquared.isFinite) continue;

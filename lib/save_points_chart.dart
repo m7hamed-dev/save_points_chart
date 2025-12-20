@@ -1,8 +1,8 @@
 /// A modern, high-performance Flutter charting library with full theme support.
 ///
-/// This library provides 12 chart types with Material 3 design, glassmorphism,
-/// and neumorphism effects. All charts support light/dark themes and are
-/// optimized for performance.
+/// This library provides 17 chart types with Material 3 design, glassmorphism,
+/// and neumorphism effects. All charts support light/dark themes, click interactions
+/// with visual border highlighting, and are optimized for performance.
 ///
 /// ## Getting Started
 ///

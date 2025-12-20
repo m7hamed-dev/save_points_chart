@@ -1,6 +1,6 @@
 # Save Points Chart 📊
 
-A modern, high-performance Flutter charting library with full theme support, featuring 12 chart types, Material 3 design, smooth animations, and interactive context menus.
+A modern, high-performance Flutter charting library with full theme support, featuring 17 chart types, Material 3 design, smooth animations, and interactive context menus with visual border highlighting.
 
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -15,11 +15,13 @@ Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.ne
 
 ## 🎯 Features
 
-- **12 Chart Types**: Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, and Gauge charts
+- **17 Chart Types**: Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, Gauge, Spline, Step Line, Stacked Column, Pyramid, and Funnel charts
 - **Zero Dependencies**: No external packages required - uses only Flutter SDK
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
 - **Full Theme Support**: Automatic light/dark theme adaptation with InheritedWidget
 - **Interactive Context Menus**: Awesome context menus on tap with actions
+- **Click Interaction**: All charts support click interaction with visual border highlighting
+- **Visual Border Highlighting**: White borders (3-4px) appear on selected elements for clear feedback
 - **Haptic Feedback**: Tactile feedback on all chart interactions for better UX
 - **Hover Support**: Mouse hover effects on Line, Bar, Area, Scatter, Bubble, and Radial charts
 - **High Performance**: Optimized rendering with cached calculations and minimal rebuilds
@@ -33,7 +35,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.4.1
+  save_points_chart: ^1.5.0
 ```
 
 Then run:
@@ -67,7 +69,7 @@ LineChartWidget(
 )
 ```
 
-> The demo showcases all 12 chart types with interactive features, animations, and theme switching.  
+> The demo showcases all 17 chart types with interactive features, click interactions, border highlighting, animations, and theme switching.  
 > The video is also included in the published package on [pub.dev](https://pub.dev/packages/save_points_chart).
 
 ## 📦 Dependencies
@@ -83,7 +85,7 @@ lib/
 ├── models/          # Data models (ChartDataPoint, PieData, ChartDataSet)
 ├── theme/           # Theme configuration (ChartTheme)
 ├── painters/        # Custom painters (BaseChartPainter, LineChartPainter, etc.)
-├── widgets/          # Chart widgets (Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, Gauge)
+├── widgets/          # Chart widgets (Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, Gauge, Spline, Step Line, Stacked Column, Pyramid, Funnel)
 ├── providers/        # Theme provider for state management
 ├── data/            # Sample data generators
 └── screens/         # Demo screens
@@ -205,6 +207,21 @@ IconButton(
 ```
 
 **Note:** `ThemeProvider` uses Flutter's built-in `InheritedWidget`, so no external dependencies are required! The widget automatically rebuilds when the theme changes.
+
+### Click Interaction & Visual Feedback
+
+All charts support click interaction with visual border highlighting. When you tap on chart elements (points, bars, segments), they show a prominent white border (3-4px) for clear visual feedback:
+
+```dart
+LineChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  onPointTap: (point, datasetIndex, pointIndex, position) {
+    // Selected point will show white border automatically
+    // Handle tap event
+  },
+)
+```
 
 ### Interactive Context Menu
 
@@ -383,6 +400,37 @@ Or check out the example app in the repository to see all chart types in action.
 - Customizable segments
 - Semi-circular or circular gauge
 - Center label and unit display
+- Interactive chart tapping
+
+### Spline Chart
+- Smooth bezier curves
+- Gradient area fills
+- Interactive point tapping with border highlighting
+- Multiple datasets support
+
+### Step Line Chart
+- Step function visualization
+- Horizontal and vertical segments
+- Interactive point tapping with border highlighting
+- Area fill support
+
+### Stacked Column Chart
+- Multiple datasets stacked vertically
+- Interactive bar tapping with border highlighting
+- Gradient fills per segment
+- Customizable bar width
+
+### Pyramid Chart
+- Hierarchical data visualization
+- Largest to smallest segments
+- Interactive segment tapping with border highlighting
+- Gradient fills
+
+### Funnel Chart
+- Sales funnel and conversion tracking
+- Top to bottom narrowing
+- Interactive segment tapping with border highlighting
+- Gradient fills
 
 ## 🎨 Design Effects
 
