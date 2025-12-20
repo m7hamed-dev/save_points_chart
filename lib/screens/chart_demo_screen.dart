@@ -12,6 +12,11 @@ import 'package:save_points_chart/widgets/scatter_chart_widget.dart';
 import 'package:save_points_chart/widgets/bubble_chart_widget.dart';
 import 'package:save_points_chart/widgets/radar_chart_widget.dart';
 import 'package:save_points_chart/widgets/gauge_chart_widget.dart';
+import 'package:save_points_chart/widgets/spline_chart_widget.dart';
+import 'package:save_points_chart/widgets/step_line_chart_widget.dart';
+import 'package:save_points_chart/widgets/stacked_column_chart_widget.dart';
+import 'package:save_points_chart/widgets/pyramid_chart_widget.dart';
+import 'package:save_points_chart/widgets/funnel_chart_widget.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/data/sample_data.dart';
@@ -160,7 +165,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   ),
                 ),
                 Text(
-                  '12 Chart Types',
+                  '17+ Chart Types',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 14,
@@ -224,6 +229,31 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Gauge Chart',
             index: 10,
           ),
+          _buildDrawerItem(
+            icon: Icons.timeline,
+            title: 'Spline Chart',
+            index: 11,
+          ),
+          _buildDrawerItem(
+            icon: Icons.show_chart,
+            title: 'Step Line Chart',
+            index: 12,
+          ),
+          _buildDrawerItem(
+            icon: Icons.view_column,
+            title: 'Stacked Column',
+            index: 13,
+          ),
+          _buildDrawerItem(
+            icon: Icons.change_history,
+            title: 'Pyramid Chart',
+            index: 14,
+          ),
+          _buildDrawerItem(
+            icon: Icons.filter_alt,
+            title: 'Funnel Chart',
+            index: 15,
+          ),
         ],
       ),
     );
@@ -276,6 +306,16 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         return _buildRadarChart(chartTheme);
       case 10:
         return _buildGaugeChart(chartTheme);
+      case 11:
+        return _buildSplineChart(chartTheme);
+      case 12:
+        return _buildStepLineChart(chartTheme);
+      case 13:
+        return _buildStackedColumnChart(chartTheme);
+      case 14:
+        return _buildPyramidChart(chartTheme);
+      case 15:
+        return _buildFunnelChart(chartTheme);
       default:
         return _buildLineChart(chartTheme);
     }
@@ -1133,6 +1173,101 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             subtitle: 'Progress towards sales goal',
             centerLabel: 'Progress',
             unit: '%',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSplineChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SplineChartWidget(
+            dataSets: SampleData.generateMultiLineData(),
+            theme: chartTheme,
+            title: 'Smooth Spline Chart',
+            subtitle: 'Spline curves with smooth bezier interpolation',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepLineChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          StepLineChartWidget(
+            dataSets: SampleData.generateMultiLineData(),
+            theme: chartTheme,
+            title: 'Step Line Chart',
+            subtitle: 'Step function visualization',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStackedColumnChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          StackedColumnChartWidget(
+            dataSets: SampleData.generateBarData(),
+            theme: chartTheme,
+            title: 'Stacked Column Chart',
+            subtitle: 'Multiple datasets stacked vertically',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPyramidChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PyramidChartWidget(
+            data: SampleData.generatePieData(),
+            theme: chartTheme,
+            title: 'Pyramid Chart',
+            subtitle: 'Hierarchical data visualization',
+            useGlassmorphism: _useGlassmorphism,
+            useNeumorphism: _useNeumorphism,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFunnelChart(ChartTheme chartTheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          FunnelChartWidget(
+            data: SampleData.generatePieData(),
+            theme: chartTheme,
+            title: 'Funnel Chart',
+            subtitle: 'Sales funnel and conversion tracking',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
           ),

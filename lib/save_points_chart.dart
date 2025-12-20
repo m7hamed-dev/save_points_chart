@@ -45,6 +45,11 @@ export 'widgets/scatter_chart_widget.dart';
 export 'widgets/bubble_chart_widget.dart';
 export 'widgets/radar_chart_widget.dart';
 export 'widgets/gauge_chart_widget.dart';
+export 'widgets/spline_chart_widget.dart';
+export 'widgets/step_line_chart_widget.dart';
+export 'widgets/stacked_column_chart_widget.dart';
+export 'widgets/pyramid_chart_widget.dart';
+export 'widgets/funnel_chart_widget.dart';
 export 'widgets/chart_container.dart';
 export 'widgets/chart_context_menu.dart';
 
