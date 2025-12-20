@@ -28,34 +28,41 @@ class ChartTheme {
     this.showTooltip = true,
   });
 
-  /// Create light theme
+  /// Create light theme with enhanced colors
   factory ChartTheme.light() {
     return const ChartTheme(
-      backgroundColor: Colors.white,
-      textColor: Color(0xFF1A1A1A),
-      gridColor: Color(0xFFF0F0F0),
-      axisColor: Color(0xFF9CA3AF),
+      backgroundColor: Color(0xFFFFFFFF),
+      textColor: Color(0xFF111827),
+      gridColor: Color(0xFFE5E7EB),
+      axisColor: Color(0xFF6B7280),
       gradientColors: [
-        Color(0xFF6366F1),
-        Color(0xFF8B5CF6),
-        Color(0xFFEC4899),
+        Color(0xFF6366F1), // Indigo
+        Color(0xFF8B5CF6), // Purple
+        Color(0xFFEC4899), // Pink
+        Color(0xFF10B981), // Emerald
+        Color(0xFFF59E0B), // Amber
       ],
+      shadowElevation: 6.0,
+      borderRadius: 20.0,
     );
   }
 
-  /// Create dark theme
+  /// Create dark theme with enhanced colors
   factory ChartTheme.dark() {
     return const ChartTheme(
-      backgroundColor: Color(0xFF1E1E1E),
-      textColor: Color(0xFFF3F4F6),
-      gridColor: Color(0xFF2A2A2A),
-      axisColor: Color(0xFF6B7280),
+      backgroundColor: Color(0xFF1F2937),
+      textColor: Color(0xFFF9FAFB),
+      gridColor: Color(0xFF374151),
+      axisColor: Color(0xFF9CA3AF),
       gradientColors: [
-        Color(0xFF818CF8),
-        Color(0xFFA78BFA),
-        Color(0xFFF472B6),
+        Color(0xFF818CF8), // Light Indigo
+        Color(0xFFA78BFA), // Light Purple
+        Color(0xFFF472B6), // Light Pink
+        Color(0xFF34D399), // Light Emerald
+        Color(0xFFFBBF24), // Light Amber
       ],
-      shadowElevation: 8.0,
+      shadowElevation: 12.0,
+      borderRadius: 20.0,
     );
   }
 

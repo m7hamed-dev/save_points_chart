@@ -38,11 +38,22 @@ class ChartContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: effectiveTheme.backgroundColor,
         borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
+        border: Border.all(
+          color: effectiveTheme.gridColor.withValues(alpha: 0.3),
+        ),
         boxShadow: [
+          // Soft outer shadow
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: effectiveTheme.shadowElevation * 2,
-            offset: Offset(0, effectiveTheme.shadowElevation),
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: effectiveTheme.shadowElevation * 3,
+            offset: Offset(0, effectiveTheme.shadowElevation * 0.5),
+          ),
+          // Inner highlight
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.1),
+            blurRadius: 2,
+            offset: const Offset(0, -1),
+            spreadRadius: -1,
           ),
         ],
       ),
@@ -60,20 +71,25 @@ class ChartContainer extends StatelessWidget {
                     Text(
                       title!,
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.5,
                         color: effectiveTheme.textColor,
+                        height: 1.2,
                       ),
                     ),
                   if (subtitle != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
+                      padding: const EdgeInsets.only(top: 6.0),
                       child: Text(
                         subtitle!,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.1,
                           color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
+                              effectiveTheme.textColor.withValues(alpha: 0.65),
+                          height: 1.4,
                         ),
                       ),
                     ),
@@ -157,25 +173,31 @@ class ChartContainer extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              effectiveTheme.backgroundColor.withValues(alpha: 0.9),
-              effectiveTheme.backgroundColor.withValues(alpha: 0.7),
+              effectiveTheme.backgroundColor.withValues(alpha: 0.85),
+              effectiveTheme.backgroundColor.withValues(alpha: 0.65),
             ],
           ),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.white.withValues(alpha: 0.25),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 20,
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 24,
+              spreadRadius: -2,
+            ),
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(-2, -2),
             ),
           ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: container,
           ),
         ),
@@ -185,11 +207,11 @@ class ChartContainer extends StatelessWidget {
     if (useNeumorphism) {
       final isDark = effectiveTheme.backgroundColor.computeLuminance() < 0.5;
       final shadowColor = isDark
-          ? Colors.black.withValues(alpha: 0.5)
-          : Colors.white.withValues(alpha: 0.8);
+          ? Colors.black.withValues(alpha: 0.6)
+          : Colors.grey.shade400;
       final highlightColor = isDark
-          ? Colors.white.withValues(alpha: 0.1)
-          : Colors.black.withValues(alpha: 0.1);
+          ? Colors.white.withValues(alpha: 0.08)
+          : Colors.white.withValues(alpha: 0.9);
 
       container = Container(
         padding: padding,
@@ -197,15 +219,24 @@ class ChartContainer extends StatelessWidget {
           color: effectiveTheme.backgroundColor,
           borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
           boxShadow: [
+            // Dark shadow (bottom right)
             BoxShadow(
               color: shadowColor,
-              blurRadius: 20,
-              offset: const Offset(10, 10),
+              blurRadius: 24,
+              offset: const Offset(8, 8),
             ),
+            // Light highlight (top left)
             BoxShadow(
               color: highlightColor,
-              blurRadius: 20,
-              offset: const Offset(-10, -10),
+              blurRadius: 24,
+              offset: const Offset(-8, -8),
+            ),
+            // Inner shadow for depth
+            BoxShadow(
+              color: shadowColor.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(2, 2),
+              spreadRadius: -4,
             ),
           ],
         ),
