@@ -200,7 +200,6 @@ class ChartInteractionHelper {
     return null;
   }
 
-  /// Find pie segment at tap location
   /// Find pie/donut chart segment at tap location.
   ///
   /// Determines which segment of a pie or donut chart contains the tap position
@@ -211,9 +210,7 @@ class ChartInteractionHelper {
   /// - [tapPosition] - The position where the user tapped
   /// - [data] - List of pie data segments
   /// - [size] - Size of the chart area
-  /// - [center] - Center point of the pie chart
-  /// - [radius] - Radius of the pie chart
-  /// - [innerRadius] - Inner radius for donut charts (0 for pie charts)
+  /// - [centerSpaceRadius] - Inner radius for donut charts (0 for pie charts)
   ///
   /// Returns a [ChartInteractionResult] if a segment is found, null otherwise.
   static ChartInteractionResult? findPieSegment(
@@ -499,7 +496,8 @@ class ChartInteractionHelper {
   /// - [tapPosition] - The position where the user tapped
   /// - [dataSets] - List of radar data sets to search through
   /// - [size] - Size of the chart area
-  /// - [tapRadius] - Maximum distance from tap position to consider a hit
+  /// - [maxValue] - Maximum value for scaling radar points
+  /// - [animationProgress] - Animation progress value (0.0 to 1.0)
   ///
   /// Returns a [ChartInteractionResult] if a point is found, null otherwise.
   static ChartInteractionResult? findRadarPoint(
