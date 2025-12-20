@@ -289,6 +289,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated subtitles to indicate charts are interactive
   - Shows details dialog when clicking on chart elements
 
+## [1.5.1] - 2025-01-27
+
+### Fixed
+- **Documentation Warnings**: Fixed comment reference warnings in `ChartInteractionHelper`
+  - Corrected parameter names in `findPieSegment` documentation to match actual function signature
+  - Fixed parameter references in `findRadarPoint` documentation
+  - All documentation now accurately reflects function parameters
+- **Pub.dev Compatibility**: Removed `sample_data.dart` from main library exports
+  - `SampleData` is now imported directly in example files
+  - Fixes pub.dev dependency constraint validation errors
+
+### Improved
+- **Documentation Coverage**: Added comprehensive dartdoc comments to public APIs
+  - Enhanced documentation for `StepLineChartWidget`, `StackedColumnChartWidget`
+  - Enhanced documentation for `PyramidChartWidget`, `FunnelChartWidget`
+  - Added detailed documentation for all `ChartInteractionHelper` methods
+  - Improved `ChartInteractionResult` class documentation
+  - All public APIs now have proper dartdoc comments meeting pub.dev requirements
+
 ## [Unreleased]
 
 ### Planned
