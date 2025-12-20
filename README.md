@@ -7,7 +7,7 @@ A modern, high-performance Flutter charting library with full theme support, fea
 
 ### 🌐 Live Demo
 
-Try it out in your browser: **[Live Demo →](https://startling-concha-05444f.netlify.app/)**
+Try it out in your browser: **[Live Demo →](https://voluble-travesseiro-11a6c5.netlify.app/)**
 
 ## 🎥 Demo
 
