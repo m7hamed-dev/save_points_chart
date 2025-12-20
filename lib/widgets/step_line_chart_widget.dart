@@ -11,7 +11,38 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// A step line chart widget that connects points with horizontal and vertical lines.
 ///
 /// Step line charts are useful for displaying data that changes at discrete intervals,
-/// such as stock prices or step functions.
+/// such as stock prices or step functions. Each point is connected to the next with
+/// a horizontal line followed by a vertical line, creating a step-like appearance.
+///
+/// ## Features
+/// - Multiple data series support
+/// - Optional area fill with gradients
+/// - Interactive point tapping with visual border highlighting
+/// - Mouse hover support
+/// - Loading and error states
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// StepLineChartWidget(
+///   dataSets: [
+///     ChartDataSet(
+///       label: 'Sales',
+///       color: Colors.blue,
+///       dataPoints: [
+///         ChartDataPoint(x: 0, y: 10),
+///         ChartDataPoint(x: 1, y: 20),
+///         ChartDataPoint(x: 2, y: 15),
+///       ],
+///     ),
+///   ],
+///   theme: ChartTheme.light(),
+///   title: 'Sales Trend',
+///   onPointTap: (point, datasetIndex, pointIndex, position) {
+///     // Handle point tap
+///   },
+/// )
+/// ```
 class StepLineChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
   final ChartTheme? theme;
@@ -284,4 +315,3 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
     );
   }
 }
-

@@ -3,9 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 
-/// Helper class for detecting chart interactions
+/// Helper class for detecting chart interactions.
+///
+/// This class provides static methods to detect taps and hovers on various
+/// chart elements such as points, bars, segments, and shapes.
 class ChartInteractionHelper {
-  /// Find nearest point to tap location (optimized with early exit and squared distance)
+  /// Find nearest point to tap location (optimized with early exit and squared distance).
+  ///
+  /// Searches through all data sets to find the point closest to the tap position
+  /// within the specified tap radius. Returns null if no point is found.
+  ///
+  /// Parameters:
+  /// - [tapPosition] - The position where the user tapped
+  /// - [dataSets] - List of chart data sets to search through
+  /// - [chartSize] - Size of the chart area
+  /// - [minX], [maxX], [minY], [maxY] - Data bounds for coordinate conversion
+  /// - [tapRadius] - Maximum distance from tap position to consider a hit
+  ///
+  /// Returns a [ChartInteractionResult] if a point is found, null otherwise.
   static ChartInteractionResult? findNearestPoint(
     Offset tapPosition,
     List<ChartDataSet> dataSets,
@@ -186,6 +201,21 @@ class ChartInteractionHelper {
   }
 
   /// Find pie segment at tap location
+  /// Find pie/donut chart segment at tap location.
+  ///
+  /// Determines which segment of a pie or donut chart contains the tap position
+  /// by calculating the angle from the center. Returns null if tap is outside
+  /// the chart or in the center hole (for donut charts).
+  ///
+  /// Parameters:
+  /// - [tapPosition] - The position where the user tapped
+  /// - [data] - List of pie data segments
+  /// - [size] - Size of the chart area
+  /// - [center] - Center point of the pie chart
+  /// - [radius] - Radius of the pie chart
+  /// - [innerRadius] - Inner radius for donut charts (0 for pie charts)
+  ///
+  /// Returns a [ChartInteractionResult] if a segment is found, null otherwise.
   static ChartInteractionResult? findPieSegment(
     Offset tapPosition,
     List<PieData> data,
@@ -265,6 +295,17 @@ class ChartInteractionHelper {
   }
 
   /// Find pyramid segment at tap location
+  /// Find pyramid chart segment at tap location.
+  ///
+  /// Determines which segment of a pyramid chart contains the tap position
+  /// by checking if the point is within the trapezoid shape of each segment.
+  ///
+  /// Parameters:
+  /// - [tapPosition] - The position where the user tapped
+  /// - [data] - List of pie data segments (used for pyramid data)
+  /// - [size] - Size of the chart area
+  ///
+  /// Returns a [ChartInteractionResult] if a segment is found, null otherwise.
   static ChartInteractionResult? findPyramidSegment(
     Offset tapPosition,
     List<PieData> data,
@@ -449,6 +490,18 @@ class ChartInteractionHelper {
   }
 
   /// Find radar point at tap location
+  /// Find radar chart point at tap location.
+  ///
+  /// Searches through all radar data sets to find the point closest to the tap position
+  /// within the specified tap radius. Radar charts have points arranged in a circle.
+  ///
+  /// Parameters:
+  /// - [tapPosition] - The position where the user tapped
+  /// - [dataSets] - List of radar data sets to search through
+  /// - [size] - Size of the chart area
+  /// - [tapRadius] - Maximum distance from tap position to consider a hit
+  ///
+  /// Returns a [ChartInteractionResult] if a point is found, null otherwise.
   static ChartInteractionResult? findRadarPoint(
     Offset tapPosition,
     List<RadarDataSet> dataSets,

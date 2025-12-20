@@ -11,7 +11,45 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// A stacked column chart widget where multiple datasets are stacked vertically.
 ///
 /// Each column is divided into segments representing different data series,
-/// with each segment stacked on top of the previous one.
+/// with each segment stacked on top of the previous one. This is useful for
+/// comparing the composition of different categories while showing the total.
+///
+/// ## Features
+/// - Multiple data series stacked vertically
+/// - Customizable bar width and border radius
+/// - Interactive bar tapping with visual border highlighting
+/// - Gradient fills per segment
+/// - Loading and error states
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// StackedColumnChartWidget(
+///   dataSets: [
+///     ChartDataSet(
+///       label: 'Q1',
+///       color: Colors.blue,
+///       dataPoints: [
+///         ChartDataPoint(x: 0, y: 10),
+///         ChartDataPoint(x: 1, y: 20),
+///       ],
+///     ),
+///     ChartDataSet(
+///       label: 'Q2',
+///       color: Colors.green,
+///       dataPoints: [
+///         ChartDataPoint(x: 0, y: 15),
+///         ChartDataPoint(x: 1, y: 25),
+///       ],
+///     ),
+///   ],
+///   theme: ChartTheme.light(),
+///   title: 'Quarterly Sales',
+///   onBarTap: (point, datasetIndex, barIndex, position) {
+///     // Handle bar tap
+///   },
+/// )
+/// ```
 class StackedColumnChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
   final ChartTheme? theme;
@@ -57,8 +95,8 @@ class StackedColumnChartWidget extends StatefulWidget {
       _StackedColumnChartWidgetState();
 }
 
-class _StackedColumnChartWidgetState
-    extends State<StackedColumnChartWidget> with SingleTickerProviderStateMixin {
+class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedBar;
@@ -167,8 +205,7 @@ class _StackedColumnChartWidgetState
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
-                                ? renderBox
-                                    .localToGlobal(details.localPosition)
+                                ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
 
                             Future.microtask(() {
@@ -213,4 +250,3 @@ class _StackedColumnChartWidgetState
     );
   }
 }
-

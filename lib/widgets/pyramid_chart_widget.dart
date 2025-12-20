@@ -11,7 +11,32 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// A pyramid chart widget displaying hierarchical data in a pyramid shape.
 ///
 /// Each segment represents a category, with the largest at the bottom
-/// and smallest at the top, creating a pyramid visualization.
+/// and smallest at the top, creating a pyramid visualization. Useful for
+/// displaying hierarchical data such as population distribution or sales funnels.
+///
+/// ## Features
+/// - Hierarchical data visualization
+/// - Interactive segment tapping with visual border highlighting
+/// - Gradient fills
+/// - Smooth animations
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// PyramidChartWidget(
+///   data: [
+///     PieData(label: 'Level 1', value: 100, color: Colors.blue),
+///     PieData(label: 'Level 2', value: 75, color: Colors.green),
+///     PieData(label: 'Level 3', value: 50, color: Colors.orange),
+///     PieData(label: 'Level 4', value: 25, color: Colors.red),
+///   ],
+///   theme: ChartTheme.light(),
+///   title: 'Sales Funnel',
+///   onSegmentTap: (segment, segmentIndex, position) {
+///     // Handle segment tap
+///   },
+/// )
+/// ```
 class PyramidChartWidget extends StatefulWidget {
   final List<PieData> data;
   final ChartTheme? theme;

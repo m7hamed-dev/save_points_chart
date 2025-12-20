@@ -12,6 +12,31 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 ///
 /// Similar to pyramid but inverted, with the largest segment at the top
 /// and smallest at the bottom, useful for sales funnels and conversion tracking.
+/// This visualization helps identify where users drop off in a process.
+///
+/// ## Features
+/// - Sales funnel and conversion tracking
+/// - Interactive segment tapping with visual border highlighting
+/// - Gradient fills
+/// - Smooth animations
+/// - Full theme support
+///
+/// ## Example
+/// ```dart
+/// FunnelChartWidget(
+///   data: [
+///     PieData(label: 'Visitors', value: 1000, color: Colors.blue),
+///     PieData(label: 'Leads', value: 500, color: Colors.green),
+///     PieData(label: 'Qualified', value: 250, color: Colors.orange),
+///     PieData(label: 'Customers', value: 100, color: Colors.red),
+///   ],
+///   theme: ChartTheme.light(),
+///   title: 'Sales Funnel',
+///   onSegmentTap: (segment, segmentIndex, position) {
+///     // Handle segment tap
+///   },
+/// )
+/// ```
 class FunnelChartWidget extends StatefulWidget {
   final List<PieData> data;
   final ChartTheme? theme;

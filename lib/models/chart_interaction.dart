@@ -62,7 +62,10 @@ typedef BarHoverCallback = void Function(
   int? barIndex,
 );
 
-/// Result of a chart interaction
+/// Result of a chart interaction.
+///
+/// This class represents the result of detecting a tap or hover on a chart element.
+/// It contains information about which element was interacted with and its position.
 class ChartInteractionResult {
   final ChartDataPoint? point;
   final PieData? segment;
