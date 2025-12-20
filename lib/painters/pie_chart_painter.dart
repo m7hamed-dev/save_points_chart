@@ -110,12 +110,12 @@ class PieChartPainter extends CustomPainter {
 
         canvas.drawPath(combinedPath, paint);
 
-        // Add border if selected
+        // Add border if selected (white border)
         if (isSelected) {
           final borderPaint = Paint()
-            ..color = item.color
+            ..color = Colors.white
             ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth + 2;
+            ..strokeWidth = borderWidth + 3;
           canvas.drawPath(combinedPath, borderPaint);
         }
       } else {
@@ -128,12 +128,12 @@ class PieChartPainter extends CustomPainter {
           paint,
         );
 
-        // Add border if selected
+        // Add border if selected (white border)
         if (isSelected) {
           final borderPaint = Paint()
-            ..color = item.color
+            ..color = Colors.white
             ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth + 2;
+            ..strokeWidth = borderWidth + 3;
           canvas.drawArc(
             rect,
             startAngle,

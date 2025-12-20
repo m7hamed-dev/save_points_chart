@@ -282,11 +282,11 @@ class BarChartPainter extends BaseChartPainter {
       ..style = PaintingStyle.fill;
     canvas.drawRRect(highlightRect, highlightPaint);
 
-    // Add border if selected or hovered
+    // Add border if selected or hovered (white for selected)
     if (isSelected || isHovered) {
-      final borderWidth = isSelected ? 2.5 : 2.0;
+      final borderWidth = isSelected ? 3.0 : 2.0;
       final borderPaint = Paint()
-        ..color = color.withValues(alpha: isSelected ? 0.8 : 0.6)
+        ..color = isSelected ? Colors.white : color.withValues(alpha: 0.6)
         ..style = PaintingStyle.stroke
         ..strokeWidth = borderWidth;
       canvas.drawRRect(rect, borderPaint);

@@ -326,9 +326,9 @@ class SplineChartPainter extends BaseChartPainter {
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, 2, highlightPaint);
 
-          final borderWidth = isSelected ? 2.5 : (isHovered ? 2.0 : 1.5);
+          final borderWidth = isSelected ? 3.0 : (isHovered ? 2.0 : 1.5);
           final borderPaint = Paint()
-            ..color = theme.backgroundColor
+            ..color = isSelected ? Colors.white : theme.backgroundColor
             ..style = PaintingStyle.stroke
             ..strokeWidth = borderWidth;
           canvas.drawCircle(point, pointRadius, borderPaint);
@@ -363,4 +363,3 @@ class SplineChartPainter extends BaseChartPainter {
     return super.shouldRepaint(oldDelegate);
   }
 }
-

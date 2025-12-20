@@ -167,10 +167,10 @@ class RadialChartPainter extends BaseChartPainter {
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 2, highlightPaint);
 
-        // Border (thicker if selected or hovered)
-        final borderWidth = isSelected ? 2.5 : (isHovered ? 2.0 : 1.5);
+        // Border (thicker and white if selected)
+        final borderWidth = isSelected ? 3.0 : (isHovered ? 2.0 : 1.5);
         final borderPaint = Paint()
-          ..color = theme.backgroundColor
+          ..color = isSelected ? Colors.white : theme.backgroundColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = borderWidth;
         canvas.drawCircle(point, pointRadius, borderPaint);

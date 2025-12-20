@@ -165,11 +165,11 @@ class BubbleChartPainter extends BaseChartPainter {
 
           canvas.drawCircle(canvasPoint, currentSize, bubblePaint);
 
-          // Border
+          // Border (white if selected)
           final borderPaint = Paint()
-            ..color = theme.backgroundColor
+            ..color = isSelected ? Colors.white : theme.backgroundColor
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 2.0;
+            ..strokeWidth = isSelected ? 3.0 : 2.0;
           canvas.drawCircle(canvasPoint, currentSize, borderPaint);
         }
       }

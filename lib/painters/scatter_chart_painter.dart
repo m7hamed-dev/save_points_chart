@@ -128,11 +128,11 @@ class ScatterChartPainter extends BaseChartPainter {
           // Draw main point
           canvas.drawCircle(canvasPoint, animatedSize, paint);
 
-          // Draw border
+          // Draw border (white if selected)
           final borderPaint = Paint()
-            ..color = theme.backgroundColor
+            ..color = isSelected ? Colors.white : theme.backgroundColor
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 2.0;
+            ..strokeWidth = isSelected ? 3.0 : 2.0;
           canvas.drawCircle(canvasPoint, animatedSize, borderPaint);
         }
       }

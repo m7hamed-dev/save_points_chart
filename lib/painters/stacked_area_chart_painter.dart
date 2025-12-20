@@ -207,9 +207,9 @@ class StackedAreaChartPainter extends BaseChartPainter {
         canvas.drawCircle(point, radius, pointPaint);
 
         final borderPaint = Paint()
-          ..color = theme.backgroundColor
+          ..color = isSelected ? Colors.white : theme.backgroundColor
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5;
+          ..strokeWidth = isSelected ? 3.0 : 1.5;
         canvas.drawCircle(point, radius, borderPaint);
       }
 
