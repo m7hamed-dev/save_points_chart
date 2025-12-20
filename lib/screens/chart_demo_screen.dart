@@ -158,12 +158,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Colors.white.withValues(alpha: 0.3),
                       width: 1.5,
@@ -171,16 +172,16 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   ),
                   child: const Icon(
                     Icons.show_chart,
-                    size: 40,
+                    size: 32,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 const Text(
                   'Modern Charts',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 26,
+                    fontSize: 24,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
                     shadows: [
@@ -192,14 +193,14 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   '17+ Chart Types',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ],
