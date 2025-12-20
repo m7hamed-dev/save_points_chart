@@ -60,6 +60,3 @@ export 'providers/theme_provider.dart';
 export 'utils/chart_interaction_helper.dart';
 export 'utils/performance_utils.dart';
 export 'utils/chart_cache.dart';
-
-// Sample Data (for examples and demos)
-export 'data/sample_data.dart';

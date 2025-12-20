@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/save_points_chart.dart';
+import 'package:save_points_chart/data/sample_data.dart';
 
 class ScatterChartCard extends StatelessWidget {
   const ScatterChartCard({super.key, required this.theme});
