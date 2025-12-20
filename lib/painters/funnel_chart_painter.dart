@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Custom painter for funnel charts
@@ -7,11 +8,13 @@ class FunnelChartPainter extends CustomPainter {
   final ChartTheme theme;
   final List<PieData> data;
   final double animationProgress;
+  final ChartInteractionResult? selectedSegment;
 
   const FunnelChartPainter({
     required this.theme,
     required this.data,
     this.animationProgress = 1.0,
+    this.selectedSegment,
   });
 
   @override
@@ -37,6 +40,15 @@ class FunnelChartPainter extends CustomPainter {
       final segment = sortedData[i];
       final percentage = segment.value / total;
       final segmentHeight = chartHeight * percentage * animationProgress;
+
+      // Find original index in unsorted data
+      final originalIndex = data.indexOf(segment);
+      final segmentIndex = originalIndex >= 0 ? originalIndex : i;
+
+      // Check if this segment is selected
+      final isSelected = selectedSegment != null &&
+          selectedSegment!.isHit &&
+          selectedSegment!.elementIndex == segmentIndex;
 
       // Calculate width at this level (funnel narrows downward)
       final topWidth = chartWidth;
@@ -74,11 +86,20 @@ class FunnelChartPainter extends CustomPainter {
 
       canvas.drawPath(path, paint);
 
-      // Border
+      // Highlight selected segment
+      if (isSelected) {
+        final highlightPaint = Paint()
+          ..color = Colors.white.withValues(alpha: 0.2)
+          ..style = PaintingStyle.fill;
+        canvas.drawPath(path, highlightPaint);
+      }
+
+      // Border - thicker and more visible for selected
       final borderPaint = Paint()
-        ..color = segment.color.withValues(alpha: 0.5)
+        ..color =
+            isSelected ? Colors.white : segment.color.withValues(alpha: 0.5)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.0;
+        ..strokeWidth = isSelected ? 4.0 : 2.0;
       canvas.drawPath(path, borderPaint);
 
       // Label
@@ -103,7 +124,9 @@ class FunnelChartPainter extends CustomPainter {
         textPainter.paint(
           canvas,
           Offset(
-              centerX - textPainter.width / 2, labelY - textPainter.height / 2,),
+            centerX - textPainter.width / 2,
+            labelY - textPainter.height / 2,
+          ),
         );
       }
 
@@ -115,6 +138,7 @@ class FunnelChartPainter extends CustomPainter {
   bool shouldRepaint(covariant FunnelChartPainter oldDelegate) {
     return oldDelegate.theme != theme ||
         oldDelegate.data != data ||
-        oldDelegate.animationProgress != animationProgress;
+        oldDelegate.animationProgress != animationProgress ||
+        oldDelegate.selectedSegment != selectedSegment;
   }
 }

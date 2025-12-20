@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
 
 /// A custom painter for rendering radar/spider charts.
@@ -20,6 +21,9 @@ class RadarChartPainter extends BaseChartPainter {
   /// The animation progress value between 0.0 and 1.0.
   final double animationProgress;
 
+  /// The currently selected point interaction result.
+  final ChartInteractionResult? selectedPoint;
+
   /// Creates a radar chart painter.
   const RadarChartPainter({
     required super.theme,
@@ -27,6 +31,7 @@ class RadarChartPainter extends BaseChartPainter {
     this.maxValue = 100.0,
     this.gridLevels = 5,
     this.animationProgress = 1.0,
+    this.selectedPoint,
     super.showGrid,
     super.showAxis,
     super.showLabel,
@@ -135,7 +140,8 @@ class RadarChartPainter extends BaseChartPainter {
     }
 
     // Draw radar polygons for each dataset
-    for (final dataSet in radarDataSets) {
+    for (int dsIndex = 0; dsIndex < radarDataSets.length; dsIndex++) {
+      final dataSet = radarDataSets[dsIndex];
       if (dataSet.dataPoints.length != numAxes) continue;
 
       final path = Path();
@@ -168,19 +174,54 @@ class RadarChartPainter extends BaseChartPainter {
         ..style = PaintingStyle.fill;
       canvas.drawPath(path, fillPaint);
 
-      // Draw polygon outline
+      // Check if any point in this dataset is selected
+      bool hasSelectedPoint = false;
+      if (selectedPoint != null && selectedPoint!.isHit) {
+        hasSelectedPoint = selectedPoint!.datasetIndex == dsIndex;
+      }
+
+      // Draw polygon outline - thicker border if selected
       final outlinePaint = Paint()
         ..color = dataSet.color
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.0;
+        ..strokeWidth = hasSelectedPoint ? 4.0 : 2.0;
       canvas.drawPath(path, outlinePaint);
+
+      // Draw selected border overlay
+      if (hasSelectedPoint) {
+        final selectedBorderPaint = Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0;
+        canvas.drawPath(path, selectedBorderPaint);
+      }
 
       // Draw points
       final pointPaint = Paint()
         ..color = dataSet.color
         ..style = PaintingStyle.fill;
-      for (final point in points) {
-        canvas.drawCircle(point, 4, pointPaint);
+      for (int i = 0; i < points.length; i++) {
+        final point = points[i];
+        final isSelected = selectedPoint != null &&
+            selectedPoint!.isHit &&
+            selectedPoint!.datasetIndex == dsIndex &&
+            selectedPoint!.elementIndex == i;
+
+        // Draw point with border if selected
+        if (isSelected) {
+          // Outer glow
+          final glowPaint = Paint()
+            ..color = Colors.white.withValues(alpha: 0.5)
+            ..style = PaintingStyle.fill;
+          canvas.drawCircle(point, 8, glowPaint);
+          // Border
+          final borderPaint = Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2.0;
+          canvas.drawCircle(point, 6, borderPaint);
+        }
+        canvas.drawCircle(point, isSelected ? 6 : 4, pointPaint);
       }
     }
   }
@@ -191,6 +232,7 @@ class RadarChartPainter extends BaseChartPainter {
         oldDelegate.radarDataSets != radarDataSets ||
         oldDelegate.maxValue != maxValue ||
         oldDelegate.gridLevels != gridLevels ||
-        oldDelegate.animationProgress != animationProgress;
+        oldDelegate.animationProgress != animationProgress ||
+        oldDelegate.selectedPoint != selectedPoint;
   }
 }

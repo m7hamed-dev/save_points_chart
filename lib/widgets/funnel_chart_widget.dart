@@ -49,6 +49,7 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  ChartInteractionResult? _selectedSegment;
 
   @override
   void initState() {
@@ -106,6 +107,10 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
                           if (result != null && result.isHit) {
                             HapticFeedback.selectionClick();
 
+                            setState(() {
+                              _selectedSegment = result;
+                            });
+
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
@@ -119,6 +124,10 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
                                 globalPosition,
                               );
                             });
+                          } else {
+                            setState(() {
+                              _selectedSegment = null;
+                            });
                           }
                         }
                       : null,
@@ -131,6 +140,7 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
                         theme: effectiveTheme,
                         data: widget.data,
                         animationProgress: _animation.value,
+                        selectedSegment: _selectedSegment,
                       ),
                     ),
                   ),

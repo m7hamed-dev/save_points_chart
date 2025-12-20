@@ -146,11 +146,12 @@ class StackedColumnChartPainter extends BaseChartPainter {
           canvas.drawRRect(barRect, highlightPaint);
         }
 
-        // Border
+        // Border - thicker and more visible for selected
         final borderPaint = Paint()
-          ..color = dataSet.color.withValues(alpha: 0.3)
+          ..color =
+              isSelected ? Colors.white : dataSet.color.withValues(alpha: 0.3)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.0;
+          ..strokeWidth = isSelected ? 3.0 : 1.0;
         canvas.drawRRect(barRect, borderPaint);
 
         cumulativeY += yHeight;

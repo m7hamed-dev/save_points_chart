@@ -84,6 +84,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  ChartInteractionResult? _selectedPoint;
 
   @override
   void initState() {
@@ -141,6 +142,10 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
                           if (result != null && result.isHit) {
                             HapticFeedback.selectionClick();
 
+                            setState(() {
+                              _selectedPoint = result;
+                            });
+
                             final RenderBox? renderBox =
                                 context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
@@ -154,6 +159,10 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
                                 result.elementIndex!,
                                 globalPosition,
                               );
+                            });
+                          } else {
+                            setState(() {
+                              _selectedPoint = null;
                             });
                           }
                         }
@@ -172,6 +181,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
                         showAxis: widget.showAxis,
                         showLabel: widget.showLabel,
                         animationProgress: _animation.value,
+                        selectedPoint: _selectedPoint,
                       ),
                     ),
                   ),
