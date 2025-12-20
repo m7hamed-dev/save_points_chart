@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/gauge_chart_painter.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// A modern gauge chart widget for displaying a single metric value.
 ///
@@ -53,6 +56,7 @@ class GaugeChartWidget extends StatefulWidget {
   final String? unit;
   final bool useGlassmorphism;
   final bool useNeumorphism;
+  final VoidCallback? onChartTap;
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
@@ -75,6 +79,7 @@ class GaugeChartWidget extends StatefulWidget {
     this.unit,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
+    this.onChartTap,
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
@@ -129,25 +134,64 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                return SizedBox(
-                  width: constraints.maxWidth,
-                  height: 300,
-                  child: CustomPaint(
-                    size: Size(constraints.maxWidth, 300),
-                    painter: GaugeChartPainter(
-                      theme: effectiveTheme,
-                      value: widget.value,
-                      minValue: widget.minValue,
-                      maxValue: widget.maxValue,
-                      segments: widget.segments,
-                      startAngle: widget.startAngleDegrees * 3.14159 / 180,
-                      sweepAngle: widget.sweepAngleDegrees * 3.14159 / 180,
-                      showGrid: widget.showGrid,
-                      showAxis: widget.showAxis,
-                      showLabel: widget.showLabel,
-                      centerLabel: widget.centerLabel,
-                      unit: widget.unit,
-                      animationProgress: _animation.value,
+                return GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTapDown: widget.onChartTap != null
+                      ? (details) {
+                          ChartContextMenuHelper.hide();
+                          HapticFeedback.selectionClick();
+
+                          final RenderBox? renderBox =
+                              context.findRenderObject() as RenderBox?;
+                          final globalPosition = renderBox != null
+                              ? renderBox.localToGlobal(details.localPosition)
+                              : details.localPosition;
+
+                          // Create a ChartDataPoint for gauge value
+                          final gaugePoint = ChartDataPoint(
+                            x: 0,
+                            y: widget.value,
+                            label: widget.centerLabel ?? 'Value',
+                          );
+
+                          // Show context menu with gauge details
+                          ChartContextMenuHelper.show(
+                            context,
+                            point: gaugePoint,
+                            segment: null,
+                            position: globalPosition,
+                            datasetIndex: 0,
+                            elementIndex: 0,
+                            datasetLabel: widget.title ?? 'Gauge',
+                            theme: effectiveTheme,
+                            useGlassmorphism: widget.useGlassmorphism,
+                            useNeumorphism: widget.useNeumorphism,
+                            onViewDetails: () {
+                              widget.onChartTap?.call();
+                            },
+                          );
+                        }
+                      : null,
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    height: 300,
+                    child: CustomPaint(
+                      size: Size(constraints.maxWidth, 300),
+                      painter: GaugeChartPainter(
+                        theme: effectiveTheme,
+                        value: widget.value,
+                        minValue: widget.minValue,
+                        maxValue: widget.maxValue,
+                        segments: widget.segments,
+                        startAngle: widget.startAngleDegrees * 3.14159 / 180,
+                        sweepAngle: widget.sweepAngleDegrees * 3.14159 / 180,
+                        showGrid: widget.showGrid,
+                        showAxis: widget.showAxis,
+                        showLabel: widget.showLabel,
+                        centerLabel: widget.centerLabel,
+                        unit: widget.unit,
+                        animationProgress: _animation.value,
+                      ),
                     ),
                   ),
                 );

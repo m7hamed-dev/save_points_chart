@@ -1194,9 +1194,31 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             dataSets: SampleData.generateRadarData(),
             theme: chartTheme,
             title: 'Team Performance Comparison',
-            subtitle: 'Multi-dimensional radar chart',
+            subtitle: 'Multi-dimensional radar chart - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onPointTap: (point, datasetIndex, pointIndex, position) {
+              final dataSet = SampleData.generateRadarData()[datasetIndex];
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: null,
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: pointIndex,
+                datasetLabel: dataSet.label,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(
+                    context,
+                    point: point,
+                    datasetLabel: dataSet.label,
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -1213,33 +1235,55 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             value: 75,
             theme: chartTheme,
             title: 'Performance Score',
-            subtitle: 'Current performance metric',
+            subtitle: 'Current performance metric - Tap on chart!',
             centerLabel: 'Score',
             unit: '%',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onChartTap: () {
+              _showDetailsDialog(
+                context,
+                point: ChartDataPoint(x: 0, y: 75, label: 'Performance Score'),
+                datasetLabel: 'Performance Score',
+              );
+            },
           ),
           const SizedBox(height: 24),
           GaugeChartWidget(
             value: 85,
             theme: chartTheme,
             title: 'Customer Satisfaction',
-            subtitle: 'Customer satisfaction rating',
+            subtitle: 'Customer satisfaction rating - Tap on chart!',
             centerLabel: 'Satisfaction',
             unit: '%',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onChartTap: () {
+              _showDetailsDialog(
+                context,
+                point:
+                    ChartDataPoint(x: 0, y: 85, label: 'Customer Satisfaction'),
+                datasetLabel: 'Customer Satisfaction',
+              );
+            },
           ),
           const SizedBox(height: 24),
           GaugeChartWidget(
             value: 60,
             theme: chartTheme,
             title: 'Sales Target',
-            subtitle: 'Progress towards sales goal',
+            subtitle: 'Progress towards sales goal - Tap on chart!',
             centerLabel: 'Progress',
             unit: '%',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onChartTap: () {
+              _showDetailsDialog(
+                context,
+                point: ChartDataPoint(x: 0, y: 60, label: 'Sales Target'),
+                datasetLabel: 'Sales Target',
+              );
+            },
           ),
         ],
       ),
@@ -1256,9 +1300,32 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             dataSets: SampleData.generateMultiLineData(),
             theme: chartTheme,
             title: 'Smooth Spline Chart',
-            subtitle: 'Spline curves with smooth bezier interpolation',
+            subtitle:
+                'Spline curves with smooth bezier interpolation - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onPointTap: (point, datasetIndex, pointIndex, position) {
+              final dataSet = SampleData.generateMultiLineData()[datasetIndex];
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: null,
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: pointIndex,
+                datasetLabel: dataSet.label,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(
+                    context,
+                    point: point,
+                    datasetLabel: dataSet.label,
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -1275,9 +1342,31 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             dataSets: SampleData.generateMultiLineData(),
             theme: chartTheme,
             title: 'Step Line Chart',
-            subtitle: 'Step function visualization',
+            subtitle: 'Step function visualization - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onPointTap: (point, datasetIndex, pointIndex, position) {
+              final dataSet = SampleData.generateMultiLineData()[datasetIndex];
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: null,
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: pointIndex,
+                datasetLabel: dataSet.label,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(
+                    context,
+                    point: point,
+                    datasetLabel: dataSet.label,
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -1294,9 +1383,31 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             dataSets: SampleData.generateBarData(),
             theme: chartTheme,
             title: 'Stacked Column Chart',
-            subtitle: 'Multiple datasets stacked vertically',
+            subtitle: 'Multiple datasets stacked vertically - Tap on bars!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onBarTap: (point, datasetIndex, barIndex, position) {
+              final dataSet = SampleData.generateBarData()[datasetIndex];
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: null,
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: barIndex,
+                datasetLabel: dataSet.label,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(
+                    context,
+                    point: point,
+                    datasetLabel: dataSet.label,
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -1313,9 +1424,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             data: SampleData.generatePieData(),
             theme: chartTheme,
             title: 'Pyramid Chart',
-            subtitle: 'Hierarchical data visualization',
+            subtitle: 'Hierarchical data visualization - Tap on segments!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onSegmentTap: (segment, segmentIndex, position) {
+              ChartContextMenuHelper.show(
+                context,
+                point: null,
+                segment: segment,
+                position: position,
+                elementIndex: segmentIndex,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(context, segment: segment);
+                },
+              );
+            },
           ),
         ],
       ),
@@ -1332,9 +1458,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             data: SampleData.generatePieData(),
             theme: chartTheme,
             title: 'Funnel Chart',
-            subtitle: 'Sales funnel and conversion tracking',
+            subtitle: 'Sales funnel and conversion tracking - Tap on segments!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
+            onSegmentTap: (segment, segmentIndex, position) {
+              ChartContextMenuHelper.show(
+                context,
+                point: null,
+                segment: segment,
+                position: position,
+                elementIndex: segmentIndex,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(context, segment: segment);
+                },
+              );
+            },
           ),
         ],
       ),

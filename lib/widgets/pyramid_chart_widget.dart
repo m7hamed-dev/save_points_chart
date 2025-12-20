@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/pyramid_chart_painter.dart';
+import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
+import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// A pyramid chart widget displaying hierarchical data in a pyramid shape.
 ///
@@ -15,6 +19,7 @@ class PyramidChartWidget extends StatefulWidget {
   final String? subtitle;
   final bool useGlassmorphism;
   final bool useNeumorphism;
+  final PieSegmentCallback? onSegmentTap;
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
@@ -27,6 +32,7 @@ class PyramidChartWidget extends StatefulWidget {
     this.subtitle,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
+    this.onSegmentTap,
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
@@ -83,15 +89,49 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                return SizedBox(
-                  width: constraints.maxWidth,
-                  height: 300,
-                  child: CustomPaint(
-                    size: Size(constraints.maxWidth, 300),
-                    painter: PyramidChartPainter(
-                      theme: effectiveTheme,
-                      data: widget.data,
-                      animationProgress: _animation.value,
+                return GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTapDown: widget.onSegmentTap != null
+                      ? (details) {
+                          ChartContextMenuHelper.hide();
+
+                          final result =
+                              ChartInteractionHelper.findPyramidSegment(
+                            details.localPosition,
+                            widget.data,
+                            Size(constraints.maxWidth, 300),
+                            _animation.value,
+                          );
+
+                          if (result != null && result.isHit) {
+                            HapticFeedback.selectionClick();
+
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
+
+                            Future.microtask(() {
+                              widget.onSegmentTap?.call(
+                                result.segment!,
+                                result.elementIndex!,
+                                globalPosition,
+                              );
+                            });
+                          }
+                        }
+                      : null,
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    height: 300,
+                    child: CustomPaint(
+                      size: Size(constraints.maxWidth, 300),
+                      painter: PyramidChartPainter(
+                        theme: effectiveTheme,
+                        data: widget.data,
+                        animationProgress: _animation.value,
+                      ),
                     ),
                   ),
                 );
@@ -103,4 +143,3 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
     );
   }
 }
-

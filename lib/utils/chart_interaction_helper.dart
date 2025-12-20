@@ -263,4 +263,270 @@ class ChartInteractionHelper {
 
     return null;
   }
+
+  /// Find pyramid segment at tap location
+  static ChartInteractionResult? findPyramidSegment(
+    Offset tapPosition,
+    List<PieData> data,
+    Size size,
+    double animationProgress,
+  ) {
+    if (data.isEmpty) return null;
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return null;
+    }
+    if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
+      return null;
+    }
+
+    // Sort data by value (largest to smallest for pyramid)
+    final sortedData = List<PieData>.from(data)
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    final total = sortedData.fold<double>(0, (sum, item) => sum + item.value);
+    if (total <= 0 || !total.isFinite) return null;
+
+    const padding = 40.0;
+    final chartWidth = size.width - padding * 2;
+    final chartHeight = size.height - padding * 2;
+    final centerX = size.width / 2;
+
+    double cumulativeHeight = 0.0;
+
+    for (int i = 0; i < sortedData.length; i++) {
+      final segment = sortedData[i];
+      final percentage = segment.value / total;
+      final segmentHeight = chartHeight * percentage * animationProgress;
+
+      final baseWidth = chartWidth;
+      final topWidth = chartWidth * 0.3;
+      final currentY = cumulativeHeight;
+      final nextY = cumulativeHeight + segmentHeight;
+
+      final progress = currentY / chartHeight;
+      final nextProgress = nextY / chartHeight;
+      final currentWidth = baseWidth - (baseWidth - topWidth) * progress;
+      final nextWidth = baseWidth - (baseWidth - topWidth) * nextProgress;
+
+      // Check if tap is within trapezoid bounds
+      final topLeft = Offset(centerX - currentWidth / 2, padding + currentY);
+      final topRight = Offset(centerX + currentWidth / 2, padding + currentY);
+      final bottomRight = Offset(centerX + nextWidth / 2, padding + nextY);
+      final bottomLeft = Offset(centerX - nextWidth / 2, padding + nextY);
+
+      if (_isPointInTrapezoid(
+        tapPosition,
+        topLeft,
+        topRight,
+        bottomRight,
+        bottomLeft,
+      )) {
+        // Find original index in unsorted data
+        final originalIndex = data.indexOf(segment);
+        return ChartInteractionResult(
+          segment: segment,
+          elementIndex: originalIndex >= 0 ? originalIndex : i,
+          isHit: true,
+        );
+      }
+
+      cumulativeHeight += segmentHeight;
+    }
+
+    return null;
+  }
+
+  /// Find funnel segment at tap location
+  static ChartInteractionResult? findFunnelSegment(
+    Offset tapPosition,
+    List<PieData> data,
+    Size size,
+    double animationProgress,
+  ) {
+    if (data.isEmpty) return null;
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return null;
+    }
+    if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
+      return null;
+    }
+
+    // Sort data by value (largest to smallest for funnel)
+    final sortedData = List<PieData>.from(data)
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    final total = sortedData.fold<double>(0, (sum, item) => sum + item.value);
+    if (total <= 0 || !total.isFinite) return null;
+
+    const padding = 40.0;
+    final chartWidth = size.width - padding * 2;
+    final chartHeight = size.height - padding * 2;
+    final centerX = size.width / 2;
+
+    double cumulativeHeight = 0.0;
+
+    for (int i = 0; i < sortedData.length; i++) {
+      final segment = sortedData[i];
+      final percentage = segment.value / total;
+      final segmentHeight = chartHeight * percentage * animationProgress;
+
+      final topWidth = chartWidth;
+      final bottomWidth = chartWidth * 0.3;
+      final currentY = cumulativeHeight;
+      final nextY = cumulativeHeight + segmentHeight;
+
+      final progress = currentY / chartHeight;
+      final nextProgress = nextY / chartHeight;
+      final currentWidth = topWidth - (topWidth - bottomWidth) * progress;
+      final nextWidth = topWidth - (topWidth - bottomWidth) * nextProgress;
+
+      // Check if tap is within trapezoid bounds
+      final topLeft = Offset(centerX - currentWidth / 2, padding + currentY);
+      final topRight = Offset(centerX + currentWidth / 2, padding + currentY);
+      final bottomRight = Offset(centerX + nextWidth / 2, padding + nextY);
+      final bottomLeft = Offset(centerX - nextWidth / 2, padding + nextY);
+
+      if (_isPointInTrapezoid(
+        tapPosition,
+        topLeft,
+        topRight,
+        bottomRight,
+        bottomLeft,
+      )) {
+        // Find original index in unsorted data
+        final originalIndex = data.indexOf(segment);
+        return ChartInteractionResult(
+          segment: segment,
+          elementIndex: originalIndex >= 0 ? originalIndex : i,
+          isHit: true,
+        );
+      }
+
+      cumulativeHeight += segmentHeight;
+    }
+
+    return null;
+  }
+
+  /// Check if a point is inside a trapezoid using cross product method
+  static bool _isPointInTrapezoid(
+    Offset point,
+    Offset topLeft,
+    Offset topRight,
+    Offset bottomRight,
+    Offset bottomLeft,
+  ) {
+    // Check if point is within vertical bounds
+    final minY = math.min(
+      math.min(topLeft.dy, topRight.dy),
+      math.min(bottomLeft.dy, bottomRight.dy),
+    );
+    final maxY = math.max(
+      math.max(topLeft.dy, topRight.dy),
+      math.max(bottomLeft.dy, bottomRight.dy),
+    );
+
+    if (point.dy < minY || point.dy > maxY) return false;
+
+    // Calculate left and right edges at this Y position
+    final t = (point.dy - topLeft.dy) / (bottomLeft.dy - topLeft.dy);
+    if (t.isNaN || !t.isFinite) return false;
+    final leftX = topLeft.dx + (bottomLeft.dx - topLeft.dx) * t;
+
+    final t2 = (point.dy - topRight.dy) / (bottomRight.dy - topRight.dy);
+    if (t2.isNaN || !t2.isFinite) return false;
+    final rightX = topRight.dx + (bottomRight.dx - topRight.dx) * t2;
+
+    // Check if point X is between left and right edges
+    return point.dx >= math.min(leftX, rightX) &&
+        point.dx <= math.max(leftX, rightX);
+  }
+
+  /// Find radar point at tap location
+  static ChartInteractionResult? findRadarPoint(
+    Offset tapPosition,
+    List<RadarDataSet> dataSets,
+    Size size,
+    double maxValue,
+    double animationProgress,
+  ) {
+    if (dataSets.isEmpty) return null;
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return null;
+    }
+    if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
+      return null;
+    }
+
+    final firstDataSet = dataSets.first;
+    final numAxes = firstDataSet.dataPoints.length;
+    if (numAxes < 3) return null;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = math.min(size.width, size.height) / 2 - 60;
+    if (radius <= 0 || !radius.isFinite) return null;
+
+    final tapRadiusSquared = (ChartInteractionConstants.tapRadius *
+        ChartInteractionConstants.tapRadius);
+    double minDistanceSquared = double.infinity;
+    ChartInteractionResult? nearestResult;
+
+    for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
+      final dataSet = dataSets[dsIndex];
+      if (dataSet.dataPoints.length != numAxes) continue;
+
+      for (int ptIndex = 0; ptIndex < numAxes; ptIndex++) {
+        final radarPoint = dataSet.dataPoints[ptIndex];
+        if (!radarPoint.value.isFinite) continue;
+
+        final angle = (2 * math.pi * ptIndex / numAxes) - (math.pi / 2);
+        final value = radarPoint.value.clamp(0.0, maxValue);
+        final normalizedValue = (value / maxValue) * animationProgress;
+        final pointRadius = radius * normalizedValue;
+
+        final point = Offset(
+          center.dx + pointRadius * math.cos(angle),
+          center.dy + pointRadius * math.sin(angle),
+        );
+
+        final dx = tapPosition.dx - point.dx;
+        final dy = tapPosition.dy - point.dy;
+
+        if (!dx.isFinite || !dy.isFinite) continue;
+        if (dx.abs() > ChartInteractionConstants.tapRadius ||
+            dy.abs() > ChartInteractionConstants.tapRadius) continue;
+
+        final distanceSquared = dx * dx + dy * dy;
+        if (!distanceSquared.isFinite) continue;
+
+        if (distanceSquared < tapRadiusSquared &&
+            distanceSquared < minDistanceSquared) {
+          minDistanceSquared = distanceSquared;
+          // Convert RadarDataPoint to ChartDataPoint for compatibility
+          final chartPoint = ChartDataPoint(
+            x: ptIndex.toDouble(),
+            y: radarPoint.value,
+            label: radarPoint.label,
+          );
+          nearestResult = ChartInteractionResult(
+            point: chartPoint,
+            datasetIndex: dsIndex,
+            elementIndex: ptIndex,
+            isHit: true,
+          );
+        }
+      }
+    }
+
+    return nearestResult;
+  }
 }
