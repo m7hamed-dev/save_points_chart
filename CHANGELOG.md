@@ -228,6 +228,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Corrected multi-line constructor formatting
   - Ensures package passes static analysis checks
 
+## [1.5.0] - 2025-01-27
+
+### Added
+- **Click Interaction for All Charts**: Added comprehensive click interaction support across all chart types
+  - **Step Line Chart**: `onPointTap` callback with point selection and details dialog
+  - **Stacked Column Chart**: `onBarTap` callback with bar selection and details dialog
+  - **Spline Chart**: `onPointTap` callback with point selection and details dialog
+  - **Pyramid Chart**: `onSegmentTap` callback with segment selection and details dialog
+  - **Funnel Chart**: `onSegmentTap` callback with segment selection and details dialog
+  - **Radar Chart**: `onPointTap` callback with point selection and details dialog
+  - **Gauge Chart**: `onChartTap` callback with gauge value details dialog
+- **Visual Border Highlighting**: All charts now show prominent white borders when elements are clicked
+  - White 3-4px borders for selected elements (vs 1.5-2px default)
+  - Consistent visual feedback across all chart types
+  - Enhanced visibility with highlight overlays for selected segments
+- **Chart Interaction Helpers**: New helper functions for detecting interactions
+  - `findPyramidSegment()` - Detects taps on pyramid chart segments
+  - `findFunnelSegment()` - Detects taps on funnel chart segments
+  - `findRadarPoint()` - Detects taps on radar chart points
+  - `_isPointInTrapezoid()` - Helper for trapezoid hit testing
+- **Details Dialog**: Enhanced details dialog showing comprehensive chart element information
+  - Shows point/segment values, labels, and dataset information
+  - Available for all interactive chart types
+  - Consistent UI across all chart interactions
+
+### Improved
+- **Visual Feedback**: Enhanced visual feedback for all chart interactions
+  - Selected elements show white borders for better visibility
+  - Highlight overlays for selected segments in Pyramid and Funnel charts
+  - Glow effects for selected points in Radar charts
+  - Consistent border styling (3-4px white borders) across all chart types
+- **Interaction Consistency**: Standardized interaction patterns across all charts
+  - All charts use the same context menu system
+  - Consistent haptic feedback on all interactions
+  - Unified details dialog presentation
+- **Chart Painter Updates**: All painters now support selected state with border highlighting
+  - Line Chart: White 3px border for selected points
+  - Bar Chart: White 3px border for selected bars
+  - Pie/Donut Chart: White border (borderWidth + 3) for selected segments
+  - Scatter Chart: White 3px border for selected points
+  - Stacked Area Chart: White 3px border for selected points
+  - Radial Chart: White 3px border for selected points
+  - Spline Chart: White 3px border for selected points
+  - Step Line Chart: White 3px border for selected points
+  - Bubble Chart: White 3px border for selected bubbles
+  - Stacked Column Chart: White 3px border for selected bars
+  - Pyramid Chart: White 4px border for selected segments
+  - Funnel Chart: White 4px border for selected segments
+  - Radar Chart: White border with glow for selected points
+
+### Changed
+- **Chart Widgets**: All chart widgets now support click interaction callbacks
+  - Step Line, Stacked Column, Spline charts: Added `onPointTap`/`onBarTap` callbacks
+  - Pyramid, Funnel charts: Added `onSegmentTap` callbacks
+  - Radar chart: Added `onPointTap` callback
+  - Gauge chart: Added `onChartTap` callback
+- **Demo Screen**: Updated demo screen to show interactive examples
+  - All charts in demo now have click handlers
+  - Updated subtitles to indicate charts are interactive
+  - Shows details dialog when clicking on chart elements
+
 ## [Unreleased]
 
 ### Planned
