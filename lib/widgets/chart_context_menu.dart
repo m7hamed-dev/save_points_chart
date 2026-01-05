@@ -330,44 +330,49 @@ class ChartContextMenu extends StatelessWidget {
           ),
         ),
         // Menu Items
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            children: [
-              _buildMenuItem(
-                context,
-                icon: Icons.info_outline,
-                label: 'View Details',
-                onTap: () {
-                  onClose?.call();
-                  onViewDetails?.call();
-                },
-                isDark: isDark,
-              ),
-              _buildMenuItem(
-                context,
-                icon: Icons.download,
-                label: 'Export Data',
-                onTap: () {
-                  onClose?.call();
-                  onExport?.call();
-                },
-                isDark: isDark,
-              ),
-              _buildMenuItem(
-                context,
-                icon: Icons.share,
-                label: 'Share',
-                onTap: () {
-                  onClose?.call();
-                  onShare?.call();
-                },
-                isDark: isDark,
-                isLast: true,
-              ),
-            ],
+        if (onViewDetails != null || onExport != null || onShare != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              children: [
+                if (onViewDetails != null)
+                  _buildMenuItem(
+                    context,
+                    icon: Icons.info_outline,
+                    label: 'View Details',
+                    onTap: () {
+                      onClose?.call();
+                      onViewDetails?.call();
+                    },
+                    isDark: isDark,
+                  ),
+                if (onExport != null)
+                  _buildMenuItem(
+                    context,
+                    icon: Icons.download,
+                    label: 'Export Data',
+                    onTap: () {
+                      onClose?.call();
+                      onExport?.call();
+                    },
+                    isDark: isDark,
+                    isLast: onShare == null, // Last if share is not provided
+                  ),
+                if (onShare != null)
+                  _buildMenuItem(
+                    context,
+                    icon: Icons.share,
+                    label: 'Share',
+                    onTap: () {
+                      onClose?.call();
+                      onShare?.call();
+                    },
+                    isDark: isDark,
+                    isLast: true, // Always last if provided
+                  ),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
@@ -460,10 +465,16 @@ class ChartContextMenuHelper {
     ChartTheme? theme,
     bool useGlassmorphism = false,
     bool useNeumorphism = false,
+    bool backgroundBlur = false,
     VoidCallback? onViewDetails,
     VoidCallback? onExport,
     VoidCallback? onShare,
   }) {
+    // If no actions are provided, don't show the context menu at all
+    if (onViewDetails == null && onExport == null && onShare == null) {
+      return;
+    }
+
     // Close existing menu if any
     hide();
 
