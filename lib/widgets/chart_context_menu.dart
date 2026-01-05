@@ -522,9 +522,18 @@ class ChartContextMenuHelper {
                 hide();
               },
               behavior: HitTestBehavior.translucent,
-              child: Container(
-                color: Colors.transparent,
-              ),
+              child: backgroundBlur
+                  ? ClipRect(
+                      child: BackdropFilter(
+                        filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        child: Container(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      color: Colors.transparent,
+                    ),
             ),
           ),
           // Context Menu - positioned above backdrop
