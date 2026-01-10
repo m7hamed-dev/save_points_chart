@@ -308,6 +308,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved `ChartInteractionResult` class documentation
   - All public APIs now have proper dartdoc comments meeting pub.dev requirements
 
+## [1.5.2] - 2025-01-10
+
+### Fixed
+- **Critical NaN Gradient Crash**: Fixed application crashes when rendering charts with invalid data
+  - **Bar Chart**: Added comprehensive validation to prevent NaN values in gradient coordinates
+    - Validates point data (x, y values) before calculations
+    - Validates bar dimensions before creating gradients
+    - Protects against division by zero in maxYAdjusted
+  - **All Chart Types**: Applied NaN validation across all 15 chart painters
+    - Bubble Chart: Validates point coordinates, size, and canvas points
+    - Pie/Donut Chart: Validates size, radius, total values, and item values
+    - Stacked Column Chart: Validates bar heights and calculated dimensions
+    - Radar Chart: Validates angles, radius, and normalized values
+    - Funnel Chart: Validates segment dimensions and percentages
+    - Pyramid Chart: Validates segment values and calculated dimensions
+    - Scatter Chart: Validates point coordinates and bounds
+    - Radial Chart: Validates radial values and polar coordinates
+    - Line Chart: Enhanced existing validations for control points
+    - Spline Chart: Enhanced existing validations for bezier curves
+    - Stacked Area Chart: Enhanced existing validations for cumulative paths
+    - Step Line Chart: Enhanced existing validations for step patterns
+    - Gauge Chart: Enhanced existing validations for angles and gradients
+  - Charts now gracefully skip invalid data points instead of crashing
+  - All gradient creation operations validate rect/circle dimensions before shader creation
+
+### Improved
+- **Error Handling**: Comprehensive validation throughout all chart rendering pipelines
+  - All coordinate calculations validate inputs and outputs for finite values
+  - Dimension checks ensure positive, finite values before drawing
+  - Graceful degradation when encountering NaN, Infinity, or invalid ranges
+  - No crashes when data contains invalid numerical values
+- **Stability**: Significantly improved application stability in Analytics sections
+  - Bar charts and all other chart types now handle edge cases robustly
+  - Invalid data is filtered out rather than causing application crashes
+  - Better protection against malformed or corrupted data inputs
+
+### Technical Details
+- Added `isFinite` checks for all numerical values before use in calculations
+- Validates dimensions (width, height, radius) are positive before creating Paint shaders
+- Protects against division by zero in normalization and scaling operations
+- Validates all Offset coordinates before path operations
+- Ensures all gradient rect/circle bounds are valid before shader creation
+
 ## [Unreleased]
 
 ### Planned
