@@ -424,12 +424,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     datasetLabel: dataSet.label,
                   );
                 },
-                // onExport: () {
-                //   _showExportSnackBar(context, 'Exporting data point...');
-                // },
-                // onShare: () {
-                //   _showExportSnackBar(context, 'Sharing data point...');
-                // },
+                onExport: () {
+                  _showExportSnackBar(context, 'Exporting data point...');
+                },
+                onShare: () {
+                  _showExportSnackBar(context, 'Sharing data point...');
+                },
               );
             },
             onPointHover: (point, datasetIndex, pointIndex) {
@@ -1243,7 +1243,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point: const ChartDataPoint(x: 0, y: 75, label: 'Performance Score'),
+                point: const ChartDataPoint(
+                    x: 0, y: 75, label: 'Performance Score'),
                 datasetLabel: 'Performance Score',
               );
             },
@@ -1261,8 +1262,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point:
-                    const ChartDataPoint(x: 0, y: 85, label: 'Customer Satisfaction'),
+                point: const ChartDataPoint(
+                    x: 0, y: 85, label: 'Customer Satisfaction'),
                 datasetLabel: 'Customer Satisfaction',
               );
             },
