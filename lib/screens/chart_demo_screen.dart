@@ -1244,7 +1244,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               _showDetailsDialog(
                 context,
                 point: const ChartDataPoint(
-                    x: 0, y: 75, label: 'Performance Score'),
+                  x: 0,
+                  y: 75,
+                  label: 'Performance Score',
+                ),
                 datasetLabel: 'Performance Score',
               );
             },
@@ -1263,7 +1266,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               _showDetailsDialog(
                 context,
                 point: const ChartDataPoint(
-                    x: 0, y: 85, label: 'Customer Satisfaction'),
+                  x: 0,
+                  y: 85,
+                  label: 'Customer Satisfaction',
+                ),
                 datasetLabel: 'Customer Satisfaction',
               );
             },
