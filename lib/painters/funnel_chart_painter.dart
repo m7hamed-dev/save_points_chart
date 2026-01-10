@@ -21,25 +21,58 @@ class FunnelChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (data.isEmpty) return;
 
+    // Validate size
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return;
+    }
+
     // Sort data by value (largest to smallest for funnel - top to bottom)
     final sortedData = List<PieData>.from(data)
       ..sort((a, b) => b.value.compareTo(a.value));
 
     final total = sortedData.fold<double>(0, (sum, item) => sum + item.value);
-    if (total == 0) return;
+
+    // Validate total
+    if (!total.isFinite || total <= 0) {
+      return;
+    }
 
     const padding = 40.0;
     final chartWidth = size.width - padding * 2;
     final chartHeight = size.height - padding * 2;
     final centerX = size.width / 2;
 
+    // Validate dimensions
+    if (!chartWidth.isFinite ||
+        !chartHeight.isFinite ||
+        chartWidth <= 0 ||
+        chartHeight <= 0) {
+      return;
+    }
+
     // Calculate cumulative heights
     double cumulativeHeight = 0.0;
 
     for (int i = 0; i < sortedData.length; i++) {
       final segment = sortedData[i];
+
+      // Validate segment value
+      if (!segment.value.isFinite || segment.value < 0) {
+        continue;
+      }
+
       final percentage = segment.value / total;
       final segmentHeight = chartHeight * percentage * animationProgress;
+
+      // Validate calculated dimensions
+      if (!percentage.isFinite ||
+          !segmentHeight.isFinite ||
+          segmentHeight <= 0) {
+        continue;
+      }
 
       // Find original index in unsorted data
       final originalIndex = data.indexOf(segment);

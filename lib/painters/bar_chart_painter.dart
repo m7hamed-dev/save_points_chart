@@ -137,6 +137,12 @@ class BarChartPainter extends BaseChartPainter {
         for (final dataSet in dataSets) {
           if (i < dataSet.dataPoints.length) {
             final point = dataSet.dataPoints[i];
+
+            // Validate point data to prevent NaN
+            if (!point.y.isFinite || point.y < 0 || maxYAdjusted <= 0) {
+              continue;
+            }
+
             final barHeight = (point.y / maxYAdjusted) * chartSize.height;
             final barY = chartSize.height - barHeight;
 
@@ -178,6 +184,15 @@ class BarChartPainter extends BaseChartPainter {
       final totalBars = dataSet.dataPoints.length;
       for (int i = 0; i < dataSet.dataPoints.length; i++) {
         final point = dataSet.dataPoints[i];
+
+        // Validate point data to prevent NaN
+        if (!point.x.isFinite ||
+            !point.y.isFinite ||
+            point.y < 0 ||
+            maxYAdjusted <= 0) {
+          continue;
+        }
+
         final xRange = maxXAdjusted - minXAdjusted;
         final x = xRange > 0
             ? ((point.x - minXAdjusted) / xRange) * chartSize.width
@@ -249,6 +264,16 @@ class BarChartPainter extends BaseChartPainter {
     final elevation = isSelected ? 4.0 : (isHovered ? 2.0 : 0.0);
     final adjustedY = animatedY - elevation;
     final adjustedHeight = animatedHeight + elevation;
+
+    // Validate dimensions to prevent NaN in gradient
+    if (!position.dx.isFinite ||
+        !adjustedY.isFinite ||
+        !width.isFinite ||
+        !adjustedHeight.isFinite ||
+        width <= 0 ||
+        adjustedHeight <= 0) {
+      return;
+    }
 
     final rect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight),

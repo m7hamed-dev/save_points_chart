@@ -41,6 +41,14 @@ class RadarChartPainter extends BaseChartPainter {
   void paint(Canvas canvas, Size size) {
     if (radarDataSets.isEmpty) return;
 
+    // Validate size
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return;
+    }
+
     // Use the first dataset to determine number of axes
     final firstDataSet = radarDataSets.first;
     final numAxes = firstDataSet.dataPoints.length;
@@ -49,6 +57,11 @@ class RadarChartPainter extends BaseChartPainter {
     // Calculate center and radius
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width, size.height) / 2 - 60;
+
+    // Validate radius
+    if (!radius.isFinite || radius <= 0) {
+      return;
+    }
 
     // Draw grid circles
     if (showGrid && theme.showGrid) {
@@ -150,14 +163,32 @@ class RadarChartPainter extends BaseChartPainter {
       // Calculate points
       for (int i = 0; i < numAxes; i++) {
         final angle = (2 * math.pi * i / numAxes) - (math.pi / 2);
-        final value = dataSet.dataPoints[i].value.clamp(0.0, maxValue);
+        final rawValue = dataSet.dataPoints[i].value;
+
+        // Validate value
+        if (!rawValue.isFinite || !maxValue.isFinite || maxValue <= 0) {
+          continue;
+        }
+
+        final value = rawValue.clamp(0.0, maxValue);
         final normalizedValue = (value / maxValue) * animationProgress;
         final pointRadius = radius * normalizedValue;
+
+        // Validate calculated values
+        if (!pointRadius.isFinite || !angle.isFinite) {
+          continue;
+        }
 
         final point = Offset(
           center.dx + pointRadius * math.cos(angle),
           center.dy + pointRadius * math.sin(angle),
         );
+
+        // Validate point coordinates
+        if (!point.dx.isFinite || !point.dy.isFinite) {
+          continue;
+        }
+
         points.add(point);
 
         if (i == 0) {

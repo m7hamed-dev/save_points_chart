@@ -27,11 +27,30 @@ class RadialChartPainter extends BaseChartPainter {
   void paint(Canvas canvas, Size size) {
     if (dataSets.isEmpty || dataSets.first.dataPoints.isEmpty) return;
 
+    // Validate size
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return;
+    }
+
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width, size.height) / 2 - 40;
+
+    // Validate radius
+    if (!radius.isFinite || radius <= 0) {
+      return;
+    }
+
     final dataSet = dataSets.first;
     final points = dataSet.dataPoints;
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
+
+    // Validate maxValue
+    if (!maxValue.isFinite || maxValue <= 0) {
+      return;
+    }
 
     // Draw grid circles with professional styling
     if (showGrid && theme.showGrid) {
@@ -94,10 +113,27 @@ class RadialChartPainter extends BaseChartPainter {
     final path = Path();
     for (int i = 0; i < points.length; i++) {
       final angle = i * angleStep - math.pi / 2;
+
+      // Validate point value
+      if (!points[i].y.isFinite) {
+        continue;
+      }
+
       final animatedValue = points[i].y * animationProgress;
       final valueRadius = radius * (animatedValue / maxValue);
+
+      // Validate calculated values
+      if (!angle.isFinite || !valueRadius.isFinite) {
+        continue;
+      }
+
       final x = center.dx + math.cos(angle) * valueRadius;
       final y = center.dy + math.sin(angle) * valueRadius;
+
+      // Validate coordinates
+      if (!x.isFinite || !y.isFinite) {
+        continue;
+      }
 
       if (i == 0) {
         path.moveTo(x, y);

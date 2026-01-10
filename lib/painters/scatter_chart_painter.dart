@@ -49,6 +49,14 @@ class ScatterChartPainter extends BaseChartPainter {
 
     if (dataSets.isEmpty) return;
 
+    // Validate chart size
+    if (!chartSize.width.isFinite ||
+        !chartSize.height.isFinite ||
+        chartSize.width <= 0 ||
+        chartSize.height <= 0) {
+      return;
+    }
+
     // Calculate bounds
     double minX = double.infinity;
     double maxX = double.negativeInfinity;
@@ -62,6 +70,15 @@ class ScatterChartPainter extends BaseChartPainter {
         if (point.y < minY) minY = point.y;
         if (point.y > maxY) maxY = point.y;
       }
+    }
+
+    // Validate bounds
+    if (!minX.isFinite ||
+        !maxX.isFinite ||
+        !minY.isFinite ||
+        !maxY.isFinite ||
+        minX == double.infinity) {
+      return;
     }
 
     // Add padding to bounds
@@ -94,8 +111,19 @@ class ScatterChartPainter extends BaseChartPainter {
           pointIndex < dataSet.dataPoints.length;
           pointIndex++) {
         final point = dataSet.dataPoints[pointIndex];
+
+        // Validate point data
+        if (!point.x.isFinite || !point.y.isFinite) {
+          continue;
+        }
+
         final canvasPoint =
             pointToCanvas(point, chartSize, minX, maxX, minY, maxY);
+
+        // Validate canvas point
+        if (!canvasPoint.dx.isFinite || !canvasPoint.dy.isFinite) {
+          continue;
+        }
 
         // Check if this point is selected or hovered
         final isSelected = selectedPoint?.datasetIndex == datasetIndex &&
@@ -112,7 +140,7 @@ class ScatterChartPainter extends BaseChartPainter {
 
         // Draw point with animation
         final animatedSize = currentSize * animationProgress;
-        if (animatedSize > 0) {
+        if (animatedSize > 0 && animatedSize.isFinite) {
           final paint = Paint()
             ..color = currentColor
             ..style = PaintingStyle.fill;

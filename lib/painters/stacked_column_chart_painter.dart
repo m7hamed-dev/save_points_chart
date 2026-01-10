@@ -100,11 +100,23 @@ class StackedColumnChartPainter extends BaseChartPainter {
           orElse: () => ChartDataPoint(x: xValue, y: 0),
         );
 
-        if (point.y <= 0) continue;
+        // Validate point data
+        if (!point.y.isFinite || point.y <= 0 || !maxY.isFinite || maxY <= 0) {
+          continue;
+        }
 
         final yHeight = (point.y / maxY) * chartSize.height * animationProgress;
         final yStart = chartSize.height - cumulativeY;
         final yEnd = yStart - yHeight;
+
+        // Validate calculated dimensions
+        if (!yHeight.isFinite ||
+            !yStart.isFinite ||
+            !yEnd.isFinite ||
+            yHeight <= 0 ||
+            yStart < yEnd) {
+          continue;
+        }
 
         final isSelected = selectedBar != null &&
             selectedBar!.isHit &&

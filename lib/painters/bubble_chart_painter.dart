@@ -110,6 +110,12 @@ class BubbleChartPainter extends BaseChartPainter {
           pointIndex < dataSet.dataPoints.length;
           pointIndex++) {
         final point = dataSet.dataPoints[pointIndex];
+
+        // Validate point data to prevent NaN
+        if (!point.x.isFinite || !point.y.isFinite || !point.size.isFinite) {
+          continue;
+        }
+
         final canvasPoint = pointToCanvas(
           ChartDataPoint(x: point.x, y: point.y),
           chartSize,
@@ -118,6 +124,11 @@ class BubbleChartPainter extends BaseChartPainter {
           minY,
           maxY,
         );
+
+        // Validate canvas point
+        if (!canvasPoint.dx.isFinite || !canvasPoint.dy.isFinite) {
+          continue;
+        }
 
         // Check if this bubble is selected or hovered
         final isSelected = selectedBubble?.datasetIndex == datasetIndex &&
@@ -132,6 +143,11 @@ class BubbleChartPainter extends BaseChartPainter {
         final currentSize =
             (isSelected || isHovered ? normalizedSize * 1.2 : normalizedSize) *
                 animationProgress;
+
+        // Validate size before drawing
+        if (!currentSize.isFinite || currentSize <= 0) {
+          continue;
+        }
 
         final currentColor = isSelected || isHovered
             ? color.withValues(alpha: 0.9)

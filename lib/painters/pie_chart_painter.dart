@@ -28,14 +28,39 @@ class PieChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (data.isEmpty) return;
 
+    // Validate size
+    if (!size.width.isFinite ||
+        !size.height.isFinite ||
+        size.width <= 0 ||
+        size.height <= 0) {
+      return;
+    }
+
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width, size.height) / 2 - 20;
+
+    // Validate radius
+    if (!radius.isFinite || radius <= 0) {
+      return;
+    }
+
     final total = data.map((d) => d.value).reduce((a, b) => a + b);
+
+    // Validate total
+    if (!total.isFinite || total <= 0) {
+      return;
+    }
 
     double startAngle = -math.pi / 2; // Start from top
 
     for (int index = 0; index < data.length; index++) {
       final item = data[index];
+
+      // Validate item value
+      if (!item.value.isFinite || item.value < 0) {
+        continue;
+      }
+
       final sweepAngle = (item.value / total) * 2 * math.pi;
 
       // Animate each segment with stagger
