@@ -27,8 +27,8 @@ class SampleData {
           label: 'Ms${index + 1}',
           dataPoint: ChartDataPoint(
             x: index.toDouble(),
-            y: 20 + (index * 5) + (index % 3) * 10,
-            label: 'M${index + 1}',
+            y: 20 + (index * 9) + (index % 3) * 10,
+            label: 'Mohamed',
           ),
         );
       },
