@@ -1147,20 +1147,28 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildBubbleChart(ChartTheme chartTheme) {
+    final bubbleDataSets = SampleData.generateBubbleData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BubbleChartWidget(
-            dataSets: SampleData.generateBubbleData(),
+            dataSets: bubbleDataSets,
             theme: chartTheme,
             title: 'Regional Performance',
             subtitle: 'Bubble chart with size dimension - Tap on bubbles!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onBubbleTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateBubbleData()[datasetIndex];
+              // Add bounds checking to prevent RangeError
+              if (datasetIndex < 0 || datasetIndex >= bubbleDataSets.length) {
+                return;
+              }
+              final dataSet = bubbleDataSets[datasetIndex];
+              if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
+                return;
+              }
               final bubblePoint = dataSet.dataPoints[pointIndex];
               ChartContextMenuHelper.show(
                 context,

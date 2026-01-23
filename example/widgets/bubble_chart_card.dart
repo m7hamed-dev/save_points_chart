@@ -9,6 +9,7 @@ class BubbleChartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bubbleDataSets = SampleData.generateBubbleData();
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -21,12 +22,20 @@ class BubbleChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             BubbleChartWidget(
-              dataSets: SampleData.generateBubbleData(),
+              dataSets: bubbleDataSets,
               theme: theme,
               title: 'Regional Performance',
               subtitle: 'Tap on bubbles to see details',
               onBubbleTap: (point, datasetIndex, pointIndex, position) {
-                final bubblePoint = SampleData.generateBubbleData()[datasetIndex].dataPoints[pointIndex];
+                // Add bounds checking to prevent RangeError
+                if (datasetIndex < 0 || datasetIndex >= bubbleDataSets.length) {
+                  return;
+                }
+                final dataSet = bubbleDataSets[datasetIndex];
+                if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
+                  return;
+                }
+                final bubblePoint = dataSet.dataPoints[pointIndex];
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
