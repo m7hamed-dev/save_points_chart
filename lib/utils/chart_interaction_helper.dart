@@ -340,6 +340,7 @@ class ChartInteractionHelper {
       if (isInSegment) {
         return ChartInteractionResult(
           segment: item,
+          datasetIndex: 0, // Pie charts have a single dataset (the list of segments)
           elementIndex: i,
           isHit: true,
         );
@@ -426,6 +427,7 @@ class ChartInteractionHelper {
         final originalIndex = data.indexOf(segment);
         return ChartInteractionResult(
           segment: segment,
+          datasetIndex: 0, // Pyramid charts have a single dataset (the list of segments)
           elementIndex: originalIndex >= 0 ? originalIndex : i,
           isHit: true,
         );
@@ -501,6 +503,7 @@ class ChartInteractionHelper {
         final originalIndex = data.indexOf(segment);
         return ChartInteractionResult(
           segment: segment,
+          datasetIndex: 0, // Funnel charts have a single dataset (the list of segments)
           elementIndex: originalIndex >= 0 ? originalIndex : i,
           isHit: true,
         );
