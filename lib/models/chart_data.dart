@@ -15,6 +15,14 @@ import 'package:flutter/material.dart';
 ///   y: 10.5,
 ///   label: 'January',
 /// )
+/// 
+/// // With custom label rotation
+/// ChartDataPoint(
+///   x: 1,
+///   y: 20.0,
+///   label: 'February',
+///   xAxisLabelRotation: LabelRotation.diagonalDown, // 45° rotation
+/// )
 /// ```
 ///
 /// See also:
@@ -39,16 +47,31 @@ class ChartDataPoint {
   /// will use the x or y value as a fallback.
   final String? label;
 
+  /// Optional rotation angle for the X-axis label in radians.
+  ///
+  /// If provided, this rotation will be used for this specific data point's label.
+  /// If null, the chart theme's [xAxisLabelRotation] will be used as fallback.
+  /// Common values:
+  /// - 0.0: Horizontal labels
+  /// - -pi/4 or -45 degrees: Diagonal labels (slanted down)
+  /// - -pi/2 or -90 degrees: Vertical labels
+  ///
+  /// See also:
+  /// - [LabelRotation] for common rotation constants
+  final double? xAxisLabelRotation;
+
   /// Creates a chart data point.
   ///
   /// [x] and [y] are required and must be finite numbers.
   /// [label] is optional and can be used for axis labels or tooltips.
+  /// [xAxisLabelRotation] is optional and allows per-point label rotation.
   ///
   /// Throws an [AssertionError] if [x] or [y] are not finite.
   const ChartDataPoint({
     required this.x,
     required this.y,
     this.label,
+    this.xAxisLabelRotation,
   });
 
   /// Creates a copy of this data point with the given fields replaced.
@@ -59,17 +82,19 @@ class ChartDataPoint {
     double? x,
     double? y,
     String? label,
+    double? xAxisLabelRotation,
   }) {
     return ChartDataPoint(
       x: x ?? this.x,
       y: y ?? this.y,
       label: label ?? this.label,
+      xAxisLabelRotation: xAxisLabelRotation ?? this.xAxisLabelRotation,
     );
   }
 
   @override
   String toString() =>
-      'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"})';
+      'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"}, xAxisLabelRotation: ${xAxisLabelRotation ?? "null"})';
 
   @override
   bool operator ==(Object other) =>
@@ -78,10 +103,11 @@ class ChartDataPoint {
           runtimeType == other.runtimeType &&
           x == other.x &&
           y == other.y &&
-          label == other.label;
+          label == other.label &&
+          xAxisLabelRotation == other.xAxisLabelRotation;
 
   @override
-  int get hashCode => Object.hash(x, y, label);
+  int get hashCode => Object.hash(x, y, label, xAxisLabelRotation);
 }
 
 /// Represents a segment in a pie or donut chart.
@@ -195,7 +221,7 @@ class BubbleDataPoint extends ChartDataPoint {
   /// Creates a bubble data point.
   ///
   /// [x], [y], and [size] are required and must be finite numbers.
-  /// [label] is optional.
+  /// [label] and [xAxisLabelRotation] are optional.
   ///
   /// Throws an [AssertionError] if [size] is not positive or not finite.
   const BubbleDataPoint({
@@ -203,6 +229,7 @@ class BubbleDataPoint extends ChartDataPoint {
     required super.y,
     required this.size,
     super.label,
+    super.xAxisLabelRotation,
   });
 
   /// Creates a copy of this bubble data point with the given fields replaced.
@@ -215,12 +242,14 @@ class BubbleDataPoint extends ChartDataPoint {
     double? y,
     double? size,
     String? label,
+    double? xAxisLabelRotation,
   }) {
     return BubbleDataPoint(
       x: x ?? this.x,
       y: y ?? this.y,
       size: size ?? this.size,
       label: label ?? this.label,
+      xAxisLabelRotation: xAxisLabelRotation ?? this.xAxisLabelRotation,
     );
   }
 

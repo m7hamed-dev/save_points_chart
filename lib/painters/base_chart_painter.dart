@@ -342,14 +342,14 @@ abstract class BaseChartPainter extends CustomPainter {
         // Use labels from data points - show labels at actual data point positions
         for (final dataSet in dataSets) {
           final point = dataSet.dataPoint;
-          
+
           // Skip if no label or invalid x value
           if (point.label == null || !point.x.isFinite) continue;
-          
+
           // Calculate x position based on point.x
           final normalizedX = xRange > 0 ? (point.x - minX) / xRange : 0.5;
           final x = normalizedX * size.width;
-          
+
           // Only draw if within chart bounds
           if (!x.isFinite || x < 0 || x > size.width) continue;
 
@@ -359,15 +359,15 @@ abstract class BaseChartPainter extends CustomPainter {
           );
           textPainter.layout();
 
-          final offsetX = x - textPainter.width / 2;
-          final offsetY = size.height + 8;
-
-          if (offsetX.isFinite && offsetY.isFinite) {
-            textPainter.paint(
-              canvas,
-              Offset(offsetX, offsetY),
-            );
-          }
+          // Use rotation from data point, fallback to theme rotation
+          final rotation = point.xAxisLabelRotation ?? theme.xAxisLabelRotation;
+          
+          _paintRotatedLabel(
+            canvas,
+            textPainter,
+            Offset(x, size.height + 8),
+            rotation,
+          );
         }
       } else {
         // Fall back to numeric labels
@@ -390,16 +390,13 @@ abstract class BaseChartPainter extends CustomPainter {
           );
           textPainter.layout();
 
-          final offsetX = x - textPainter.width / 2;
-          final offsetY = size.height + 8;
-
-          // Validate offset values before painting
-          if (offsetX.isFinite && offsetY.isFinite) {
-            textPainter.paint(
-              canvas,
-              Offset(offsetX, offsetY),
-            );
-          }
+          // For numeric labels, use theme rotation (no per-point rotation available)
+          _paintRotatedLabel(
+            canvas,
+            textPainter,
+            Offset(x, size.height + 8),
+            theme.xAxisLabelRotation,
+          );
         }
       }
     }
@@ -426,18 +423,61 @@ abstract class BaseChartPainter extends CustomPainter {
         );
         textPainter.layout();
 
-        final offsetX = -textPainter.width - 8;
-        final offsetY = y - textPainter.height / 2;
-
-        // Validate offset values before painting
-        if (offsetX.isFinite && offsetY.isFinite) {
-          textPainter.paint(
-            canvas,
-            Offset(offsetX, offsetY),
-          );
-        }
+        _paintRotatedLabel(
+          canvas,
+          textPainter,
+          Offset(-textPainter.width - 8, y),
+          theme.yAxisLabelRotation,
+        );
       }
     }
+  }
+
+  /// Paints a text label with rotation support.
+  ///
+  /// This helper method handles rotation of axis labels. The rotation is applied
+  /// around the label's center point.
+  ///
+  /// Parameters:
+  /// - [canvas] - The canvas to paint on
+  /// - [textPainter] - The text painter with laid out text
+  /// - [position] - The position where the label should be painted (center point)
+  /// - [rotation] - Rotation angle in radians (0.0 = horizontal)
+  void _paintRotatedLabel(
+    Canvas canvas,
+    TextPainter textPainter,
+    Offset position,
+    double rotation,
+  ) {
+    if (!position.dx.isFinite || !position.dy.isFinite) return;
+    
+    if (rotation == 0.0) {
+      // No rotation - simple paint (centered)
+      final offsetX = position.dx - textPainter.width / 2;
+      final offsetY = position.dy - textPainter.height / 2;
+      if (offsetX.isFinite && offsetY.isFinite) {
+        textPainter.paint(canvas, Offset(offsetX, offsetY));
+      }
+      return;
+    }
+
+    // Apply rotation around the center point
+    canvas.save();
+    
+    // Translate to the rotation center
+    canvas.translate(position.dx, position.dy);
+    
+    // Apply rotation
+    canvas.rotate(rotation);
+    
+    // Paint text centered at origin (after translation and rotation)
+    final textOffset = Offset(
+      -textPainter.width / 2,
+      -textPainter.height / 2,
+    );
+    textPainter.paint(canvas, textOffset);
+    
+    canvas.restore();
   }
 
   /// Get data bounds (to be overridden by subclasses).

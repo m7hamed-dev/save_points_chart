@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Sample data generators for demonstration
 class SampleData {
   static List<ChartDataPoint> generateLineData({
-    int count = 10,
+    int count = 5,
     double minY = 0,
     double maxY = 100,
   }) {
@@ -13,6 +14,7 @@ class SampleData {
         x: index.toDouble(),
         y: minY + (maxY - minY) * (0.5 + 0.5 * (index % 3 == 0 ? 1.2 : 0.8)),
         label: 'Day ${index + 1}',
+        xAxisLabelRotation: LabelRotation.diagonalDown,
       );
     });
   }
@@ -20,7 +22,7 @@ class SampleData {
   static List<ChartDataSet> generateMultiLineData() {
     /// Sales Data Set
     final List<ChartDataSet> sales = List.generate(
-      9,
+      5,
       (index) {
         return ChartDataSet(
           color: const Color(0xFF6366F1),
@@ -29,6 +31,7 @@ class SampleData {
             x: index.toDouble(),
             y: 20 + (index * 5) + (index % 3) * 10,
             label: 'M${index + 1}',
+            xAxisLabelRotation: LabelRotation.vertical,
           ),
         );
       },
@@ -36,7 +39,7 @@ class SampleData {
 
     /// Revenue Data Set
     final List<ChartDataSet> revenue = List.generate(
-      9,
+      5,
       (index) {
         return ChartDataSet(
           color: const Color(0xFF10B981),

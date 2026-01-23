@@ -1,4 +1,42 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+
+/// Common label rotation angles in radians for convenience.
+///
+/// Use these constants when setting label rotation:
+/// ```dart
+/// ChartTheme.light().copyWith(
+///   xAxisLabelRotation: LabelRotation.diagonalDown,
+/// )
+/// ```
+class LabelRotation {
+  /// No rotation (horizontal labels)
+  static const double none = 0.0;
+  
+  /// 45 degrees clockwise (slanted down to the right)
+  static const double diagonalDown = math.pi / 4;
+  
+  /// 45 degrees counter-clockwise (slanted up to the right)
+  static const double diagonalUp = -math.pi / 4;
+  
+  /// 90 degrees clockwise (vertical, reading top to bottom)
+  static const double vertical = math.pi / 2;
+  
+  /// 90 degrees counter-clockwise (vertical, reading bottom to top)
+  static const double verticalUp = -math.pi / 2;
+  
+  /// 30 degrees clockwise
+  static const double slightDown = math.pi / 6;
+  
+  /// 30 degrees counter-clockwise
+  static const double slightUp = -math.pi / 6;
+  
+  /// 60 degrees clockwise
+  static const double steepDown = math.pi / 3;
+  
+  /// 60 degrees counter-clockwise
+  static const double steepUp = -math.pi / 3;
+}
 
 /// Theme-aware chart styling configuration.
 ///
@@ -22,6 +60,7 @@ import 'package:flutter/material.dart';
 /// final customTheme = ChartTheme.light().copyWith(
 ///   backgroundColor: Colors.grey[100],
 ///   borderRadius: 24.0,
+///   xAxisLabelRotation: LabelRotation.diagonalDown, // Rotate X-axis labels
 /// );
 ///
 /// // Infer from Material theme
@@ -42,6 +81,19 @@ class ChartTheme {
   final bool showAxis;
   final bool showLegend;
   final bool showTooltip;
+  
+  /// Rotation angle for X-axis labels in radians.
+  ///
+  /// Defaults to 0.0 (horizontal). Common values:
+  /// - 0.0: Horizontal labels
+  /// - -pi/4 or -45 degrees: Diagonal labels (slanted down)
+  /// - -pi/2 or -90 degrees: Vertical labels
+  final double xAxisLabelRotation;
+  
+  /// Rotation angle for Y-axis labels in radians.
+  ///
+  /// Defaults to 0.0 (horizontal). Usually kept at 0.0 for Y-axis.
+  final double yAxisLabelRotation;
 
   const ChartTheme({
     required this.backgroundColor,
@@ -55,6 +107,8 @@ class ChartTheme {
     this.showAxis = true,
     this.showLegend = true,
     this.showTooltip = true,
+    this.xAxisLabelRotation = 0.0,
+    this.yAxisLabelRotation = 0.0,
   });
 
   /// Create light theme with enhanced colors.
@@ -169,6 +223,8 @@ class ChartTheme {
     bool? showAxis,
     bool? showLegend,
     bool? showTooltip,
+    double? xAxisLabelRotation,
+    double? yAxisLabelRotation,
   }) {
     return ChartTheme(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -182,6 +238,8 @@ class ChartTheme {
       showAxis: showAxis ?? this.showAxis,
       showLegend: showLegend ?? this.showLegend,
       showTooltip: showTooltip ?? this.showTooltip,
+      xAxisLabelRotation: xAxisLabelRotation ?? this.xAxisLabelRotation,
+      yAxisLabelRotation: yAxisLabelRotation ?? this.yAxisLabelRotation,
     );
   }
 }
