@@ -195,6 +195,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
 
     for (final dataSet in widget.dataSets) {
       for (final point in dataSet.dataPoints) {
+        // BubbleDataSet still uses dataPoints (plural)
         if (point.x < minX) minX = point.x;
         if (point.x > maxX) maxX = point.x;
         if (point.y < minY) minY = point.y;
@@ -225,15 +226,19 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
     );
 
     // Convert bubble datasets to regular datasets for interaction helper
-    final regularDataSets = widget.dataSets.map((bubbleDataSet) {
-      return ChartDataSet(
-        label: bubbleDataSet.label,
-        color: bubbleDataSet.color,
-        dataPoints: bubbleDataSet.dataPoints
-            .map((p) => ChartDataPoint(x: p.x, y: p.y, label: p.label))
-            .toList(),
-      );
-    }).toList();
+    // Each bubble point becomes a separate ChartDataSet
+    final regularDataSets = <ChartDataSet>[];
+    for (final bubbleDataSet in widget.dataSets) {
+      for (final point in bubbleDataSet.dataPoints) {
+        regularDataSets.add(
+          ChartDataSet(
+            color: bubbleDataSet.color,
+            label: point.label ?? bubbleDataSet.label,
+            dataPoint: ChartDataPoint(x: point.x, y: point.y, label: point.label),
+          ),
+        );
+      }
+    }
 
     final result = ChartInteractionHelper.findNearestPoint(
       chartPosition,
@@ -328,22 +333,23 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                             final bounds = _calculateBounds();
 
                             // Convert bubble datasets to regular datasets
-                            final regularDataSets =
-                                widget.dataSets.map((bubbleDataSet) {
-                              return ChartDataSet(
-                                label: bubbleDataSet.label,
-                                color: bubbleDataSet.color,
-                                dataPoints: bubbleDataSet.dataPoints
-                                    .map(
-                                      (p) => ChartDataPoint(
-                                        x: p.x,
-                                        y: p.y,
-                                        label: p.label,
-                                      ),
-                                    )
-                                    .toList(),
-                              );
-                            }).toList();
+                            // Each bubble point becomes a separate ChartDataSet
+                            final regularDataSets = <ChartDataSet>[];
+                            for (final bubbleDataSet in widget.dataSets) {
+                              for (final point in bubbleDataSet.dataPoints) {
+                                regularDataSets.add(
+                                  ChartDataSet(
+                                    color: bubbleDataSet.color,
+                                    label: point.label ?? bubbleDataSet.label,
+                                    dataPoint: ChartDataPoint(
+                                      x: point.x,
+                                      y: point.y,
+                                      label: point.label,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
 
                             final result =
                                 ChartInteractionHelper.findNearestPoint(

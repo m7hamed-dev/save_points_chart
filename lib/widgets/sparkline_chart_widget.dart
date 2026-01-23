@@ -80,11 +80,25 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    // For sparkline, we need to work with a list of datasets
-    // If dataSet is provided, we'll need to convert it
-    // For now, assume widget.dataSets is used instead
-    final isPositive = true; // Default, can be calculated from dataSets
-    final lineColor = widget.positiveColor ?? const Color(0xFF10B981);
+    // Determine if trend is positive or negative
+    if (widget.dataSets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final firstValue = widget.dataSets.first.dataPoint.y;
+    final lastValue = widget.dataSets.last.dataPoint.y;
+    final isPositive = lastValue >= firstValue;
+    final lineColor = isPositive
+        ? (widget.positiveColor ?? const Color(0xFF10B981))
+        : (widget.negativeColor ?? const Color(0xFFEF4444));
+
+    // Create modified datasets with the determined color
+    final modifiedDataSets = widget.dataSets.map((ds) {
+      return ChartDataSet(
+        color: lineColor,
+        label: ds.label,
+        dataPoint: ds.dataPoint,
+      );
+    }).toList();
 
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
@@ -141,7 +155,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                           final result =
                               ChartInteractionHelper.findNearestPoint(
                             details.localPosition,
-                            [modifiedDataSet],
+                            modifiedDataSets,
                             chartSize,
                             bounds['minX']!,
                             bounds['maxX']!,
@@ -193,7 +207,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                           showGrid: false,
                           showAxis: false,
                         ),
-                        dataSets: [modifiedDataSet],
+                        dataSets: modifiedDataSets,
                         lineWidth: widget.lineWidth,
                         showArea: widget.showArea,
                         showPoints: false,

@@ -145,11 +145,10 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
                             double maxY = double.negativeInfinity;
 
                             for (final dataSet in cumulativeDataSets) {
-                              for (final point in dataSet.dataPoints) {
-                                if (point.x < minX) minX = point.x;
-                                if (point.x > maxX) maxX = point.x;
-                                if (point.y > maxY) maxY = point.y;
-                              }
+                              final point = dataSet.dataPoint;
+                              if (point.x < minX) minX = point.x;
+                              if (point.x > maxX) maxX = point.x;
+                              if (point.y > maxY) maxY = point.y;
                             }
 
                             bounds = {
@@ -235,30 +234,64 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
   List<ChartDataSet> _buildCumulativeDataSets(List<ChartDataSet> sets) {
     if (sets.isEmpty) return [];
 
-    final int maxLength =
-        sets.map((s) => s.dataPoints.length).reduce((a, b) => math.max(a, b));
-
-    final List<ChartDataSet> cumulative = [];
-    final List<double> running = List.filled(maxLength, 0.0);
-
-    for (int i = 0; i < sets.length; i++) {
-      final dataSet = sets[i];
-      final List<ChartDataPoint> points = [];
-
-      for (int j = 0; j < dataSet.dataPoints.length; j++) {
-        final p = dataSet.dataPoints[j];
-        final sum = running[j] + p.y;
-        running[j] = sum;
-        points.add(ChartDataPoint(x: p.x, y: sum, label: p.label));
+    // Group datasets by x coordinate
+    final Map<double, List<ChartDataSet>> groupedByX = {};
+    for (final dataSet in sets) {
+      final x = dataSet.dataPoint.x;
+      if (!groupedByX.containsKey(x)) {
+        groupedByX[x] = [];
       }
+      groupedByX[x]!.add(dataSet);
+    }
 
-      cumulative.add(
-        ChartDataSet(
-          label: dataSet.label,
-          dataPoints: points,
-          color: dataSet.color,
-        ),
-      );
+    // Sort x values
+    final sortedXValues = groupedByX.keys.toList()..sort();
+
+    // For each x position, calculate cumulative values by dataset index
+    final Map<int, Map<double, double>> cumulativeByIndex = {};
+    
+    for (final xValue in sortedXValues) {
+      final datasetsAtX = groupedByX[xValue]!;
+      // Sort by original index to maintain layer order
+      datasetsAtX.sort((a, b) {
+        final indexA = sets.indexOf(a);
+        final indexB = sets.indexOf(b);
+        return indexA.compareTo(indexB);
+      });
+
+      double runningSum = 0.0;
+      for (int i = 0; i < datasetsAtX.length; i++) {
+        final dataSet = datasetsAtX[i];
+        final originalIndex = sets.indexOf(dataSet);
+        runningSum += dataSet.dataPoint.y;
+        
+        if (!cumulativeByIndex.containsKey(originalIndex)) {
+          cumulativeByIndex[originalIndex] = {};
+        }
+        cumulativeByIndex[originalIndex]![xValue] = runningSum;
+      }
+    }
+
+    // Build cumulative datasets
+    final List<ChartDataSet> cumulative = [];
+    for (int i = 0; i < sets.length; i++) {
+      final originalDataSet = sets[i];
+      final cumulativeValues = cumulativeByIndex[i]!;
+      
+      // Create a dataset for each x value with cumulative y
+      for (final entry in cumulativeValues.entries) {
+        cumulative.add(
+          ChartDataSet(
+            color: originalDataSet.color,
+            label: originalDataSet.label,
+            dataPoint: ChartDataPoint(
+              x: entry.key,
+              y: entry.value,
+              label: originalDataSet.dataPoint.label,
+            ),
+          ),
+        );
+      }
     }
 
     return cumulative;

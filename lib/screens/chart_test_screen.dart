@@ -216,119 +216,91 @@ class _ChartTestScreenState extends State<ChartTestScreen> {
 
   List<ChartDataSet> _createNaNDataset() {
     return [
-      ChartDataSet(
-        label: 'Data with NaN',
-        color: Colors.red,
-        dataPoints: [
-          const ChartDataPoint(x: 0, y: 10),
-          const ChartDataPoint(x: 1, y: double.nan),
-          const ChartDataPoint(x: 2, y: 20),
-          const ChartDataPoint(x: double.nan, y: 30),
-          const ChartDataPoint(x: 4, y: 40),
-          const ChartDataPoint(x: 5, y: double.nan),
-          const ChartDataPoint(x: 6, y: 50),
-        ],
-      ),
+      ChartDataSet(color: Colors.red, label: 'Point 0', dataPoint: const ChartDataPoint(x: 0, y: 10)),
+      ChartDataSet(color: Colors.red, label: 'Point 1', dataPoint: const ChartDataPoint(x: 1, y: double.nan)),
+      ChartDataSet(color: Colors.red, label: 'Point 2', dataPoint: const ChartDataPoint(x: 2, y: 20)),
+      ChartDataSet(color: Colors.red, label: 'Point 3', dataPoint: const ChartDataPoint(x: double.nan, y: 30)),
+      ChartDataSet(color: Colors.red, label: 'Point 4', dataPoint: const ChartDataPoint(x: 4, y: 40)),
+      ChartDataSet(color: Colors.red, label: 'Point 5', dataPoint: const ChartDataPoint(x: 5, y: double.nan)),
+      ChartDataSet(color: Colors.red, label: 'Point 6', dataPoint: const ChartDataPoint(x: 6, y: 50)),
     ];
   }
 
   List<ChartDataSet> _createInfiniteDataset() {
     return [
-      ChartDataSet(
-        label: 'Data with Infinity',
-        color: Colors.orange,
-        dataPoints: [
-          const ChartDataPoint(x: 0, y: 10),
-          const ChartDataPoint(x: 1, y: double.infinity),
-          const ChartDataPoint(x: 2, y: 20),
-          const ChartDataPoint(x: double.negativeInfinity, y: 30),
-          const ChartDataPoint(x: 4, y: 40),
-          const ChartDataPoint(x: 5, y: double.infinity),
-          const ChartDataPoint(x: 6, y: 50),
-        ],
-      ),
+      ChartDataSet(color: Colors.orange, label: 'Point 0', dataPoint: const ChartDataPoint(x: 0, y: 10)),
+      ChartDataSet(color: Colors.orange, label: 'Point 1', dataPoint: const ChartDataPoint(x: 1, y: double.infinity)),
+      ChartDataSet(color: Colors.orange, label: 'Point 2', dataPoint: const ChartDataPoint(x: 2, y: 20)),
+      ChartDataSet(color: Colors.orange, label: 'Point 3', dataPoint: const ChartDataPoint(x: double.negativeInfinity, y: 30)),
+      ChartDataSet(color: Colors.orange, label: 'Point 4', dataPoint: const ChartDataPoint(x: 4, y: 40)),
+      ChartDataSet(color: Colors.orange, label: 'Point 5', dataPoint: const ChartDataPoint(x: 5, y: double.infinity)),
+      ChartDataSet(color: Colors.orange, label: 'Point 6', dataPoint: const ChartDataPoint(x: 6, y: 50)),
     ];
   }
 
   List<ChartDataSet> _createZeroRangeDataset() {
     return [
-      ChartDataSet(
-        label: 'Zero Range (Same Values)',
-        color: Colors.blue,
-        dataPoints: List.generate(5, (i) {
-          return ChartDataPoint(x: i.toDouble(), y: 50.0);
-        }),
-      ),
-      ChartDataSet(
-        label: 'Zero X Range',
-        color: Colors.green,
-        dataPoints: List.generate(5, (i) {
-          return ChartDataPoint(x: 0.0, y: 30.0 + i * 10.0);
-        }),
-      ),
+      ...List.generate(5, (i) => ChartDataSet(
+            color: Colors.blue,
+            label: 'Point $i',
+            dataPoint: ChartDataPoint(x: i.toDouble(), y: 50.0),
+          )),
+      ...List.generate(5, (i) => ChartDataSet(
+            color: Colors.green,
+            label: 'Point $i',
+            dataPoint: ChartDataPoint(x: 0.0, y: 30.0 + i * 10.0),
+          )),
     ];
   }
 
   List<ChartDataSet> _createSinglePointDataset() {
     return [
       ChartDataSet(
-        label: 'Single Point',
         color: Colors.purple,
-        dataPoints: [
-          const ChartDataPoint(x: 0, y: 50),
-        ],
+        label: 'Single Point',
+        dataPoint: const ChartDataPoint(x: 0, y: 50),
       ),
     ];
   }
 
   List<ChartDataSet> _createMixedDataset() {
     return [
-      ChartDataSet(
-        label: 'Mixed Valid/Invalid',
-        color: Colors.teal,
-        dataPoints: [
-          const ChartDataPoint(x: 0, y: 10),
-          const ChartDataPoint(x: 1, y: double.nan),
-          const ChartDataPoint(x: 2, y: 20),
-          const ChartDataPoint(x: 3, y: double.infinity),
-          const ChartDataPoint(x: 4, y: 30),
-          const ChartDataPoint(x: 5, y: double.negativeInfinity),
-          const ChartDataPoint(x: 6, y: 40),
-          const ChartDataPoint(x: double.nan, y: 50),
-          const ChartDataPoint(x: 8, y: 60),
-          const ChartDataPoint(x: 9, y: 70),
-        ],
-      ),
+      ChartDataSet(color: Colors.teal, label: 'Point 0', dataPoint: const ChartDataPoint(x: 0, y: 10)),
+      ChartDataSet(color: Colors.teal, label: 'Point 1', dataPoint: const ChartDataPoint(x: 1, y: double.nan)),
+      ChartDataSet(color: Colors.teal, label: 'Point 2', dataPoint: const ChartDataPoint(x: 2, y: 20)),
+      ChartDataSet(color: Colors.teal, label: 'Point 3', dataPoint: const ChartDataPoint(x: 3, y: double.infinity)),
+      ChartDataSet(color: Colors.teal, label: 'Point 4', dataPoint: const ChartDataPoint(x: 4, y: 30)),
+      ChartDataSet(color: Colors.teal, label: 'Point 5', dataPoint: const ChartDataPoint(x: 5, y: double.negativeInfinity)),
+      ChartDataSet(color: Colors.teal, label: 'Point 6', dataPoint: const ChartDataPoint(x: 6, y: 40)),
+      ChartDataSet(color: Colors.teal, label: 'Point 7', dataPoint: const ChartDataPoint(x: double.nan, y: 50)),
+      ChartDataSet(color: Colors.teal, label: 'Point 8', dataPoint: const ChartDataPoint(x: 8, y: 60)),
+      ChartDataSet(color: Colors.teal, label: 'Point 9', dataPoint: const ChartDataPoint(x: 9, y: 70)),
     ];
   }
 
   List<ChartDataSet> _createNegativeDataset() {
-    return [
-      ChartDataSet(
-        label: 'Negative Values',
+    return List.generate(8, (i) {
+      return ChartDataSet(
         color: Colors.indigo,
-        dataPoints: List.generate(8, (i) {
-          return ChartDataPoint(
-            x: i.toDouble(),
-            y: 50 + (i - 4) * 10, // Values from 10 to 90, crossing 0
-          );
-        }),
-      ),
-    ];
+        label: 'Point $i',
+        dataPoint: ChartDataPoint(
+          x: i.toDouble(),
+          y: 50 + (i - 4) * 10, // Values from 10 to 90, crossing 0
+        ),
+      );
+    });
   }
 
   List<ChartDataSet> _createLargeValueDataset() {
-    return [
-      ChartDataSet(
-        label: 'Very Large Values',
+    return List.generate(6, (i) {
+      return ChartDataSet(
         color: Colors.deepOrange,
-        dataPoints: List.generate(6, (i) {
-          return ChartDataPoint(
-            x: i.toDouble(),
-            y: 1e10 + i * 1e9, // Very large numbers
-          );
-        }),
-      ),
-    ];
+        label: 'Point $i',
+        dataPoint: ChartDataPoint(
+          x: i.toDouble(),
+          y: 1e10 + i * 1e9, // Very large numbers
+        ),
+      );
+    });
   }
 }

@@ -496,13 +496,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           const SizedBox(height: 24),
           LineChartWidget(
-            dataSets: [
-              ChartDataSet(
-                label: 'Temperature',
-                color: const Color(0xFFEC4899),
-                dataPoints: SampleData.generateLineData(count: 24, maxY: 40),
-              ),
-            ],
+            dataSets: SampleData.generateLineData(count: 24, maxY: 40)
+                .map((point) => ChartDataSet(
+                      color: const Color(0xFFEC4899),
+                      label: point.label ?? 'Temperature',
+                      dataPoint: point,
+                    ))
+                .toList(),
             theme: chartTheme.copyWith(showGrid: false),
             title: 'Temperature Over Time',
             subtitle: 'Without grid lines',
@@ -733,11 +733,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           AreaChartWidget(
             dataSets: [
-              ChartDataSet(
-                label: 'Growth',
-                color: const Color(0xFF10B981),
-                dataPoints: SampleData.generateLineData(count: 15),
-              ),
+              ...SampleData.generateLineData(count: 15)
+                  .map((point) => ChartDataSet(
+                        color: const Color(0xFF10B981),
+                        label: point.label ?? 'Growth',
+                        dataPoint: point,
+                      ))
+                  .toList(),
             ],
             theme: chartTheme,
             title: 'Growth Metrics',
@@ -984,25 +986,25 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             children: [
               Expanded(
                 child: SparklineChartWidget(
-                  dataSet: ChartDataSet(
-                    label: 'Positive',
-                    color: const Color(0xFF10B981),
-                    dataPoints: List.generate(15, (i) {
-                      return ChartDataPoint(x: i.toDouble(), y: 50 + i * 2);
-                    }),
-                  ),
+                  dataSets: List.generate(15, (i) {
+                    return ChartDataSet(
+                      color: const Color(0xFF10B981),
+                      label: 'Point ${i + 1}',
+                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
+                    );
+                  }),
                   theme: chartTheme,
                   title: 'Positive Trend',
                   useGlassmorphism: _useGlassmorphism,
                   useNeumorphism: _useNeumorphism,
                   onPointTap: (point, datasetIndex, pointIndex, position) {
-                    final dataSet = ChartDataSet(
-                      label: 'Positive',
-                      color: const Color(0xFF10B981),
-                      dataPoints: List.generate(15, (i) {
-                        return ChartDataPoint(x: i.toDouble(), y: 50 + i * 2);
-                      }),
-                    );
+                    final dataSets = List.generate(15, (i) {
+                      return ChartDataSet(
+                        color: const Color(0xFF10B981),
+                        label: 'Point ${i + 1}',
+                        dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
+                      );
+                    });
                     ChartContextMenuHelper.show(
                       context,
                       point: point,
