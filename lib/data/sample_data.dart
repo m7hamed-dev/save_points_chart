@@ -165,7 +165,7 @@ class SampleData {
     return [
       BubbleDataSet(
         color: const Color(0xFF6366F1),
-        dataPoints: List.generate(15, (index) {
+        dataPoints: List.generate(5, (index) {
           return BubbleDataPoint(
             x: 10 + (index * 8),
             y: 20 + (index * 6),
@@ -176,7 +176,7 @@ class SampleData {
       ),
       BubbleDataSet(
         color: const Color(0xFFEC4899),
-        dataPoints: List.generate(15, (index) {
+        dataPoints: List.generate(7, (index) {
           return BubbleDataPoint(
             x: 15 + (index * 7),
             y: 25 + (index * 5),
