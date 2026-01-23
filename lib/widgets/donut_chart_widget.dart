@@ -29,6 +29,7 @@ class DonutChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   });
 
   final List<PieData> data;
@@ -47,6 +48,7 @@ class DonutChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   @override
   State<DonutChartWidget> createState() => _DonutChartWidgetState();
@@ -94,8 +96,9 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               builder: (context, child) {
                 return LayoutBuilder(
                   builder: (context, constraints) {
-                    final chartSize =
-                        math.min(constraints.maxWidth, 280.0).toDouble();
+                    final chartSize = widget.height != null
+                        ? math.min(constraints.maxWidth, widget.height!).toDouble()
+                        : math.min(constraints.maxWidth, 280.0).toDouble();
                     // Use square size for consistent radius calculation
                     final size = Size(chartSize, chartSize);
                     return Stack(

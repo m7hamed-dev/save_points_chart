@@ -53,6 +53,7 @@ class RadarChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   RadarChartWidget({
     super.key,
@@ -73,6 +74,7 @@ class RadarChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   })  : assert(
           dataSets.isNotEmpty,
           'RadarChartWidget requires at least one data set',
@@ -140,7 +142,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
                           final result = ChartInteractionHelper.findRadarPoint(
                             details.localPosition,
                             widget.dataSets,
-                            Size(constraints.maxWidth, 400),
+                            Size(constraints.maxWidth, widget.height ?? 400.0),
                             widget.maxValue,
                             _animation.value,
                           );
@@ -175,9 +177,9 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 400,
+                    height: widget.height ?? 400.0,
                     child: CustomPaint(
-                      size: Size(constraints.maxWidth, 400),
+                      size: Size(constraints.maxWidth, widget.height ?? 400.0),
                       painter: RadarChartPainter(
                         theme: effectiveTheme,
                         radarDataSets: widget.dataSets,

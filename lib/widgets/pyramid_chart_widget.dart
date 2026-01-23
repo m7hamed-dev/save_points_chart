@@ -50,6 +50,7 @@ class PyramidChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   PyramidChartWidget({
     super.key,
@@ -65,6 +66,7 @@ class PyramidChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   }) : assert(
           data.isNotEmpty,
           'PyramidChartWidget requires at least one data segment',
@@ -131,7 +133,7 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
                               ChartInteractionHelper.findPyramidSegment(
                             details.localPosition,
                             widget.data,
-                            Size(constraints.maxWidth, 300),
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
                             _animation.value,
                           );
 
@@ -164,9 +166,9 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 300,
+                    height: widget.height ?? 300.0,
                     child: CustomPaint(
-                      size: Size(constraints.maxWidth, 300),
+                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
                       painter: PyramidChartPainter(
                         theme: effectiveTheme,
                         data: widget.data,

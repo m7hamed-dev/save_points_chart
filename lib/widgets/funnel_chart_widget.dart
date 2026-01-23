@@ -50,6 +50,7 @@ class FunnelChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   FunnelChartWidget({
     super.key,
@@ -65,6 +66,7 @@ class FunnelChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   }) : assert(
           data.isNotEmpty,
           'FunnelChartWidget requires at least one data segment',
@@ -131,7 +133,7 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
                               ChartInteractionHelper.findFunnelSegment(
                             details.localPosition,
                             widget.data,
-                            Size(constraints.maxWidth, 300),
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
                             _animation.value,
                           );
 
@@ -164,9 +166,9 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 300,
+                    height: widget.height ?? 300.0,
                     child: CustomPaint(
-                      size: Size(constraints.maxWidth, 300),
+                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
                       painter: FunnelChartPainter(
                         theme: effectiveTheme,
                         data: widget.data,

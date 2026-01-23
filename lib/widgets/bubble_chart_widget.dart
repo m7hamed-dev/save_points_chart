@@ -83,6 +83,7 @@ class BubbleChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   /// Creates a bubble chart widget.
   ///
@@ -132,6 +133,7 @@ class BubbleChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   })  : assert(
           dataSets.isNotEmpty,
           'BubbleChartWidget requires at least one data set',
@@ -297,9 +299,10 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
               builder: (context, constraints) {
+                final chartHeight = widget.height ?? 240.0;
                 final chartSize = Size(
                   constraints.maxWidth - 70,
-                  240,
+                  chartHeight,
                 );
 
                 return MouseRegion(
@@ -393,9 +396,9 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                         : null,
                     child: SizedBox(
                       width: constraints.maxWidth,
-                      height: 300,
+                      height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(constraints.maxWidth, 300),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: BubbleChartPainter(
                           theme: effectiveTheme,
                           bubbleDataSets: widget.dataSets,

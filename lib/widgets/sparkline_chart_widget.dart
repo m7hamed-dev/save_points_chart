@@ -27,6 +27,7 @@ class SparklineChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final ChartPointCallback? onPointTap;
+  final double? height;
 
   const SparklineChartWidget({
     super.key,
@@ -47,6 +48,7 @@ class SparklineChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.onPointTap,
+    this.height,
   });
 
   @override
@@ -123,7 +125,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                final chartSize = Size(constraints.maxWidth, 100);
+                final chartHeight = widget.height ?? 100.0;
+                final chartSize = Size(constraints.maxWidth, chartHeight);
 
                 // Calculate bounds for tap detection (with caching)
                 Map<String, double> bounds;
@@ -204,7 +207,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 100,
+                    height: widget.height ?? 100.0,
                     child: CustomPaint(
                       size: chartSize,
                       painter: LineChartPainter(

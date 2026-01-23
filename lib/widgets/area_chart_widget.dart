@@ -155,6 +155,7 @@ class AreaChartWidget extends StatefulWidget {
   ///
   /// If null, a default error message is shown.
   final String? errorMessage;
+  final double? height;
 
   /// Creates an area chart widget.
   ///
@@ -197,6 +198,7 @@ class AreaChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   });
 
   @override
@@ -299,9 +301,10 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                             _cachedDataSets = List.from(widget.dataSets);
                           }
 
+                          final chartHeight = widget.height ?? 240.0;
                           final chartSize = Size(
                             constraints.maxWidth - 70,
-                            240,
+                            chartHeight,
                           );
 
                           // Get global position for context menu and callbacks
@@ -355,9 +358,9 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 300,
+                    height: widget.height ?? 300.0,
                     child: CustomPaint(
-                      size: Size(constraints.maxWidth, 300),
+                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
                       painter: LineChartPainter(
                         theme: effectiveTheme,
                         dataSets: widget.dataSets,

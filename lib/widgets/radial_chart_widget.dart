@@ -27,6 +27,7 @@ class RadialChartWidget extends StatefulWidget {
   final String? errorMessage;
   final ChartPointCallback? onPointTap;
   final ChartPointHoverCallback? onPointHover;
+  final double? height;
 
   const RadialChartWidget({
     super.key,
@@ -47,6 +48,7 @@ class RadialChartWidget extends StatefulWidget {
     this.errorMessage,
     this.onPointTap,
     this.onPointHover,
+    this.height,
   });
 
   @override
@@ -101,7 +103,8 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                final chartSize = Size(constraints.maxWidth, 300);
+                final chartHeight = widget.height ?? 300.0;
+                final chartSize = Size(constraints.maxWidth, chartHeight);
                 return MouseRegion(
                   onHover: widget.onPointHover != null
                       ? (event) {
@@ -170,7 +173,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
                         : null,
                     child: SizedBox(
                       width: constraints.maxWidth,
-                      height: 300,
+                      height: widget.height ?? 300.0,
                       child: CustomPaint(
                         size: chartSize,
                         painter: RadialChartPainter(

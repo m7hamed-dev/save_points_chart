@@ -29,6 +29,7 @@ class BarChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   const BarChartWidget({
     super.key,
@@ -51,6 +52,7 @@ class BarChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   });
 
   @override
@@ -108,9 +110,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
       _cachedDataSets = List.from(widget.dataSets);
     }
 
+    final chartHeight = widget.height ?? 240.0;
     final chartSize = Size(
       constraints.maxWidth - 70,
-      240,
+      chartHeight,
     );
 
     final result = ChartInteractionHelper.findBar(
@@ -247,9 +250,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
                               _cachedDataSets = List.from(widget.dataSets);
                             }
 
+                            final chartHeight = widget.height ?? 240.0;
                             final chartSize = Size(
                               constraints.maxWidth - 70,
-                              240,
+                              chartHeight,
                             );
 
                             final result = ChartInteractionHelper.findBar(
@@ -299,9 +303,9 @@ class _BarChartWidgetState extends State<BarChartWidget>
                         : null,
                     child: SizedBox(
                       width: constraints.maxWidth,
-                      height: 300,
+                      height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(constraints.maxWidth, 300),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: BarChartPainter(
                           theme: effectiveTheme,
                           dataSets: widget.dataSets,

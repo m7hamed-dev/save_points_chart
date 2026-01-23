@@ -26,6 +26,7 @@ class PieChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   const PieChartWidget({
     super.key,
@@ -44,6 +45,7 @@ class PieChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   });
 
   @override
@@ -107,7 +109,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
                                   ChartInteractionHelper.findPieSegment(
                                 details.localPosition,
                                 widget.data,
-                                Size(size, 250),
+                                Size(size, widget.height ?? 250.0),
                                 0.0,
                               );
 
@@ -146,9 +148,9 @@ class _PieChartWidgetState extends State<PieChartWidget>
                           : null,
                       child: SizedBox(
                         width: size,
-                        height: 250,
+                        height: widget.height ?? 250.0,
                         child: CustomPaint(
-                          size: Size(size, 250),
+                          size: Size(size, widget.height ?? 250.0),
                           painter: PieChartPainter(
                             data: widget.data,
                             theme: effectiveTheme,

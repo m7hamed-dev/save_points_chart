@@ -62,6 +62,7 @@ class GaugeChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   const GaugeChartWidget({
     super.key,
@@ -87,6 +88,7 @@ class GaugeChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   })  : assert(maxValue > minValue, 'Max value must be greater than min value'),
         assert(segments > 0, 'Segments must be positive');
 
@@ -180,9 +182,9 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 300,
+                    height: widget.height ?? 300.0,
                     child: CustomPaint(
-                      size: Size(constraints.maxWidth, 300),
+                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
                       painter: GaugeChartPainter(
                         theme: effectiveTheme,
                         value: widget.value,

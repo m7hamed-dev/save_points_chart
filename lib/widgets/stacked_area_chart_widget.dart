@@ -49,6 +49,7 @@ class StackedAreaChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   const StackedAreaChartWidget({
     super.key,
@@ -68,6 +69,7 @@ class StackedAreaChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   }) : assert(dataSets.length > 1, 'Provide at least two datasets to stack.');
 
   @override
@@ -170,9 +172,10 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
                                 List.from(cumulativeDataSets);
                           }
 
+                          final chartHeight = widget.height ?? 240.0;
                           final chartSize = Size(
                             constraints.maxWidth - 70,
-                            240,
+                            chartHeight,
                           );
 
                           final result =
@@ -216,9 +219,9 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
                       : null,
                   child: SizedBox(
                     width: constraints.maxWidth,
-                    height: 300,
+                    height: widget.height ?? 300.0,
                     child: CustomPaint(
-                      size: Size(constraints.maxWidth, 300),
+                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
                       painter: StackedAreaChartPainter(
                         theme: effectiveTheme,
                         dataSets: cumulativeDataSets,

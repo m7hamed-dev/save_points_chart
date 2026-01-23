@@ -58,6 +58,7 @@ class SplineChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final double? height;
 
   SplineChartWidget({
     super.key,
@@ -80,6 +81,7 @@ class SplineChartWidget extends StatefulWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.height,
   })  : assert(
           dataSets.isNotEmpty,
           'SplineChartWidget requires at least one data set',
@@ -211,9 +213,10 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
           builder: (context, child) {
             return LayoutBuilder(
               builder: (context, constraints) {
+                final chartHeight = widget.height ?? 240.0;
                 final chartSize = Size(
                   constraints.maxWidth - 70,
-                  240,
+                  chartHeight,
                 );
 
                 return MouseRegion(
@@ -287,9 +290,9 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
                         : null,
                     child: SizedBox(
                       width: constraints.maxWidth,
-                      height: 300,
+                      height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(constraints.maxWidth, 300),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: SplineChartPainter(
                           theme: effectiveTheme,
                           dataSets: widget.dataSets,
