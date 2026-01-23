@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
-import 'package:save_points_chart/save_points_chart.dart'
-    show LineChartWidget, BarChartWidget;
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';

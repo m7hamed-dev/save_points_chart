@@ -53,7 +53,7 @@ class ChartInteractionConstants {
 /// - Line charts (`LineChartWidget`)
 /// - Area charts (`AreaChartWidget`)
 /// - Scatter charts (`ScatterChartWidget`)
-/// - Bubble charts (`BubbleChartWidget`) - use [onBubbleTap]
+/// - Bubble charts (`BubbleChartWidget`) - use `onBubbleTap`
 /// - Stacked area charts (`StackedAreaChartWidget`)
 /// - Step line charts (`StepLineChartWidget`)
 /// - Spline charts (`SplineChartWidget`)
@@ -79,9 +79,9 @@ class ChartInteractionConstants {
 /// ```
 ///
 /// See also:
-/// - [ChartPointHoverCallback] for hover events (desktop/web only)
-/// - [onBubbleTap] for bubble chart-specific tap handling
-/// - [ChartInteractionConstants] for interaction configuration
+/// - `ChartPointHoverCallback` for hover events (desktop/web only)
+/// - `onBubbleTap` for bubble chart-specific tap handling
+/// - `ChartInteractionConstants` for interaction configuration
 typedef ChartPointCallback = void Function(
   ChartDataPoint point,
   int datasetIndex,
@@ -166,7 +166,7 @@ typedef BarCallback = void Function(
 /// - Line charts (`LineChartWidget`)
 /// - Area charts (`AreaChartWidget`)
 /// - Scatter charts (`ScatterChartWidget`)
-/// - Bubble charts (`BubbleChartWidget`) - use [onBubbleHover]
+/// - Bubble charts (`BubbleChartWidget`) - use `onBubbleHover`
 /// - Stacked area charts (`StackedAreaChartWidget`)
 /// - Step line charts (`StepLineChartWidget`)
 /// - Spline charts (`SplineChartWidget`)
@@ -194,9 +194,9 @@ typedef BarCallback = void Function(
 /// ```
 ///
 /// See also:
-/// - [ChartPointCallback] for tap events (all platforms)
-/// - [onBubbleHover] for bubble chart-specific hover handling
-/// - [ChartInteractionConstants] for interaction configuration
+/// - `ChartPointCallback` for tap events (all platforms)
+/// - `onBubbleHover` for bubble chart-specific hover handling
+/// - `ChartInteractionConstants` for interaction configuration
 typedef ChartPointHoverCallback = void Function(
   ChartDataPoint? point,
   int? datasetIndex,
@@ -283,10 +283,10 @@ typedef BarHoverCallback = void Function(
 /// - Bubble charts (`BubbleChartWidget`)
 ///
 /// **Parameters:**
-/// - [point] - The tapped bubble data point (never null)
-/// - [datasetIndex] - The index of the dataset containing this bubble (never null)
-/// - [pointIndex] - The index of the bubble within its dataset (never null)
-/// - [position] - The global tap position (useful for showing context menus)
+/// - `point` - The tapped bubble data point (never null)
+/// - `datasetIndex` - The index of the dataset containing this bubble (never null)
+/// - `pointIndex` - The index of the bubble within its dataset (never null)
+/// - `position` - The global tap position (useful for showing context menus)
 ///
 /// **Usage Notes:**
 /// - This callback is nullable - if null, tap interactions are disabled
@@ -303,9 +303,9 @@ typedef BarHoverCallback = void Function(
 /// ```
 ///
 /// See also:
-/// - [onBubbleHover] for hover events (desktop/web only)
-/// - [ChartPointCallback] for other point-based charts
-/// - [ChartInteractionConstants] for interaction configuration
+/// - `onBubbleHover` for hover events (desktop/web only)
+/// - `ChartPointCallback` for other point-based charts
+/// - `ChartInteractionConstants` for interaction configuration
 typedef BubbleTapCallback = ChartPointCallback;
 
 /// Callback for bubble chart hover interactions.
@@ -317,9 +317,9 @@ typedef BubbleTapCallback = ChartPointCallback;
 /// - Bubble charts (`BubbleChartWidget`)
 ///
 /// **Parameters:**
-/// - [point] - The hovered bubble data point, or null if mouse exited
-/// - [datasetIndex] - The dataset index, or null if mouse exited
-/// - [pointIndex] - The point index, or null if mouse exited
+/// - `point` - The hovered bubble data point, or null if mouse exited
+/// - `datasetIndex` - The dataset index, or null if mouse exited
+/// - `pointIndex` - The point index, or null if mouse exited
 ///
 /// **Usage Notes:**
 /// - This callback is nullable - if null, hover interactions are disabled
@@ -341,9 +341,9 @@ typedef BubbleTapCallback = ChartPointCallback;
 /// ```
 ///
 /// See also:
-/// - [onBubbleTap] for tap events (all platforms)
-/// - [ChartPointHoverCallback] for other point-based charts
-/// - [ChartInteractionConstants] for interaction configuration
+/// - `onBubbleTap` for tap events (all platforms)
+/// - `ChartPointHoverCallback` for other point-based charts
+/// - `ChartInteractionConstants` for interaction configuration
 typedef BubbleHoverCallback = ChartPointHoverCallback;
 
 /// Callback for chart background/empty area tap interactions.
@@ -401,8 +401,8 @@ typedef ChartTapCallback = void Function(
 /// ```
 ///
 /// See also:
-/// - [ChartInteractionHelper] for finding interactions (import from utils)
-/// - [ChartInteractionConstants] for interaction configuration
+/// - `ChartInteractionHelper` for finding interactions (import from utils)
+/// - `ChartInteractionConstants` for interaction configuration
 class ChartInteractionResult {
   /// The data point that was interacted with, if applicable.
   ///
