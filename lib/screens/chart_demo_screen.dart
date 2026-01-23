@@ -497,7 +497,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       color: const Color(0xFFEC4899),
                       label: point.label ?? 'Temperature',
                       dataPoint: point,
-                    ))
+                    ),)
                 .toList(),
             theme: chartTheme.copyWith(showGrid: false),
             title: 'Temperature Over Time',
@@ -748,8 +748,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         color: const Color(0xFF10B981),
                         label: point.label ?? 'Growth',
                         dataPoint: point,
-                      ))
-                  .toList(),
+                      ),),
             ],
             theme: chartTheme,
             title: 'Growth Metrics',

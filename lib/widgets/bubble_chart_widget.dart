@@ -61,8 +61,8 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// - Consider data point limits for very large datasets
 ///
 /// See also:
-/// - [ScatterChartWidget] for two-dimensional scatter plots (import from save_points_chart)
-/// - [BubbleDataSet] for bubble data structure (import from models)
+/// - `ScatterChartWidget` for two-dimensional scatter plots (import from save_points_chart)
+/// - `BubbleDataSet` for bubble data structure (import from models)
 class BubbleChartWidget extends StatefulWidget {
   final List<BubbleDataSet> dataSets;
   final ChartTheme? theme;

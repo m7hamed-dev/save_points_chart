@@ -62,9 +62,9 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// - Consider using [isLoading] during data fetching
 ///
 /// See also:
-/// - [LineChartWidget] for line charts without fills (import from save_points_chart)
-/// - [BarChartWidget] for bar charts (import from save_points_chart)
-/// - [StackedAreaChartWidget] for stacked area charts (import from save_points_chart)
+/// - `LineChartWidget` for line charts without fills (import from save_points_chart)
+/// - `BarChartWidget` for bar charts (import from save_points_chart)
+/// - `StackedAreaChartWidget` for stacked area charts (import from save_points_chart)
 class AreaChartWidget extends StatefulWidget {
   /// The data sets to display in the chart.
   ///

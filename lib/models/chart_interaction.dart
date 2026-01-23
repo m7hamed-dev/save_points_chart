@@ -50,14 +50,14 @@ class ChartInteractionConstants {
 /// Invoked when a user taps on a data point in point-based charts.
 ///
 /// **Supported Charts:**
-/// - Line charts ([LineChartWidget])
-/// - Area charts ([AreaChartWidget])
-/// - Scatter charts ([ScatterChartWidget])
-/// - Bubble charts ([BubbleChartWidget]) - use [onBubbleTap]
-/// - Stacked area charts ([StackedAreaChartWidget])
-/// - Step line charts ([StepLineChartWidget])
-/// - Spline charts ([SplineChartWidget])
-/// - Sparkline charts ([SparklineChartWidget])
+/// - Line charts (`LineChartWidget`)
+/// - Area charts (`AreaChartWidget`)
+/// - Scatter charts (`ScatterChartWidget`)
+/// - Bubble charts (`BubbleChartWidget`) - use [onBubbleTap]
+/// - Stacked area charts (`StackedAreaChartWidget`)
+/// - Step line charts (`StepLineChartWidget`)
+/// - Spline charts (`SplineChartWidget`)
+/// - Sparkline charts (`SparklineChartWidget`)
 ///
 /// **Parameters:**
 /// - [point] - The tapped data point (never null)
@@ -94,10 +94,10 @@ typedef ChartPointCallback = void Function(
 /// Invoked when a user taps on a segment in pie/donut charts.
 ///
 /// **Supported Charts:**
-/// - Pie charts ([PieChartWidget])
-/// - Donut charts ([DonutChartWidget])
-/// - Pyramid charts ([PyramidChartWidget])
-/// - Funnel charts ([FunnelChartWidget])
+/// - Pie charts (`PieChartWidget`)
+/// - Donut charts (`DonutChartWidget`)
+/// - Pyramid charts (`PyramidChartWidget`)
+/// - Funnel charts (`FunnelChartWidget`)
 ///
 /// **Parameters:**
 /// - [segment] - The tapped pie segment (never null)
@@ -128,8 +128,8 @@ typedef PieSegmentCallback = void Function(
 /// Invoked when a user taps on a bar in a bar chart.
 ///
 /// **Supported Charts:**
-/// - Bar charts ([BarChartWidget])
-/// - Stacked column charts ([StackedColumnChartWidget])
+/// - Bar charts (`BarChartWidget`)
+/// - Stacked column charts (`StackedColumnChartWidget`)
 ///
 /// **Parameters:**
 /// - [point] - The data point represented by this bar (never null)
@@ -163,13 +163,13 @@ typedef BarCallback = void Function(
 /// When the mouse exits, all parameters will be null.
 ///
 /// **Supported Charts:**
-/// - Line charts ([LineChartWidget])
-/// - Area charts ([AreaChartWidget])
-/// - Scatter charts ([ScatterChartWidget])
-/// - Bubble charts ([BubbleChartWidget]) - use [onBubbleHover]
-/// - Stacked area charts ([StackedAreaChartWidget])
-/// - Step line charts ([StepLineChartWidget])
-/// - Spline charts ([SplineChartWidget])
+/// - Line charts (`LineChartWidget`)
+/// - Area charts (`AreaChartWidget`)
+/// - Scatter charts (`ScatterChartWidget`)
+/// - Bubble charts (`BubbleChartWidget`) - use [onBubbleHover]
+/// - Stacked area charts (`StackedAreaChartWidget`)
+/// - Step line charts (`StepLineChartWidget`)
+/// - Spline charts (`SplineChartWidget`)
 ///
 /// **Parameters:**
 /// - [point] - The hovered data point, or null if mouse exited
@@ -209,10 +209,10 @@ typedef ChartPointHoverCallback = void Function(
 /// When the mouse exits, all parameters will be null.
 ///
 /// **Supported Charts:**
-/// - Pie charts ([PieChartWidget])
-/// - Donut charts ([DonutChartWidget])
-/// - Pyramid charts ([PyramidChartWidget])
-/// - Funnel charts ([FunnelChartWidget])
+/// - Pie charts (`PieChartWidget`)
+/// - Donut charts (`DonutChartWidget`)
+/// - Pyramid charts (`PyramidChartWidget`)
+/// - Funnel charts (`FunnelChartWidget`)
 ///
 /// **Parameters:**
 /// - [segment] - The hovered segment, or null if mouse exited
@@ -245,8 +245,8 @@ typedef PieSegmentHoverCallback = void Function(
 /// When the mouse exits, all parameters will be null.
 ///
 /// **Supported Charts:**
-/// - Bar charts ([BarChartWidget])
-/// - Stacked column charts ([StackedColumnChartWidget])
+/// - Bar charts (`BarChartWidget`)
+/// - Stacked column charts (`StackedColumnChartWidget`)
 ///
 /// **Parameters:**
 /// - [point] - The data point for the hovered bar, or null if mouse exited
@@ -280,7 +280,7 @@ typedef BarHoverCallback = void Function(
 /// Invoked when a user taps on a bubble in a bubble chart.
 ///
 /// **Supported Charts:**
-/// - Bubble charts ([BubbleChartWidget])
+/// - Bubble charts (`BubbleChartWidget`)
 ///
 /// **Parameters:**
 /// - [point] - The tapped bubble data point (never null)
@@ -314,7 +314,7 @@ typedef BubbleTapCallback = ChartPointCallback;
 /// When the mouse exits, all parameters will be null.
 ///
 /// **Supported Charts:**
-/// - Bubble charts ([BubbleChartWidget])
+/// - Bubble charts (`BubbleChartWidget`)
 ///
 /// **Parameters:**
 /// - [point] - The hovered bubble data point, or null if mouse exited
