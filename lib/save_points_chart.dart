@@ -35,6 +35,7 @@ library;
 // Models
 export 'models/chart_data.dart';
 export 'models/chart_interaction.dart';
+export 'utils/chart_interaction_helper.dart';
 
 // Theme
 export 'theme/chart_theme.dart';
