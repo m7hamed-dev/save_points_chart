@@ -387,13 +387,15 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildLineChart(ChartTheme chartTheme) {
+    final lineDataSets = SampleData.generateMultiLineData();
+    final usersDataSets = SampleData.generateUsersData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LineChartWidget(
-            dataSets: SampleData.generateMultiLineData(),
+            dataSets: lineDataSets,
             theme: chartTheme,
             title: 'Sales & Revenue Trend',
             subtitle: 'Last 12 months performance - Hover or tap on points!',
@@ -405,7 +407,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 ? 'Unable to load chart data. Please try again.'
                 : null,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateMultiLineData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= lineDataSets.length) {
+                return;
+              }
+              final dataSet = lineDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -435,11 +440,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onPointHover: (point, datasetIndex, pointIndex) {
               // Hover effect is automatically shown on the chart
               // Points will highlight when you hover over them
-              if (point != null) {
+              if (point != null && datasetIndex != null) {
                 // Optional: You can add custom tooltip or other UI feedback here
+                if (datasetIndex < 0 || datasetIndex >= lineDataSets.length) {
+                  return;
+                }
                 final position = Offset(point.x, point.y);
-                final dataSet =
-                    SampleData.generateMultiLineData()[datasetIndex!];
+                final dataSet = lineDataSets[datasetIndex];
                 ChartContextMenuHelper.show(
                   context,
                   point: point,
@@ -511,15 +518,18 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           const SizedBox(height: 24),
           LineChartWidget(
-            dataSets: SampleData.generateUsersData(),
+            dataSets: usersDataSets,
             theme: chartTheme,
             title: 'Users by Name (No Labels)',
             subtitle: 'User data without axis labels',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
+              if (datasetIndex < 0 || datasetIndex >= usersDataSets.length) {
+                return;
+              }
               final userLabel = point.label ?? 'User ${point.x.toInt() + 1}';
-              final dataSet = SampleData.generateUsersData()[datasetIndex];
+              final dataSet = usersDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -550,15 +560,18 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           const SizedBox(height: 24),
           LineChartWidget(
-            dataSets: SampleData.generateUsersData(),
+            dataSets: usersDataSets,
             theme: chartTheme,
             title: 'Users by Name',
             subtitle: 'User data visualization - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
+              if (datasetIndex < 0 || datasetIndex >= usersDataSets.length) {
+                return;
+              }
               final userLabel = point.label ?? 'User ${point.x.toInt() + 1}';
-              final dataSet = SampleData.generateUsersData()[datasetIndex];
+              final dataSet = usersDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -593,20 +606,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildBarChart(ChartTheme chartTheme) {
+    final barDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BarChartWidget(
-            dataSets: SampleData.generateBarData(),
+            dataSets: barDataSets,
             theme: chartTheme,
             title: 'Monthly Sales',
             subtitle: 'Quarterly breakdown - Tap on bars!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onBarTap: (point, datasetIndex, barIndex, position) {
-              final dataSet = SampleData.generateBarData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= barDataSets.length) {
+                return;
+              }
+              final dataSet = barDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -689,20 +706,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildAreaChart(ChartTheme chartTheme) {
+    final areaDataSets = SampleData.generateMultiLineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AreaChartWidget(
-            dataSets: SampleData.generateMultiLineData(),
+            dataSets: areaDataSets,
             theme: chartTheme,
             title: 'Revenue Area Chart',
             subtitle: 'Filled area visualization - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateMultiLineData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= areaDataSets.length) {
+                return;
+              }
+              final dataSet = areaDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -884,20 +905,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildRadialChart(ChartTheme chartTheme) {
+    final radialDataSets = SampleData.generateRadialData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           RadialChartWidget(
-            dataSets: SampleData.generateRadialData(),
+            dataSets: radialDataSets,
             theme: chartTheme,
             title: 'Performance Metrics',
             subtitle: 'Multi-dimensional analysis - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateRadialData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= radialDataSets.length) {
+                return;
+              }
+              final dataSet = radialDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -934,21 +959,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildSparklineChart(ChartTheme chartTheme) {
+    final sparklineDataSets = SampleData.generateSparklineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SparklineChartWidget(
-            dataSets: SampleData.generateSparklineData(),
+            dataSets: sparklineDataSets,
             theme: chartTheme,
             title: 'Trend Analysis',
             subtitle: 'Compact sparkline visualization - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSets = SampleData.generateSparklineData();
-              final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
+              if (datasetIndex < 0 || datasetIndex >= sparklineDataSets.length) {
+                return;
+              }
+              final dataSet = sparklineDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1106,20 +1134,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildScatterChart(ChartTheme chartTheme) {
+    final scatterDataSets = SampleData.generateScatterData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ScatterChartWidget(
-            dataSets: SampleData.generateScatterData(),
+            dataSets: scatterDataSets,
             theme: chartTheme,
             title: 'Product Correlation',
             subtitle: 'Scatter plot showing relationship - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateScatterData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= scatterDataSets.length) {
+                return;
+              }
+              final dataSet = scatterDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1198,20 +1230,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildRadarChart(ChartTheme chartTheme) {
+    final radarDataSets = SampleData.generateRadarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           RadarChartWidget(
-            dataSets: SampleData.generateRadarData(),
+            dataSets: radarDataSets,
             theme: chartTheme,
             title: 'Team Performance Comparison',
             subtitle: 'Multi-dimensional radar chart - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateRadarData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= radarDataSets.length) {
+                return;
+              }
+              final dataSet = radarDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1311,13 +1347,14 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildSplineChart(ChartTheme chartTheme) {
+    final splineDataSets = SampleData.generateMultiLineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SplineChartWidget(
-            dataSets: SampleData.generateMultiLineData(),
+            dataSets: splineDataSets,
             theme: chartTheme,
             title: 'Smooth Spline Chart',
             subtitle:
@@ -1325,7 +1362,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateMultiLineData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= splineDataSets.length) {
+                return;
+              }
+              final dataSet = splineDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1353,20 +1393,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildStepLineChart(ChartTheme chartTheme) {
+    final stepLineDataSets = SampleData.generateMultiLineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           StepLineChartWidget(
-            dataSets: SampleData.generateMultiLineData(),
+            dataSets: stepLineDataSets,
             theme: chartTheme,
             title: 'Step Line Chart',
             subtitle: 'Step function visualization - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateMultiLineData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= stepLineDataSets.length) {
+                return;
+              }
+              final dataSet = stepLineDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1394,20 +1438,24 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildStackedColumnChart(ChartTheme chartTheme) {
+    final stackedBarDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           StackedColumnChartWidget(
-            dataSets: SampleData.generateBarData(),
+            dataSets: stackedBarDataSets,
             theme: chartTheme,
             title: 'Stacked Column Chart',
             subtitle: 'Multiple datasets stacked vertically - Tap on bars!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onBarTap: (point, datasetIndex, barIndex, position) {
-              final dataSet = SampleData.generateBarData()[datasetIndex];
+              if (datasetIndex < 0 || datasetIndex >= stackedBarDataSets.length) {
+                return;
+              }
+              final dataSet = stackedBarDataSets[datasetIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
