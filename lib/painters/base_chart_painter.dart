@@ -359,14 +359,11 @@ abstract class BaseChartPainter extends CustomPainter {
           );
           textPainter.layout();
 
-          // Use rotation from data point, fallback to theme rotation
-          final rotation = point.xAxisLabelRotation ?? theme.xAxisLabelRotation;
-          
           _paintRotatedLabel(
             canvas,
             textPainter,
             Offset(x, size.height + 8),
-            rotation,
+            theme.xAxisLabelRotation,
           );
         }
       } else {
@@ -442,16 +439,16 @@ abstract class BaseChartPainter extends CustomPainter {
   /// - [canvas] - The canvas to paint on
   /// - [textPainter] - The text painter with laid out text
   /// - [position] - The position where the label should be painted (center point)
-  /// - [rotation] - Rotation angle in radians (0.0 = horizontal)
+  /// - [rotationDegrees] - Rotation angle in degrees (0 = horizontal)
   void _paintRotatedLabel(
     Canvas canvas,
     TextPainter textPainter,
     Offset position,
-    double rotation,
+    int rotationDegrees,
   ) {
     if (!position.dx.isFinite || !position.dy.isFinite) return;
     
-    if (rotation == 0.0) {
+    if (rotationDegrees == 0) {
       // No rotation - simple paint (centered)
       final offsetX = position.dx - textPainter.width / 2;
       final offsetY = position.dy - textPainter.height / 2;
@@ -461,14 +458,17 @@ abstract class BaseChartPainter extends CustomPainter {
       return;
     }
 
+    // Convert degrees to radians
+    final rotationRadians = rotationDegrees * math.pi / 180.0;
+
     // Apply rotation around the center point
     canvas.save();
     
     // Translate to the rotation center
     canvas.translate(position.dx, position.dy);
     
-    // Apply rotation
-    canvas.rotate(rotation);
+    // Apply rotation (in radians)
+    canvas.rotate(rotationRadians);
     
     // Paint text centered at origin (after translation and rotation)
     final textOffset = Offset(

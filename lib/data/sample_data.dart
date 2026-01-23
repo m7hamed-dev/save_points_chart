@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
-import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Sample data generators for demonstration
 class SampleData {
@@ -14,7 +13,6 @@ class SampleData {
         x: index.toDouble(),
         y: minY + (maxY - minY) * (0.5 + 0.5 * (index % 3 == 0 ? 1.2 : 0.8)),
         label: 'Day ${index + 1}',
-        xAxisLabelRotation: LabelRotation.diagonalDown,
       );
     });
   }
@@ -31,7 +29,6 @@ class SampleData {
             x: index.toDouble(),
             y: 20 + (index * 5) + (index % 3) * 10,
             label: 'M${index + 1}',
-            xAxisLabelRotation: LabelRotation.vertical,
           ),
         );
       },
@@ -128,8 +125,16 @@ class SampleData {
 
   static List<ChartDataSet> generateUsersData() {
     final data = [
-      const ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
-      const ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
+      const ChartDataPoint(
+        x: 0,
+        y: 100,
+        label: 'mohamed',
+      ),
+      const ChartDataPoint(
+        x: 1,
+        y: 200,
+        label: 'ahmed',
+      ),
       const ChartDataPoint(x: 2, y: 300, label: 'ali'),
       const ChartDataPoint(x: 3, y: 400, label: 'omar'),
       const ChartDataPoint(x: 4, y: 500, label: 'khalid'),

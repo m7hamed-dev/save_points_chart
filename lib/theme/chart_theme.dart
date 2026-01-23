@@ -1,41 +1,48 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// Common label rotation angles in radians for convenience.
+/// Common label rotation angles in degrees for convenience.
 ///
 /// Use these constants when setting label rotation:
 /// ```dart
 /// ChartTheme.light().copyWith(
-///   xAxisLabelRotation: LabelRotation.diagonalDown,
+///   xAxisLabelRotation: LabelRotation.diagonalDown, // 45 degrees
+/// )
+/// 
+/// // Or use custom degrees:
+/// ChartDataPoint(
+///   x: 1,
+///   y: 20,
+///   label: 'January',
+///   xAxisLabelRotation: 30, // 30 degrees
 /// )
 /// ```
 class LabelRotation {
   /// No rotation (horizontal labels)
-  static const double none = 0.0;
+  static const int none = 0;
   
   /// 45 degrees clockwise (slanted down to the right)
-  static const double diagonalDown = math.pi / 4;
+  static const int diagonalDown = 45;
   
   /// 45 degrees counter-clockwise (slanted up to the right)
-  static const double diagonalUp = -math.pi / 4;
+  static const int diagonalUp = -45;
   
   /// 90 degrees clockwise (vertical, reading top to bottom)
-  static const double vertical = math.pi / 2;
+  static const int vertical = 90;
   
   /// 90 degrees counter-clockwise (vertical, reading bottom to top)
-  static const double verticalUp = -math.pi / 2;
+  static const int verticalUp = -90;
   
   /// 30 degrees clockwise
-  static const double slightDown = math.pi / 6;
+  static const int slightDown = 30;
   
   /// 30 degrees counter-clockwise
-  static const double slightUp = -math.pi / 6;
+  static const int slightUp = -30;
   
   /// 60 degrees clockwise
-  static const double steepDown = math.pi / 3;
+  static const int steepDown = 60;
   
   /// 60 degrees counter-clockwise
-  static const double steepUp = -math.pi / 3;
+  static const int steepUp = -60;
 }
 
 /// Theme-aware chart styling configuration.
@@ -82,18 +89,24 @@ class ChartTheme {
   final bool showLegend;
   final bool showTooltip;
   
-  /// Rotation angle for X-axis labels in radians.
+  /// Rotation angle for X-axis labels in degrees.
   ///
-  /// Defaults to 0.0 (horizontal). Common values:
-  /// - 0.0: Horizontal labels
-  /// - -pi/4 or -45 degrees: Diagonal labels (slanted down)
-  /// - -pi/2 or -90 degrees: Vertical labels
-  final double xAxisLabelRotation;
+  /// Defaults to 0 (horizontal). Common values:
+  /// - 0: Horizontal labels
+  /// - -45: Diagonal labels (slanted down)
+  /// - -90: Vertical labels
+  ///
+  /// See also:
+  /// - [LabelRotation] for common rotation constants
+  final int xAxisLabelRotation;
   
-  /// Rotation angle for Y-axis labels in radians.
+  /// Rotation angle for Y-axis labels in degrees.
   ///
-  /// Defaults to 0.0 (horizontal). Usually kept at 0.0 for Y-axis.
-  final double yAxisLabelRotation;
+  /// Defaults to 0 (horizontal). Usually kept at 0 for Y-axis.
+  ///
+  /// See also:
+  /// - [LabelRotation] for common rotation constants
+  final int yAxisLabelRotation;
 
   const ChartTheme({
     required this.backgroundColor,
@@ -107,8 +120,8 @@ class ChartTheme {
     this.showAxis = true,
     this.showLegend = true,
     this.showTooltip = true,
-    this.xAxisLabelRotation = 0.0,
-    this.yAxisLabelRotation = 0.0,
+    this.xAxisLabelRotation = 0,
+    this.yAxisLabelRotation = 0,
   });
 
   /// Create light theme with enhanced colors.
@@ -223,8 +236,8 @@ class ChartTheme {
     bool? showAxis,
     bool? showLegend,
     bool? showTooltip,
-    double? xAxisLabelRotation,
-    double? yAxisLabelRotation,
+    int? xAxisLabelRotation,
+    int? yAxisLabelRotation,
   }) {
     return ChartTheme(
       backgroundColor: backgroundColor ?? this.backgroundColor,
