@@ -5,20 +5,6 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// An awesome context menu that appears when tapping on chart elements
 class ChartContextMenu extends StatefulWidget {
-  final ChartDataPoint? point;
-  final PieData? segment;
-  final int? datasetIndex;
-  final int? elementIndex;
-  final String? datasetLabel;
-  final Offset position;
-  final ChartTheme? theme;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
-  final VoidCallback? onClose;
-  final VoidCallback? onViewDetails;
-  final VoidCallback? onExport;
-  final VoidCallback? onShare;
-
   const ChartContextMenu({
     super.key,
     this.point,
@@ -35,6 +21,20 @@ class ChartContextMenu extends StatefulWidget {
     this.onExport,
     this.onShare,
   });
+
+  final ChartDataPoint? point;
+  final PieData? segment;
+  final int? datasetIndex;
+  final int? elementIndex;
+  final String? datasetLabel;
+  final Offset position;
+  final ChartTheme? theme;
+  final bool useGlassmorphism;
+  final bool useNeumorphism;
+  final VoidCallback? onClose;
+  final VoidCallback? onViewDetails;
+  final VoidCallback? onExport;
+  final VoidCallback? onShare;
 
   @override
   State<ChartContextMenu> createState() => _ChartContextMenuState();
@@ -87,18 +87,22 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
       top: safeDy,
       child: Material(
         color: Colors.transparent,
+        elevation: 0,
         child: TweenAnimationBuilder<double>(
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 400),
           tween: Tween(begin: 0.0, end: 1.0),
           curve: Curves.easeOutCubic,
           builder: (context, value, child) {
             // Use RepaintBoundary to prevent unnecessary repaints
             return RepaintBoundary(
               child: Transform.scale(
-                scale: 0.8 + (0.2 * value),
-                child: Opacity(
-                  opacity: value,
-                  child: child,
+                scale: 0.85 + (0.15 * value),
+                child: Transform.translate(
+                  offset: Offset(0, 10 * (1 - value)),
+                  child: Opacity(
+                    opacity: value,
+                    child: child,
+                  ),
                 ),
               ),
             );
@@ -120,29 +124,31 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildGlassmorphismMenu(BuildContext context, bool isDark) {
-    // Cache gradient colors and border color
+    // Modern glassmorphism with better gradients and effects
     final gradientColors = isDark
         ? [
-            Colors.white.withValues(alpha: 0.1),
+            Colors.white.withValues(alpha: 0.15),
+            Colors.white.withValues(alpha: 0.08),
             Colors.white.withValues(alpha: 0.05),
           ]
         : [
-            Colors.white.withValues(alpha: 0.8),
-            Colors.white.withValues(alpha: 0.6),
+            Colors.white.withValues(alpha: 0.95),
+            Colors.white.withValues(alpha: 0.85),
+            Colors.white.withValues(alpha: 0.75),
           ];
     final borderColor = isDark
-        ? Colors.white.withValues(alpha: 0.2)
-        : Colors.black.withValues(alpha: 0.1);
+        ? Colors.white.withValues(alpha: 0.25)
+        : Colors.black.withValues(alpha: 0.08);
 
     return RepaintBoundary(
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            width: 280,
+            width: 300,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(24),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -152,12 +158,21 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
                 color: borderColor,
                 width: 1.5,
               ),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
-                  color:
-                      Color(0x33000000), // Colors.black.withValues(alpha: 0.2)
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.4)
+                      : Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 30,
+                  offset: const Offset(0, 12),
+                  spreadRadius: -5,
+                ),
+                BoxShadow(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.white.withValues(alpha: 0.8),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset: const Offset(-5, -5),
                 ),
               ],
             ),
@@ -170,32 +185,34 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
 
   Widget _buildNeumorphismMenu(BuildContext context, bool isDark) {
     final baseColor =
-        isDark ? const Color(0xFF2D2D2D) : const Color(0xFFE0E0E0);
+        isDark ? const Color(0xFF2D2D2D) : const Color(0xFFE8E8E8);
 
-    // Cache shadow colors
+    // Modern neumorphism with refined shadows
     final lightShadow = isDark
-        ? const Color(0x80000000) // Colors.black.withValues(alpha: 0.5)
-        : const Color(0xE6FFFFFF); // Colors.white.withValues(alpha: 0.9)
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.white.withValues(alpha: 0.95);
     final darkShadow = isDark
-        ? const Color(0xCC000000) // Colors.black.withValues(alpha: 0.8)
-        : const Color(0x4D808080); // Colors.grey.withValues(alpha: 0.3)
+        ? Colors.black.withValues(alpha: 0.6)
+        : Colors.grey.withValues(alpha: 0.4);
 
     return RepaintBoundary(
       child: Container(
-        width: 280,
+        width: 300,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           color: baseColor,
           boxShadow: [
             BoxShadow(
               color: lightShadow,
-              blurRadius: 20,
-              offset: const Offset(-8, -8),
+              blurRadius: 25,
+              offset: const Offset(-10, -10),
+              spreadRadius: 0,
             ),
             BoxShadow(
               color: darkShadow,
-              blurRadius: 20,
-              offset: const Offset(8, 8),
+              blurRadius: 25,
+              offset: const Offset(10, 10),
+              spreadRadius: 0,
             ),
           ],
         ),
@@ -205,25 +222,38 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildDefaultMenu(BuildContext context, bool isDark) {
-    final backgroundColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final backgroundColor = isDark ? const Color(0xFF1A1A1A) : Colors.white;
     final borderColor = isDark
-        ? const Color(0x1AFFFFFF) // Colors.white.withValues(alpha: 0.1)
-        : const Color(0x33BDBDBD); // Colors.grey.withValues(alpha: 0.2)
+        ? Colors.white.withValues(alpha: 0.12)
+        : Colors.grey.withValues(alpha: 0.15);
 
     return RepaintBoundary(
       child: Container(
-        width: 280,
+        width: 300,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           color: backgroundColor,
-          boxShadow: const [
+          border: Border.all(
+            color: borderColor,
+            width: 1,
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x4D000000), // Colors.black.withValues(alpha: 0.3)
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.5)
+                  : Colors.black.withValues(alpha: 0.12),
+              blurRadius: 32,
+              offset: const Offset(0, 12),
+              spreadRadius: -8,
+            ),
+            BoxShadow(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.03)
+                  : Colors.white.withValues(alpha: 0.9),
               blurRadius: 20,
-              offset: Offset(0, 10),
+              offset: const Offset(-4, -4),
             ),
           ],
-          border: Border.all(color: borderColor),
         ),
         child: _buildMenuItems(context, isDark),
       ),
@@ -231,38 +261,39 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildMenuItems(BuildContext context, bool isDark) {
-    // Cache gradient colors
-    final gradientColor1 = _primaryColor.withValues(alpha: 0.2);
-    final gradientColor2 = _primaryColor.withValues(alpha: 0.1);
+    // Modern gradient colors with better opacity
+    final gradientColor1 = _primaryColor.withValues(alpha: 0.25);
+    final gradientColor2 = _primaryColor.withValues(alpha: 0.12);
+    final gradientColor3 = _primaryColor.withValues(alpha: 0.05);
     final iconBgColor = _primaryColor.withValues(alpha: 0.2);
 
-    // Cache text colors
-    final titleColor = isDark ? Colors.white : Colors.black87;
-    final subtitleColor = isDark ? Colors.white70 : Colors.black54;
-    final valueLabelColor = isDark ? Colors.white60 : Colors.black54;
-    final closeButtonColor = isDark ? Colors.white70 : Colors.black54;
+    // Cache text colors with modern styling
+    final titleColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
+    final subtitleColor = isDark ? Colors.white70 : const Color(0xFF6B6B6B);
+    final valueLabelColor = isDark ? Colors.white60 : const Color(0xFF8E8E8E);
+    final closeButtonColor = isDark ? Colors.white70 : const Color(0xFF6B6B6B);
 
-    // Cache background colors
+    // Modern background colors
     final valueBgColor = isDark
-        ? const Color(0x1AFFFFFF) // Colors.white.withValues(alpha: 0.1)
-        : const Color(0x0D000000); // Colors.black.withValues(alpha: 0.05)
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.black.withValues(alpha: 0.03);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Header
+        // Modern Header with improved spacing
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
             ),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [gradientColor1, gradientColor2],
+              colors: [gradientColor1, gradientColor2, gradientColor3],
             ),
           ),
           child: Column(
@@ -270,19 +301,29 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
             children: [
               Row(
                 children: [
+                  // Modern icon container with better styling
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: iconBgColor,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _primaryColor.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Icon(
-                      _hasPoint ? Icons.show_chart : Icons.pie_chart,
+                      _hasPoint
+                          ? Icons.show_chart_rounded
+                          : Icons.pie_chart_rounded,
                       color: _primaryColor,
-                      size: 20,
+                      size: 22,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,116 +331,155 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
                         Text(
                           _label,
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
                             color: titleColor,
+                            letterSpacing: -0.3,
+                            height: 1.2,
                           ),
                         ),
-                        if (widget.datasetLabel != null)
+                        if (widget.datasetLabel != null) ...[
+                          const SizedBox(height: 2),
                           Text(
                             widget.datasetLabel!,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               color: subtitleColor,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.2,
                             ),
                           ),
+                        ],
                       ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close, size: 18),
-                    onPressed: widget.onClose,
-                    color: closeButtonColor,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
+                  // Modern close button
+                  Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: widget.onClose,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 18,
+                          color: closeButtonColor,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              // Modern value display card
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: valueBgColor,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.black.withValues(alpha: 0.05),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Value',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: valueLabelColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formattedValue,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: _primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (_formattedXValue != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'X',
+                            'VALUE',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 10,
                               color: valueLabelColor,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.8,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           Text(
-                            _formattedXValue!,
+                            _formattedValue,
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: titleColor,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                              color: _primaryColor,
+                              letterSpacing: -0.5,
+                              height: 1.0,
                             ),
                           ),
                         ],
                       ),
+                    ),
+                    if (_formattedXValue != null) ...[
+                      Container(
+                        width: 1,
+                        height: 40,
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.black.withValues(alpha: 0.08),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'X AXIS',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: valueLabelColor,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _formattedXValue!,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: titleColor,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
             ],
           ),
         ),
-        // Menu Items
+        // Modern Menu Items with better spacing
         if (widget.onViewDetails != null ||
             widget.onExport != null ||
             widget.onShare != null)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
             child: Column(
               children: [
                 if (widget.onViewDetails != null)
                   _buildMenuItem(
                     context,
-                    icon: Icons.info_outline,
+                    icon: Icons.info_outline_rounded,
                     label: 'View Details',
                     onTap: () {
                       widget.onClose?.call();
                       widget.onViewDetails?.call();
                     },
                     isDark: isDark,
+                    index: 0,
                   ),
                 if (widget.onExport != null)
                   _buildMenuItem(
                     context,
-                    icon: Icons.download,
+                    icon: Icons.download_rounded,
                     label: 'Export Data',
                     onTap: () {
                       widget.onClose?.call();
@@ -407,11 +487,12 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
                     },
                     isDark: isDark,
                     isLast: widget.onShare == null,
+                    index: 1,
                   ),
                 if (widget.onShare != null)
                   _buildMenuItem(
                     context,
-                    icon: Icons.share,
+                    icon: Icons.share_rounded,
                     label: 'Share',
                     onTap: () {
                       widget.onClose?.call();
@@ -419,6 +500,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
                     },
                     isDark: isDark,
                     isLast: true,
+                    index: 2,
                   ),
               ],
             ),
@@ -433,59 +515,95 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
     required String label,
     required VoidCallback onTap,
     required bool isDark,
+    required int index,
     bool isLast = false,
   }) {
-    // Cache colors
+    // Modern colors with better contrast
     final bgColor = isDark
-        ? const Color(0x0DFFFFFF) // Colors.white.withValues(alpha: 0.05)
-        : const Color(0x05000000); // Colors.black.withValues(alpha: 0.02)
-    final iconBgColor = _primaryColor.withValues(alpha: 0.1);
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final chevronColor = isDark ? Colors.white38 : Colors.black26;
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.black.withValues(alpha: 0.03);
+    final iconBgColor = _primaryColor.withValues(alpha: 0.15);
+    final textColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
+    final chevronColor = isDark ? Colors.white38 : const Color(0xFFB0B0B0);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: bgColor,
+    return TweenAnimationBuilder<double>(
+      duration: Duration(milliseconds: 300 + (index * 50)),
+      tween: Tween(begin: 0.0, end: 1.0),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 10 * (1 - value)),
+            child: child,
           ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: iconBgColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: _primaryColor,
-                ),
+        );
+      },
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          splashColor: _primaryColor.withValues(alpha: 0.1),
+          highlightColor: _primaryColor.withValues(alpha: 0.05),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            margin: EdgeInsets.only(
+              bottom: isLast ? 0 : 6,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: bgColor,
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.black.withValues(alpha: 0.04),
+                width: 1,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: textColor,
+            ),
+            child: Row(
+              children: [
+                // Modern icon container
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: iconBgColor,
+                    borderRadius: BorderRadius.circular(11),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _primaryColor.withValues(alpha: 0.15),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 20,
+                    color: _primaryColor,
                   ),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                size: 20,
-                color: chevronColor,
-              ),
-            ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: textColor,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: chevronColor,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -493,12 +611,12 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   static Color _getColorForValue(double value) {
-    // Color based on value - green for high, red for low, etc.
-    // Use const colors for better performance
-    if (value > 80) return Colors.green;
-    if (value > 50) return Colors.blue;
-    if (value > 30) return Colors.orange;
-    return Colors.red;
+    // Modern color scheme based on value
+    // Using vibrant, modern colors with better gradients
+    if (value > 80) return const Color(0xFF10B981); // Modern green
+    if (value > 50) return const Color(0xFF3B82F6); // Modern blue
+    if (value > 30) return const Color(0xFFF59E0B); // Modern amber
+    return const Color(0xFFEF4444); // Modern red
   }
 }
 
@@ -555,26 +673,26 @@ class ChartContextMenuHelper {
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
 
     // Adjust position to keep menu on screen with NaN protection
+    // Updated for new menu width of 300px
     final adjustedPosition = Offset(
       globalPosition.dx.isFinite
-          ? globalPosition.dx.clamp(16.0, screenWidth - 296)
+          ? globalPosition.dx.clamp(16.0, screenWidth - 316)
           : 16.0,
       globalPosition.dy.isFinite
-          ? globalPosition.dy.clamp(16.0, screenHeight - 400)
+          ? globalPosition.dy.clamp(16.0, screenHeight - 450)
           : 16.0,
     );
 
-    // Cache blur filter for better performance
+    // Cache blur filter for better performance with modern blur
     if (backgroundBlur && _cachedBlurFilter == null) {
-      _cachedBlurFilter = ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5);
+      _cachedBlurFilter = ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8);
     }
 
     _currentMenu = OverlayEntry(
       builder: (context) => RepaintBoundary(
         child: Stack(
           children: [
-            // Backdrop - only captures taps outside the menu area
-            // Use a custom approach to allow chart taps to pass through
+            // Modern backdrop with blur and overlay
             Positioned.fill(
               child: GestureDetector(
                 onTap: hide,
@@ -583,10 +701,14 @@ class ChartContextMenuHelper {
                     ? ClipRect(
                         child: BackdropFilter(
                           filter: _cachedBlurFilter!,
-                          child: const SizedBox.expand(),
+                          child: Container(
+                            color: Colors.black.withValues(alpha: 0.1),
+                          ),
                         ),
                       )
-                    : const SizedBox.expand(),
+                    : Container(
+                        color: Colors.transparent,
+                      ),
               ),
             ),
             // Context Menu - positioned above backdrop
