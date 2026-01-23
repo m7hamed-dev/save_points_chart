@@ -351,6 +351,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Validates all Offset coordinates before path operations
 - Ensures all gradient rect/circle bounds are valid before shader creation
 
+## [1.6.0] - 2025-01-23
+
+### Added
+- **Custom Height Property**: All chart widgets now support customizable `height` property
+  - Allows flexible chart sizing for different layout requirements
+  - Default heights optimized for each chart type when not specified
+  - Enables better control over chart dimensions in responsive layouts
+- **Header and Footer Support**: All chart widgets now support optional `header` and `footer` properties
+  - Header appears below subtitle (if provided) and above the chart
+  - Footer appears below the chart
+  - Both accept any Flutter widget for maximum flexibility
+  - Enables adding additional content, controls, or information to charts
+- **Enhanced Data Point Labels**: Chart data points now support labels directly
+  - Labels are now part of `ChartDataPoint` for better data organization
+  - Improved clarity and consistency across chart widgets
+  - Better integration with axis labels and tooltips
+
+### Improved
+- **Chart Visualization**: Enhanced padding and clipping in chart painters
+  - Better visual consistency across all chart types
+  - Improved point rendering without clipping at chart edges
+  - Enhanced X-axis padding calculation to prevent point clipping
+  - Better handling of edge cases in chart rendering
+- **Data Handling**: Refactored chart data handling for improved clarity
+  - Streamlined data structure with labels on data points
+  - Better widget structure and organization
+  - Improved code maintainability and consistency
+- **Chart Interaction**: Enhanced DonutChartWidget tap handling and layout
+  - Improved interaction clarity and responsiveness
+  - Better visual feedback on user interactions
+
+### Changed
+- **Data Structure**: Removed dataset-level labels in favor of point-level labels
+  - Labels are now specified directly on `ChartDataPoint` objects
+  - More flexible and consistent data representation
+  - Better alignment with chart rendering requirements
+
+### Technical Details
+- All chart widgets now include `height`, `header`, and `footer` parameters
+- Enhanced padding calculations in all chart painters
+- Improved clipping boundaries for better point visibility
+- Refactored data models for better label handling
+
 ## [Unreleased]
 
 ### Planned

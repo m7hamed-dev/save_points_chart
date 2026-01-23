@@ -266,6 +266,43 @@ LineChartWidget(
 )
 ```
 
+### Custom Height
+
+All charts support customizable height for flexible layouts:
+
+```dart
+LineChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  height: 400.0, // Custom height in pixels
+  title: 'Sales Trend',
+)
+```
+
+If `height` is not specified, charts use default heights optimized for each chart type.
+
+### Header and Footer
+
+All charts support optional header and footer widgets for additional content:
+
+```dart
+LineChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  title: 'Sales Trend',
+  header: Container(
+    padding: EdgeInsets.all(8.0),
+    child: Text('Additional info above chart'),
+  ),
+  footer: Container(
+    padding: EdgeInsets.all(8.0),
+    child: Text('Additional info below chart'),
+  ),
+)
+```
+
+The header appears below the subtitle (if provided), and the footer appears below the chart. Both are optional and can contain any Flutter widget.
+
 ### Hover Support
 
 Line, Bar, Area, Scatter, Bubble, and Radial charts support mouse hover with visual feedback:
@@ -384,6 +421,8 @@ All charts support extensive customization:
 - **Legends**: Show/hide legends
 - **Tooltips**: Interactive tooltips
 - **Padding & Spacing**: Configurable spacing
+- **Height**: Customizable chart height for flexible layouts
+- **Header & Footer**: Optional header and footer widgets for additional content
 
 ## ⚡ Performance Optimizations
 
@@ -615,9 +654,20 @@ To add new chart types:
 
 ## 🐛 Recent Improvements
 
+### Latest Features
+
+**Enhanced Customization (Latest)**
+- Added `height` property to all chart widgets for customizable sizing
+- Added `header` and `footer` properties to all chart widgets for additional content
+- Enhanced padding and clipping in chart painters for better visualization
+- Improved X-axis padding calculation to prevent point clipping
+- Refactored data handling with labels directly on data points for better clarity
+
+**Impact:** Charts now offer more flexible layouts and customization options, making it easier to integrate charts into various UI designs.
+
 ### Bug Fixes
 
-**Fixed RangeError in Bubble Chart Callbacks (Latest)**
+**Fixed RangeError in Bubble Chart Callbacks**
 - Fixed `RangeError` that occurred when accessing data in bubble chart callbacks
 - Added proper bounds checking for `datasetIndex` and `pointIndex` in all examples
 - Improved data handling by storing dataSets and reusing them in callbacks instead of regenerating
