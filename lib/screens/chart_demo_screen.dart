@@ -44,17 +44,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
       appBar: AppBar(
         title: const Text('Modern Charts'),
         actions: [
-          // IconButton(
-          //   icon: const Icon(Icons.bug_report),
-          //   onPressed: () {
-          //     Navigator.of(context).push(
-          //       MaterialPageRoute(
-          //         builder: (context) => const ChartTestScreen(),
-          //       ),
-          //     );
-          //   },
-          //   tooltip: 'Test NaN & Edge Cases',
-          // ),
           IconButton(
             icon: Icon(
               themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
@@ -973,7 +962,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              if (datasetIndex < 0 || datasetIndex >= sparklineDataSets.length) {
+              if (datasetIndex < 0 ||
+                  datasetIndex >= sparklineDataSets.length) {
                 return;
               }
               final dataSet = sparklineDataSets[datasetIndex];
@@ -1031,10 +1021,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       return ChartDataSet(
                         color: const Color(0xFF10B981),
                         label: 'Point ${i + 1}',
-                        dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
+                        dataPoint:
+                            ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
                       );
                     });
-                    final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
+                    final dataSet = datasetIndex < dataSets.length
+                        ? dataSets[datasetIndex]
+                        : dataSets.first;
                     ChartContextMenuHelper.show(
                       context,
                       point: point,
@@ -1076,7 +1069,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     return ChartDataSet(
                       label: 'Negative',
                       color: const Color(0xFFEF4444),
-                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
+                      dataPoint:
+                          ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
                     );
                   }),
                   theme: chartTheme,
@@ -1088,10 +1082,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       return ChartDataSet(
                         label: 'Negative',
                         color: const Color(0xFFEF4444),
-                        dataPoint: ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
+                        dataPoint:
+                            ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
                       );
                     });
-                    final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
+                    final dataSet = datasetIndex < dataSets.length
+                        ? dataSets[datasetIndex]
+                        : dataSets.first;
                     ChartContextMenuHelper.show(
                       context,
                       point: point,
@@ -1452,7 +1449,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onBarTap: (point, datasetIndex, barIndex, position) {
-              if (datasetIndex < 0 || datasetIndex >= stackedBarDataSets.length) {
+              if (datasetIndex < 0 ||
+                  datasetIndex >= stackedBarDataSets.length) {
                 return;
               }
               final dataSet = stackedBarDataSets[datasetIndex];
