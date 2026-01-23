@@ -92,60 +92,60 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                   builder: (context, constraints) {
                     final size =
                         math.min(constraints.maxWidth, 250.0).toDouble();
-                    return GestureDetector(
-                      behavior: HitTestBehavior
-                          .translucent, // Allow taps even when overlay is present
-                      onTapDown: widget.onSegmentTap != null
-                          ? (details) {
-                              // Hide any existing context menu first to prevent blocking
-                              ChartContextMenuHelper.hide();
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTapDown: widget.onSegmentTap != null
+                              ? (details) {
+                                  // Hide any existing context menu first to prevent blocking
+                                  ChartContextMenuHelper.hide();
 
-                              // Use localPosition directly (relative to SizedBox)
-                              final result =
-                                  ChartInteractionHelper.findPieSegment(
-                                details.localPosition,
-                                widget.data,
-                                Size(size, 250),
-                                widget.centerSpaceRadius,
-                              );
-
-                              if (result != null && result.isHit) {
-                                // Provide haptic feedback
-                                HapticFeedback.selectionClick();
-
-                                // Set new selection (optimized single setState)
-                                setState(() {
-                                  _selectedSegment = result;
-                                });
-
-                                // Get global position for context menu
-                                final RenderBox? renderBox =
-                                    context.findRenderObject() as RenderBox?;
-                                final globalPosition = renderBox != null
-                                    ? renderBox
-                                        .localToGlobal(details.localPosition)
-                                    : details.localPosition;
-
-                                // Small delay to ensure overlay is removed before showing new menu
-                                Future.microtask(() {
-                                  widget.onSegmentTap?.call(
-                                    result.segment!,
-                                    result.elementIndex!,
-                                    globalPosition,
+                                  // Use localPosition directly (relative to SizedBox)
+                                  final result =
+                                      ChartInteractionHelper.findPieSegment(
+                                    details.localPosition,
+                                    widget.data,
+                                    Size(size, 250),
+                                    widget.centerSpaceRadius,
                                   );
-                                });
-                              } else {
-                                // Clear selection if tap is outside any segment
-                                setState(() {
-                                  _selectedSegment = null;
-                                });
-                              }
-                            }
-                          : null,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
+
+                                  if (result != null && result.isHit) {
+                                    // Provide haptic feedback
+                                    HapticFeedback.selectionClick();
+
+                                    // Set new selection (optimized single setState)
+                                    setState(() {
+                                      _selectedSegment = result;
+                                    });
+
+                                    // Get global position for context menu
+                                    // Use the GestureDetector's context to find the RenderBox
+                                    final RenderBox? renderBox = context
+                                        .findRenderObject() as RenderBox?;
+                                    final globalPosition = renderBox != null
+                                        ? renderBox.localToGlobal(
+                                            details.localPosition)
+                                        : details.globalPosition;
+
+                                    // Small delay to ensure overlay is removed before showing new menu
+                                    Future.microtask(() {
+                                      widget.onSegmentTap?.call(
+                                        result.segment!,
+                                        result.elementIndex!,
+                                        globalPosition,
+                                      );
+                                    });
+                                  } else {
+                                    // Clear selection if tap is outside any segment
+                                    setState(() {
+                                      _selectedSegment = null;
+                                    });
+                                  }
+                                }
+                              : null,
+                          child: SizedBox(
                             width: size,
                             height: 250,
                             child: CustomPaint(
@@ -161,29 +161,29 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               ),
                             ),
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Total',
-                                style: TextStyle(
-                                  color: effectiveTheme.textColor
-                                      .withValues(alpha: 0.7),
-                                  fontSize: 14,
-                                ),
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Total',
+                              style: TextStyle(
+                                color: effectiveTheme.textColor
+                                    .withValues(alpha: 0.7),
+                                fontSize: 14,
                               ),
-                              Text(
-                                total.toStringAsFixed(0),
-                                style: TextStyle(
-                                  color: effectiveTheme.textColor,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            ),
+                            Text(
+                              total.toStringAsFixed(0),
+                              style: TextStyle(
+                                color: effectiveTheme.textColor,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     );
                   },
                 );
