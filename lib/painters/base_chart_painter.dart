@@ -340,21 +340,34 @@ abstract class BaseChartPainter extends CustomPainter {
           dataSets.isNotEmpty &&
           dataSets.any((ds) => ds.dataPoint.label != null)) {
         // Use labels from data points - show labels at actual data point positions
+        // Use a map to deduplicate labels by x position (only show one label per x value)
+        final Map<double, String> xLabels = {};
         for (final dataSet in dataSets) {
           final point = dataSet.dataPoint;
 
           // Skip if no label or invalid x value
           if (point.label == null || !point.x.isFinite) continue;
 
+          // Store label for this x position (first label wins if duplicates exist)
+          if (!xLabels.containsKey(point.x)) {
+            xLabels[point.x] = point.label!;
+          }
+        }
+
+        // Draw labels for unique x positions
+        for (final entry in xLabels.entries) {
+          final xValue = entry.key;
+          final label = entry.value;
+
           // Calculate x position based on point.x
-          final normalizedX = xRange > 0 ? (point.x - minX) / xRange : 0.5;
+          final normalizedX = xRange > 0 ? (xValue - minX) / xRange : 0.5;
           final x = normalizedX * size.width;
 
           // Only draw if within chart bounds
           if (!x.isFinite || x < 0 || x > size.width) continue;
 
           final textPainter = TextPainter(
-            text: TextSpan(text: point.label!, style: textStyle),
+            text: TextSpan(text: label, style: textStyle),
             textDirection: TextDirection.ltr,
           );
           textPainter.layout();
