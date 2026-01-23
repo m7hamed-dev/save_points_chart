@@ -107,7 +107,6 @@ class ChartContainer extends StatelessWidget {
             color: Colors.black.withValues(alpha: 0.06),
             blurRadius: effectiveTheme.shadowElevation * 2,
             offset: Offset(0, effectiveTheme.shadowElevation * 0.3),
-            spreadRadius: 0,
           ),
           // Inner highlight (enhanced)
           BoxShadow(

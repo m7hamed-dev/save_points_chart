@@ -148,7 +148,7 @@ class PieChartPainter extends CustomPainter {
         );
 
         // Draw shadow first for depth
-        final shadowOffset = Offset(2, 2);
+        final shadowOffset = const Offset(2, 2);
         final shadowPath = Path()
           ..addPath(combinedPath, shadowOffset);
         canvas.drawPath(shadowPath, shadowPaint);

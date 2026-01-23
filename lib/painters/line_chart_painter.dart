@@ -320,8 +320,6 @@ class LineChartPainter extends BaseChartPainter {
       // Enhanced line styling with better glow and gradient
       final linePaint = Paint()
         ..shader = LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
           colors: [
             color,
             color.withValues(alpha: 0.9),
