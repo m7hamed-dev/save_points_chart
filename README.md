@@ -54,13 +54,19 @@ import 'package:save_points_chart/save_points_chart.dart';
 LineChartWidget(
   dataSets: [
     ChartDataSet(
-      label: 'Sales',
+      label: 'Day 1',
       color: Colors.blue,
-      dataPoints: [
-        ChartDataPoint(x: 0, y: 10),
-        ChartDataPoint(x: 1, y: 20),
-        ChartDataPoint(x: 2, y: 15),
-      ],
+      dataPoint: ChartDataPoint(x: 0, y: 10),
+    ),
+    ChartDataSet(
+      label: 'Day 2',
+      color: Colors.blue,
+      dataPoint: ChartDataPoint(x: 1, y: 20),
+    ),
+    ChartDataSet(
+      label: 'Day 3',
+      color: Colors.blue,
+      dataPoint: ChartDataPoint(x: 2, y: 15),
     ),
   ],
   theme: ChartTheme.light(),
@@ -129,13 +135,19 @@ import 'package:save_points_chart/save_points_chart.dart';
 LineChartWidget(
   dataSets: [
     ChartDataSet(
-      label: 'Sales',
+      label: 'Day 1',
       color: Colors.blue,
-      dataPoints: [
-        ChartDataPoint(x: 0, y: 10),
-        ChartDataPoint(x: 1, y: 20),
-        ChartDataPoint(x: 2, y: 15),
-      ],
+      dataPoint: ChartDataPoint(x: 0, y: 10),
+    ),
+    ChartDataSet(
+      label: 'Day 2',
+      color: Colors.blue,
+      dataPoint: ChartDataPoint(x: 1, y: 20),
+    ),
+    ChartDataSet(
+      label: 'Day 3',
+      color: Colors.blue,
+      dataPoint: ChartDataPoint(x: 2, y: 15),
     ),
   ],
   theme: ChartTheme.light(),
