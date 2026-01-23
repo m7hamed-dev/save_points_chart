@@ -493,11 +493,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           LineChartWidget(
             dataSets: SampleData.generateLineData(count: 24, maxY: 40)
-                .map((point) => ChartDataSet(
-                      color: const Color(0xFFEC4899),
-                      label: point.label ?? 'Temperature',
-                      dataPoint: point,
-                    ),)
+                .map(
+                  (point) => ChartDataSet(
+                    color: const Color(0xFFEC4899),
+                    label: point.label ?? 'Temperature',
+                    dataPoint: point,
+                  ),
+                )
                 .toList(),
             theme: chartTheme.copyWith(showGrid: false),
             title: 'Temperature Over Time',
@@ -743,12 +745,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           AreaChartWidget(
             dataSets: [
-              ...SampleData.generateLineData(count: 15)
-                  .map((point) => ChartDataSet(
-                        color: const Color(0xFF10B981),
-                        label: point.label ?? 'Growth',
-                        dataPoint: point,
-                      ),),
+              ...SampleData.generateLineData(count: 15).map(
+                (point) => ChartDataSet(
+                  color: const Color(0xFF10B981),
+                  label: point.label ?? 'Growth',
+                  dataPoint: point,
+                ),
+              ),
             ],
             theme: chartTheme,
             title: 'Growth Metrics',

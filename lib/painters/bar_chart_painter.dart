@@ -131,7 +131,7 @@ class BarChartPainter extends BaseChartPainter {
       final x = dataSet.dataPoint.x;
       groupedByX.putIfAbsent(x, () => []).add(dataSet);
     }
-    
+
     final sortedXValues = groupedByX.keys.toList()..sort();
     final maxGroups = sortedXValues.length;
 
@@ -140,11 +140,13 @@ class BarChartPainter extends BaseChartPainter {
       final groupSpacing = chartSize.width / (maxGroups + 1);
       final barSpacing = barWidth * 0.2;
 
-      for (int groupIndex = 0; groupIndex < sortedXValues.length; groupIndex++) {
+      for (int groupIndex = 0;
+          groupIndex < sortedXValues.length;
+          groupIndex++) {
         final xValue = sortedXValues[groupIndex];
         final groupDataSets = groupedByX[xValue]!;
         double currentX = groupSpacing * (groupIndex + 1);
-        
+
         for (final dataSet in groupDataSets) {
           final point = dataSet.dataPoint;
 
@@ -217,15 +219,15 @@ class BarChartPainter extends BaseChartPainter {
           math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
         );
 
-            // Check if this bar is selected or hovered
-            final isSelected = selectedBar != null &&
-                selectedBar!.isHit &&
-                selectedBar!.datasetIndex == i &&
-                selectedBar!.elementIndex == 0;
-            final isHovered = hoveredBar != null &&
-                hoveredBar!.isHit &&
-                hoveredBar!.datasetIndex == i &&
-                hoveredBar!.elementIndex == 0;
+        // Check if this bar is selected or hovered
+        final isSelected = selectedBar != null &&
+            selectedBar!.isHit &&
+            selectedBar!.datasetIndex == i &&
+            selectedBar!.elementIndex == 0;
+        final isHovered = hoveredBar != null &&
+            hoveredBar!.isHit &&
+            hoveredBar!.datasetIndex == i &&
+            hoveredBar!.elementIndex == 0;
 
         _drawRoundedBar(
           canvas,
