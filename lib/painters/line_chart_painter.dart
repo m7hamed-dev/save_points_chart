@@ -69,9 +69,17 @@ class LineChartPainter extends BaseChartPainter {
     // Ensure maxY is positive and valid
     final maxYAdjusted = maxY > 0 ? maxY * 1.15 : 1.0;
 
-    // Add small padding for X axis
+    // Add padding for X axis to prevent points from being cut off
+    // Calculate padding that accounts for point radius (max 6.5px) and glow (max 10px)
     final xRange = maxX - minX;
-    final xPadding = (xRange > 0 && xRange.isFinite) ? xRange * 0.05 : 0.0;
+    final maxPointRadius = 10.0; // Maximum radius including glow
+    final xPaddingInPixels = maxPointRadius;
+    
+    // Convert pixel padding to data units
+    // If chartSize.width is available, convert pixels to data range
+    final xPadding = (xRange > 0 && xRange.isFinite && chartSize.width > 0)
+        ? (xPaddingInPixels / chartSize.width) * xRange
+        : (xRange > 0 && xRange.isFinite) ? xRange * 0.08 : 0.0; // Fallback to 8% if width not available
 
     // Validate chart size
     if (!chartSize.width.isFinite ||
