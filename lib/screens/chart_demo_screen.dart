@@ -940,14 +940,15 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SparklineChartWidget(
-            dataSet: SampleData.generateSparklineData(),
+            dataSets: SampleData.generateSparklineData(),
             theme: chartTheme,
             title: 'Trend Analysis',
             subtitle: 'Compact sparkline visualization - Tap on points!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              final dataSet = SampleData.generateSparklineData();
+              final dataSets = SampleData.generateSparklineData();
+              final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1005,6 +1006,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
                       );
                     });
+                    final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
                     ChartContextMenuHelper.show(
                       context,
                       point: point,
@@ -1042,25 +1044,26 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               const SizedBox(width: 16),
               Expanded(
                 child: SparklineChartWidget(
-                  dataSet: ChartDataSet(
-                    label: 'Negative',
-                    color: const Color(0xFFEF4444),
-                    dataPoints: List.generate(15, (i) {
-                      return ChartDataPoint(x: i.toDouble(), y: 100 - i * 2);
-                    }),
-                  ),
+                  dataSets: List.generate(15, (i) {
+                    return ChartDataSet(
+                      label: 'Negative',
+                      color: const Color(0xFFEF4444),
+                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
+                    );
+                  }),
                   theme: chartTheme,
                   title: 'Negative Trend',
                   useGlassmorphism: _useGlassmorphism,
                   useNeumorphism: _useNeumorphism,
                   onPointTap: (point, datasetIndex, pointIndex, position) {
-                    final dataSet = ChartDataSet(
-                      label: 'Negative',
-                      color: const Color(0xFFEF4444),
-                      dataPoints: List.generate(15, (i) {
-                        return ChartDataPoint(x: i.toDouble(), y: 100 - i * 2);
-                      }),
-                    );
+                    final dataSets = List.generate(15, (i) {
+                      return ChartDataSet(
+                        label: 'Negative',
+                        color: const Color(0xFFEF4444),
+                        dataPoint: ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
+                      );
+                    });
+                    final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
                     ChartContextMenuHelper.show(
                       context,
                       point: point,

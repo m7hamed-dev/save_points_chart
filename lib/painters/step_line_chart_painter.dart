@@ -81,10 +81,10 @@ class StepLineChartPainter extends BaseChartPainter {
     // Group datasets by color to draw lines
     final Map<Color, List<ChartDataPoint>> colorGroups = {};
     for (final dataSet in dataSets) {
-      if (!colorGroups.containsKey(color)) {
-        colorGroups[color] = [];
+      if (!colorGroups.containsKey(dataSet.color)) {
+        colorGroups[dataSet.color] = [];
       }
-      colorGroups[color]!.add(dataSet.dataPoint);
+      colorGroups[dataSet.color]!.add(dataSet.dataPoint);
     }
 
     // Draw each color group as a separate line
@@ -236,14 +236,16 @@ class StepLineChartPainter extends BaseChartPainter {
 
           final pointOpacity = i < animatedPoints - 1 ? 1.0 : animationProgress;
 
+          // Find the dataset index for this color group
+          final datasetIndex = dataSets.indexWhere((ds) => ds.color == color);
           final isSelected = selectedPoint != null &&
               selectedPoint!.isHit &&
-              selectedPoint!.datasetIndex == dataSets.indexOf(dataSet) &&
+              selectedPoint!.datasetIndex == datasetIndex &&
               selectedPoint!.elementIndex == i;
 
           final isHovered = hoveredPoint != null &&
               hoveredPoint!.isHit &&
-              hoveredPoint!.datasetIndex == dataSets.indexOf(dataSet) &&
+              hoveredPoint!.datasetIndex == datasetIndex &&
               hoveredPoint!.elementIndex == i;
 
           final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);

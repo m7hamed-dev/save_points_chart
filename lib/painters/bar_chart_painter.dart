@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
 import 'package:save_points_chart/widgets/bar_chart_widget.dart';

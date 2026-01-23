@@ -171,10 +171,9 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
                           for (final dataSet in widget.dataSets) {
                             final point = dataSet.dataPoint;
                             totalsByX[point.x] =
-                                  (totalsByX[point.x] ?? 0) + point.y;
-                              if (totalsByX[point.x]! > maxY) {
-                                maxY = totalsByX[point.x]!;
-                              }
+                                (totalsByX[point.x] ?? 0) + point.y;
+                            if (totalsByX[point.x]! > maxY) {
+                              maxY = totalsByX[point.x]!;
                             }
                           }
 

@@ -237,6 +237,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
       }
 
       previousPoints = points;
+      }
     }
 
     canvas.restore();

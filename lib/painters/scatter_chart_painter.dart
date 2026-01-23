@@ -158,7 +158,6 @@ class ScatterChartPainter extends BaseChartPainter {
             ..strokeWidth = isSelected ? 3.0 : 2.0;
           canvas.drawCircle(canvasPoint, animatedSize, borderPaint);
         }
-      }
     }
 
     canvas.restore();

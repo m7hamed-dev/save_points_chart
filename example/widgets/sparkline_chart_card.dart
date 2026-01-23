@@ -21,7 +21,7 @@ class SparklineChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             SparklineChartWidget(
-              dataSet: SampleData.generateSparklineData(),
+              dataSets: SampleData.generateSparklineData(),
               theme: theme,
               title: 'Trend Analysis',
               subtitle: 'Tap on points to see details',
