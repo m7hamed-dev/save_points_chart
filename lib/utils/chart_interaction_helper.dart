@@ -5,22 +5,82 @@ import 'package:save_points_chart/models/chart_interaction.dart';
 
 /// Helper class for detecting chart interactions.
 ///
-/// This class provides static methods to detect taps and hovers on various
-/// chart elements such as points, bars, segments, and shapes.
+/// This utility class provides optimized static methods to detect taps and
+/// hovers on various chart elements such as points, bars, segments, and shapes.
+///
+/// All methods include comprehensive input validation to prevent NaN and
+/// Infinity errors, and use efficient algorithms (e.g., squared distance
+/// calculations) for better performance.
+///
+/// ## Performance
+/// - Uses squared distance calculations to avoid expensive sqrt operations
+/// - Early exit optimizations for bounds checking
+/// - Single-pass algorithms where possible
+/// - Comprehensive input validation
+///
+/// ## Example
+/// ```dart
+/// final result = ChartInteractionHelper.findNearestPoint(
+///   tapPosition,
+///   dataSets,
+///   chartSize,
+///   minX, maxX, minY, maxY,
+///   ChartInteractionConstants.tapRadius,
+/// );
+///
+/// if (result != null && result.isHit) {
+///   print('Tapped: ${result.point!.y}');
+/// }
+/// ```
+///
+/// See also:
+/// - [ChartInteractionResult] for interaction results
+/// - [ChartInteractionConstants] for interaction configuration
 class ChartInteractionHelper {
   /// Find nearest point to tap location (optimized with early exit and squared distance).
   ///
   /// Searches through all data sets to find the point closest to the tap position
-  /// within the specified tap radius. Returns null if no point is found.
+  /// within the specified tap radius. Uses squared distance calculations for
+  /// better performance and includes comprehensive input validation.
+  ///
+  /// ## Algorithm
+  /// 1. Validates all inputs (bounds, size, position)
+  /// 2. Converts each data point to canvas coordinates
+  /// 3. Uses quick bounds check before distance calculation
+  /// 4. Calculates squared distance (avoids sqrt)
+  /// 5. Returns the nearest point within radius
+  ///
+  /// ## Performance
+  /// - O(n) where n is total number of points across all datasets
+  /// - Early exit for points clearly outside radius
+  /// - Squared distance avoids expensive sqrt operation
   ///
   /// Parameters:
-  /// - [tapPosition] - The position where the user tapped
-  /// - [dataSets] - List of chart data sets to search through
-  /// - [chartSize] - Size of the chart area
-  /// - [minX], [maxX], [minY], [maxY] - Data bounds for coordinate conversion
-  /// - [tapRadius] - Maximum distance from tap position to consider a hit
+  /// - [tapPosition] - The position where the user tapped (in chart coordinates)
+  /// - [dataSets] - List of chart data sets to search through (must not be empty)
+  /// - [chartSize] - Size of the chart area (must be positive and finite)
+  /// - [minX], [maxX], [minY], [maxY] - Data bounds for coordinate conversion (must be finite)
+  /// - [tapRadius] - Maximum distance from tap position to consider a hit (must be positive)
   ///
-  /// Returns a [ChartInteractionResult] if a point is found, null otherwise.
+  /// Returns a [ChartInteractionResult] if a point is found within [tapRadius],
+  /// null otherwise. The result includes the point, dataset index, and element index.
+  ///
+  /// ## Example
+  /// ```dart
+  /// final result = ChartInteractionHelper.findNearestPoint(
+  ///   Offset(100, 150),
+  ///   dataSets,
+  ///   Size(400, 300),
+  ///   0, 100, 0, 50,
+  ///   20.0,
+  /// );
+  ///
+  /// if (result != null && result.isHit) {
+  ///   print('Found point: ${result.point!.y}');
+  /// }
+  /// ```
+  ///
+  /// Throws no exceptions, but returns null for invalid inputs.
   static ChartInteractionResult? findNearestPoint(
     Offset tapPosition,
     List<ChartDataSet> dataSets,

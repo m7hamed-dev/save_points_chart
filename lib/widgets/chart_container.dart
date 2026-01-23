@@ -2,7 +2,36 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 
-/// Modern container wrapper for charts with glassmorphism and neumorphism effects
+/// Modern container wrapper for charts with glassmorphism and neumorphism effects.
+///
+/// This widget provides a consistent, professional container for all chart types
+/// with support for titles, subtitles, loading states, error states, and
+/// modern visual effects.
+///
+/// ## Features
+/// - Title and subtitle support
+/// - Loading state with spinner and message
+/// - Error state with icon and message
+/// - Glassmorphism effect (frosted glass appearance)
+/// - Neumorphism effect (soft shadow appearance)
+/// - Full theme support
+/// - Accessibility support with semantic labels
+/// - Responsive padding and spacing
+///
+/// ## Example
+/// ```dart
+/// ChartContainer(
+///   theme: ChartTheme.light(),
+///   title: 'Sales Chart',
+///   subtitle: 'Monthly revenue',
+///   useGlassmorphism: true,
+///   isLoading: false,
+///   child: MyChartWidget(...),
+/// )
+/// ```
+///
+/// See also:
+/// - [ChartTheme] for theme configuration
 class ChartContainer extends StatelessWidget {
   final Widget child;
   final ChartTheme? theme;
@@ -15,6 +44,30 @@ class ChartContainer extends StatelessWidget {
   final bool isError;
   final String? errorMessage;
 
+  /// Creates a chart container.
+  ///
+  /// [child] is required and should be the chart widget to display.
+  /// [theme] is optional and will be inferred from the Material theme if not provided.
+  ///
+  /// The container supports three visual styles:
+  /// - Default: Clean card with subtle shadows
+  /// - Glassmorphism: Frosted glass effect with backdrop blur
+  /// - Neumorphism: Soft shadow effect with depth
+  ///
+  /// Only one effect should be enabled at a time. If both [useGlassmorphism]
+  /// and [useNeumorphism] are true, neumorphism takes precedence.
+  ///
+  /// ## Example
+  /// ```dart
+  /// ChartContainer(
+  ///   title: 'Sales',
+  ///   subtitle: 'Q1 2024',
+  ///   isLoading: isLoading,
+  ///   isError: hasError,
+  ///   errorMessage: errorMessage,
+  ///   child: MyChart(...),
+  /// )
+  /// ```
   const ChartContainer({
     super.key,
     required this.child,

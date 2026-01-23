@@ -3,8 +3,48 @@ import 'package:flutter/material.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 
-/// Base painter for all chart types with common utilities
+/// Base painter for all chart types with common utilities.
+///
+/// This abstract class provides shared functionality for rendering charts,
+/// including grid lines, axes, labels, and coordinate transformations.
+/// All chart painters should extend this class to inherit these features.
+///
+/// ## Features
+/// - Automatic grid and axis rendering
+/// - Optimized coordinate transformations
+/// - Efficient repaint detection
+/// - Batched drawing operations
+///
+/// ## Example
+/// ```dart
+/// class MyChartPainter extends BaseChartPainter {
+///   MyChartPainter({
+///     required super.theme,
+///     required super.dataSets,
+///   });
+///
+///   @override
+///   void paint(Canvas canvas, Size size) {
+///     // Draw grid and axes
+///     drawGrid(canvas, size, minX, maxX, minY, maxY);
+///     drawAxes(canvas, size, minX, maxX, minY, maxY);
+///
+///     // Draw your chart content
+///     // ...
+///
+///     // Draw labels
+///     drawAxisLabels(canvas, size, minX, maxX, minY, maxY);
+///   }
+/// }
+/// ```
+///
+/// See also:
+/// - [CustomPainter] for the base Flutter painter class
+/// - [ChartTheme] for chart styling
 abstract class BaseChartPainter extends CustomPainter {
+  /// Creates a base chart painter.
+  ///
+  /// [theme] and [dataSets] are required. Visibility flags default to true.
   const BaseChartPainter({
     required this.theme,
     required this.dataSets,
@@ -13,10 +53,29 @@ abstract class BaseChartPainter extends CustomPainter {
     this.showLabel = true,
   });
 
+  /// The theme to use for styling the chart.
+  ///
+  /// Controls colors, fonts, and visual appearance of grid, axes, and labels.
   final ChartTheme theme;
+
+  /// The data sets to render in the chart.
+  ///
+  /// Must not be empty. Each dataset represents a series in the chart.
   final List<ChartDataSet> dataSets;
+
+  /// Whether to show grid lines.
+  ///
+  /// Defaults to true. Grid lines help users read values from the chart.
   final bool showGrid;
+
+  /// Whether to show axis lines.
+  ///
+  /// Defaults to true. Axis lines mark the boundaries of the chart area.
   final bool showAxis;
+
+  /// Whether to show axis labels.
+  ///
+  /// Defaults to true. Labels display numeric values along the axes.
   final bool showLabel;
 
   @override
@@ -64,7 +123,29 @@ abstract class BaseChartPainter extends CustomPainter {
     return false;
   }
 
-  /// Convert data point to canvas coordinates (optimized)
+  /// Convert data point to canvas coordinates (optimized).
+  ///
+  /// Transforms a data point from data space (x, y values) to canvas space
+  /// (pixel coordinates). This method includes comprehensive validation to
+  /// prevent NaN and Infinity values that could cause rendering issues.
+  ///
+  /// Parameters:
+  /// - [point] - The data point to transform
+  /// - [size] - The size of the canvas
+  /// - [minX], [maxX], [minY], [maxY] - The data bounds
+  ///
+  /// Returns an [Offset] representing the canvas position, or a safe fallback
+  /// position if the input is invalid.
+  ///
+  /// ## Example
+  /// ```dart
+  /// final canvasPos = pointToCanvas(
+  ///   ChartDataPoint(x: 10, y: 20),
+  ///   Size(400, 300),
+  ///   0, 100, 0, 50,
+  /// );
+  /// canvas.drawCircle(canvasPos, 5, paint);
+  /// ```
   Offset pointToCanvas(
     ChartDataPoint point,
     Size size,
@@ -110,7 +191,24 @@ abstract class BaseChartPainter extends CustomPainter {
     return Offset(x, y);
   }
 
-  /// Draw grid lines (optimized with batched operations)
+  /// Draw grid lines (optimized with batched operations).
+  ///
+  /// Renders horizontal grid lines to help users read values from the chart.
+  /// Uses batched path operations for better performance.
+  ///
+  /// Parameters:
+  /// - [canvas] - The canvas to draw on
+  /// - [size] - The size of the chart area
+  /// - [minX], [maxX], [minY], [maxY] - The data bounds (used for spacing)
+  ///
+  /// The grid will only be drawn if [showGrid] is true and the theme
+  /// allows grid display. Grid lines are drawn with a semi-transparent color
+  /// to avoid obscuring the chart data.
+  ///
+  /// ## Example
+  /// ```dart
+  /// drawGrid(canvas, chartSize, 0, 100, 0, 50);
+  /// ```
   void drawGrid(
     Canvas canvas,
     Size size,
@@ -142,7 +240,23 @@ abstract class BaseChartPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  /// Draw axes
+  /// Draw axis lines.
+  ///
+  /// Renders the X-axis (bottom) and Y-axis (left) to mark the boundaries
+  /// of the chart area. Uses a clean, minimal style for professional appearance.
+  ///
+  /// Parameters:
+  /// - [canvas] - The canvas to draw on
+  /// - [size] - The size of the chart area
+  /// - [minX], [maxX], [minY], [maxY] - The data bounds (not used, kept for API consistency)
+  ///
+  /// The axes will only be drawn if [showAxis] is true and the theme
+  /// allows axis display.
+  ///
+  /// ## Example
+  /// ```dart
+  /// drawAxes(canvas, chartSize, 0, 100, 0, 50);
+  /// ```
   void drawAxes(
     Canvas canvas,
     Size size,
@@ -169,7 +283,25 @@ abstract class BaseChartPainter extends CustomPainter {
     canvas.drawLine(const Offset(0, 0), Offset(0, size.height), paint);
   }
 
-  /// Draw axis labels (optimized with text style caching)
+  /// Draw axis labels (optimized with text style caching).
+  ///
+  /// Renders numeric labels along the X and Y axes to help users read values.
+  /// Uses efficient text rendering with cached styles and smart formatting.
+  ///
+  /// Parameters:
+  /// - [canvas] - The canvas to draw on
+  /// - [size] - The size of the chart area
+  /// - [minX], [maxX], [minY], [maxY] - The data bounds for label values
+  ///
+  /// Labels are automatically formatted (integers when possible, decimals otherwise).
+  /// The number of labels is automatically adjusted based on the chart size.
+  ///
+  /// The labels will only be drawn if [showLabel] and [showAxis] are true.
+  ///
+  /// ## Example
+  /// ```dart
+  /// drawAxisLabels(canvas, chartSize, 0, 100, 0, 50);
+  /// ```
   void drawAxisLabels(
     Canvas canvas,
     Size size,
@@ -270,7 +402,32 @@ abstract class BaseChartPainter extends CustomPainter {
     }
   }
 
-  /// Get data bounds
+  /// Get data bounds (to be overridden by subclasses).
+  ///
+  /// This method is a placeholder for subclasses to implement custom
+  /// bounds calculation logic. The default implementation does nothing.
+  ///
+  /// Parameters:
+  /// - [getValue] - Function to extract a value from a data point
+  /// - [combine] - Function to combine two values (e.g., min or max)
+  ///
+  /// ## Example Implementation
+  /// ```dart
+  /// @override
+  /// void getDataBounds(
+  ///   double Function(ChartDataPoint) getValue,
+  ///   double Function(double, double) combine,
+  /// ) {
+  ///   double result = getValue(dataSets.first.dataPoints.first);
+  ///   for (final dataSet in dataSets) {
+  ///     for (final point in dataSet.dataPoints) {
+  ///       result = combine(result, getValue(point));
+  ///     }
+  ///   }
+  ///   // Store result...
+  /// }
+  /// ```
+  @protected
   void getDataBounds(
     double Function(ChartDataPoint) getValue,
     double Function(double, double) combine,

@@ -11,14 +11,18 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// A modern bubble chart widget for visualizing three-dimensional data.
 ///
 /// This widget displays data points as bubbles where x, y represent position
-/// and size represents a third dimension.
+/// and size represents a third dimension. Perfect for visualizing relationships
+/// between three variables (e.g., sales, profit, and market share).
 ///
 /// ## Features
-/// - Multiple data series support
-/// - Interactive bubble tapping
-/// - Customizable bubble size range
-/// - Smooth animations
-/// - Full theme support
+/// - Multiple data series support with distinct colors
+/// - Interactive bubble tapping with haptic feedback
+/// - Customizable bubble size range ([minBubbleSize], [maxBubbleSize])
+/// - Smooth entrance animations
+/// - Hover support for desktop/web platforms
+/// - Full theme support (light/dark mode)
+/// - Glassmorphism and neumorphism effects
+/// - Optimized rendering with bounds caching
 ///
 /// ## Example
 /// ```dart
@@ -34,8 +38,22 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 ///     ),
 ///   ],
 ///   theme: ChartTheme.light(),
+///   minBubbleSize: 5.0,
+///   maxBubbleSize: 30.0,
+///   onBubbleTap: (point, datasetIndex, pointIndex, position) {
+///     print('Tapped bubble: ${point.y}');
+///   },
 /// )
 /// ```
+///
+/// ## Performance Tips
+/// - Bounds are automatically cached to avoid recalculation
+/// - Use [RepaintBoundary] around multiple charts
+/// - Consider data point limits for very large datasets
+///
+/// See also:
+/// - [ScatterChartWidget] for two-dimensional scatter plots (import from save_points_chart)
+/// - [BubbleDataSet] for bubble data structure (import from models)
 class BubbleChartWidget extends StatefulWidget {
   final List<BubbleDataSet> dataSets;
   final ChartTheme? theme;
@@ -54,6 +72,30 @@ class BubbleChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
 
+  /// Creates a bubble chart widget.
+  ///
+  /// [dataSets] must not be empty. Each dataset must contain at least one
+  /// bubble data point. [theme] is optional and will be inferred from the
+  /// Material theme if not provided.
+  ///
+  /// [minBubbleSize] and [maxBubbleSize] control the visual size range of
+  /// bubbles. The actual bubble sizes will be scaled proportionally within
+  /// this range based on the data values.
+  ///
+  /// Throws an [AssertionError] if:
+  /// - [dataSets] is empty
+  /// - [minBubbleSize] is not positive
+  /// - [maxBubbleSize] is not greater than [minBubbleSize]
+  ///
+  /// ## Example
+  /// ```dart
+  /// BubbleChartWidget(
+  ///   dataSets: myBubbleDataSets,
+  ///   minBubbleSize: 5.0,
+  ///   maxBubbleSize: 30.0,
+  ///   onBubbleTap: handleBubbleTap,
+  /// )
+  /// ```
   BubbleChartWidget({
     super.key,
     required this.dataSets,
@@ -76,8 +118,20 @@ class BubbleChartWidget extends StatefulWidget {
           dataSets.isNotEmpty,
           'BubbleChartWidget requires at least one data set',
         ),
+        assert(
+          dataSets.every((ds) => ds.dataPoints.isNotEmpty),
+          'All data sets must contain at least one data point',
+        ),
         assert(minBubbleSize > 0, 'Min bubble size must be positive'),
-        assert(maxBubbleSize > minBubbleSize, 'Max must be greater than min');
+        assert(
+          minBubbleSize.isFinite,
+          'Min bubble size must be finite',
+        ),
+        assert(maxBubbleSize > minBubbleSize, 'Max must be greater than min'),
+        assert(
+          maxBubbleSize.isFinite,
+          'Max bubble size must be finite',
+        );
 
   @override
   State<BubbleChartWidget> createState() => _BubbleChartWidgetState();

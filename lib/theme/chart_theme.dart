@@ -1,6 +1,35 @@
 import 'package:flutter/material.dart';
 
-/// Theme-aware chart styling configuration
+/// Theme-aware chart styling configuration.
+///
+/// This class provides comprehensive theming for all chart types, including
+/// colors, typography, spacing, and visual effects. Themes are designed to
+/// work seamlessly with Material Design 3 and support both light and dark modes.
+///
+/// ## Features
+/// - Light and dark theme presets
+/// - Automatic theme inference from Material theme
+/// - Customizable colors, fonts, and spacing
+/// - Copy-with method for easy customization
+/// - Professional gradient color palettes
+///
+/// ## Example
+/// ```dart
+/// // Use preset theme
+/// final theme = ChartTheme.light();
+///
+/// // Customize theme
+/// final customTheme = ChartTheme.light().copyWith(
+///   backgroundColor: Colors.grey[100],
+///   borderRadius: 24.0,
+/// );
+///
+/// // Infer from Material theme
+/// final autoTheme = ChartTheme.fromMaterialTheme(Theme.of(context));
+/// ```
+///
+/// See also:
+/// - [ThemeData] for Material theme
 class ChartTheme {
   final Color backgroundColor;
   final Color textColor;
@@ -28,7 +57,19 @@ class ChartTheme {
     this.showTooltip = true,
   });
 
-  /// Create light theme with enhanced colors
+  /// Create light theme with enhanced colors.
+  ///
+  /// Returns a professionally designed light theme with:
+  /// - White background
+  /// - Dark text for contrast
+  /// - Subtle grid and axis colors
+  /// - Vibrant gradient color palette
+  /// - Modern rounded corners
+  ///
+  /// ## Example
+  /// ```dart
+  /// final theme = ChartTheme.light();
+  /// ```
   factory ChartTheme.light() {
     return const ChartTheme(
       backgroundColor: Color(0xFFFFFFFF),
@@ -47,7 +88,19 @@ class ChartTheme {
     );
   }
 
-  /// Create dark theme with enhanced colors
+  /// Create dark theme with enhanced colors.
+  ///
+  /// Returns a professionally designed dark theme with:
+  /// - Dark background (slate gray)
+  /// - Light text for contrast
+  /// - Muted grid and axis colors
+  /// - Bright gradient color palette
+  /// - Modern rounded corners
+  ///
+  /// ## Example
+  /// ```dart
+  /// final theme = ChartTheme.dark();
+  /// ```
   factory ChartTheme.dark() {
     return const ChartTheme(
       backgroundColor: Color(0xFF1F2937),
@@ -66,13 +119,44 @@ class ChartTheme {
     );
   }
 
-  /// Create from Material Theme
+  /// Create theme from Material Theme.
+  ///
+  /// Automatically infers the appropriate chart theme (light or dark) based
+  /// on the brightness of the provided Material theme.
+  ///
+  /// Parameters:
+  /// - [theme] - The Material theme to infer from
+  ///
+  /// Returns [ChartTheme.dark()] if theme brightness is dark,
+  /// [ChartTheme.light()] otherwise.
+  ///
+  /// ## Example
+  /// ```dart
+  /// final chartTheme = ChartTheme.fromMaterialTheme(Theme.of(context));
+  /// ```
   factory ChartTheme.fromMaterialTheme(ThemeData theme) {
     final isDark = theme.brightness == Brightness.dark;
     return isDark ? ChartTheme.dark() : ChartTheme.light();
   }
 
-  /// Copy with method for customization
+  /// Creates a copy of this theme with the given fields replaced.
+  ///
+  /// Returns a new [ChartTheme] with the same values as this one,
+  /// except for the fields that are explicitly provided. This is useful
+  /// for creating variations of a theme.
+  ///
+  /// Parameters:
+  /// - All parameters are optional. Only provided parameters will override
+  ///   the current theme values.
+  ///
+  /// ## Example
+  /// ```dart
+  /// final customTheme = ChartTheme.light().copyWith(
+  ///   backgroundColor: Colors.grey[100],
+  ///   borderRadius: 24.0,
+  ///   shadowElevation: 8.0,
+  /// );
+  /// ```
   ChartTheme copyWith({
     Color? backgroundColor,
     Color? textColor,

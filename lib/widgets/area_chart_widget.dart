@@ -14,15 +14,17 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 ///
 /// This widget displays one or more data series as filled areas with optional
 /// points and interactive tooltips. Area charts are useful for showing
-/// cumulative values over time.
+/// cumulative values over time and comparing multiple series.
 ///
 /// ## Features
-/// - Multiple data series support
-/// - Smooth animations
-/// - Gradient area fills
-/// - Interactive point tapping
-/// - Loading and error states
-/// - Full theme support
+/// - Multiple data series support with distinct colors
+/// - Smooth entrance animations with easing curves
+/// - Gradient area fills for visual appeal
+/// - Interactive point tapping with haptic feedback
+/// - Loading and error states with user-friendly messages
+/// - Full theme support (light/dark mode)
+/// - Glassmorphism and neumorphism effects
+/// - Optimized rendering with RepaintBoundary
 ///
 /// ## Example
 /// ```dart
@@ -34,20 +36,29 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 ///       dataPoints: [
 ///         ChartDataPoint(x: 0, y: 100),
 ///         ChartDataPoint(x: 1, y: 150),
+///         ChartDataPoint(x: 2, y: 200),
 ///       ],
 ///     ),
 ///   ],
 ///   theme: ChartTheme.light(),
 ///   title: 'Active Users',
+///   subtitle: 'Monthly growth',
 ///   onPointTap: (point, datasetIndex, pointIndex, position) {
 ///     print('Tapped: ${point.y}');
+///     showContextMenu(position);
 ///   },
 /// )
 /// ```
 ///
+/// ## Performance Tips
+/// - Use [RepaintBoundary] around multiple charts to isolate repaints
+/// - Cache data sets when possible to avoid unnecessary rebuilds
+/// - Consider using [isLoading] during data fetching
+///
 /// See also:
-/// - [LineChartWidget] for line charts
-/// - [BarChartWidget] for bar charts
+/// - [LineChartWidget] for line charts without fills (import from save_points_chart)
+/// - [BarChartWidget] for bar charts (import from save_points_chart)
+/// - [StackedAreaChartWidget] for stacked area charts (import from save_points_chart)
 class AreaChartWidget extends StatefulWidget {
   /// The data sets to display in the chart.
   ///
@@ -132,7 +143,20 @@ class AreaChartWidget extends StatefulWidget {
   /// theme if not provided.
   ///
   /// The [lineWidth] defaults to 3.0 pixels. Use [onPointTap] to handle
-  /// user interactions with data points.
+  /// user interactions with data points. The chart will automatically animate
+  /// on first build with a smooth entrance animation.
+  ///
+  /// Throws an [AssertionError] if [dataSets] is empty or any dataset
+  /// is empty.
+  ///
+  /// ## Example
+  /// ```dart
+  /// AreaChartWidget(
+  ///   dataSets: myDataSets,
+  ///   title: 'Sales Over Time',
+  ///   onPointTap: handlePointTap,
+  /// )
+  /// ```
   const AreaChartWidget({
     super.key,
     required this.dataSets,
