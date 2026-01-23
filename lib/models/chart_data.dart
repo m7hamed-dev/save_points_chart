@@ -244,16 +244,15 @@ class BubbleDataPoint extends ChartDataPoint {
 /// Represents a collection of bubble data points.
 ///
 /// Similar to [ChartDataSet] but specifically for bubble charts.
-/// Contains multiple bubble points that share a label and color.
+/// Contains multiple bubble points that share a color.
 ///
 /// ## Example
 /// ```dart
 /// BubbleDataSet(
-///   label: 'Region A',
 ///   color: Colors.blue,
 ///   dataPoints: [
-///     BubbleDataPoint(x: 10, y: 20, size: 50),
-///     BubbleDataPoint(x: 15, y: 25, size: 60),
+///     BubbleDataPoint(x: 10, y: 20, size: 50, label: 'Region A'),
+///     BubbleDataPoint(x: 15, y: 25, size: 60, label: 'Region B'),
 ///   ],
 /// )
 /// ```
@@ -262,12 +261,6 @@ class BubbleDataPoint extends ChartDataPoint {
 /// - [ChartDataSet] for standard two-dimensional data sets
 /// - [BubbleDataPoint] for individual bubble points
 class BubbleDataSet {
-  /// The label for this data set (displayed in legends and tooltips).
-  ///
-  /// Should be a descriptive name for the data set (e.g., "Region A",
-  /// "Team 1"). Must not be empty.
-  final String label;
-
   /// The color used to render the bubbles in this data set.
   ///
   /// Applied to all bubbles in this set. Use distinct colors for each
@@ -277,23 +270,19 @@ class BubbleDataSet {
   /// The list of bubble data points in this data set.
   ///
   /// Each point represents one bubble on the chart.
+  /// Labels are stored in each [BubbleDataPoint.label].
   final List<BubbleDataPoint> dataPoints;
 
   /// Creates a bubble data set.
   ///
-  /// [label] must not be empty. [color] is required for rendering.
+  /// [color] is required for rendering.
   /// [dataPoints] is required and must not be empty.
   ///
-  /// Throws an [AssertionError] if [label] is empty or [dataPoints] is empty.
+  /// Throws an [AssertionError] if [dataPoints] is empty.
   BubbleDataSet({
-    required this.label,
     required this.color,
     required this.dataPoints,
   })  : assert(
-          label.isNotEmpty,
-          'BubbleDataSet label must not be empty',
-        ),
-        assert(
           dataPoints.isNotEmpty,
           'BubbleDataSet dataPoints must not be empty',
         );
@@ -303,12 +292,10 @@ class BubbleDataSet {
   /// Returns a new [BubbleDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
   BubbleDataSet copyWith({
-    String? label,
     Color? color,
     List<BubbleDataPoint>? dataPoints,
   }) {
     return BubbleDataSet(
-      label: label ?? this.label,
       color: color ?? this.color,
       dataPoints: dataPoints ?? this.dataPoints,
     );
@@ -316,19 +303,18 @@ class BubbleDataSet {
 
   @override
   String toString() =>
-      'BubbleDataSet(label: $label, color: $color, dataPoints: $dataPoints)';
+      'BubbleDataSet(color: $color, dataPoints: $dataPoints)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is BubbleDataSet &&
           runtimeType == other.runtimeType &&
-          label == other.label &&
           color == other.color &&
           dataPoints == other.dataPoints;
 
   @override
-  int get hashCode => Object.hash(label, color, dataPoints);
+  int get hashCode => Object.hash(color, dataPoints);
 }
 
 /// Represents a single data point in a chart.
@@ -482,7 +468,6 @@ class RadarDataPoint {
 /// ## Example
 /// ```dart
 /// RadarDataSet(
-///   label: 'Team A',
 ///   color: Colors.blue,
 ///   dataPoints: [
 ///     RadarDataPoint(label: 'Speed', value: 80),
@@ -496,12 +481,6 @@ class RadarDataPoint {
 /// - [RadarDataPoint] for individual radar points
 /// - [ChartDataSet] for standard two-dimensional data sets
 class RadarDataSet {
-  /// The label for this data set (displayed in legends and tooltips).
-  ///
-  /// Should be a descriptive name for the data set (e.g., "Team A",
-  /// "Product 1"). Must not be empty.
-  final String label;
-
   /// The color used to render the polygon and points in this data set.
   ///
   /// Applied to the polygon fill, outline, and points. Use distinct colors
@@ -512,24 +491,19 @@ class RadarDataSet {
   ///
   /// Each point represents one axis on the radar chart. All data sets
   /// in a radar chart should have the same number of points with matching
-  /// axis labels.
+  /// axis labels. Each [RadarDataPoint] has its own label for the axis name.
   final List<RadarDataPoint> dataPoints;
 
   /// Creates a radar data set.
   ///
-  /// [label] must not be empty. [color] is required for rendering.
+  /// [color] is required for rendering.
   /// [dataPoints] is required and must not be empty.
   ///
-  /// Throws an [AssertionError] if [label] is empty or [dataPoints] is empty.
+  /// Throws an [AssertionError] if [dataPoints] is empty.
   RadarDataSet({
-    required this.label,
     required this.color,
     required this.dataPoints,
   })  : assert(
-          label.isNotEmpty,
-          'RadarDataSet label must not be empty',
-        ),
-        assert(
           dataPoints.isNotEmpty,
           'RadarDataSet dataPoints must not be empty',
         );
@@ -539,12 +513,10 @@ class RadarDataSet {
   /// Returns a new [RadarDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
   RadarDataSet copyWith({
-    String? label,
     Color? color,
     List<RadarDataPoint>? dataPoints,
   }) {
     return RadarDataSet(
-      label: label ?? this.label,
       color: color ?? this.color,
       dataPoints: dataPoints ?? this.dataPoints,
     );
@@ -552,17 +524,16 @@ class RadarDataSet {
 
   @override
   String toString() =>
-      'RadarDataSet(label: $label, color: $color, dataPoints: $dataPoints)';
+      'RadarDataSet(color: $color, dataPoints: $dataPoints)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is RadarDataSet &&
           runtimeType == other.runtimeType &&
-          label == other.label &&
           color == other.color &&
           dataPoints == other.dataPoints;
 
   @override
-  int get hashCode => Object.hash(label, color, dataPoints);
+  int get hashCode => Object.hash(color, dataPoints);
 }

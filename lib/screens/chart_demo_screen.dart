@@ -409,7 +409,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -417,7 +417,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
                 onExport: () {
@@ -445,7 +445,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   position: position,
                   datasetIndex: datasetIndex,
                   elementIndex: pointIndex,
-                  datasetLabel: dataSet.label,
+                  datasetLabel: dataSet.dataPoint.label ?? '',
                   theme: chartTheme,
                   useGlassmorphism: _useGlassmorphism,
                   useNeumorphism: _useNeumorphism,
@@ -453,7 +453,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     _showDetailsDialog(
                       context,
                       point: point,
-                      datasetLabel: dataSet.label,
+                      datasetLabel: dataSet.dataPoint.label ?? '',
                     );
                   },
                 );
@@ -492,7 +492,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 .map(
                   (point) => ChartDataSet(
                     color: const Color(0xFFEC4899),
-                    label: point.label ?? 'Temperature',
                     dataPoint: point,
                   ),
                 )
@@ -524,7 +523,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -532,7 +531,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                     userLabel: userLabel,
                   );
                 },
@@ -566,7 +565,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -574,7 +573,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                     userLabel: userLabel,
                   );
                 },
@@ -618,7 +617,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: barIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -626,7 +625,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
                 onExport: () {
@@ -666,7 +665,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: barIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -674,7 +673,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                     userLabel: userLabel,
                   );
                 },
@@ -718,7 +717,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -726,7 +725,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
                 onExport: () {
@@ -744,7 +743,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               ...SampleData.generateLineData(count: 15).map(
                 (point) => ChartDataSet(
                   color: const Color(0xFF10B981),
-                  label: point.label ?? 'Growth',
                   dataPoint: point,
                 ),
               ),
@@ -773,7 +771,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -781,7 +779,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                     userLabel: userLabel,
                   );
                 },
@@ -917,7 +915,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -925,7 +923,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
                 onExport: () {
@@ -972,7 +970,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -980,7 +978,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
                 onExport: () {
@@ -1006,8 +1004,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   dataSets: List.generate(15, (i) {
                     return ChartDataSet(
                       color: const Color(0xFF10B981),
-                      label: 'Point ${i + 1}',
-                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
+                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2, label: 'Point ${i + 1}'),
                     );
                   }),
                   theme: chartTheme,
@@ -1018,9 +1015,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
                         color: const Color(0xFF10B981),
-                        label: 'Point ${i + 1}',
                         dataPoint:
-                            ChartDataPoint(x: i.toDouble(), y: 50 + i * 2),
+                            ChartDataPoint(x: i.toDouble(), y: 50 + i * 2, label: 'Point ${i + 1}'),
                       );
                     });
                     final dataSet = datasetIndex < dataSets.length
@@ -1033,7 +1029,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       position: position,
                       datasetIndex: datasetIndex,
                       elementIndex: pointIndex,
-                      datasetLabel: dataSet.label,
+                      datasetLabel: dataSet.dataPoint.label ?? '',
                       theme: chartTheme,
                       useGlassmorphism: _useGlassmorphism,
                       useNeumorphism: _useNeumorphism,
@@ -1041,7 +1037,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         _showDetailsDialog(
                           context,
                           point: point,
-                          datasetLabel: dataSet.label,
+                          datasetLabel: dataSet.dataPoint.label ?? '',
                         );
                       },
                       onExport: () {
@@ -1065,7 +1061,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 child: SparklineChartWidget(
                   dataSets: List.generate(15, (i) {
                     return ChartDataSet(
-                      label: 'Negative',
                       color: const Color(0xFFEF4444),
                       dataPoint:
                           ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
@@ -1078,7 +1073,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   onPointTap: (point, datasetIndex, pointIndex, position) {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
-                        label: 'Negative',
                         color: const Color(0xFFEF4444),
                         dataPoint:
                             ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
@@ -1094,7 +1088,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       position: position,
                       datasetIndex: datasetIndex,
                       elementIndex: pointIndex,
-                      datasetLabel: dataSet.label,
+                      datasetLabel: dataSet.dataPoint.label ?? '',
                       theme: chartTheme,
                       useGlassmorphism: _useGlassmorphism,
                       useNeumorphism: _useNeumorphism,
@@ -1102,7 +1096,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                         _showDetailsDialog(
                           context,
                           point: point,
-                          datasetLabel: dataSet.label,
+                          datasetLabel: dataSet.dataPoint.label ?? '',
                         );
                       },
                       onExport: () {
@@ -1154,7 +1148,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1162,7 +1156,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
               );
@@ -1204,7 +1198,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: bubblePoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1213,7 +1207,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     context,
                     point: point,
                     datasetLabel:
-                        '${dataSet.label} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
+                        '${bubblePoint.label ?? ''} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
                   );
                 },
               );
@@ -1243,6 +1237,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 return;
               }
               final dataSet = radarDataSets[datasetIndex];
+              if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
+                return;
+              }
+              final radarPoint = dataSet.dataPoints[pointIndex];
               ChartContextMenuHelper.show(
                 context,
                 point: point,
@@ -1250,7 +1248,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: radarPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1258,7 +1256,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: radarPoint.label ?? '',
                   );
                 },
               );
@@ -1368,7 +1366,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1376,7 +1374,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
               );
@@ -1413,7 +1411,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1421,7 +1419,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
               );
@@ -1459,7 +1457,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: barIndex,
-                datasetLabel: dataSet.label,
+                datasetLabel: dataSet.dataPoint.label ?? '',
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1467,7 +1465,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: dataSet.label,
+                    datasetLabel: dataSet.dataPoint.label ?? '',
                   );
                 },
               );

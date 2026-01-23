@@ -104,7 +104,7 @@ abstract class BaseChartPainter extends CustomPainter {
 
       // Quick reference check for each dataset
       if (identical(oldDs, newDs)) continue;
-      if (oldDs.label != newDs.label || oldDs.color != newDs.color) {
+      if (oldDs.color != newDs.color) {
         return true;
       }
       // Compare data point

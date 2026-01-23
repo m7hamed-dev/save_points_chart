@@ -95,7 +95,6 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
     final modifiedDataSets = widget.dataSets.map((ds) {
       return ChartDataSet(
         color: lineColor,
-        label: ds.label,
         dataPoint: ds.dataPoint,
       );
     }).toList();

@@ -24,7 +24,6 @@ class SampleData {
       (index) {
         return ChartDataSet(
           color: const Color(0xFF6366F1),
-          label: 'Ms${index + 1}',
           dataPoint: ChartDataPoint(
             x: index.toDouble(),
             y: 20 + (index * 9) + (index % 3) * 10,
@@ -40,7 +39,6 @@ class SampleData {
       (index) {
         return ChartDataSet(
           color: const Color(0xFF10B981),
-          label: 'M${index + 1}',
           dataPoint: ChartDataPoint(
             x: index.toDouble(),
             y: 30 + (index * 3) + (index % 2) * 15,
@@ -56,7 +54,6 @@ class SampleData {
     return List.generate(7, (index) {
       return ChartDataSet(
         color: const Color(0xFF8B5CF6),
-        label: 'Q${index + 1}',
         dataPoint: ChartDataPoint(
           x: index.toDouble(),
           y: 0 + (index * 9) + (index % 3) * 20,
@@ -79,32 +76,26 @@ class SampleData {
     return [
       ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'Speed',
         dataPoint: const ChartDataPoint(x: 0, y: 80, label: 'Speed'),
       ),
       ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'Quality',
         dataPoint: const ChartDataPoint(x: 1, y: 90, label: 'Quality'),
       ),
       ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'Design',
         dataPoint: const ChartDataPoint(x: 2, y: 70, label: 'Design'),
       ),
       ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'Support',
         dataPoint: const ChartDataPoint(x: 3, y: 85, label: 'Support'),
       ),
       ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'Features',
         dataPoint: const ChartDataPoint(x: 4, y: 75, label: 'Features'),
       ),
       ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'Value',
         dataPoint: const ChartDataPoint(x: 5, y: 95, label: 'Value'),
       ),
     ];
@@ -114,7 +105,6 @@ class SampleData {
     return List.generate(20, (index) {
       return ChartDataSet(
         color: const Color(0xFF10B981),
-        label: 'Point ${index + 1}',
         dataPoint: ChartDataPoint(
           x: index.toDouble(),
           y: 50 + (index % 5) * 10 + (index % 3 == 0 ? 15 : -5),
@@ -142,7 +132,6 @@ class SampleData {
     return data.map((point) {
       return ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: point.label ?? 'User',
         dataPoint: point,
       );
     }).toList();
@@ -152,7 +141,6 @@ class SampleData {
     final List<ChartDataSet> productA = List.generate(20, (index) {
       return ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'P${index + 1}',
         dataPoint: ChartDataPoint(
           x: 10 + (index * 5) + (index % 3) * 2,
           y: 20 + (index * 3) + (index % 4) * 5,
@@ -163,7 +151,6 @@ class SampleData {
     final List<ChartDataSet> productB = List.generate(20, (index) {
       return ChartDataSet(
         color: const Color(0xFF10B981),
-        label: 'P${index + 1}',
         dataPoint: ChartDataPoint(
           x: 15 + (index * 4) + (index % 2) * 3,
           y: 25 + (index * 4) + (index % 3) * 4,
@@ -177,7 +164,6 @@ class SampleData {
   static List<BubbleDataSet> generateBubbleData() {
     return [
       BubbleDataSet(
-        label: 'Region A',
         color: const Color(0xFF6366F1),
         dataPoints: List.generate(15, (index) {
           return BubbleDataPoint(
@@ -189,7 +175,6 @@ class SampleData {
         }),
       ),
       BubbleDataSet(
-        label: 'Region B',
         color: const Color(0xFFEC4899),
         dataPoints: List.generate(15, (index) {
           return BubbleDataPoint(
@@ -206,7 +191,6 @@ class SampleData {
   static List<RadarDataSet> generateRadarData() {
     return [
       RadarDataSet(
-        label: 'Team A',
         color: const Color(0xFF6366F1),
         dataPoints: const [
           RadarDataPoint(label: 'Speed', value: 85),
@@ -218,7 +202,6 @@ class SampleData {
         ],
       ),
       RadarDataSet(
-        label: 'Team B',
         color: const Color(0xFF10B981),
         dataPoints: const [
           RadarDataPoint(label: 'Speed', value: 70),

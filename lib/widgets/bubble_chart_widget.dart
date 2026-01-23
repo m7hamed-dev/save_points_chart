@@ -233,7 +233,6 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
         regularDataSets.add(
           ChartDataSet(
             color: bubbleDataSet.color,
-            label: point.label ?? bubbleDataSet.label,
             dataPoint: ChartDataPoint(x: point.x, y: point.y, label: point.label),
           ),
         );
@@ -340,7 +339,6 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                                 regularDataSets.add(
                                   ChartDataSet(
                                     color: bubbleDataSet.color,
-                                    label: point.label ?? bubbleDataSet.label,
                                     dataPoint: ChartDataPoint(
                                       x: point.x,
                                       y: point.y,
