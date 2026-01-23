@@ -280,7 +280,83 @@ BarChartWidget(
     }
   },
 )
+
+BubbleChartWidget(
+  dataSets: dataSets,
+  theme: chartTheme,
+  onBubbleHover: (point, datasetIndex, pointIndex) {
+    // Handle bubble hover
+    if (point != null) {
+      print('Hovering over bubble: ${point.y}');
+    }
+  },
+)
 ```
+
+### Bubble Chart Example
+
+Bubble charts visualize three-dimensional data where x, y represent position and size represents a third dimension:
+
+```dart
+// Store dataSets to reuse in callbacks (important!)
+final bubbleDataSets = [
+  BubbleDataSet(
+    label: 'Region A',
+    color: Colors.blue,
+    dataPoints: [
+      BubbleDataPoint(x: 10, y: 20, size: 50, label: 'Point 1'),
+      BubbleDataPoint(x: 15, y: 30, size: 75, label: 'Point 2'),
+      BubbleDataPoint(x: 20, y: 25, size: 60, label: 'Point 3'),
+    ],
+  ),
+  BubbleDataSet(
+    label: 'Region B',
+    color: Colors.pink,
+    dataPoints: [
+      BubbleDataPoint(x: 12, y: 22, size: 55, label: 'Point 1'),
+      BubbleDataPoint(x: 18, y: 35, size: 80, label: 'Point 2'),
+    ],
+  ),
+];
+
+BubbleChartWidget(
+  dataSets: bubbleDataSets,
+  theme: chartTheme,
+  title: 'Regional Performance',
+  subtitle: 'Bubble chart with size dimension',
+  minBubbleSize: 5.0,
+  maxBubbleSize: 30.0,
+  onBubbleTap: (point, datasetIndex, pointIndex, position) {
+    // Always validate indices to prevent RangeError
+    if (datasetIndex < 0 || datasetIndex >= bubbleDataSets.length) {
+      return;
+    }
+    final dataSet = bubbleDataSets[datasetIndex];
+    if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
+      return;
+    }
+    
+    final bubblePoint = dataSet.dataPoints[pointIndex];
+    print('Tapped: ${bubblePoint.label} - Size: ${bubblePoint.size}');
+    
+    // Show context menu
+    ChartContextMenuHelper.show(
+      context,
+      point: point,
+      position: position,
+      datasetIndex: datasetIndex,
+      elementIndex: pointIndex,
+      datasetLabel: dataSet.label,
+      theme: chartTheme,
+      onViewDetails: () {
+        // Handle view details
+      },
+    );
+  },
+)
+```
+
+**Important:** Always store your `dataSets` in a variable and reuse it in callbacks. Don't regenerate data in callbacks (e.g., `SampleData.generateBubbleData()[datasetIndex]`) as this can cause `RangeError` if the data structure changes or indices are invalid.
 
 ## 🎛️ Customization Options
 
@@ -381,11 +457,15 @@ Or check out the example app in the repository to see all chart types in action.
 - Mouse hover support
 
 ### Bubble Chart
-- Three-dimensional data visualization
-- Size-based encoding
-- Multiple data series
-- Interactive bubble tapping
-- Mouse hover support
+- Three-dimensional data visualization (x, y position + size dimension)
+- Size-based encoding for third variable
+- Multiple data series support with distinct colors
+- Interactive bubble tapping with haptic feedback
+- Mouse hover support with visual feedback
+- Customizable bubble size range (minBubbleSize, maxBubbleSize)
+- Context menu support on tap
+- Visual border highlighting on selection
+- Smooth entrance animations
 
 ### Radar Chart
 - Multi-dimensional data comparison
@@ -449,6 +529,70 @@ The demo screen includes:
 - Multiple chart examples per type
 - Responsive layout
 
+## ✅ Best Practices
+
+### Data Handling in Callbacks
+
+**Always store your dataSets and reuse them in callbacks.** Don't regenerate data in callbacks as this can cause `RangeError` exceptions.
+
+❌ **Wrong:**
+```dart
+BubbleChartWidget(
+  dataSets: SampleData.generateBubbleData(),
+  onBubbleTap: (point, datasetIndex, pointIndex, position) {
+    // This can cause RangeError if data structure changes!
+    final dataSet = SampleData.generateBubbleData()[datasetIndex];
+    final bubblePoint = dataSet.dataPoints[pointIndex];
+  },
+)
+```
+
+✅ **Correct:**
+```dart
+final bubbleDataSets = SampleData.generateBubbleData();
+
+BubbleChartWidget(
+  dataSets: bubbleDataSets,
+  onBubbleTap: (point, datasetIndex, pointIndex, position) {
+    // Validate indices to prevent RangeError
+    if (datasetIndex < 0 || datasetIndex >= bubbleDataSets.length) {
+      return;
+    }
+    final dataSet = bubbleDataSets[datasetIndex];
+    if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
+      return;
+    }
+    final bubblePoint = dataSet.dataPoints[pointIndex];
+    // Safe to use bubblePoint now
+  },
+)
+```
+
+### Index Validation
+
+Always validate indices in callbacks before accessing array elements. This prevents `RangeError` exceptions and makes your app more robust:
+
+```dart
+onBubbleTap: (point, datasetIndex, pointIndex, position) {
+  // Validate datasetIndex
+  if (datasetIndex < 0 || datasetIndex >= dataSets.length) {
+    return; // Invalid dataset index
+  }
+  
+  // Validate pointIndex
+  final dataSet = dataSets[datasetIndex];
+  if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
+    return; // Invalid point index
+  }
+  
+  // Now safe to access
+  final point = dataSet.dataPoints[pointIndex];
+  // ... handle tap
+}
+```
+
+This pattern applies to all chart types with interactive callbacks (Line, Bar, Area, Scatter, Bubble, Radial, etc.).
+
 ## 🔧 Extending
 
 To add new chart types:
@@ -456,6 +600,18 @@ To add new chart types:
 2. Follow the existing pattern
 3. Use `ChartContainer` for consistent styling
 4. Support `ChartTheme` for theme awareness
+
+## 🐛 Recent Improvements
+
+### Bug Fixes
+
+**Fixed RangeError in Bubble Chart Callbacks (Latest)**
+- Fixed `RangeError` that occurred when accessing data in bubble chart callbacks
+- Added proper bounds checking for `datasetIndex` and `pointIndex` in all examples
+- Improved data handling by storing dataSets and reusing them in callbacks instead of regenerating
+- This fix prevents crashes when invalid indices are passed to callbacks
+
+**Impact:** All bubble chart implementations now include proper index validation, making the library more robust and preventing runtime exceptions.
 
 ## 📄 License
 
