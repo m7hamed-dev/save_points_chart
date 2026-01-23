@@ -11,6 +11,24 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Modern donut chart with gradient sections
 class DonutChartWidget extends StatefulWidget {
+  const DonutChartWidget({
+    super.key,
+    required this.data,
+    this.theme,
+    this.borderWidth = 2.0,
+    this.centerSpaceRadius = 60.0,
+    this.showLegend = true,
+    this.showLabel = true,
+    this.title,
+    this.subtitle,
+    this.useGlassmorphism = false,
+    this.useNeumorphism = false,
+    this.onSegmentTap,
+    this.isLoading = false,
+    this.isError = false,
+    this.errorMessage,
+  });
+
   final List<PieData> data;
   final ChartTheme? theme;
   final double borderWidth;
@@ -25,24 +43,6 @@ class DonutChartWidget extends StatefulWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
-
-  const DonutChartWidget({
-    super.key,
-    required this.data,
-    this.theme,
-    this.borderWidth = 2.0,
-    this.centerSpaceRadius = 60,
-    this.showLegend = true,
-    this.showLabel = true,
-    this.title,
-    this.subtitle,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
-    this.onSegmentTap,
-    this.isLoading = false,
-    this.isError = false,
-    this.errorMessage,
-  });
 
   @override
   State<DonutChartWidget> createState() => _DonutChartWidgetState();
