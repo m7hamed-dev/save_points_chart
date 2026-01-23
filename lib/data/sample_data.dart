@@ -19,30 +19,36 @@ class SampleData {
 
   static List<ChartDataSet> generateMultiLineData() {
     /// Sales Data Set
-    final List<ChartDataSet> sales = List.generate(9, (index) {
-      return ChartDataSet(
-        color: const Color(0xFF6366F1),
-        label: 'Ms${index + 1}',
-        dataPoint: ChartDataPoint(
-          x: index.toDouble(),
-          y: 20 + (index * 5) + (index % 3) * 10,
-          label: 'M${index + 1}',
-        ),
-      );
-    });
+    final List<ChartDataSet> sales = List.generate(
+      9,
+      (index) {
+        return ChartDataSet(
+          color: const Color(0xFF6366F1),
+          label: 'Ms${index + 1}',
+          dataPoint: ChartDataPoint(
+            x: index.toDouble(),
+            y: 20 + (index * 5) + (index % 3) * 10,
+            label: 'M${index + 1}',
+          ),
+        );
+      },
+    );
 
     /// Revenue Data Set
-    final List<ChartDataSet> revenue = List.generate(9, (index) {
-      return ChartDataSet(
-        color: const Color(0xFF10B981),
-        label: 'M${index + 1}',
-        dataPoint: ChartDataPoint(
-          x: index.toDouble(),
-          y: 30 + (index * 3) + (index % 2) * 15,
+    final List<ChartDataSet> revenue = List.generate(
+      9,
+      (index) {
+        return ChartDataSet(
+          color: const Color(0xFF10B981),
           label: 'M${index + 1}',
-        ),
-      );
-    });
+          dataPoint: ChartDataPoint(
+            x: index.toDouble(),
+            y: 30 + (index * 3) + (index % 2) * 15,
+            label: 'M${index + 1}',
+          ),
+        );
+      },
+    );
     return [...sales, ...revenue];
   }
 
