@@ -458,7 +458,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               }
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24.0),
           Row(
             children: [
               ElevatedButton.icon(

@@ -125,7 +125,6 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
       top: safeDy,
       child: Material(
         color: Colors.transparent,
-        elevation: 0,
         child: TweenAnimationBuilder<double>(
           duration: const Duration(milliseconds: 400),
           tween: Tween(begin: 0.0, end: 1.0),
@@ -267,13 +266,11 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
         color: lightShadow,
         blurRadius: 25,
         offset: const Offset(-10, -10),
-        spreadRadius: 0,
       ),
       BoxShadow(
         color: darkShadow,
         blurRadius: 25,
         offset: const Offset(10, 10),
-        spreadRadius: 0,
       ),
     ];
   }
@@ -291,7 +288,6 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
           color: backgroundColor,
           border: Border.all(
             color: borderColor,
-            width: 1,
           ),
           boxShadow: shadows,
         ),
@@ -362,7 +358,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildHeader(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme) {
+      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -388,7 +384,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildHeaderRow(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme) {
+      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
     return Row(
       children: [
         _buildHeaderIcon(colorScheme),
@@ -424,7 +420,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildHeaderText(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme) {
+      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -474,7 +470,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildValueDisplayCard(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme) {
+      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -484,7 +480,6 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
           color: isDark
               ? Colors.white.withValues(alpha: 0.08)
               : Colors.black.withValues(alpha: 0.05),
-          width: 1,
         ),
       ),
       child: Row(
@@ -663,7 +658,6 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
               color: colors.bgColor,
               border: Border.all(
                 color: colors.borderColor,
-                width: 1,
               ),
             ),
             child: Row(
@@ -811,7 +805,7 @@ class ChartContextMenuHelper {
   }
 
   static Offset _calculateGlobalPosition(
-      BuildContext context, Offset position) {
+      BuildContext context, Offset position,) {
     final renderBox = context.findRenderObject() as RenderBox?;
 
     try {
