@@ -454,12 +454,6 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       datasetLabel: dataSet.label,
                     );
                   },
-                  // onExport: () {
-                  //   _showExportSnackBar(context, 'Exporting data point...');
-                  // },
-                  // onShare: () {
-                  //   _showExportSnackBar(context, 'Sharing data point...');
-                  // },
                 );
               }
             },
