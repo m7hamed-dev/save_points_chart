@@ -3,16 +3,16 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// InheritedWidget that provides theme state to descendant widgets
 class _ThemeProviderInherited extends InheritedWidget {
-  final ThemeProviderState state;
-  final ThemeMode themeMode;
-  final ChartTheme chartTheme;
-
   const _ThemeProviderInherited({
     required this.state,
     required this.themeMode,
     required this.chartTheme,
     required super.child,
   });
+
+  final ThemeProviderState state;
+  final ThemeMode themeMode;
+  final ChartTheme chartTheme;
 
   @override
   bool updateShouldNotify(_ThemeProviderInherited oldWidget) {
@@ -23,12 +23,8 @@ class _ThemeProviderInherited extends InheritedWidget {
 
 /// Theme provider for managing app theme state using InheritedWidget
 class ThemeProvider extends StatefulWidget {
+  const ThemeProvider({super.key, required this.child});
   final Widget child;
-
-  const ThemeProvider({
-    super.key,
-    required this.child,
-  });
 
   /// Get the ThemeProviderState from the widget tree
   static ThemeProviderState of(BuildContext context) {
