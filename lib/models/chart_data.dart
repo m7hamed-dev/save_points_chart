@@ -68,7 +68,8 @@ class ChartDataPoint {
   }
 
   @override
-  String toString() => 'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"})';
+  String toString() =>
+      'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"})';
 
   @override
   bool operator ==(Object other) =>
@@ -379,7 +380,7 @@ class ChartDataSet {
     required this.color,
     required this.label,
     required this.dataPoint,
-  })  : assert(
+  }) : assert(
           label.isNotEmpty,
           'ChartDataSet label must not be empty',
         );
