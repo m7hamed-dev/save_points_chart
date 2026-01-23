@@ -226,7 +226,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     Size chartSize, {
     bool useHoverRadius = false,
   }) {
-    if (widget.dataSets.isEmpty || widget.dataSets.first.dataPoints.isEmpty) {
+    if (widget.dataSets.isEmpty) {
       return null;
     }
 
@@ -247,8 +247,8 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     // Validate radius
     if (radius <= 0 || !radius.isFinite) return null;
 
-    final dataSet = widget.dataSets.first;
-    final points = dataSet.dataPoints;
+    // Collect all points from all datasets
+    final points = widget.dataSets.map((ds) => ds.dataPoint).toList();
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
 
     // Validate maxValue

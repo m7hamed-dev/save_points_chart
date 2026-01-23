@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
 
@@ -45,11 +46,10 @@ class StepLineChartPainter extends BaseChartPainter {
     double maxY = double.negativeInfinity;
 
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
     }
 
     if (minX == double.infinity ||
@@ -78,10 +78,26 @@ class StepLineChartPainter extends BaseChartPainter {
     drawGrid(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
     drawAxes(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
 
+    // Group datasets by color to draw lines
+    final Map<Color, List<ChartDataPoint>> colorGroups = {};
     for (final dataSet in dataSets) {
-      if (dataSet.dataPoints.isEmpty) continue;
+      if (!colorGroups.containsKey(color)) {
+        colorGroups[color] = [];
+      }
+      colorGroups[color]!.add(dataSet.dataPoint);
+    }
 
-      final points = dataSet.dataPoints
+    // Draw each color group as a separate line
+    for (final entry in colorGroups.entries) {
+      final color = entry.key;
+      final pointsList = entry.value;
+      
+      if (pointsList.isEmpty) continue;
+
+      // Sort points by x coordinate for proper line drawing
+      pointsList.sort((a, b) => a.x.compareTo(b.x));
+
+      final points = pointsList
           .map((point) {
             return pointToCanvas(
               point,
@@ -151,9 +167,9 @@ class StepLineChartPainter extends BaseChartPainter {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              dataSet.color.withValues(alpha: 0.4 * animationProgress),
-              dataSet.color.withValues(alpha: 0.15 * animationProgress),
-              dataSet.color.withValues(alpha: 0.0),
+              color.withValues(alpha: 0.4 * animationProgress),
+              color.withValues(alpha: 0.15 * animationProgress),
+              color.withValues(alpha: 0.0),
             ],
             stops: const [0.0, 0.5, 1.0],
           ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
@@ -190,7 +206,7 @@ class StepLineChartPainter extends BaseChartPainter {
       }
 
       final linePaint = Paint()
-        ..color = dataSet.color
+        ..color = color
         ..strokeWidth = lineWidth
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -200,7 +216,7 @@ class StepLineChartPainter extends BaseChartPainter {
       canvas.drawPath(linePath, linePaint);
 
       final overlayPaint = Paint()
-        ..color = dataSet.color.withValues(alpha: 0.6)
+        ..color = color.withValues(alpha: 0.6)
         ..strokeWidth = lineWidth * 0.5
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -234,13 +250,13 @@ class StepLineChartPainter extends BaseChartPainter {
           final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
           final glowPaint = Paint()
             ..color =
-                dataSet.color.withValues(alpha: glowOpacity * pointOpacity)
+                color.withValues(alpha: glowOpacity * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, glowRadius, glowPaint);
 
           final pointRadius = isSelected ? 6.5 : (isHovered ? 5.5 : 4.5);
           final pointPaint = Paint()
-            ..color = dataSet.color.withValues(alpha: pointOpacity)
+            ..color = color.withValues(alpha: pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, pointRadius, pointPaint);
 

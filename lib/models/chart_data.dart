@@ -329,11 +329,11 @@ class BubbleDataSet {
   int get hashCode => Object.hash(label, dataPoints, color);
 }
 
-/// Represents a collection of data points that form a single series in a chart.
+/// Represents a single data point in a chart.
 ///
-/// Multiple [ChartDataSet] instances can be used to create multi-series charts
-/// (e.g., comparing sales vs revenue over time). Each dataset is rendered
-/// with its own color and can be shown in legends.
+/// Each [ChartDataSet] represents one data point with a label and color.
+/// Multiple [ChartDataSet] instances can be used to create charts with
+/// multiple points, where each dataset represents one point.
 ///
 /// This is the primary data structure for line, bar, area, scatter, and
 /// other point-based charts.
@@ -341,13 +341,9 @@ class BubbleDataSet {
 /// ## Example
 /// ```dart
 /// ChartDataSet(
-///   label: 'Sales',
 ///   color: Colors.blue,
-///   dataPoints: [
-///     ChartDataPoint(x: 0, y: 10),
-///     ChartDataPoint(x: 1, y: 20),
-///     ChartDataPoint(x: 2, y: 15),
-///   ],
+///   label: 'January',
+///   dataPoint: ChartDataPoint(x: 1, y: 20),
 /// )
 /// ```
 ///
@@ -356,41 +352,36 @@ class BubbleDataSet {
 /// - [BubbleDataSet] for bubble charts
 /// - [RadarDataSet] for radar charts
 class ChartDataSet {
-  /// The label for this data series (displayed in legends and tooltips).
+  /// The label for this data point (displayed in legends and tooltips).
   ///
-  /// Should be a descriptive name for the data series (e.g., "Sales",
-  /// "Revenue", "Users"). Must not be empty.
+  /// Should be a descriptive name for the data point (e.g., "January",
+  /// "Q1", "Sales"). Must not be empty.
   final String label;
 
-  /// The list of data points in this series.
+  /// The single data point in this dataset.
   ///
-  /// Must not be empty. The points should be ordered by x-coordinate
-  /// for line and area charts, but order doesn't matter for scatter charts.
-  final List<ChartDataPoint> dataPoints;
+  /// Each dataset represents one point on the chart.
+  final ChartDataPoint dataPoint;
 
-  /// The color used to render this data series.
+  /// The color used to render this data point.
   ///
-  /// Applied to lines, bars, areas, and points. For multi-series charts,
+  /// Applied to lines, bars, areas, and points. For multi-point charts,
   /// use distinct colors for each dataset to improve readability.
   final Color color;
 
   /// Creates a chart data set.
   ///
-  /// [label] must not be empty. [dataPoints] must not be empty.
+  /// [label] must not be empty. [dataPoint] is required.
   /// [color] is required for rendering.
   ///
-  /// Throws an [AssertionError] if [dataPoints] is empty or [label] is empty.
+  /// Throws an [AssertionError] if [label] is empty.
   ChartDataSet({
-    required this.label,
-    required this.dataPoints,
     required this.color,
+    required this.label,
+    required this.dataPoint,
   })  : assert(
           label.isNotEmpty,
           'ChartDataSet label must not be empty',
-        ),
-        assert(
-          dataPoints.isNotEmpty,
-          'ChartDataSet must have at least one data point',
         );
 
   /// Creates a copy of this data set with the given fields replaced.
@@ -399,19 +390,19 @@ class ChartDataSet {
   /// except for the fields that are explicitly provided.
   ChartDataSet copyWith({
     String? label,
-    List<ChartDataPoint>? dataPoints,
+    ChartDataPoint? dataPoint,
     Color? color,
   }) {
     return ChartDataSet(
       label: label ?? this.label,
-      dataPoints: dataPoints ?? this.dataPoints,
+      dataPoint: dataPoint ?? this.dataPoint,
       color: color ?? this.color,
     );
   }
 
   @override
   String toString() =>
-      'ChartDataSet(label: $label, points: ${dataPoints.length}, color: $color)';
+      'ChartDataSet(label: $label, point: $dataPoint, color: $color)';
 
   @override
   bool operator ==(Object other) =>
@@ -419,11 +410,11 @@ class ChartDataSet {
       other is ChartDataSet &&
           runtimeType == other.runtimeType &&
           label == other.label &&
-          dataPoints == other.dataPoints &&
+          dataPoint == other.dataPoint &&
           color == other.color;
 
   @override
-  int get hashCode => Object.hash(label, dataPoints, color);
+  int get hashCode => Object.hash(label, dataPoint, color);
 }
 
 /// Represents a radar/spider chart data point.

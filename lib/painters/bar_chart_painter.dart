@@ -102,11 +102,10 @@ class BarChartPainter extends BaseChartPainter {
 
     // Single pass through all points for better performance
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
     }
 
     if (minX == double.infinity) return; // No valid data
@@ -125,65 +124,75 @@ class BarChartPainter extends BaseChartPainter {
     // Draw axes
     drawAxes(canvas, chartSize, minXAdjusted, maxXAdjusted, minY, maxYAdjusted);
 
-    if (isGrouped && dataSets.length > 1) {
-      // Grouped bars
-      final maxLength =
-          dataSets.map((ds) => ds.dataPoints.length).reduce(math.max);
-      final groupSpacing = chartSize.width / (maxLength + 1);
+    // Group points by x-coordinate for grouped bars
+    final Map<double, List<ChartDataSet>> groupedByX = {};
+    for (final dataSet in dataSets) {
+      final x = dataSet.dataPoint.x;
+      groupedByX.putIfAbsent(x, () => []).add(dataSet);
+    }
+    
+    final sortedXValues = groupedByX.keys.toList()..sort();
+    final maxGroups = sortedXValues.length;
+
+    if (isGrouped && groupedByX.length > 1) {
+      // Grouped bars - group by x coordinate
+      final groupSpacing = chartSize.width / (maxGroups + 1);
       final barSpacing = barWidth * 0.2;
 
-      for (int i = 0; i < maxLength; i++) {
-        double currentX = groupSpacing * (i + 1);
-        for (final dataSet in dataSets) {
-          if (i < dataSet.dataPoints.length) {
-            final point = dataSet.dataPoints[i];
+      for (int groupIndex = 0; groupIndex < sortedXValues.length; groupIndex++) {
+        final xValue = sortedXValues[groupIndex];
+        final groupDataSets = groupedByX[xValue]!;
+        double currentX = groupSpacing * (groupIndex + 1);
+        
+        for (final dataSet in groupDataSets) {
+          final point = dataSet.dataPoint;
 
-            // Validate point data to prevent NaN
-            if (!point.y.isFinite || point.y < 0 || maxYAdjusted <= 0) {
-              continue;
-            }
-
-            final barHeight = (point.y / maxYAdjusted) * chartSize.height;
-            final barY = chartSize.height - barHeight;
-
-            // Stagger animation for grouped bars
-            final barIndex = i / maxLength;
-            final barProgress = math.max(
-              0.0,
-              math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
-            );
-
-            // Check if this bar is selected or hovered
-            final isSelected = selectedBar != null &&
-                selectedBar!.isHit &&
-                selectedBar!.datasetIndex == dataSets.indexOf(dataSet) &&
-                selectedBar!.elementIndex == i;
-            final isHovered = hoveredBar != null &&
-                hoveredBar!.isHit &&
-                hoveredBar!.datasetIndex == dataSets.indexOf(dataSet) &&
-                hoveredBar!.elementIndex == i;
-
-            _drawRoundedBar(
-              canvas,
-              Offset(currentX - barWidth / 2, barY),
-              barWidth,
-              barHeight,
-              dataSet.color,
-              barProgress,
-              isSelected: isSelected,
-              isHovered: isHovered,
-            );
-
-            currentX += barWidth + barSpacing;
+          // Validate point data to prevent NaN
+          if (!point.y.isFinite || point.y < 0 || maxYAdjusted <= 0) {
+            continue;
           }
+
+          final barHeight = (point.y / maxYAdjusted) * chartSize.height;
+          final barY = chartSize.height - barHeight;
+
+          // Stagger animation for grouped bars
+          final barIndex = groupIndex / maxGroups;
+          final barProgress = math.max(
+            0.0,
+            math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
+          );
+
+          // Check if this bar is selected or hovered
+          final datasetIndex = dataSets.indexOf(dataSet);
+          final isSelected = selectedBar != null &&
+              selectedBar!.isHit &&
+              selectedBar!.datasetIndex == datasetIndex &&
+              selectedBar!.elementIndex == 0;
+          final isHovered = hoveredBar != null &&
+              hoveredBar!.isHit &&
+              hoveredBar!.datasetIndex == datasetIndex &&
+              hoveredBar!.elementIndex == 0;
+
+          _drawRoundedBar(
+            canvas,
+            Offset(currentX - barWidth / 2, barY),
+            barWidth,
+            barHeight,
+            dataSet.color,
+            barProgress,
+            isSelected: isSelected,
+            isHovered: isHovered,
+          );
+
+          currentX += barWidth + barSpacing;
         }
       }
     } else {
-      // Single or stacked bars with animation
-      final dataSet = dataSets.first;
-      final totalBars = dataSet.dataPoints.length;
-      for (int i = 0; i < dataSet.dataPoints.length; i++) {
-        final point = dataSet.dataPoints[i];
+      // Single bars with animation
+      final totalBars = dataSets.length;
+      for (int i = 0; i < dataSets.length; i++) {
+        final dataSet = dataSets[i];
+        final point = dataSet.dataPoint;
 
         // Validate point data to prevent NaN
         if (!point.x.isFinite ||
@@ -207,15 +216,15 @@ class BarChartPainter extends BaseChartPainter {
           math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
         );
 
-        // Check if this bar is selected or hovered
-        final isSelected = selectedBar != null &&
-            selectedBar!.isHit &&
-            selectedBar!.datasetIndex == 0 &&
-            selectedBar!.elementIndex == i;
-        final isHovered = hoveredBar != null &&
-            hoveredBar!.isHit &&
-            hoveredBar!.datasetIndex == 0 &&
-            hoveredBar!.elementIndex == i;
+            // Check if this bar is selected or hovered
+            final isSelected = selectedBar != null &&
+                selectedBar!.isHit &&
+                selectedBar!.datasetIndex == i &&
+                selectedBar!.elementIndex == 0;
+            final isHovered = hoveredBar != null &&
+                hoveredBar!.isHit &&
+                hoveredBar!.datasetIndex == i &&
+                hoveredBar!.elementIndex == 0;
 
         _drawRoundedBar(
           canvas,

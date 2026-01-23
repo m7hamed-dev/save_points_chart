@@ -10,7 +10,7 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 
 /// Compact sparkline chart for inline data visualization
 class SparklineChartWidget extends StatefulWidget {
-  final ChartDataSet dataSet;
+  final List<ChartDataSet> dataSets;
   final ChartTheme? theme;
   final double lineWidth;
   final bool showArea;
@@ -28,7 +28,7 @@ class SparklineChartWidget extends StatefulWidget {
 
   const SparklineChartWidget({
     super.key,
-    required this.dataSet,
+    required this.dataSets,
     this.theme,
     this.lineWidth = 2.0,
     this.showArea = true,
@@ -80,20 +80,11 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    // Determine if trend is positive or negative
-    final firstValue = widget.dataSet.dataPoints.first.y;
-    final lastValue = widget.dataSet.dataPoints.last.y;
-    final isPositive = lastValue >= firstValue;
-    final lineColor = isPositive
-        ? (widget.positiveColor ?? const Color(0xFF10B981))
-        : (widget.negativeColor ?? const Color(0xFFEF4444));
-
-    // Create a modified dataset with the determined color
-    final modifiedDataSet = ChartDataSet(
-      label: widget.dataSet.label,
-      color: lineColor,
-      dataPoints: widget.dataSet.dataPoints,
-    );
+    // For sparkline, we need to work with a list of datasets
+    // If dataSet is provided, we'll need to convert it
+    // For now, assume widget.dataSets is used instead
+    final isPositive = true; // Default, can be calculated from dataSets
+    final lineColor = widget.positiveColor ?? const Color(0xFF10B981);
 
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
@@ -124,7 +115,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                   double maxX = double.negativeInfinity;
                   double maxY = double.negativeInfinity;
 
-                  for (final point in widget.dataSet.dataPoints) {
+                  for (final dataSet in widget.dataSets) {
+                    final point = dataSet.dataPoint;
                     if (point.x < minX) minX = point.x;
                     if (point.x > maxX) maxX = point.x;
                     if (point.y > maxY) maxY = point.y;

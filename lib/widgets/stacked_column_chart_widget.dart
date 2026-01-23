@@ -160,18 +160,17 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
                           double maxY = double.negativeInfinity;
 
                           for (final dataSet in widget.dataSets) {
-                            for (final point in dataSet.dataPoints) {
-                              if (point.x < minX) minX = point.x;
-                              if (point.x > maxX) maxX = point.x;
-                              if (point.y > maxY) maxY = point.y;
-                            }
+                            final point = dataSet.dataPoint;
+                            if (point.x < minX) minX = point.x;
+                            if (point.x > maxX) maxX = point.x;
+                            if (point.y > maxY) maxY = point.y;
                           }
 
                           // For stacked, calculate total per x position
                           final Map<double, double> totalsByX = {};
                           for (final dataSet in widget.dataSets) {
-                            for (final point in dataSet.dataPoints) {
-                              totalsByX[point.x] =
+                            final point = dataSet.dataPoint;
+                            totalsByX[point.x] =
                                   (totalsByX[point.x] ?? 0) + point.y;
                               if (totalsByX[point.x]! > maxY) {
                                 maxY = totalsByX[point.x]!;

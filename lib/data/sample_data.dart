@@ -18,46 +18,43 @@ class SampleData {
   }
 
   static List<ChartDataSet> generateMultiLineData() {
-    return [
-      ChartDataSet(
-        label: 'Sales',
+    final List<ChartDataSet> sales = List.generate(12, (index) {
+      return ChartDataSet(
         color: const Color(0xFF6366F1),
-        dataPoints: List.generate(12, (index) {
-          return ChartDataPoint(
-            x: index.toDouble(),
-            y: 20 + (index * 5) + (index % 3) * 10,
-            label: 'M${index + 1}',
-          );
-        }),
-      ),
-      ChartDataSet(
-        label: 'Revenue',
+        label: 'M${index + 1}',
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: 20 + (index * 5) + (index % 3) * 10,
+          label: 'M${index + 1}',
+        ),
+      );
+    });
+    final List<ChartDataSet> revenue = List.generate(12, (index) {
+      return ChartDataSet(
         color: const Color(0xFF10B981),
-        dataPoints: List.generate(12, (index) {
-          return ChartDataPoint(
-            x: index.toDouble(),
-            y: 30 + (index * 3) + (index % 2) * 15,
-            label: 'M${index + 1}',
-          );
-        }),
-      ),
-    ];
+        label: 'M${index + 1}',
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: 30 + (index * 3) + (index % 2) * 15,
+          label: 'M${index + 1}',
+        ),
+      );
+    });
+    return [...sales, ...revenue];
   }
 
   static List<ChartDataSet> generateBarData() {
-    return [
-      ChartDataSet(
-        label: 'Monthly Sales',
+    return List.generate(8, (index) {
+      return ChartDataSet(
         color: const Color(0xFF8B5CF6),
-        dataPoints: List.generate(8, (index) {
-          return ChartDataPoint(
-            x: index.toDouble(),
-            y: 50 + (index * 10) + (index % 3) * 20,
-            label: 'Q${index + 1}',
-          );
-        }),
-      ),
-    ];
+        label: 'Q${index + 1}',
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: 50 + (index * 10) + (index % 3) * 20,
+          label: 'Q${index + 1}',
+        ),
+      );
+    });
   }
 
   static List<PieData> generatePieData() {
@@ -72,31 +69,49 @@ class SampleData {
   static List<ChartDataSet> generateRadialData() {
     return [
       ChartDataSet(
-        label: 'Performance',
         color: const Color(0xFF6366F1),
-        dataPoints: [
-          const ChartDataPoint(x: 0, y: 80, label: 'Speed'),
-          const ChartDataPoint(x: 1, y: 90, label: 'Quality'),
-          const ChartDataPoint(x: 2, y: 70, label: 'Design'),
-          const ChartDataPoint(x: 3, y: 85, label: 'Support'),
-          const ChartDataPoint(x: 4, y: 75, label: 'Features'),
-          const ChartDataPoint(x: 5, y: 95, label: 'Value'),
-        ],
+        label: 'Speed',
+        dataPoint: const ChartDataPoint(x: 0, y: 80, label: 'Speed'),
+      ),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
+        label: 'Quality',
+        dataPoint: const ChartDataPoint(x: 1, y: 90, label: 'Quality'),
+      ),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
+        label: 'Design',
+        dataPoint: const ChartDataPoint(x: 2, y: 70, label: 'Design'),
+      ),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
+        label: 'Support',
+        dataPoint: const ChartDataPoint(x: 3, y: 85, label: 'Support'),
+      ),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
+        label: 'Features',
+        dataPoint: const ChartDataPoint(x: 4, y: 75, label: 'Features'),
+      ),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
+        label: 'Value',
+        dataPoint: const ChartDataPoint(x: 5, y: 95, label: 'Value'),
       ),
     ];
   }
 
-  static ChartDataSet generateSparklineData() {
-    return ChartDataSet(
-      label: 'Trend',
-      color: const Color(0xFF10B981),
-      dataPoints: List.generate(20, (index) {
-        return ChartDataPoint(
+  static List<ChartDataSet> generateSparklineData() {
+    return List.generate(20, (index) {
+      return ChartDataSet(
+        color: const Color(0xFF10B981),
+        label: 'Point ${index + 1}',
+        dataPoint: ChartDataPoint(
           x: index.toDouble(),
           y: 50 + (index % 5) * 10 + (index % 3 == 0 ? 15 : -5),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 
   static List<ChartDataSet> generateUsersData() {
@@ -107,40 +122,39 @@ class SampleData {
       const ChartDataPoint(x: 3, y: 400, label: 'omar'),
       const ChartDataPoint(x: 4, y: 500, label: 'khalid'),
     ];
-    return [
-      ChartDataSet(
-        label: 'Users',
+    return data.map((point) {
+      return ChartDataSet(
         color: const Color(0xFF6366F1),
-        dataPoints: data,
-      ),
-    ];
+        label: point.label ?? 'User',
+        dataPoint: point,
+      );
+    }).toList();
   }
 
   static List<ChartDataSet> generateScatterData() {
-    return [
-      ChartDataSet(
-        label: 'Product A',
+    final List<ChartDataSet> productA = List.generate(20, (index) {
+      return ChartDataSet(
         color: const Color(0xFF6366F1),
-        dataPoints: List.generate(20, (index) {
-          return ChartDataPoint(
-            x: 10 + (index * 5) + (index % 3) * 2,
-            y: 20 + (index * 3) + (index % 4) * 5,
-            label: 'P${index + 1}',
-          );
-        }),
-      ),
-      ChartDataSet(
-        label: 'Product B',
+        label: 'P${index + 1}',
+        dataPoint: ChartDataPoint(
+          x: 10 + (index * 5) + (index % 3) * 2,
+          y: 20 + (index * 3) + (index % 4) * 5,
+          label: 'P${index + 1}',
+        ),
+      );
+    });
+    final List<ChartDataSet> productB = List.generate(20, (index) {
+      return ChartDataSet(
         color: const Color(0xFF10B981),
-        dataPoints: List.generate(20, (index) {
-          return ChartDataPoint(
-            x: 15 + (index * 4) + (index % 2) * 3,
-            y: 25 + (index * 4) + (index % 3) * 4,
-            label: 'P${index + 1}',
-          );
-        }),
-      ),
-    ];
+        label: 'P${index + 1}',
+        dataPoint: ChartDataPoint(
+          x: 15 + (index * 4) + (index % 2) * 3,
+          y: 25 + (index * 4) + (index % 3) * 4,
+          label: 'P${index + 1}',
+        ),
+      );
+    });
+    return [...productA, ...productB];
   }
 
   static List<BubbleDataSet> generateBubbleData() {

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
 
@@ -47,11 +48,10 @@ class StackedAreaChartPainter extends BaseChartPainter {
 
     // Data is cumulative already, so maxY is simply top layer max.
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
     }
 
     if (!minX.isFinite ||
@@ -83,11 +83,34 @@ class StackedAreaChartPainter extends BaseChartPainter {
     // we still need previous layer for fill.
     List<Offset>? previousPoints;
 
-    for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
-      final dataSet = dataSets[dsIndex];
-      if (dataSet.dataPoints.isEmpty) continue;
+    // Group datasets by x-coordinate, then by color for stacking
+    final Map<double, Map<Color, List<ChartDataPoint>>> groupedByX = {};
+    for (final dataSet in dataSets) {
+      final x = dataSet.dataPoint.x;
+      if (!groupedByX.containsKey(x)) {
+        groupedByX[x] = {};
+      }
+      if (!groupedByX[x]!.containsKey(dataSet.color)) {
+        groupedByX[x]![dataSet.color] = [];
+      }
+      groupedByX[x]![dataSet.color]!.add(dataSet.dataPoint);
+    }
 
-      final points = dataSet.dataPoints
+    // Process each x position
+    final sortedXValues = groupedByX.keys.toList()..sort();
+    
+    for (int dsIndex = 0; dsIndex < sortedXValues.length; dsIndex++) {
+      final xValue = sortedXValues[dsIndex];
+      final colorGroups = groupedByX[xValue]!;
+      
+      // For each color at this x position, get the point
+      for (final colorEntry in colorGroups.entries) {
+        final color = colorEntry.key;
+        final pointsList = colorEntry.value;
+        if (pointsList.isEmpty) continue;
+        
+        // For stacked area, we need to process all points at this x
+        final points = pointsList
           .map(
             (point) => pointToCanvas(
               point,
@@ -158,7 +181,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
       }
       fillPath.close();
 
-      final color = dataSet.color;
+      // color is already defined from the loop
       final areaPaint = Paint()
         ..shader = LinearGradient(
           begin: Alignment.topCenter,

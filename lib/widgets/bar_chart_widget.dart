@@ -89,11 +89,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
       double maxY = double.negativeInfinity;
 
       for (final dataSet in widget.dataSets) {
-        for (final point in dataSet.dataPoints) {
-          if (point.x < minX) minX = point.x;
-          if (point.x > maxX) maxX = point.x;
-          if (point.y > maxY) maxY = point.y;
-        }
+        final point = dataSet.dataPoint;
+        if (point.x < minX) minX = point.x;
+        if (point.x > maxX) maxX = point.x;
+        if (point.y > maxY) maxY = point.y;
       }
 
       bounds = {
@@ -227,11 +226,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
                               double maxY = double.negativeInfinity;
 
                               for (final dataSet in widget.dataSets) {
-                                for (final point in dataSet.dataPoints) {
-                                  if (point.x < minX) minX = point.x;
-                                  if (point.x > maxX) maxX = point.x;
-                                  if (point.y > maxY) maxY = point.y;
-                                }
+                                final point = dataSet.dataPoint;
+                                if (point.x < minX) minX = point.x;
+                                if (point.x > maxX) maxX = point.x;
+                                if (point.y > maxY) maxY = point.y;
                               }
 
                               bounds = {

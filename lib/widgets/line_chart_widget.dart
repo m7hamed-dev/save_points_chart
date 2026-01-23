@@ -28,12 +28,14 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// LineChartWidget(
 ///   dataSets: [
 ///     ChartDataSet(
-///       label: 'Sales',
 ///       color: Colors.blue,
-///       dataPoints: [
-///         ChartDataPoint(x: 0, y: 10),
-///         ChartDataPoint(x: 1, y: 20),
-///       ],
+///       label: 'January',
+///       dataPoint: ChartDataPoint(x: 1, y: 20),
+///     ),
+///     ChartDataSet(
+///       color: Colors.red,
+///       label: 'February',
+///       dataPoint: ChartDataPoint(x: 2, y: 30),
 ///     ),
 ///   ],
 ///   theme: ChartTheme.light(),
@@ -69,8 +71,8 @@ class LineChartWidget extends StatefulWidget {
 
   /// Creates a line chart widget.
   ///
-  /// [dataSets] must not be empty. Each dataset must contain at least one
-  /// data point. [theme] is required for styling.
+  /// [dataSets] must not be empty. Each dataset contains one data point.
+  /// [theme] is required for styling.
   ///
   /// The [lineWidth] defaults to 3.0 pixels. Set [showArea] to true to fill
   /// the area under the line with a gradient. Use [onPointTap] to handle
@@ -154,11 +156,10 @@ class _LineChartWidgetState extends State<LineChartWidget>
     double maxY = double.negativeInfinity;
 
     for (final dataSet in widget.dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
     }
 
     _cachedBounds = {

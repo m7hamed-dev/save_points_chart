@@ -25,7 +25,7 @@ class RadialChartPainter extends BaseChartPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (dataSets.isEmpty || dataSets.first.dataPoints.isEmpty) return;
+    if (dataSets.isEmpty) return;
 
     // Validate size
     if (!size.width.isFinite ||
@@ -43,8 +43,8 @@ class RadialChartPainter extends BaseChartPainter {
       return;
     }
 
-    final dataSet = dataSets.first;
-    final points = dataSet.dataPoints;
+    // Collect all points from all datasets
+    final points = dataSets.map((ds) => ds.dataPoint).toList();
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
 
     // Validate maxValue

@@ -64,12 +64,11 @@ class ScatterChartPainter extends BaseChartPainter {
     double maxY = double.negativeInfinity;
 
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y < minY) minY = point.y;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y < minY) minY = point.y;
+      if (point.y > maxY) maxY = point.y;
     }
 
     // Validate bounds
@@ -106,11 +105,7 @@ class ScatterChartPainter extends BaseChartPainter {
     for (int datasetIndex = 0; datasetIndex < dataSets.length; datasetIndex++) {
       final dataSet = dataSets[datasetIndex];
       final color = dataSet.color;
-
-      for (int pointIndex = 0;
-          pointIndex < dataSet.dataPoints.length;
-          pointIndex++) {
-        final point = dataSet.dataPoints[pointIndex];
+      final point = dataSet.dataPoint;
 
         // Validate point data
         if (!point.x.isFinite || !point.y.isFinite) {
@@ -127,9 +122,9 @@ class ScatterChartPainter extends BaseChartPainter {
 
         // Check if this point is selected or hovered
         final isSelected = selectedPoint?.datasetIndex == datasetIndex &&
-            selectedPoint?.elementIndex == pointIndex;
+            selectedPoint?.elementIndex == 0;
         final isHovered = hoveredPoint?.datasetIndex == datasetIndex &&
-            hoveredPoint?.elementIndex == pointIndex;
+            hoveredPoint?.elementIndex == 0;
 
         // Determine point size and color based on state
         final currentSize =

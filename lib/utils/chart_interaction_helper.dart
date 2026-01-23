@@ -125,48 +125,44 @@ class ChartInteractionHelper {
 
     for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
       final dataSet = dataSets[dsIndex];
-      if (dataSet.dataPoints.isEmpty) continue;
+      final point = dataSet.dataPoint;
 
-      for (int ptIndex = 0; ptIndex < dataSet.dataPoints.length; ptIndex++) {
-        final point = dataSet.dataPoints[ptIndex];
+      // Validate point values
+      if (!point.x.isFinite || !point.y.isFinite) continue;
 
-        // Validate point values
-        if (!point.x.isFinite || !point.y.isFinite) continue;
+      // Convert to canvas coordinates with NaN protection
+      final canvasX = ((point.x - minX) / xRange) * chartSize.width;
+      final canvasY =
+          chartSize.height - ((point.y - minY) / yRange) * chartSize.height;
 
-        // Convert to canvas coordinates with NaN protection
-        final canvasX = ((point.x - minX) / xRange) * chartSize.width;
-        final canvasY =
-            chartSize.height - ((point.y - minY) / yRange) * chartSize.height;
+      // Validate calculated coordinates
+      if (!canvasX.isFinite || !canvasY.isFinite) continue;
 
-        // Validate calculated coordinates
-        if (!canvasX.isFinite || !canvasY.isFinite) continue;
+      // Quick bounds check before distance calculation
+      final dx = tapPosition.dx - canvasX;
+      final dy = tapPosition.dy - canvasY;
 
-        // Quick bounds check before distance calculation
-        final dx = tapPosition.dx - canvasX;
-        final dy = tapPosition.dy - canvasY;
+      // Validate dx and dy
+      if (!dx.isFinite || !dy.isFinite) continue;
 
-        // Validate dx and dy
-        if (!dx.isFinite || !dy.isFinite) continue;
+      // Early exit if point is clearly outside radius
+      if (dx.abs() > tapRadius || dy.abs() > tapRadius) continue;
 
-        // Early exit if point is clearly outside radius
-        if (dx.abs() > tapRadius || dy.abs() > tapRadius) continue;
+      // Calculate squared distance (faster than distance)
+      final distanceSquared = dx * dx + dy * dy;
 
-        // Calculate squared distance (faster than distance)
-        final distanceSquared = dx * dx + dy * dy;
+      // Validate distance
+      if (!distanceSquared.isFinite) continue;
 
-        // Validate distance
-        if (!distanceSquared.isFinite) continue;
-
-        if (distanceSquared < tapRadiusSquared &&
-            distanceSquared < minDistanceSquared) {
-          minDistanceSquared = distanceSquared;
-          nearestResult = ChartInteractionResult(
-            point: point,
-            datasetIndex: dsIndex,
-            elementIndex: ptIndex,
-            isHit: true,
-          );
-        }
+      if (distanceSquared < tapRadiusSquared &&
+          distanceSquared < minDistanceSquared) {
+        minDistanceSquared = distanceSquared;
+        nearestResult = ChartInteractionResult(
+          point: point,
+          datasetIndex: dsIndex,
+          elementIndex: 0,
+          isHit: true,
+        );
       }
     }
 
@@ -216,31 +212,28 @@ class ChartInteractionHelper {
 
     for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
       final dataSet = dataSets[dsIndex];
-      if (dataSet.dataPoints.isEmpty) continue;
+      final point = dataSet.dataPoint;
 
-      for (int barIndex = 0; barIndex < dataSet.dataPoints.length; barIndex++) {
-        final point = dataSet.dataPoints[barIndex];
+      // Validate point values
+      if (!point.x.isFinite || !point.y.isFinite) continue;
 
-        // Validate point values
-        if (!point.x.isFinite || !point.y.isFinite) continue;
+      // Calculate bar position with NaN protection
+      final canvasX = ((point.x - minX) / xRange) * chartSize.width;
 
-        // Calculate bar position with NaN protection
-        final canvasX = ((point.x - minX) / xRange) * chartSize.width;
+      // Validate calculated position
+      if (!canvasX.isFinite) continue;
 
-        // Validate calculated position
-        if (!canvasX.isFinite) continue;
+      // Early exit if tap is clearly to the left or right of bar
+      if (tapPosition.dx < canvasX - halfBarWidth ||
+          tapPosition.dx > canvasX + halfBarWidth) {
+        continue;
+      }
 
-        // Early exit if tap is clearly to the left or right of bar
-        if (tapPosition.dx < canvasX - halfBarWidth ||
-            tapPosition.dx > canvasX + halfBarWidth) {
-          continue;
-        }
+      // Validate maxY before division
+      if (maxY <= 0 || !maxY.isFinite) continue;
 
-        // Validate maxY before division
-        if (maxY <= 0 || !maxY.isFinite) continue;
-
-        final barHeight = (point.y / maxY) * chartSize.height;
-        if (!barHeight.isFinite) continue;
+      final barHeight = (point.y / maxY) * chartSize.height;
+      if (!barHeight.isFinite) continue;
 
         final barY = chartSize.height - barHeight;
         if (!barY.isFinite) continue;
@@ -250,11 +243,10 @@ class ChartInteractionHelper {
           return ChartInteractionResult(
             point: point,
             datasetIndex: dsIndex,
-            elementIndex: barIndex,
+            elementIndex: 0,
             isHit: true,
           );
         }
-      }
     }
 
     return null;

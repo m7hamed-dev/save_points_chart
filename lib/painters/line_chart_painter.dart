@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
 
@@ -50,11 +51,10 @@ class LineChartPainter extends BaseChartPainter {
 
     // Single pass through all points for better performance
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
     }
 
     if (minX == double.infinity ||
@@ -91,12 +91,27 @@ class LineChartPainter extends BaseChartPainter {
     // Draw axes
     drawAxes(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
 
-    // Draw each dataset
+    // Group datasets by color to draw lines
+    final Map<Color, List<ChartDataPoint>> colorGroups = {};
     for (final dataSet in dataSets) {
-      if (dataSet.dataPoints.isEmpty) continue;
+      if (!colorGroups.containsKey(dataSet.color)) {
+        colorGroups[dataSet.color] = [];
+      }
+      colorGroups[dataSet.color]!.add(dataSet.dataPoint);
+    }
+
+    // Draw each color group as a separate line
+    for (final entry in colorGroups.entries) {
+      final color = entry.key;
+      final pointsList = entry.value;
+      
+      if (pointsList.isEmpty) continue;
+
+      // Sort points by x coordinate for proper line drawing
+      pointsList.sort((a, b) => a.x.compareTo(b.x));
 
       // Convert points to canvas coordinates with padding
-      final points = dataSet.dataPoints
+      final points = pointsList
           .map((point) {
             return pointToCanvas(
               point,
@@ -212,9 +227,9 @@ class LineChartPainter extends BaseChartPainter {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              dataSet.color.withValues(alpha: 0.4 * animationProgress),
-              dataSet.color.withValues(alpha: 0.15 * animationProgress),
-              dataSet.color.withValues(alpha: 0.0),
+              color.withValues(alpha: 0.4 * animationProgress),
+              color.withValues(alpha: 0.15 * animationProgress),
+              color.withValues(alpha: 0.0),
             ],
             stops: const [0.0, 0.5, 1.0],
           ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
@@ -295,7 +310,7 @@ class LineChartPainter extends BaseChartPainter {
 
       // Professional line styling with subtle glow
       final linePaint = Paint()
-        ..color = dataSet.color
+        ..color = color
         ..strokeWidth = lineWidth
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -306,7 +321,7 @@ class LineChartPainter extends BaseChartPainter {
 
       // Draw a brighter overlay for depth
       final overlayPaint = Paint()
-        ..color = dataSet.color.withValues(alpha: 0.6)
+        ..color = color.withValues(alpha: 0.6)
         ..strokeWidth = lineWidth * 0.5
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -327,30 +342,40 @@ class LineChartPainter extends BaseChartPainter {
 
           final pointOpacity = i < animatedPoints - 1 ? 1.0 : animationProgress;
 
+          // Find the corresponding dataset index
+          final dataPoint = pointsList[i];
+          int datasetIndex = -1;
+          for (int j = 0; j < dataSets.length; j++) {
+            if (dataSets[j].dataPoint == dataPoint) {
+              datasetIndex = j;
+              break;
+            }
+          }
+
           // Check if this point is selected or hovered
           final isSelected = selectedPoint != null &&
               selectedPoint!.isHit &&
-              selectedPoint!.datasetIndex == dataSets.indexOf(dataSet) &&
-              selectedPoint!.elementIndex == i;
+              selectedPoint!.datasetIndex == datasetIndex &&
+              selectedPoint!.elementIndex == 0;
 
           final isHovered = hoveredPoint != null &&
               hoveredPoint!.isHit &&
-              hoveredPoint!.datasetIndex == dataSets.indexOf(dataSet) &&
-              hoveredPoint!.elementIndex == i;
+              hoveredPoint!.datasetIndex == datasetIndex &&
+              hoveredPoint!.elementIndex == 0;
 
           // Outer glow with animation (larger if selected or hovered)
           final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);
           final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
           final glowPaint = Paint()
             ..color =
-                dataSet.color.withValues(alpha: glowOpacity * pointOpacity)
+                color.withValues(alpha: glowOpacity * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, glowRadius, glowPaint);
 
           // Main point with animation (larger if selected or hovered)
           final pointRadius = isSelected ? 6.5 : (isHovered ? 5.5 : 4.5);
           final pointPaint = Paint()
-            ..color = dataSet.color.withValues(alpha: pointOpacity)
+            ..color = color.withValues(alpha: pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, pointRadius, pointPaint);
 

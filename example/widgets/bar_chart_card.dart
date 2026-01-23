@@ -22,14 +22,24 @@ class BarChartCard extends StatelessWidget {
             BarChartWidget(
               dataSets: [
                 ChartDataSet(
-                  label: 'Quarterly Sales',
                   color: const Color(0xFFEC4899),
-                  dataPoints: [
-                    const ChartDataPoint(x: 0, y: 80, label: 'Q1'),
-                    const ChartDataPoint(x: 1, y: 95, label: 'Q2'),
-                    const ChartDataPoint(x: 2, y: 70, label: 'Q3'),
-                    const ChartDataPoint(x: 3, y: 110, label: 'Q4'),
-                  ],
+                  label: 'Q1',
+                  dataPoint: const ChartDataPoint(x: 0, y: 80, label: 'Q1'),
+                ),
+                ChartDataSet(
+                  color: const Color(0xFFEC4899),
+                  label: 'Q2',
+                  dataPoint: const ChartDataPoint(x: 1, y: 95, label: 'Q2'),
+                ),
+                ChartDataSet(
+                  color: const Color(0xFFEC4899),
+                  label: 'Q3',
+                  dataPoint: const ChartDataPoint(x: 2, y: 70, label: 'Q3'),
+                ),
+                ChartDataSet(
+                  color: const Color(0xFFEC4899),
+                  label: 'Q4',
+                  dataPoint: const ChartDataPoint(x: 3, y: 110, label: 'Q4'),
                 ),
               ],
               theme: theme,

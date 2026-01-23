@@ -105,18 +105,14 @@ abstract class BaseChartPainter extends CustomPainter {
       // Quick reference check for each dataset
       if (identical(oldDs, newDs)) continue;
       if (oldDs.label != newDs.label ||
-          oldDs.color != newDs.color ||
-          oldDs.dataPoints.length != newDs.dataPoints.length) {
+          oldDs.color != newDs.color) {
         return true;
       }
-      // Compare data points
-      for (int j = 0; j < newDs.dataPoints.length; j++) {
-        if (j >= oldDs.dataPoints.length) return true;
-        final oldPoint = oldDs.dataPoints[j];
-        final newPoint = newDs.dataPoints[j];
-        if (oldPoint.x != newPoint.x || oldPoint.y != newPoint.y) {
-          return true;
-        }
+      // Compare data point
+      final oldPoint = oldDs.dataPoint;
+      final newPoint = newDs.dataPoint;
+      if (oldPoint.x != newPoint.x || oldPoint.y != newPoint.y) {
+        return true;
       }
     }
 
@@ -418,10 +414,10 @@ abstract class BaseChartPainter extends CustomPainter {
   ///   double Function(ChartDataPoint) getValue,
   ///   double Function(double, double) combine,
   /// ) {
-  ///   double result = getValue(dataSets.first.dataPoints.first);
+  ///   double result = getValue(dataSets.first.dataPoint);
   ///   for (final dataSet in dataSets) {
-  ///     for (final point in dataSet.dataPoints) {
-  ///       result = combine(result, getValue(point));
+  ///     final point = dataSet.dataPoint;
+  ///     result = combine(result, getValue(point));
   ///     }
   ///   }
   ///   // Store result...

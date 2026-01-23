@@ -40,9 +40,7 @@ class StackedColumnChartPainter extends BaseChartPainter {
     // Find all unique x values
     final Set<double> xValues = {};
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        xValues.add(point.x);
-      }
+      xValues.add(dataSet.dataPoint.x);
     }
 
     if (xValues.isEmpty) return;
@@ -54,9 +52,8 @@ class StackedColumnChartPainter extends BaseChartPainter {
     // Calculate totals per x position for stacking
     final Map<double, double> totalsByX = {};
     for (final dataSet in dataSets) {
-      for (final point in dataSet.dataPoints) {
-        totalsByX[point.x] = (totalsByX[point.x] ?? 0) + point.y;
-      }
+      final point = dataSet.dataPoint;
+      totalsByX[point.x] = (totalsByX[point.x] ?? 0) + point.y;
     }
 
     final maxY = totalsByX.values.isEmpty
@@ -95,10 +92,13 @@ class StackedColumnChartPainter extends BaseChartPainter {
           dataSetIndex < dataSets.length;
           dataSetIndex++) {
         final dataSet = dataSets[dataSetIndex];
-        final point = dataSet.dataPoints.firstWhere(
-          (p) => p.x == xValue,
-          orElse: () => ChartDataPoint(x: xValue, y: 0),
-        );
+        // Find the point for this dataset at this x value
+        ChartDataPoint point;
+        if (dataSet.dataPoint.x == xValue) {
+          point = dataSet.dataPoint;
+        } else {
+          point = ChartDataPoint(x: xValue, y: 0);
+        }
 
         // Validate point data
         if (!point.y.isFinite || point.y <= 0 || !maxY.isFinite || maxY <= 0) {

@@ -123,12 +123,11 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
     double maxY = double.negativeInfinity;
 
     for (final dataSet in widget.dataSets) {
-      for (final point in dataSet.dataPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y < minY) minY = point.y;
-        if (point.y > maxY) maxY = point.y;
-      }
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y < minY) minY = point.y;
+      if (point.y > maxY) maxY = point.y;
     }
 
     final xRange = maxX - minX;

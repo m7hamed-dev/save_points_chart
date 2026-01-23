@@ -12,12 +12,19 @@
 /// LineChartWidget(
 ///   dataSets: [
 ///     ChartDataSet(
-///       label: 'Sales',
 ///       color: Colors.blue,
-///       dataPoints: [
-///         ChartDataPoint(x: 0, y: 10),
-///         ChartDataPoint(x: 1, y: 20),
-///       ],
+///       label: 'January',
+///       dataPoint: ChartDataPoint(x: 1, y: 20),
+///     ),
+///     ChartDataSet(
+///       color: Colors.red,
+///       label: 'February',
+///       dataPoint: ChartDataPoint(x: 2, y: 30),
+///     ),
+///     ChartDataSet(
+///       color: Colors.green,
+///       label: 'March',
+///       dataPoint: ChartDataPoint(x: 3, y: 40),
 ///     ),
 ///   ],
 ///   theme: ChartTheme.light(),

@@ -31,13 +31,19 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 /// AreaChartWidget(
 ///   dataSets: [
 ///     ChartDataSet(
-///       label: 'Users',
 ///       color: Colors.blue,
-///       dataPoints: [
-///         ChartDataPoint(x: 0, y: 100),
-///         ChartDataPoint(x: 1, y: 150),
-///         ChartDataPoint(x: 2, y: 200),
-///       ],
+///       label: 'January',
+///       dataPoint: ChartDataPoint(x: 0, y: 100),
+///     ),
+///     ChartDataSet(
+///       color: Colors.blue,
+///       label: 'February',
+///       dataPoint: ChartDataPoint(x: 1, y: 150),
+///     ),
+///     ChartDataSet(
+///       color: Colors.blue,
+///       label: 'March',
+///       dataPoint: ChartDataPoint(x: 2, y: 200),
 ///     ),
 ///   ],
 ///   theme: ChartTheme.light(),
@@ -266,11 +272,10 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                             double maxY = double.negativeInfinity;
 
                             for (final dataSet in widget.dataSets) {
-                              for (final point in dataSet.dataPoints) {
-                                if (point.x < minX) minX = point.x;
-                                if (point.x > maxX) maxX = point.x;
-                                if (point.y > maxY) maxY = point.y;
-                              }
+                              final point = dataSet.dataPoint;
+                              if (point.x < minX) minX = point.x;
+                              if (point.x > maxX) maxX = point.x;
+                              if (point.y > maxY) maxY = point.y;
                             }
 
                             bounds = {
