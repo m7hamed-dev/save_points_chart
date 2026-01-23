@@ -60,7 +60,8 @@ class StepLineChartPainter extends BaseChartPainter {
     }
 
     final minY = 0.0;
-    final maxYAdjusted = maxY > 0 ? maxY * 1.15 : 1.0;
+    // Add extra padding to account for point radius
+    final maxYAdjusted = maxY > 0 ? maxY * 1.2 : 1.0; // Increased from 1.15 to 1.2
 
     // Add padding for X axis to prevent points from being cut off
     // Calculate padding that accounts for point radius (max 6.5px) and glow (max 10px)
@@ -83,6 +84,9 @@ class StepLineChartPainter extends BaseChartPainter {
 
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
+    
+    // Clip to chart bounds to prevent lines/areas from extending outside
+    canvas.clipRect(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height));
 
     drawGrid(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
     drawAxes(canvas, chartSize, minX, maxX, minY, maxYAdjusted);

@@ -67,7 +67,9 @@ class LineChartPainter extends BaseChartPainter {
     final minY = 0.0; // Always start from 0 for better visualization
 
     // Ensure maxY is positive and valid
-    final maxYAdjusted = maxY > 0 ? maxY * 1.15 : 1.0;
+    // Add extra padding to account for bezier curve overshoot and point radius
+    // Bezier curves can extend beyond data points, so we need more padding
+    final maxYAdjusted = maxY > 0 ? maxY * 1.2 : 1.0; // Increased from 1.15 to 1.2
 
     // Add padding for X axis to prevent points from being cut off
     // Calculate padding that accounts for point radius (max 6.5px) and glow (max 10px)
@@ -92,6 +94,9 @@ class LineChartPainter extends BaseChartPainter {
     // Save canvas state
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
+    
+    // Clip to chart bounds to prevent lines/areas from extending outside
+    canvas.clipRect(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height));
 
     // Draw grid
     drawGrid(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
