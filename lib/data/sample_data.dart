@@ -44,13 +44,13 @@ class SampleData {
   }
 
   static List<ChartDataSet> generateBarData() {
-    return List.generate(8, (index) {
+    return List.generate(7, (index) {
       return ChartDataSet(
         color: const Color(0xFF8B5CF6),
         label: 'Q${index + 1}',
         dataPoint: ChartDataPoint(
           x: index.toDouble(),
-          y: 50 + (index * 10) + (index % 3) * 20,
+          y: 0 + (index * 9) + (index % 3) * 20,
           label: 'Q${index + 1}',
         ),
       );
