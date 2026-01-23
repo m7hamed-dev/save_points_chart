@@ -5,17 +5,16 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Custom painter for pyramid charts
 class PyramidChartPainter extends CustomPainter {
-  final ChartTheme theme;
-  final List<PieData> data;
-  final double animationProgress;
-  final ChartInteractionResult? selectedSegment;
-
   const PyramidChartPainter({
     required this.theme,
     required this.data,
     this.animationProgress = 1.0,
     this.selectedSegment,
   });
+  final ChartTheme theme;
+  final List<PieData> data;
+  final double animationProgress;
+  final ChartInteractionResult? selectedSegment;
 
   @override
   void paint(Canvas canvas, Size size) {

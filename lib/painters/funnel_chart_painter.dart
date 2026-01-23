@@ -5,17 +5,17 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// Custom painter for funnel charts
 class FunnelChartPainter extends CustomPainter {
-  final ChartTheme theme;
-  final List<PieData> data;
-  final double animationProgress;
-  final ChartInteractionResult? selectedSegment;
-
   const FunnelChartPainter({
     required this.theme,
     required this.data,
     this.animationProgress = 1.0,
     this.selectedSegment,
   });
+
+  final ChartTheme theme;
+  final List<PieData> data;
+  final double animationProgress;
+  final ChartInteractionResult? selectedSegment;
 
   @override
   void paint(Canvas canvas, Size size) {
