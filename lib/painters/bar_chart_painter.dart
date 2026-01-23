@@ -254,6 +254,7 @@ class BarChartPainter extends BaseChartPainter {
       maxXAdjusted,
       minY,
       maxYAdjusted,
+      dataSets: dataSets,
     );
     canvas.restore();
   }

@@ -288,6 +288,7 @@ class StepLineChartPainter extends BaseChartPainter {
       maxX + xPadding,
       minY,
       maxYAdjusted,
+      dataSets: dataSets,
     );
     canvas.restore();
   }

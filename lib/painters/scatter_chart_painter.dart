@@ -99,7 +99,15 @@ class ScatterChartPainter extends BaseChartPainter {
     drawAxes(canvas, chartSize, minX, maxX, minY, maxY);
 
     // Draw axis labels
-    drawAxisLabels(canvas, chartSize, minX, maxX, minY, maxY);
+    drawAxisLabels(
+      canvas,
+      chartSize,
+      minX,
+      maxX,
+      minY,
+      maxY,
+      dataSets: dataSets,
+    );
 
     // Draw scatter points
     for (int datasetIndex = 0; datasetIndex < dataSets.length; datasetIndex++) {

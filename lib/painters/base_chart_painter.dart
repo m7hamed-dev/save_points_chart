@@ -104,8 +104,7 @@ abstract class BaseChartPainter extends CustomPainter {
 
       // Quick reference check for each dataset
       if (identical(oldDs, newDs)) continue;
-      if (oldDs.label != newDs.label ||
-          oldDs.color != newDs.color) {
+      if (oldDs.label != newDs.label || oldDs.color != newDs.color) {
         return true;
       }
       // Compare data point
@@ -294,9 +293,14 @@ abstract class BaseChartPainter extends CustomPainter {
   ///
   /// The labels will only be drawn if [showLabel] and [showAxis] are true.
   ///
+  /// If [dataSets] are provided, labels from [ChartDataPoint.label] will be
+  /// used for X-axis labels when available, falling back to numeric values.
+  ///
   /// ## Example
   /// ```dart
   /// drawAxisLabels(canvas, chartSize, 0, 100, 0, 50);
+  /// // Or with data points for custom labels:
+  /// drawAxisLabels(canvas, chartSize, 0, 100, 0, 50, dataSets: dataSets);
   /// ```
   void drawAxisLabels(
     Canvas canvas,
@@ -304,8 +308,9 @@ abstract class BaseChartPainter extends CustomPainter {
     double minX,
     double maxX,
     double minY,
-    double maxY,
-  ) {
+    double maxY, {
+    List<ChartDataSet>? dataSets,
+  }) {
     if (!showLabel || !showAxis || !theme.showAxis) return;
 
     // Validate size and ranges
@@ -326,38 +331,75 @@ abstract class BaseChartPainter extends CustomPainter {
       letterSpacing: 0.2,
     );
 
-    // X-axis labels - better formatting with pre-calculated values
+    // X-axis labels - use labels from data points if available
     final xLabelsCount =
         math.max(1, math.min(6, (xRange > 0 ? xRange : 1).ceil().toInt()));
     if (xLabelsCount > 0 && xRange > 0) {
-      final xStep = size.width / xLabelsCount;
+      // Try to use labels from data points
+      if (dataSets != null &&
+          dataSets.isNotEmpty &&
+          dataSets.any((ds) => ds.dataPoint.label != null)) {
+        // Use labels from data points - show labels at actual data point positions
+        for (final dataSet in dataSets) {
+          final point = dataSet.dataPoint;
+          
+          // Skip if no label or invalid x value
+          if (point.label == null || !point.x.isFinite) continue;
+          
+          // Calculate x position based on point.x
+          final normalizedX = xRange > 0 ? (point.x - minX) / xRange : 0.5;
+          final x = normalizedX * size.width;
+          
+          // Only draw if within chart bounds
+          if (!x.isFinite || x < 0 || x > size.width) continue;
 
-      for (int i = 0; i <= xLabelsCount; i++) {
-        final x = xStep * i;
-        if (!x.isFinite) continue;
-
-        final value = minX + xRange * (i / xLabelsCount);
-        if (!value.isFinite) continue;
-
-        final displayValue = value % 1 == 0
-            ? value.toInt().toString()
-            : value.toStringAsFixed(1);
-
-        final textPainter = TextPainter(
-          text: TextSpan(text: displayValue, style: textStyle),
-          textDirection: TextDirection.ltr,
-        );
-        textPainter.layout();
-
-        final offsetX = x - textPainter.width / 2;
-        final offsetY = size.height + 8;
-
-        // Validate offset values before painting
-        if (offsetX.isFinite && offsetY.isFinite) {
-          textPainter.paint(
-            canvas,
-            Offset(offsetX, offsetY),
+          final textPainter = TextPainter(
+            text: TextSpan(text: point.label!, style: textStyle),
+            textDirection: TextDirection.ltr,
           );
+          textPainter.layout();
+
+          final offsetX = x - textPainter.width / 2;
+          final offsetY = size.height + 8;
+
+          if (offsetX.isFinite && offsetY.isFinite) {
+            textPainter.paint(
+              canvas,
+              Offset(offsetX, offsetY),
+            );
+          }
+        }
+      } else {
+        // Fall back to numeric labels
+        final xStep = size.width / xLabelsCount;
+
+        for (int i = 0; i <= xLabelsCount; i++) {
+          final x = xStep * i;
+          if (!x.isFinite) continue;
+
+          final value = minX + xRange * (i / xLabelsCount);
+          if (!value.isFinite) continue;
+
+          final displayValue = value % 1 == 0
+              ? value.toInt().toString()
+              : value.toStringAsFixed(1);
+
+          final textPainter = TextPainter(
+            text: TextSpan(text: displayValue, style: textStyle),
+            textDirection: TextDirection.ltr,
+          );
+          textPainter.layout();
+
+          final offsetX = x - textPainter.width / 2;
+          final offsetY = size.height + 8;
+
+          // Validate offset values before painting
+          if (offsetX.isFinite && offsetY.isFinite) {
+            textPainter.paint(
+              canvas,
+              Offset(offsetX, offsetY),
+            );
+          }
         }
       }
     }

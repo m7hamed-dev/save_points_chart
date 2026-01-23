@@ -181,6 +181,7 @@ class StackedColumnChartPainter extends BaseChartPainter {
       maxX + xPadding,
       minY,
       maxY,
+      dataSets: dataSets,
     );
     canvas.restore();
   }

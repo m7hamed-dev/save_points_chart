@@ -97,7 +97,15 @@ class BubbleChartPainter extends BaseChartPainter {
     drawAxes(canvas, chartSize, minX, maxX, minY, maxY);
 
     // Draw axis labels
-    drawAxisLabels(canvas, chartSize, minX, maxX, minY, maxY);
+    drawAxisLabels(
+      canvas,
+      chartSize,
+      minX,
+      maxX,
+      minY,
+      maxY,
+      dataSets: dataSets,
+    );
 
     // Draw bubbles
     for (int datasetIndex = 0;

@@ -365,6 +365,7 @@ class SplineChartPainter extends BaseChartPainter {
       maxX + xPadding,
       minY,
       maxYAdjusted,
+      dataSets: dataSets,
     );
     canvas.restore();
   }

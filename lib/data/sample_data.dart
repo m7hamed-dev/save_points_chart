@@ -22,7 +22,7 @@ class SampleData {
     final List<ChartDataSet> sales = List.generate(9, (index) {
       return ChartDataSet(
         color: const Color(0xFF6366F1),
-        label: 'M${index + 1}',
+        label: 'Ms${index + 1}',
         dataPoint: ChartDataPoint(
           x: index.toDouble(),
           y: 20 + (index * 5) + (index % 3) * 10,

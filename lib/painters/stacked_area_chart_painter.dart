@@ -252,6 +252,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
       maxX + xPadding,
       minY,
       maxYAdjusted,
+      dataSets: dataSets,
     );
     canvas.restore();
   }
