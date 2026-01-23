@@ -1004,7 +1004,11 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   dataSets: List.generate(15, (i) {
                     return ChartDataSet(
                       color: const Color(0xFF10B981),
-                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2, label: 'Point ${i + 1}'),
+                      dataPoint: ChartDataPoint(
+                        x: i.toDouble(),
+                        y: 50 + i * 2,
+                        label: 'Point ${i + 1}',
+                      ),
                     );
                   }),
                   theme: chartTheme,
@@ -1015,8 +1019,11 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
                         color: const Color(0xFF10B981),
-                        dataPoint:
-                            ChartDataPoint(x: i.toDouble(), y: 50 + i * 2, label: 'Point ${i + 1}'),
+                        dataPoint: ChartDataPoint(
+                          x: i.toDouble(),
+                          y: 50 + i * 2,
+                          label: 'Point ${i + 1}',
+                        ),
                       );
                     });
                     final dataSet = datasetIndex < dataSets.length
@@ -1248,7 +1255,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
-                datasetLabel: radarPoint.label ?? '',
+                datasetLabel: radarPoint.label,
                 theme: chartTheme,
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
@@ -1256,7 +1263,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel: radarPoint.label ?? '',
+                    datasetLabel: radarPoint.label,
                   );
                 },
               );

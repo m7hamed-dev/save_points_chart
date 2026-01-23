@@ -90,8 +90,10 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               builder: (context, child) {
                 return LayoutBuilder(
                   builder: (context, constraints) {
-                    final size =
+                    final chartSize =
                         math.min(constraints.maxWidth, 250.0).toDouble();
+                    // Use square size for consistent radius calculation
+                    final size = Size(chartSize, chartSize);
                     return Stack(
                       alignment: Alignment.center,
                       children: [
@@ -107,7 +109,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                                       ChartInteractionHelper.findPieSegment(
                                     details.localPosition,
                                     widget.data,
-                                    Size(size, 250),
+                                    size,
                                     widget.centerSpaceRadius,
                                   );
 
@@ -126,7 +128,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                                         .findRenderObject() as RenderBox?;
                                     final globalPosition = renderBox != null
                                         ? renderBox.localToGlobal(
-                                            details.localPosition)
+                                            details.localPosition,
+                                          )
                                         : details.globalPosition;
 
                                     // Small delay to ensure overlay is removed before showing new menu
@@ -146,10 +149,10 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                                 }
                               : null,
                           child: SizedBox(
-                            width: size,
-                            height: 250,
+                            width: size.width,
+                            height: size.height,
                             child: CustomPaint(
-                              size: Size(size, 250),
+                              size: size,
                               painter: PieChartPainter(
                                 data: widget.data,
                                 theme: effectiveTheme,

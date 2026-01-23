@@ -63,6 +63,3 @@ export 'widgets/chart_context_menu.dart';
 
 // Providers
 export 'providers/theme_provider.dart';
-
-// Utilities
-export 'utils/chart_interaction_helper.dart';
