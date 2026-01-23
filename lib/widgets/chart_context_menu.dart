@@ -4,7 +4,7 @@ import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 
 /// An awesome context menu that appears when tapping on chart elements
-class ChartContextMenu extends StatelessWidget {
+class ChartContextMenu extends StatefulWidget {
   final ChartDataPoint? point;
   final PieData? segment;
   final int? datasetIndex;
@@ -37,12 +37,50 @@ class ChartContextMenu extends StatelessWidget {
   });
 
   @override
+  State<ChartContextMenu> createState() => _ChartContextMenuState();
+}
+
+class _ChartContextMenuState extends State<ChartContextMenu> {
+  // Cached computed values to avoid recalculating on every build
+  late final Color _primaryColor;
+  late final String _formattedValue;
+  late final String? _formattedXValue;
+  late final String _label;
+  late final bool _hasPoint;
+
+  @override
+  void initState() {
+    super.initState();
+    _hasPoint = widget.point != null;
+    _primaryColor = _computePrimaryColor();
+    _formattedValue = _computeFormattedValue();
+    _formattedXValue = _hasPoint ? widget.point!.x.toStringAsFixed(1) : null;
+    _label = widget.point?.label ??
+        widget.segment?.label ??
+        (_hasPoint ? 'Data Point' : 'Segment');
+  }
+
+  Color _computePrimaryColor() {
+    if (_hasPoint) {
+      return _getColorForValue(widget.point!.y);
+    }
+    return widget.segment?.color ?? Colors.blue;
+  }
+
+  String _computeFormattedValue() {
+    if (_hasPoint) {
+      return widget.point!.y.toStringAsFixed(2);
+    }
+    return widget.segment?.value.toStringAsFixed(2) ?? '0.00';
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Validate position to prevent NaN errors
-    final safeDx = position.dx.isFinite ? position.dx : 0.0;
-    final safeDy = position.dy.isFinite ? position.dy : 0.0;
+    final safeDx = widget.position.dx.isFinite ? widget.position.dx : 0.0;
+    final safeDy = widget.position.dy.isFinite ? widget.position.dy : 0.0;
 
     return Positioned(
       left: safeDx,
@@ -72,9 +110,9 @@ class ChartContextMenu extends StatelessWidget {
   }
 
   Widget _buildMenuContent(BuildContext context, bool isDark) {
-    if (useGlassmorphism) {
+    if (widget.useGlassmorphism) {
       return _buildGlassmorphismMenu(context, isDark);
-    } else if (useNeumorphism) {
+    } else if (widget.useNeumorphism) {
       return _buildNeumorphismMenu(context, isDark);
     } else {
       return _buildDefaultMenu(context, isDark);
@@ -82,42 +120,49 @@ class ChartContextMenu extends StatelessWidget {
   }
 
   Widget _buildGlassmorphismMenu(BuildContext context, bool isDark) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          width: 280,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: isDark
-                  ? [
-                      Colors.white.withValues(alpha: 0.1),
-                      Colors.white.withValues(alpha: 0.05),
-                    ]
-                  : [
-                      Colors.white.withValues(alpha: 0.8),
-                      Colors.white.withValues(alpha: 0.6),
-                    ],
-            ),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.2)
-                  : Colors.black.withValues(alpha: 0.1),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+    // Cache gradient colors and border color
+    final gradientColors = isDark
+        ? [
+            Colors.white.withValues(alpha: 0.1),
+            Colors.white.withValues(alpha: 0.05),
+          ]
+        : [
+            Colors.white.withValues(alpha: 0.8),
+            Colors.white.withValues(alpha: 0.6),
+          ];
+    final borderColor = isDark
+        ? Colors.white.withValues(alpha: 0.2)
+        : Colors.black.withValues(alpha: 0.1);
+
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            width: 280,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: gradientColors,
               ),
-            ],
+              border: Border.all(
+                color: borderColor,
+                width: 1.5,
+              ),
+              boxShadow: const [
+                BoxShadow(
+                  color:
+                      Color(0x33000000), // Colors.black.withValues(alpha: 0.2)
+                  blurRadius: 20,
+                  offset: Offset(0, 10),
+                ),
+              ],
+            ),
+            child: _buildMenuItems(context, isDark),
           ),
-          child: _buildMenuItems(context, isDark),
         ),
       ),
     );
@@ -127,56 +172,81 @@ class ChartContextMenu extends StatelessWidget {
     final baseColor =
         isDark ? const Color(0xFF2D2D2D) : const Color(0xFFE0E0E0);
 
-    return Container(
-      width: 280,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: baseColor,
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.5)
-                : Colors.white.withValues(alpha: 0.9),
-            blurRadius: 20,
-            offset: const Offset(-8, -8),
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.8)
-                : Colors.grey.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(8, 8),
-          ),
-        ],
+    // Cache shadow colors
+    final lightShadow = isDark
+        ? const Color(0x80000000) // Colors.black.withValues(alpha: 0.5)
+        : const Color(0xE6FFFFFF); // Colors.white.withValues(alpha: 0.9)
+    final darkShadow = isDark
+        ? const Color(0xCC000000) // Colors.black.withValues(alpha: 0.8)
+        : const Color(0x4D808080); // Colors.grey.withValues(alpha: 0.3)
+
+    return RepaintBoundary(
+      child: Container(
+        width: 280,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: baseColor,
+          boxShadow: [
+            BoxShadow(
+              color: lightShadow,
+              blurRadius: 20,
+              offset: const Offset(-8, -8),
+            ),
+            BoxShadow(
+              color: darkShadow,
+              blurRadius: 20,
+              offset: const Offset(8, 8),
+            ),
+          ],
+        ),
+        child: _buildMenuItems(context, isDark),
       ),
-      child: _buildMenuItems(context, isDark),
     );
   }
 
   Widget _buildDefaultMenu(BuildContext context, bool isDark) {
-    return Container(
-      width: 280,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.grey.withValues(alpha: 0.2),
+    final backgroundColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final borderColor = isDark
+        ? const Color(0x1AFFFFFF) // Colors.white.withValues(alpha: 0.1)
+        : const Color(0x33BDBDBD); // Colors.grey.withValues(alpha: 0.2)
+
+    return RepaintBoundary(
+      child: Container(
+        width: 280,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: backgroundColor,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x4D000000), // Colors.black.withValues(alpha: 0.3)
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+          ],
+          border: Border.all(color: borderColor),
         ),
+        child: _buildMenuItems(context, isDark),
       ),
-      child: _buildMenuItems(context, isDark),
     );
   }
 
   Widget _buildMenuItems(BuildContext context, bool isDark) {
+    // Cache gradient colors
+    final gradientColor1 = _primaryColor.withValues(alpha: 0.2);
+    final gradientColor2 = _primaryColor.withValues(alpha: 0.1);
+    final iconBgColor = _primaryColor.withValues(alpha: 0.2);
+
+    // Cache text colors
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.white70 : Colors.black54;
+    final valueLabelColor = isDark ? Colors.white60 : Colors.black54;
+    final closeButtonColor = isDark ? Colors.white70 : Colors.black54;
+
+    // Cache background colors
+    final valueBgColor = isDark
+        ? const Color(0x1AFFFFFF) // Colors.white.withValues(alpha: 0.1)
+        : const Color(0x0D000000); // Colors.black.withValues(alpha: 0.05)
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -192,16 +262,7 @@ class ChartContextMenu extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                (point?.y != null
-                        ? _getColorForValue(point!.y)
-                        : segment?.color ?? Colors.blue)
-                    .withValues(alpha: 0.2),
-                (point?.y != null
-                        ? _getColorForValue(point!.y)
-                        : segment?.color ?? Colors.blue)
-                    .withValues(alpha: 0.1),
-              ],
+              colors: [gradientColor1, gradientColor2],
             ),
           ),
           child: Column(
@@ -212,17 +273,12 @@ class ChartContextMenu extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: (point?.y != null
-                              ? _getColorForValue(point!.y)
-                              : segment?.color ?? Colors.blue)
-                          .withValues(alpha: 0.2),
+                      color: iconBgColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
-                      point != null ? Icons.show_chart : Icons.pie_chart,
-                      color: point?.y != null
-                          ? _getColorForValue(point!.y)
-                          : segment?.color ?? Colors.blue,
+                      _hasPoint ? Icons.show_chart : Icons.pie_chart,
+                      color: _primaryColor,
                       size: 20,
                     ),
                   ),
@@ -232,21 +288,19 @@ class ChartContextMenu extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          point != null
-                              ? (point!.label ?? 'Data Point')
-                              : (segment?.label ?? 'Segment'),
+                          _label,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : Colors.black87,
+                            color: titleColor,
                           ),
                         ),
-                        if (datasetLabel != null)
+                        if (widget.datasetLabel != null)
                           Text(
-                            datasetLabel!,
+                            widget.datasetLabel!,
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDark ? Colors.white70 : Colors.black54,
+                              color: subtitleColor,
                             ),
                           ),
                       ],
@@ -254,8 +308,8 @@ class ChartContextMenu extends StatelessWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.close, size: 18),
-                    onPressed: onClose,
-                    color: isDark ? Colors.white70 : Colors.black54,
+                    onPressed: widget.onClose,
+                    color: closeButtonColor,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
@@ -266,9 +320,7 @@ class ChartContextMenu extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.1)
-                      : Colors.black.withValues(alpha: 0.05),
+                  color: valueBgColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -281,26 +333,22 @@ class ChartContextMenu extends StatelessWidget {
                           'Value',
                           style: TextStyle(
                             fontSize: 11,
-                            color: isDark ? Colors.white60 : Colors.black54,
+                            color: valueLabelColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          point != null
-                              ? point!.y.toStringAsFixed(2)
-                              : segment?.value.toStringAsFixed(2) ?? '0.00',
+                          _formattedValue,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: point?.y != null
-                                ? _getColorForValue(point!.y)
-                                : segment?.color ?? Colors.blue,
+                            color: _primaryColor,
                           ),
                         ),
                       ],
                     ),
-                    if (point != null)
+                    if (_formattedXValue != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -308,17 +356,17 @@ class ChartContextMenu extends StatelessWidget {
                             'X',
                             style: TextStyle(
                               fontSize: 11,
-                              color: isDark ? Colors.white60 : Colors.black54,
+                              color: valueLabelColor,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            point!.x.toStringAsFixed(1),
+                            _formattedXValue!,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white : Colors.black87,
+                              color: titleColor,
                             ),
                           ),
                         ],
@@ -330,45 +378,47 @@ class ChartContextMenu extends StatelessWidget {
           ),
         ),
         // Menu Items
-        if (onViewDetails != null || onExport != null || onShare != null)
+        if (widget.onViewDetails != null ||
+            widget.onExport != null ||
+            widget.onShare != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               children: [
-                if (onViewDetails != null)
+                if (widget.onViewDetails != null)
                   _buildMenuItem(
                     context,
                     icon: Icons.info_outline,
                     label: 'View Details',
                     onTap: () {
-                      onClose?.call();
-                      onViewDetails?.call();
+                      widget.onClose?.call();
+                      widget.onViewDetails?.call();
                     },
                     isDark: isDark,
                   ),
-                if (onExport != null)
+                if (widget.onExport != null)
                   _buildMenuItem(
                     context,
                     icon: Icons.download,
                     label: 'Export Data',
                     onTap: () {
-                      onClose?.call();
-                      onExport?.call();
+                      widget.onClose?.call();
+                      widget.onExport?.call();
                     },
                     isDark: isDark,
-                    isLast: onShare == null, // Last if share is not provided
+                    isLast: widget.onShare == null,
                   ),
-                if (onShare != null)
+                if (widget.onShare != null)
                   _buildMenuItem(
                     context,
                     icon: Icons.share,
                     label: 'Share',
                     onTap: () {
-                      onClose?.call();
-                      onShare?.call();
+                      widget.onClose?.call();
+                      widget.onShare?.call();
                     },
                     isDark: isDark,
-                    isLast: true, // Always last if provided
+                    isLast: true,
                   ),
               ],
             ),
@@ -385,6 +435,14 @@ class ChartContextMenu extends StatelessWidget {
     required bool isDark,
     bool isLast = false,
   }) {
+    // Cache colors
+    final bgColor = isDark
+        ? const Color(0x0DFFFFFF) // Colors.white.withValues(alpha: 0.05)
+        : const Color(0x05000000); // Colors.black.withValues(alpha: 0.02)
+    final iconBgColor = _primaryColor.withValues(alpha: 0.1);
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final chevronColor = isDark ? Colors.white38 : Colors.black26;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -395,27 +453,20 @@ class ChartContextMenu extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.05)
-                : Colors.black.withValues(alpha: 0.02),
+            color: bgColor,
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: (point?.y != null
-                          ? _getColorForValue(point!.y)
-                          : segment?.color ?? Colors.blue)
-                      .withValues(alpha: 0.1),
+                  color: iconBgColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   icon,
                   size: 20,
-                  color: point?.y != null
-                      ? _getColorForValue(point!.y)
-                      : segment?.color ?? Colors.blue,
+                  color: _primaryColor,
                 ),
               ),
               const SizedBox(width: 12),
@@ -425,14 +476,14 @@ class ChartContextMenu extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: textColor,
                   ),
                 ),
               ),
               Icon(
                 Icons.chevron_right,
                 size: 20,
-                color: isDark ? Colors.white38 : Colors.black26,
+                color: chevronColor,
               ),
             ],
           ),
@@ -441,8 +492,9 @@ class ChartContextMenu extends StatelessWidget {
     );
   }
 
-  Color _getColorForValue(double value) {
+  static Color _getColorForValue(double value) {
     // Color based on value - green for high, red for low, etc.
+    // Use const colors for better performance
     if (value > 80) return Colors.green;
     if (value > 50) return Colors.blue;
     if (value > 30) return Colors.orange;
@@ -453,6 +505,7 @@ class ChartContextMenu extends StatelessWidget {
 /// Helper class to show context menu as overlay
 class ChartContextMenuHelper {
   static OverlayEntry? _currentMenu;
+  static ui.ImageFilter? _cachedBlurFilter;
 
   static void show(
     BuildContext context, {
@@ -495,8 +548,9 @@ class ChartContextMenuHelper {
       globalPosition = position; // Fallback to original position on error
     }
 
-    // Get screen size safely
-    final screenSize = MediaQuery.of(context).size;
+    // Get screen size safely - cache MediaQuery to avoid multiple lookups
+    final mediaQuery = MediaQuery.of(context);
+    final screenSize = mediaQuery.size;
     final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
 
@@ -510,49 +564,49 @@ class ChartContextMenuHelper {
           : 16.0,
     );
 
+    // Cache blur filter for better performance
+    if (backgroundBlur && _cachedBlurFilter == null) {
+      _cachedBlurFilter = ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5);
+    }
+
     _currentMenu = OverlayEntry(
-      builder: (context) => Stack(
-        children: [
-          // Backdrop - only captures taps outside the menu area
-          // Use a custom approach to allow chart taps to pass through
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                // Hide menu when tapping outside
-                hide();
-              },
-              behavior: HitTestBehavior.translucent,
-              child: backgroundBlur
-                  ? ClipRect(
-                      child: BackdropFilter(
-                        filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                        child: Container(
-                          color: Colors.transparent,
+      builder: (context) => RepaintBoundary(
+        child: Stack(
+          children: [
+            // Backdrop - only captures taps outside the menu area
+            // Use a custom approach to allow chart taps to pass through
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: hide,
+                behavior: HitTestBehavior.translucent,
+                child: backgroundBlur && _cachedBlurFilter != null
+                    ? ClipRect(
+                        child: BackdropFilter(
+                          filter: _cachedBlurFilter!,
+                          child: const SizedBox.expand(),
                         ),
-                      ),
-                    )
-                  : Container(
-                      color: Colors.transparent,
-                    ),
+                      )
+                    : const SizedBox.expand(),
+              ),
             ),
-          ),
-          // Context Menu - positioned above backdrop
-          ChartContextMenu(
-            point: point,
-            segment: segment,
-            datasetIndex: datasetIndex,
-            elementIndex: elementIndex,
-            datasetLabel: datasetLabel,
-            position: adjustedPosition,
-            theme: theme,
-            useGlassmorphism: useGlassmorphism,
-            useNeumorphism: useNeumorphism,
-            onClose: hide,
-            onViewDetails: onViewDetails,
-            onExport: onExport,
-            onShare: onShare,
-          ),
-        ],
+            // Context Menu - positioned above backdrop
+            ChartContextMenu(
+              point: point,
+              segment: segment,
+              datasetIndex: datasetIndex,
+              elementIndex: elementIndex,
+              datasetLabel: datasetLabel,
+              position: adjustedPosition,
+              theme: theme,
+              useGlassmorphism: useGlassmorphism,
+              useNeumorphism: useNeumorphism,
+              onClose: hide,
+              onViewDetails: onViewDetails,
+              onExport: onExport,
+              onShare: onShare,
+            ),
+          ],
+        ),
       ),
     );
 
@@ -562,5 +616,7 @@ class ChartContextMenuHelper {
   static void hide() {
     _currentMenu?.remove();
     _currentMenu = null;
+    // Clear cached blur filter when menu is hidden
+    _cachedBlurFilter = null;
   }
 }
