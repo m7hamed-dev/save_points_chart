@@ -109,6 +109,16 @@ class AreaChartWidget extends StatefulWidget {
   /// Optional. If null, no subtitle is shown.
   final String? subtitle;
 
+  /// Optional widget displayed below the subtitle and above the chart.
+  ///
+  /// If null, no header is shown.
+  final Widget? header;
+
+  /// Optional widget displayed below the chart.
+  ///
+  /// If null, no footer is shown.
+  final Widget? footer;
+
   /// Whether to apply glassmorphism effects to the chart container.
   ///
   /// Defaults to false.
@@ -178,6 +188,8 @@ class AreaChartWidget extends StatefulWidget {
     this.showLabel = true,
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.onPointTap,
@@ -229,6 +241,8 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
       useGlassmorphism: widget.useGlassmorphism,
       useNeumorphism: widget.useNeumorphism,
       isLoading: widget.isLoading,

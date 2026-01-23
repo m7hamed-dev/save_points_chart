@@ -19,6 +19,8 @@ class SparklineChartWidget extends StatefulWidget {
   final Color? negativeColor;
   final String? title;
   final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
   final bool useGlassmorphism;
   final bool useNeumorphism;
   final bool isLoading;
@@ -37,6 +39,8 @@ class SparklineChartWidget extends StatefulWidget {
     this.negativeColor,
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.isLoading = false,
@@ -105,6 +109,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
       useGlassmorphism: widget.useGlassmorphism,
       useNeumorphism: widget.useNeumorphism,
       isLoading: widget.isLoading,

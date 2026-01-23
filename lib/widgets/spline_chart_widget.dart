@@ -49,6 +49,8 @@ class SplineChartWidget extends StatefulWidget {
   final bool showLabel;
   final String? title;
   final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
   final bool useGlassmorphism;
   final bool useNeumorphism;
   final ChartPointCallback? onPointTap;
@@ -69,6 +71,8 @@ class SplineChartWidget extends StatefulWidget {
     this.showLabel = true,
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.onPointTap,
@@ -194,6 +198,8 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
       useGlassmorphism: widget.useGlassmorphism,
       useNeumorphism: widget.useNeumorphism,
       isLoading: widget.isLoading,

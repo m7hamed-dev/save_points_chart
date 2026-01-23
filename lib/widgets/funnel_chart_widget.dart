@@ -42,6 +42,8 @@ class FunnelChartWidget extends StatefulWidget {
   final ChartTheme? theme;
   final String? title;
   final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
   final bool useGlassmorphism;
   final bool useNeumorphism;
   final PieSegmentCallback? onSegmentTap;
@@ -55,6 +57,8 @@ class FunnelChartWidget extends StatefulWidget {
     this.theme,
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.onSegmentTap,
@@ -104,6 +108,8 @@ class _FunnelChartWidgetState extends State<FunnelChartWidget>
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
       useGlassmorphism: widget.useGlassmorphism,
       useNeumorphism: widget.useNeumorphism,
       isLoading: widget.isLoading,

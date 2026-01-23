@@ -21,6 +21,8 @@ class DonutChartWidget extends StatefulWidget {
     this.showLabel = true,
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.onSegmentTap,
@@ -37,6 +39,8 @@ class DonutChartWidget extends StatefulWidget {
   final bool showLabel;
   final String? title;
   final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
   final bool useGlassmorphism;
   final bool useNeumorphism;
   final PieSegmentCallback? onSegmentTap;
@@ -91,7 +95,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     final chartSize =
-                        math.min(constraints.maxWidth, 250.0).toDouble();
+                        math.min(constraints.maxWidth, 280.0).toDouble();
                     // Use square size for consistent radius calculation
                     final size = Size(chartSize, chartSize);
                     return Stack(
@@ -172,7 +176,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                               'Total',
                               style: TextStyle(
                                 color: effectiveTheme.textColor
-                                    .withValues(alpha: 0.7),
+                                    .withValues(alpha: 0.5),
                                 fontSize: 14,
                               ),
                             ),
@@ -200,39 +204,35 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: widget.data.map((item) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 16,
-                        height: 16,
-                        decoration: BoxDecoration(
-                          color: item.color,
-                          shape: BoxShape.circle,
-                        ),
+                return ListTile(
+                  dense: true,
+                  leading: Container(
+                    width: 18,
+                    height: 18,
+                    decoration: BoxDecoration(
+                      color: item.color,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        width: 2.0,
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          item.label,
-                          style: TextStyle(
-                            color: effectiveTheme.textColor,
-                            fontSize: 12,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text(
-                        '${((item.value / total) * 100).toStringAsFixed(1)}%',
-                        style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                    ),
+                  ),
+                  title: Text(
+                    item.label,
+                    style: TextStyle(
+                      color: effectiveTheme.textColor,
+                      fontSize: 12,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    '${((item.value / total) * 100).toStringAsFixed(1)}%',
+                    style: TextStyle(
+                      color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 );
               }).toList(),
@@ -245,6 +245,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
       useGlassmorphism: widget.useGlassmorphism,
       useNeumorphism: widget.useNeumorphism,
       isLoading: widget.isLoading,

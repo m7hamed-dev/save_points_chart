@@ -38,6 +38,8 @@ class ChartContainer extends StatelessWidget {
   final EdgeInsets padding;
   final String? title;
   final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
   final bool useGlassmorphism;
   final bool useNeumorphism;
   final bool isLoading;
@@ -75,6 +77,8 @@ class ChartContainer extends StatelessWidget {
     this.padding = const EdgeInsets.all(16.0),
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.isLoading = false,
@@ -156,6 +160,11 @@ class ChartContainer extends StatelessWidget {
                 ],
               ),
             ),
+          if (header != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: header!,
+            ),
           if (isLoading)
             Semantics(
               label: 'Chart is loading',
@@ -220,6 +229,11 @@ class ChartContainer extends StatelessWidget {
                   ? 'Chart: $title${subtitle != null ? '. $subtitle' : ''}'
                   : 'Chart visualization',
               child: child,
+            ),
+          if (footer != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: footer!,
             ),
         ],
       ),
@@ -334,6 +348,11 @@ class ChartContainer extends StatelessWidget {
                   ],
                 ),
               ),
+            if (header != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: header!,
+              ),
             if (isLoading)
               SizedBox(
                 height: 300,
@@ -387,6 +406,11 @@ class ChartContainer extends StatelessWidget {
               )
             else
               child,
+            if (footer != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: footer!,
+              ),
           ],
         ),
       );

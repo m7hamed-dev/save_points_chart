@@ -52,6 +52,8 @@ class GaugeChartWidget extends StatefulWidget {
   final bool showLabel;
   final String? title;
   final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
   final String? centerLabel;
   final String? unit;
   final bool useGlassmorphism;
@@ -75,6 +77,8 @@ class GaugeChartWidget extends StatefulWidget {
     this.showLabel = true,
     this.title,
     this.subtitle,
+    this.header,
+    this.footer,
     this.centerLabel,
     this.unit,
     this.useGlassmorphism = false,
@@ -123,6 +127,8 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
       useGlassmorphism: widget.useGlassmorphism,
       useNeumorphism: widget.useNeumorphism,
       isLoading: widget.isLoading,
