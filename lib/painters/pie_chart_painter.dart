@@ -86,11 +86,16 @@ class PieChartPainter extends CustomPainter {
         center.dy + math.sin(midAngle) * (radius * 0.3),
       );
 
-      // Adjust colors if selected
-      final baseColor = isSelected ? item.color : item.color;
+      // Enhanced gradient with better depth and highlights
+      final baseColor = isSelected 
+          ? item.color.withValues(alpha: 1.0)
+          : item.color;
       final secondaryColor = isSelected
+          ? item.color.withValues(alpha: 0.9)
+          : item.color.withValues(alpha: 0.8);
+      final tertiaryColor = isSelected
           ? item.color.withValues(alpha: 0.85)
-          : item.color.withValues(alpha: 0.75);
+          : item.color.withValues(alpha: 0.7);
 
       final paint = Paint()
         ..shader = RadialGradient(
@@ -98,12 +103,21 @@ class PieChartPainter extends CustomPainter {
             (gradientCenter.dx - center.dx) / radius,
             (gradientCenter.dy - center.dy) / radius,
           ),
-          radius: 0.8,
+          radius: 0.9,
           colors: [
             baseColor,
             secondaryColor,
+            tertiaryColor,
+            item.color.withValues(alpha: 0.75),
           ],
+          stops: const [0.0, 0.3, 0.7, 1.0],
         ).createShader(rect)
+        ..style = PaintingStyle.fill;
+        
+      // Add subtle shadow for depth
+      final shadowPaint = Paint()
+        ..color = Colors.black.withValues(alpha: 0.2)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0)
         ..style = PaintingStyle.fill;
 
       if (centerSpaceRadius > 0) {
@@ -133,7 +147,27 @@ class PieChartPainter extends CustomPainter {
           innerPath,
         );
 
+        // Draw shadow first for depth
+        final shadowOffset = Offset(2, 2);
+        final shadowPath = Path()
+          ..addPath(combinedPath, shadowOffset);
+        canvas.drawPath(shadowPath, shadowPaint);
+        
         canvas.drawPath(combinedPath, paint);
+        
+        // Add highlight on top edge
+        final highlightPaint = Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white.withValues(alpha: 0.3),
+              Colors.white.withValues(alpha: 0.0),
+            ],
+          ).createShader(rect)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5;
+        canvas.drawPath(combinedPath, highlightPaint);
 
         // Add border if selected (white border)
         if (isSelected) {
@@ -144,13 +178,46 @@ class PieChartPainter extends CustomPainter {
           canvas.drawPath(combinedPath, borderPaint);
         }
       } else {
-        // Pie chart
+        // Pie chart - draw shadow first
+        final shadowRect = Rect.fromCircle(
+          center: Offset(center.dx + 2, center.dy + 2),
+          radius: radius,
+        );
+        canvas.drawArc(
+          shadowRect,
+          startAngle,
+          animatedSweepAngle,
+          true,
+          shadowPaint,
+        );
+        
+        // Draw main segment
         canvas.drawArc(
           rect,
           startAngle,
           animatedSweepAngle,
           true,
           paint,
+        );
+        
+        // Add highlight on top edge
+        final highlightPaint = Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white.withValues(alpha: 0.3),
+              Colors.white.withValues(alpha: 0.0),
+            ],
+          ).createShader(rect)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5;
+        canvas.drawArc(
+          rect,
+          startAngle,
+          animatedSweepAngle,
+          true,
+          highlightPaint,
         );
 
         // Add border if selected (white border)

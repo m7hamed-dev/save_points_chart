@@ -221,21 +221,30 @@ class LineChartPainter extends BaseChartPainter {
         }
         areaPath.close();
 
-        // Professional multi-stop gradient with animation opacity
+        // Enhanced multi-stop gradient with better visual appeal
         final areaPaint = Paint()
           ..shader = LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              color.withValues(alpha: 0.4 * animationProgress),
-              color.withValues(alpha: 0.15 * animationProgress),
+              color.withValues(alpha: 0.5 * animationProgress),
+              color.withValues(alpha: 0.25 * animationProgress),
+              color.withValues(alpha: 0.1 * animationProgress),
               color.withValues(alpha: 0.0),
             ],
-            stops: const [0.0, 0.5, 1.0],
+            stops: const [0.0, 0.3, 0.7, 1.0],
           ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
           ..style = PaintingStyle.fill;
 
         canvas.drawPath(areaPath, areaPaint);
+        
+        // Add subtle border highlight for depth
+        final borderPaint = Paint()
+          ..color = color.withValues(alpha: 0.3 * animationProgress)
+          ..strokeWidth = 1.0
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+        canvas.drawPath(areaPath, borderPaint);
       }
 
       // Draw line with smooth bezier curves and animation
@@ -308,14 +317,23 @@ class LineChartPainter extends BaseChartPainter {
         );
       }
 
-      // Professional line styling with subtle glow
+      // Enhanced line styling with better glow and gradient
       final linePaint = Paint()
-        ..color = color
+        ..shader = LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            color,
+            color.withValues(alpha: 0.9),
+            color,
+          ],
+          stops: const [0.0, 0.5, 1.0],
+        ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
         ..strokeWidth = lineWidth
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.0);
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
 
       canvas.drawPath(linePath, linePaint);
 

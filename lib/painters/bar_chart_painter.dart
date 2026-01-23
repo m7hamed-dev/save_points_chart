@@ -293,30 +293,52 @@ class BarChartPainter extends BaseChartPainter {
       Radius.circular(borderRadius),
     );
 
-    // Professional gradient with multiple stops
+    // Enhanced gradient with better visual depth
     final paint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withValues(alpha: 0.9),
+          color.withValues(alpha: 1.0),
           color,
-          color.withValues(alpha: 0.8),
+          color.withValues(alpha: 0.85),
+          color.withValues(alpha: 0.75),
         ],
-        stops: const [0.0, 0.5, 1.0],
+        stops: const [0.0, 0.3, 0.7, 1.0],
       ).createShader(rect.outerRect)
       ..style = PaintingStyle.fill;
 
-    canvas.drawRRect(rect, paint);
-
-    // Add subtle highlight on top (brighter if selected or hovered)
-    final highlightRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight * 0.2),
+    // Add subtle shadow for depth (draw first)
+    final shadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.15)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0)
+      ..style = PaintingStyle.fill;
+    final shadowRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(position.dx + 1, adjustedY + 1, width, adjustedHeight),
       Radius.circular(borderRadius),
     );
-    final highlightAlpha = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
+    canvas.drawRRect(shadowRect, shadowPaint);
+    
+    // Draw main bar
+    canvas.drawRRect(rect, paint);
+
+    // Enhanced highlight on top with better gradient
+    final highlightRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight * 0.25),
+      Radius.circular(borderRadius),
+    );
+    final highlightAlpha = isSelected ? 0.5 : (isHovered ? 0.35 : 0.25);
     final highlightPaint = Paint()
-      ..color = Colors.white.withValues(alpha: highlightAlpha)
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.white.withValues(alpha: highlightAlpha),
+          Colors.white.withValues(alpha: highlightAlpha * 0.5),
+          Colors.white.withValues(alpha: 0.0),
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      ).createShader(highlightRect.outerRect)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(highlightRect, highlightPaint);
 

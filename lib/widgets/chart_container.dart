@@ -95,18 +95,26 @@ class ChartContainer extends StatelessWidget {
           color: effectiveTheme.gridColor.withValues(alpha: 0.3),
         ),
         boxShadow: [
-          // Soft outer shadow
+          // Soft outer shadow (enhanced)
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: effectiveTheme.shadowElevation * 3,
-            offset: Offset(0, effectiveTheme.shadowElevation * 0.5),
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: effectiveTheme.shadowElevation * 4,
+            offset: Offset(0, effectiveTheme.shadowElevation * 0.6),
+            spreadRadius: 1,
           ),
-          // Inner highlight
+          // Medium shadow for depth
           BoxShadow(
-            color: Colors.white.withValues(alpha: 0.1),
-            blurRadius: 2,
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: effectiveTheme.shadowElevation * 2,
+            offset: Offset(0, effectiveTheme.shadowElevation * 0.3),
+            spreadRadius: 0,
+          ),
+          // Inner highlight (enhanced)
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.15),
+            blurRadius: 3,
             offset: const Offset(0, -1),
-            spreadRadius: -1,
+            spreadRadius: -2,
           ),
         ],
       ),

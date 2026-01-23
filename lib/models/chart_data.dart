@@ -333,7 +333,7 @@ class BubbleDataSet {
 
 /// Represents a single data point in a chart.
 ///
-/// Each [ChartDataSet] represents one data point with a label and color.
+/// Each [ChartDataSet] represents one data point with a color.
 /// Multiple [ChartDataSet] instances can be used to create charts with
 /// multiple points, where each dataset represents one point.
 ///
@@ -344,8 +344,7 @@ class BubbleDataSet {
 /// ```dart
 /// ChartDataSet(
 ///   color: Colors.blue,
-///   label: 'January',
-///   dataPoint: ChartDataPoint(x: 1, y: 20),
+///   dataPoint: ChartDataPoint(x: 1, y: 20, label: 'January'),
 /// )
 /// ```
 ///
@@ -354,15 +353,10 @@ class BubbleDataSet {
 /// - [BubbleDataSet] for bubble charts
 /// - [RadarDataSet] for radar charts
 class ChartDataSet {
-  /// The label for this data point (displayed in legends and tooltips).
-  ///
-  /// Should be a descriptive name for the data point (e.g., "January",
-  /// "Q1", "Sales"). Must not be empty.
-  final String label;
-
   /// The single data point in this dataset.
   ///
   /// Each dataset represents one point on the chart.
+  /// The label is stored in [dataPoint.label].
   final ChartDataPoint dataPoint;
 
   /// The color used to render this data point.
@@ -373,30 +367,22 @@ class ChartDataSet {
 
   /// Creates a chart data set.
   ///
-  /// [label] must not be empty. [dataPoint] is required.
+  /// [dataPoint] is required.
   /// [color] is required for rendering.
-  ///
-  /// Throws an [AssertionError] if [label] is empty.
   ChartDataSet({
     required this.color,
-    required this.label,
     required this.dataPoint,
-  }) : assert(
-          label.isNotEmpty,
-          'ChartDataSet label must not be empty',
-        );
+  });
 
   /// Creates a copy of this data set with the given fields replaced.
   ///
   /// Returns a new [ChartDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
   ChartDataSet copyWith({
-    String? label,
     ChartDataPoint? dataPoint,
     Color? color,
   }) {
     return ChartDataSet(
-      label: label ?? this.label,
       dataPoint: dataPoint ?? this.dataPoint,
       color: color ?? this.color,
     );
@@ -404,19 +390,18 @@ class ChartDataSet {
 
   @override
   String toString() =>
-      'ChartDataSet(label: $label, point: $dataPoint, color: $color)';
+      'ChartDataSet(point: $dataPoint, color: $color)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ChartDataSet &&
           runtimeType == other.runtimeType &&
-          label == other.label &&
           dataPoint == other.dataPoint &&
           color == other.color;
 
   @override
-  int get hashCode => Object.hash(label, dataPoint, color);
+  int get hashCode => Object.hash(dataPoint, color);
 }
 
 /// Represents a radar/spider chart data point.

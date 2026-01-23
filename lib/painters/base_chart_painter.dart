@@ -214,10 +214,10 @@ abstract class BaseChartPainter extends CustomPainter {
   ) {
     if (!showGrid || !theme.showGrid) return;
 
-    // Create paint once
-    final paint = Paint()
-      ..color = theme.gridColor.withValues(alpha: 0.5)
-      ..strokeWidth = 0.5
+    // Create paint with enhanced styling
+    final gridPaint = Paint()
+      ..color = theme.gridColor.withValues(alpha: 0.4)
+      ..strokeWidth = 0.8
       ..style = PaintingStyle.stroke;
 
     // Horizontal grid lines only (more professional)
@@ -232,7 +232,23 @@ abstract class BaseChartPainter extends CustomPainter {
       path.lineTo(size.width, y);
     }
 
-    canvas.drawPath(path, paint);
+    canvas.drawPath(path, gridPaint);
+    
+    // Add subtle vertical grid lines for better readability
+    final verticalLines = 6;
+    final verticalSpacing = size.width / verticalLines;
+    final verticalPath = Path();
+    final verticalPaint = Paint()
+      ..color = theme.gridColor.withValues(alpha: 0.2)
+      ..strokeWidth = 0.5
+      ..style = PaintingStyle.stroke;
+    
+    for (int i = 1; i < verticalLines; i++) {
+      final x = verticalSpacing * i;
+      verticalPath.moveTo(x, 0);
+      verticalPath.lineTo(x, size.height);
+    }
+    canvas.drawPath(verticalPath, verticalPaint);
   }
 
   /// Draw axis lines.
@@ -262,20 +278,34 @@ abstract class BaseChartPainter extends CustomPainter {
   ) {
     if (!showAxis || !theme.showAxis) return;
 
-    final paint = Paint()
-      ..color = theme.axisColor.withValues(alpha: 0.6)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
+    // Enhanced axis styling with better visibility
+    final axisPaint = Paint()
+      ..color = theme.axisColor.withValues(alpha: 0.75)
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
-    // X-axis (bottom) - only bottom axis for cleaner look
+    // X-axis (bottom) - enhanced with subtle shadow effect
     canvas.drawLine(
       Offset(0, size.height),
       Offset(size.width, size.height),
-      paint,
+      axisPaint,
     );
 
-    // Y-axis (left)
-    canvas.drawLine(const Offset(0, 0), Offset(0, size.height), paint);
+    // Y-axis (left) - enhanced
+    canvas.drawLine(const Offset(0, 0), Offset(0, size.height), axisPaint);
+    
+    // Add subtle axis highlights for depth
+    final highlightPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.3)
+      ..strokeWidth = 0.5
+      ..style = PaintingStyle.stroke;
+    
+    canvas.drawLine(
+      Offset(0, size.height - 0.5),
+      Offset(size.width, size.height - 0.5),
+      highlightPaint,
+    );
   }
 
   /// Draw axis labels (optimized with text style caching).

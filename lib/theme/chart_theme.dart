@@ -150,8 +150,8 @@ class ChartTheme {
         Color(0xFF10B981), // Emerald
         Color(0xFFF59E0B), // Amber
       ],
-      shadowElevation: 6.0,
-      borderRadius: 20.0,
+      shadowElevation: 8.0,
+      borderRadius: 24.0,
     );
   }
 
@@ -181,8 +181,8 @@ class ChartTheme {
         Color(0xFF34D399), // Light Emerald
         Color(0xFFFBBF24), // Light Amber
       ],
-      shadowElevation: 12.0,
-      borderRadius: 20.0,
+      shadowElevation: 16.0,
+      borderRadius: 24.0,
     );
   }
 
