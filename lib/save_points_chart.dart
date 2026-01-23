@@ -32,7 +32,7 @@
 /// ```
 library;
 
-// Models
+// Models - Export first so ChartDataSet and ChartDataPoint are available when importing widgets
 export 'models/chart_data.dart';
 export 'models/chart_interaction.dart';
 export 'utils/chart_interaction_helper.dart';
@@ -40,7 +40,7 @@ export 'utils/chart_interaction_helper.dart';
 // Theme
 export 'theme/chart_theme.dart';
 
-// Widgets
+// Widgets - All chart widgets automatically include ChartDataSet and ChartDataPoint via models export above
 export 'widgets/line_chart_widget.dart';
 export 'widgets/bar_chart_widget.dart';
 export 'widgets/area_chart_widget.dart';
