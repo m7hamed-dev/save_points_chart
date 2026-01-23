@@ -378,6 +378,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   Widget _buildLineChart(ChartTheme chartTheme) {
     final lineDataSets = SampleData.generateMultiLineData();
     final usersDataSets = SampleData.generateUsersData();
+
+    /// Line Chart
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(

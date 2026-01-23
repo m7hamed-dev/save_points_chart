@@ -18,7 +18,8 @@ class SampleData {
   }
 
   static List<ChartDataSet> generateMultiLineData() {
-    final List<ChartDataSet> sales = List.generate(12, (index) {
+    /// Sales Data Set
+    final List<ChartDataSet> sales = List.generate(9, (index) {
       return ChartDataSet(
         color: const Color(0xFF6366F1),
         label: 'M${index + 1}',
@@ -29,7 +30,9 @@ class SampleData {
         ),
       );
     });
-    final List<ChartDataSet> revenue = List.generate(12, (index) {
+
+    /// Revenue Data Set
+    final List<ChartDataSet> revenue = List.generate(9, (index) {
       return ChartDataSet(
         color: const Color(0xFF10B981),
         label: 'M${index + 1}',
