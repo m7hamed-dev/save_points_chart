@@ -62,6 +62,7 @@ class LineChartWidget extends StatefulWidget {
   final bool useNeumorphism;
   final ChartPointCallback? onPointTap;
   final ChartPointHoverCallback? onPointHover;
+  final ChartTapCallback? onChartTap;
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
@@ -90,6 +91,7 @@ class LineChartWidget extends StatefulWidget {
     this.useNeumorphism = false,
     this.onPointTap,
     this.onPointHover,
+    this.onChartTap,
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
@@ -312,6 +314,10 @@ class _LineChartWidgetState extends State<LineChartWidget>
                               setState(() {
                                 _selectedPoint = null;
                               });
+                              // Call onChartTap if no point was hit
+                              if (widget.onChartTap != null) {
+                                widget.onChartTap!(globalPosition);
+                              }
                             }
                           }
                         : null,

@@ -16,10 +16,11 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 ///
 /// ## Features
 /// - Multiple data series support with distinct colors
-/// - Interactive bubble tapping with haptic feedback
+/// - Interactive bubble tapping with haptic feedback ([onBubbleTap])
+/// - Hover support for desktop/web platforms ([onBubbleHover])
+/// - Background tap handling ([onChartTap])
 /// - Customizable bubble size range ([minBubbleSize], [maxBubbleSize])
 /// - Smooth entrance animations
-/// - Hover support for desktop/web platforms
 /// - Full theme support (light/dark mode)
 /// - Glassmorphism and neumorphism effects
 /// - Optimized rendering with bounds caching
@@ -42,6 +43,14 @@ import 'package:save_points_chart/widgets/chart_context_menu.dart';
 ///   maxBubbleSize: 30.0,
 ///   onBubbleTap: (point, datasetIndex, pointIndex, position) {
 ///     print('Tapped bubble: ${point.y}');
+///   },
+///   onBubbleHover: (point, datasetIndex, pointIndex) {
+///     if (point != null) {
+///       showTooltip('Bubble: ${point.y}');
+///     }
+///   },
+///   onChartTap: (position) {
+///     // Handle background tap
 ///   },
 /// )
 /// ```
@@ -66,8 +75,9 @@ class BubbleChartWidget extends StatefulWidget {
   final String? subtitle;
   final bool useGlassmorphism;
   final bool useNeumorphism;
-  final ChartPointCallback? onBubbleTap;
-  final ChartPointHoverCallback? onBubbleHover;
+  final BubbleTapCallback? onBubbleTap;
+  final BubbleHoverCallback? onBubbleHover;
+  final ChartTapCallback? onChartTap;
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
@@ -94,6 +104,9 @@ class BubbleChartWidget extends StatefulWidget {
   ///   minBubbleSize: 5.0,
   ///   maxBubbleSize: 30.0,
   ///   onBubbleTap: handleBubbleTap,
+  ///   onChartTap: (position) {
+  ///     // Handle background tap
+  ///   },
   /// )
   /// ```
   BubbleChartWidget({
@@ -111,6 +124,7 @@ class BubbleChartWidget extends StatefulWidget {
     this.useNeumorphism = false,
     this.onBubbleTap,
     this.onBubbleHover,
+    this.onChartTap,
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
@@ -360,6 +374,10 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                               setState(() {
                                 _selectedBubble = null;
                               });
+                              // Call onChartTap if no bubble was hit
+                              if (widget.onChartTap != null) {
+                                widget.onChartTap!(globalPosition);
+                              }
                             }
                           }
                         : null,

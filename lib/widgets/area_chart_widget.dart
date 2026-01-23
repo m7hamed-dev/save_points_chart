@@ -121,6 +121,12 @@ class AreaChartWidget extends StatefulWidget {
   /// Optional. If null, tapping is disabled.
   final ChartPointCallback? onPointTap;
 
+  /// Callback invoked when the chart background (empty area) is tapped.
+  ///
+  /// Provides the global tap position. Only fires when tapping on empty chart area
+  /// (not on data points). Optional. If null, background taps are ignored.
+  final ChartTapCallback? onChartTap;
+
   /// Whether the chart is in a loading state.
   ///
   /// When true, a loading indicator is displayed. Defaults to false.
@@ -171,6 +177,7 @@ class AreaChartWidget extends StatefulWidget {
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.onPointTap,
+    this.onChartTap,
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
@@ -280,6 +287,13 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                             240,
                           );
 
+                          // Get global position for context menu and callbacks
+                          final RenderBox? renderBox =
+                              context.findRenderObject() as RenderBox?;
+                          final globalPosition = renderBox != null
+                              ? renderBox.localToGlobal(details.localPosition)
+                              : details.localPosition;
+
                           final result =
                               ChartInteractionHelper.findNearestPoint(
                             chartPosition,
@@ -301,13 +315,6 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                               _selectedPoint = result;
                             });
 
-                            // Get global position for context menu
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
                             // Small delay to ensure overlay is removed before showing new menu
                             Future.microtask(() {
                               widget.onPointTap?.call(
@@ -322,6 +329,10 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                             setState(() {
                               _selectedPoint = null;
                             });
+                            // Call onChartTap if no point was hit
+                            if (widget.onChartTap != null) {
+                              widget.onChartTap!(globalPosition);
+                            }
                           }
                         }
                       : null,
