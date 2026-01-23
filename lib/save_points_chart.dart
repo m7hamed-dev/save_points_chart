@@ -58,5 +58,3 @@ export 'providers/theme_provider.dart';
 
 // Utilities
 export 'utils/chart_interaction_helper.dart';
-export 'utils/performance_utils.dart';
-export 'utils/chart_cache.dart';
