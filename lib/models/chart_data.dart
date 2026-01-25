@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 ///   y: 10.5,
 ///   label: 'January',
 /// )
-/// 
+///
 /// ```
 ///
 /// See also:
@@ -282,7 +282,7 @@ class BubbleDataSet {
   BubbleDataSet({
     required this.color,
     required this.dataPoints,
-  })  : assert(
+  }) : assert(
           dataPoints.isNotEmpty,
           'BubbleDataSet dataPoints must not be empty',
         );
@@ -302,8 +302,7 @@ class BubbleDataSet {
   }
 
   @override
-  String toString() =>
-      'BubbleDataSet(color: $color, dataPoints: $dataPoints)';
+  String toString() => 'BubbleDataSet(color: $color, dataPoints: $dataPoints)';
 
   @override
   bool operator ==(Object other) =>
@@ -342,7 +341,7 @@ class ChartDataSet {
   /// The single data point in this dataset.
   ///
   /// Each dataset represents one point on the chart.
-  /// The label is stored in [dataPoint.label].
+  // / The label is stored in [dataPoint.label].
   final ChartDataPoint dataPoint;
 
   /// The color used to render this data point.
@@ -375,8 +374,7 @@ class ChartDataSet {
   }
 
   @override
-  String toString() =>
-      'ChartDataSet(point: $dataPoint, color: $color)';
+  String toString() => 'ChartDataSet(point: $dataPoint, color: $color)';
 
   @override
   bool operator ==(Object other) =>
@@ -503,7 +501,7 @@ class RadarDataSet {
   RadarDataSet({
     required this.color,
     required this.dataPoints,
-  })  : assert(
+  }) : assert(
           dataPoints.isNotEmpty,
           'RadarDataSet dataPoints must not be empty',
         );
@@ -523,8 +521,7 @@ class RadarDataSet {
   }
 
   @override
-  String toString() =>
-      'RadarDataSet(color: $color, dataPoints: $dataPoints)';
+  String toString() => 'RadarDataSet(color: $color, dataPoints: $dataPoints)';
 
   @override
   bool operator ==(Object other) =>
