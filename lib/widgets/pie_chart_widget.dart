@@ -82,6 +82,32 @@ class _PieChartWidgetState extends State<PieChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    
+    // Handle empty data case
+    if (widget.data.isEmpty) {
+      return ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        child: Center(
+          child: Text(
+            'No data available',
+            style: TextStyle(
+              color: effectiveTheme.textColor.withValues(alpha: 0.5),
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+    }
+    
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
 
     final Widget content = Row(

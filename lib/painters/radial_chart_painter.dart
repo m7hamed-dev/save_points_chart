@@ -45,6 +45,12 @@ class RadialChartPainter extends BaseChartPainter {
 
     // Collect all points from all datasets
     final points = dataSets.map((ds) => ds.dataPoint).toList();
+    
+    // Check if points is empty before reduce
+    if (points.isEmpty) {
+      return;
+    }
+    
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
 
     // Validate maxValue

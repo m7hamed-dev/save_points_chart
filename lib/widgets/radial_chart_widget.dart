@@ -258,10 +258,14 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
     // Collect all points from all datasets
     final points = widget.dataSets.map((ds) => ds.dataPoint).toList();
+    
+    // Check if points is empty before reduce
+    if (points.isEmpty) return null;
+    
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
 
     // Validate maxValue
-    if (maxValue <= 0 || !maxValue.isFinite || points.isEmpty) return null;
+    if (maxValue <= 0 || !maxValue.isFinite) return null;
 
     final angleStep = 2 * math.pi / points.length;
 
