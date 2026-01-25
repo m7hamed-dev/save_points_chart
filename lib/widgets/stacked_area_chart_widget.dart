@@ -50,6 +50,9 @@ class StackedAreaChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   const StackedAreaChartWidget({
     super.key,
@@ -70,6 +73,9 @@ class StackedAreaChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   }) : assert(dataSets.length > 1, 'Provide at least two datasets to stack.');
 
   @override
@@ -108,12 +114,16 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
 
     final cumulativeDataSets = _buildCumulativeDataSets(widget.dataSets);
 
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -124,6 +134,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -241,6 +252,15 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
         ),
       ),
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 
   List<ChartDataSet> _buildCumulativeDataSets(List<ChartDataSet> sets) {

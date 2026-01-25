@@ -27,6 +27,9 @@ class PieChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   const PieChartWidget({
     super.key,
@@ -46,6 +49,9 @@ class PieChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   });
 
   @override
@@ -80,12 +86,16 @@ class _PieChartWidgetState extends State<PieChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     
     // Handle empty data case
     if (widget.data.isEmpty) {
-      return ChartContainer(
+      Widget container = ChartContainer(
         theme: effectiveTheme,
         title: widget.title,
         subtitle: widget.subtitle,
@@ -96,6 +106,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
         isLoading: widget.isLoading,
         isError: widget.isError,
         errorMessage: widget.errorMessage,
+        padding: widget.padding,
         child: Center(
           child: Text(
             'No data available',
@@ -106,6 +117,15 @@ class _PieChartWidgetState extends State<PieChartWidget>
           ),
         ),
       );
+      
+      if (widget.margin != null) {
+        container = Padding(
+          padding: widget.margin!,
+          child: container,
+        );
+      }
+      
+      return container;
     }
     
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
@@ -241,7 +261,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
       ],
     );
 
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -252,7 +272,17 @@ class _PieChartWidgetState extends State<PieChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: content,
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 }

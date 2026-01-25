@@ -69,6 +69,9 @@ class StackedColumnChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   StackedColumnChartWidget({
     super.key,
@@ -90,6 +93,9 @@ class StackedColumnChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   })  : assert(
           dataSets.isNotEmpty,
           'StackedColumnChartWidget requires at least one data set',
@@ -129,9 +135,13 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -142,6 +152,7 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -255,5 +266,14 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
         ),
       ),
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 }

@@ -28,6 +28,9 @@ class RadialChartWidget extends StatefulWidget {
   final ChartPointCallback? onPointTap;
   final ChartPointHoverCallback? onPointHover;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   const RadialChartWidget({
     super.key,
@@ -49,6 +52,9 @@ class RadialChartWidget extends StatefulWidget {
     this.onPointTap,
     this.onPointHover,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   });
 
   @override
@@ -84,9 +90,13 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -97,6 +107,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -197,6 +208,15 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
         ),
       ),
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 
   /// Handle mouse hover events

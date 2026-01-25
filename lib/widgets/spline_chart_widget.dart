@@ -59,6 +59,9 @@ class SplineChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   SplineChartWidget({
     super.key,
@@ -82,6 +85,9 @@ class SplineChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   })  : assert(
           dataSets.isNotEmpty,
           'SplineChartWidget requires at least one data set',
@@ -194,9 +200,13 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -207,6 +217,7 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -316,5 +327,14 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
         ),
       ),
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 }

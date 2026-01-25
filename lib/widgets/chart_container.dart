@@ -35,7 +35,7 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 class ChartContainer extends StatelessWidget {
   final Widget child;
   final ChartTheme? theme;
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final String? title;
   final String? subtitle;
   final Widget? header;
@@ -74,7 +74,7 @@ class ChartContainer extends StatelessWidget {
     super.key,
     required this.child,
     this.theme,
-    this.padding = const EdgeInsets.all(16.0),
+    this.padding,
     this.title,
     this.subtitle,
     this.header,
@@ -90,8 +90,9 @@ class ChartContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveTheme =
         theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectivePadding = padding ?? const EdgeInsets.all(16.0);
     Widget container = Container(
-      padding: padding,
+      padding: effectivePadding,
       decoration: BoxDecoration(
         color: effectiveTheme.backgroundColor,
         borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
@@ -288,7 +289,7 @@ class ChartContainer extends StatelessWidget {
           : Colors.white.withValues(alpha: 0.9);
 
       container = Container(
-        padding: padding,
+        padding: effectivePadding,
         decoration: BoxDecoration(
           color: effectiveTheme.backgroundColor,
           borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),

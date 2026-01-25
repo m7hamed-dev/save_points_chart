@@ -30,6 +30,9 @@ class DonutChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   });
 
   final List<PieData> data;
@@ -49,6 +52,9 @@ class DonutChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   @override
   State<DonutChartWidget> createState() => _DonutChartWidgetState();
@@ -82,12 +88,16 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     
     // Handle empty data case
     if (widget.data.isEmpty) {
-      return ChartContainer(
+      Widget container = ChartContainer(
         theme: effectiveTheme,
         title: widget.title,
         subtitle: widget.subtitle,
@@ -98,6 +108,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         isLoading: widget.isLoading,
         isError: widget.isError,
         errorMessage: widget.errorMessage,
+        padding: widget.padding,
         child: Center(
           child: Text(
             'No data available',
@@ -108,6 +119,15 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
           ),
         ),
       );
+      
+      if (widget.margin != null) {
+        container = Padding(
+          padding: widget.margin!,
+          child: container,
+        );
+      }
+      
+      return container;
     }
     
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
@@ -270,7 +290,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       ],
     );
 
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -281,7 +301,17 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: content,
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 }

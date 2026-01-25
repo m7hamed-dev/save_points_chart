@@ -28,6 +28,9 @@ class SparklineChartWidget extends StatefulWidget {
   final String? errorMessage;
   final ChartPointCallback? onPointTap;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   const SparklineChartWidget({
     super.key,
@@ -49,6 +52,9 @@ class SparklineChartWidget extends StatefulWidget {
     this.errorMessage,
     this.onPointTap,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   });
 
   @override
@@ -107,7 +113,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -118,7 +124,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
-      padding: const EdgeInsets.all(12.0),
+      padding: widget.padding ?? const EdgeInsets.all(12.0),
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -234,5 +240,14 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
         ),
       ),
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 }

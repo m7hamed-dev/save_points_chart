@@ -64,6 +64,9 @@ class StepLineChartWidget extends StatefulWidget {
   final bool isError;
   final String? errorMessage;
   final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final bool show;
 
   StepLineChartWidget({
     super.key,
@@ -87,6 +90,9 @@ class StepLineChartWidget extends StatefulWidget {
     this.isError = false,
     this.errorMessage,
     this.height,
+    this.padding,
+    this.margin,
+    this.show = true,
   })  : assert(
           dataSets.isNotEmpty,
           'StepLineChartWidget requires at least one data set',
@@ -199,9 +205,13 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.show) {
+      return const SizedBox.shrink();
+    }
+    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    return ChartContainer(
+    Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
       subtitle: widget.subtitle,
@@ -212,6 +222,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
       isLoading: widget.isLoading,
       isError: widget.isError,
       errorMessage: widget.errorMessage,
+      padding: widget.padding,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -321,5 +332,14 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
         ),
       ),
     );
+    
+    if (widget.margin != null) {
+      container = Padding(
+        padding: widget.margin!,
+        child: container,
+      );
+    }
+    
+    return container;
   }
 }
