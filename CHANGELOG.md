@@ -394,6 +394,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved clipping boundaries for better point visibility
 - Refactored data models for better label handling
 
+## [1.7.1] - 2025-01-26
+
+### Fixed
+- Version update and documentation improvements
+
 ## [1.7.0] - 2025-01-25
 
 ### Changed
