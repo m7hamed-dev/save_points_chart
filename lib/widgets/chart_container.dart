@@ -88,9 +88,14 @@ class ChartContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Theme
     final effectiveTheme =
         theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+
+    /// Padding
     final effectivePadding = padding ?? const EdgeInsets.all(16.0);
+
+    /// Outer container
     Widget container = Container(
       padding: effectivePadding,
       decoration: BoxDecoration(
@@ -102,23 +107,10 @@ class ChartContainer extends StatelessWidget {
         boxShadow: [
           // Soft outer shadow (enhanced)
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: effectiveTheme.shadowElevation * 4,
             offset: Offset(0, effectiveTheme.shadowElevation * 0.6),
-            spreadRadius: 1,
-          ),
-          // Medium shadow for depth
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: effectiveTheme.shadowElevation * 2,
-            offset: Offset(0, effectiveTheme.shadowElevation * 0.3),
-          ),
-          // Inner highlight (enhanced)
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.15),
-            blurRadius: 3,
-            offset: const Offset(0, -1),
-            spreadRadius: -2,
+            spreadRadius: 5.0,
           ),
         ],
       ),
@@ -281,9 +273,8 @@ class ChartContainer extends StatelessWidget {
 
     if (useNeumorphism) {
       final isDark = effectiveTheme.backgroundColor.computeLuminance() < 0.5;
-      final shadowColor = isDark
-          ? Colors.black.withValues(alpha: 0.6)
-          : Colors.grey.shade400;
+      final shadowColor =
+          isDark ? Colors.black.withValues(alpha: 0.6) : Colors.grey.shade400;
       final highlightColor = isDark
           ? Colors.white.withValues(alpha: 0.08)
           : Colors.white.withValues(alpha: 0.9);

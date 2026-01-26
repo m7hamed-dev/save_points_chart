@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// ChartTheme.light().copyWith(
 ///   xAxisLabelRotation: LabelRotation.diagonalDown, // 45 degrees
 /// )
-/// 
+///
 /// // Or use custom degrees:
 /// ChartDataPoint(
 ///   x: 1,
@@ -19,28 +19,28 @@ import 'package:flutter/material.dart';
 class LabelRotation {
   /// No rotation (horizontal labels)
   static const int none = 0;
-  
+
   /// 45 degrees clockwise (slanted down to the right)
   static const int diagonalDown = 45;
-  
+
   /// 45 degrees counter-clockwise (slanted up to the right)
   static const int diagonalUp = -45;
-  
+
   /// 90 degrees clockwise (vertical, reading top to bottom)
   static const int vertical = 90;
-  
+
   /// 90 degrees counter-clockwise (vertical, reading bottom to top)
   static const int verticalUp = -90;
-  
+
   /// 30 degrees clockwise
   static const int slightDown = 30;
-  
+
   /// 30 degrees counter-clockwise
   static const int slightUp = -30;
-  
+
   /// 60 degrees clockwise
   static const int steepDown = 60;
-  
+
   /// 60 degrees counter-clockwise
   static const int steepUp = -60;
 }
@@ -88,7 +88,7 @@ class ChartTheme {
   final bool showAxis;
   final bool showLegend;
   final bool showTooltip;
-  
+
   /// Rotation angle for X-axis labels in degrees.
   ///
   /// Defaults to 0 (horizontal). Common values:
@@ -99,7 +99,7 @@ class ChartTheme {
   /// See also:
   /// - [LabelRotation] for common rotation constants
   final int xAxisLabelRotation;
-  
+
   /// Rotation angle for Y-axis labels in degrees.
   ///
   /// Defaults to 0 (horizontal). Usually kept at 0 for Y-axis.
