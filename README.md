@@ -35,7 +35,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.5.2
+  save_points_chart: ^1.7.0
 ```
 
 Then run:
