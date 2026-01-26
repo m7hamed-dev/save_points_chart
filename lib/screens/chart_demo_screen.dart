@@ -606,6 +606,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BarChartWidget(
+            barRounded: false,
             dataSets: barDataSets,
             theme: chartTheme,
             title: 'Monthly Sales',
@@ -646,6 +647,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           const SizedBox(height: 24),
           BarChartWidget(
+            barRounded: false,
             dataSets: SampleData.generateMultiLineData(),
             theme: chartTheme,
             title: 'Grouped Bar Chart',
@@ -656,6 +658,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           const SizedBox(height: 24),
           BarChartWidget(
+            barRounded: false,
             dataSets: SampleData.generateUsersData(),
             theme: chartTheme,
             title: 'Users by Name',

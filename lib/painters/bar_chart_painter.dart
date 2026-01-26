@@ -31,6 +31,11 @@ class BarChartPainter extends BaseChartPainter {
   /// Defaults to 8.0 pixels. Set to 0.0 for square bars.
   final double borderRadius;
 
+  /// Whether bars should have rounded corners.
+  ///
+  /// Defaults to true. When false, bars will have square corners.
+  final bool barRounded;
+
   /// Whether bars should be grouped when multiple data sets are provided.
   ///
   /// When true and multiple data sets exist, bars are grouped side-by-side.
@@ -75,6 +80,7 @@ class BarChartPainter extends BaseChartPainter {
     super.showLabel,
     this.barWidth = 20.0,
     this.borderRadius = 8.0,
+    this.barRounded = true,
     this.isGrouped = false,
     this.animationProgress = 1.0,
     this.selectedBar,
@@ -288,9 +294,10 @@ class BarChartPainter extends BaseChartPainter {
       return;
     }
 
+    final effectiveBorderRadius = barRounded ? borderRadius : 0.0;
     final rect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight),
-      Radius.circular(borderRadius),
+      Radius.circular(effectiveBorderRadius),
     );
 
     // Enhanced gradient with better visual depth
@@ -315,7 +322,7 @@ class BarChartPainter extends BaseChartPainter {
       ..style = PaintingStyle.fill;
     final shadowRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx + 1, adjustedY + 1, width, adjustedHeight),
-      Radius.circular(borderRadius),
+      Radius.circular(effectiveBorderRadius),
     );
     canvas.drawRRect(shadowRect, shadowPaint);
     
@@ -325,7 +332,7 @@ class BarChartPainter extends BaseChartPainter {
     // Enhanced highlight on top with better gradient
     final highlightRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight * 0.25),
-      Radius.circular(borderRadius),
+      Radius.circular(effectiveBorderRadius),
     );
     final highlightAlpha = isSelected ? 0.5 : (isHovered ? 0.35 : 0.25);
     final highlightPaint = Paint()
@@ -358,6 +365,7 @@ class BarChartPainter extends BaseChartPainter {
     if (oldDelegate.animationProgress != animationProgress) return true;
     if (oldDelegate.barWidth != barWidth) return true;
     if (oldDelegate.borderRadius != borderRadius) return true;
+    if (oldDelegate.barRounded != barRounded) return true;
     if (oldDelegate.isGrouped != isGrouped) return true;
     if (oldDelegate.selectedBar != selectedBar) return true;
     if (oldDelegate.hoveredBar != hoveredBar) return true;

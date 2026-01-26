@@ -14,6 +14,7 @@ class BarChartWidget extends StatefulWidget {
   final ChartTheme? theme;
   final double barWidth;
   final double borderRadius;
+  final bool barRounded;
   final bool showGrid;
   final bool showAxis;
   final bool showLabel;
@@ -40,6 +41,7 @@ class BarChartWidget extends StatefulWidget {
     this.theme,
     this.barWidth = 20.0,
     this.borderRadius = 8.0,
+    this.barRounded = true,
     this.showGrid = true,
     this.showAxis = true,
     this.showLabel = true,
@@ -313,12 +315,14 @@ class _BarChartWidgetState extends State<BarChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
+                        size:
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: BarChartPainter(
                           theme: effectiveTheme,
                           dataSets: widget.dataSets,
                           barWidth: widget.barWidth,
                           borderRadius: widget.borderRadius,
+                          barRounded: widget.barRounded,
                           showGrid: widget.showGrid,
                           showAxis: widget.showAxis,
                           showLabel: widget.showLabel,
@@ -337,14 +341,14 @@ class _BarChartWidgetState extends State<BarChartWidget>
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }
