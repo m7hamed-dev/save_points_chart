@@ -67,8 +67,8 @@ class SampleData {
     return [
       const PieData(label: 'Mobile', value: 35, color: Color(0xFF6366F1)),
       const PieData(label: 'Desktop', value: 25, color: Color(0xFF8B5CF6)),
-      const PieData(label: 'Tablet', value: 20, color: Color(0xFFEC4899)),
-      const PieData(label: 'Other', value: 20, color: Color(0xFF10B981)),
+      const PieData(label: 'Tablet', value: 10, color: Color(0xFFEC4899)),
+      const PieData(label: 'Other', value: 30, color: Color(0xFF10B981)),
     ];
   }
 
