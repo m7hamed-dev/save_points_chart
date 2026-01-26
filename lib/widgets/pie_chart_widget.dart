@@ -29,7 +29,7 @@ class PieChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   const PieChartWidget({
     super.key,
@@ -51,7 +51,7 @@ class PieChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   });
 
   @override
@@ -86,10 +86,6 @@ class _PieChartWidgetState extends State<PieChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.shadow) {
-      return const SizedBox.shrink();
-    }
-    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     
@@ -107,6 +103,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
         isError: widget.isError,
         errorMessage: widget.errorMessage,
         padding: widget.padding,
+        boxShadow: widget.boxShadow,
         child: Center(
           child: Text(
             'No data available',
@@ -273,6 +270,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding,
+      boxShadow: widget.boxShadow,
       child: content,
     );
     

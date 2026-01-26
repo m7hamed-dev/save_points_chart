@@ -386,6 +386,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LineChartWidget(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
             dataSets: lineDataSets,
             theme: chartTheme,
             title: 'Sales & Revenue Trend',

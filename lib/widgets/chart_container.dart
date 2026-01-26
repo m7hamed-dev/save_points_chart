@@ -45,11 +45,14 @@ class ChartContainer extends StatelessWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+  final List<BoxShadow>? boxShadow;
 
   /// Creates a chart container.
   ///
   /// [child] is required and should be the chart widget to display.
   /// [theme] is optional and will be inferred from the Material theme if not provided.
+  /// [boxShadow] is optional and allows custom shadow configuration. If not provided,
+  /// default shadows will be used based on the selected visual style.
   ///
   /// The container supports three visual styles:
   /// - Default: Clean card with subtle shadows
@@ -67,6 +70,13 @@ class ChartContainer extends StatelessWidget {
   ///   isLoading: isLoading,
   ///   isError: hasError,
   ///   errorMessage: errorMessage,
+  ///   boxShadow: [
+  ///     BoxShadow(
+  ///       color: Colors.black.withValues(alpha: 0.1),
+  ///       blurRadius: 10,
+  ///       offset: Offset(0, 4),
+  ///     ),
+  ///   ],
   ///   child: MyChart(...),
   /// )
   /// ```
@@ -84,6 +94,7 @@ class ChartContainer extends StatelessWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.boxShadow,
   });
 
   @override
@@ -104,15 +115,16 @@ class ChartContainer extends StatelessWidget {
         border: Border.all(
           color: effectiveTheme.gridColor.withValues(alpha: 0.3),
         ),
-        boxShadow: [
-          // Soft outer shadow (enhanced)
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: effectiveTheme.shadowElevation * 4,
-            offset: Offset(0, effectiveTheme.shadowElevation * 0.6),
-            spreadRadius: 5.0,
-          ),
-        ],
+        boxShadow: boxShadow ??
+            [
+              // Soft outer shadow (enhanced)
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: effectiveTheme.shadowElevation * 4,
+                offset: Offset(0, effectiveTheme.shadowElevation * 0.6),
+                spreadRadius: 5.0,
+              ),
+            ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,18 +260,19 @@ class ChartContainer extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.25),
             width: 1.5,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 24,
-              spreadRadius: -2,
-            ),
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(-2, -2),
-            ),
-          ],
+          boxShadow: boxShadow ??
+              [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 24,
+                  spreadRadius: -2,
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(-2, -2),
+                ),
+              ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
@@ -284,27 +297,28 @@ class ChartContainer extends StatelessWidget {
         decoration: BoxDecoration(
           color: effectiveTheme.backgroundColor,
           borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
-          boxShadow: [
-            // Dark shadow (bottom right)
-            BoxShadow(
-              color: shadowColor,
-              blurRadius: 24,
-              offset: const Offset(8, 8),
-            ),
-            // Light highlight (top left)
-            BoxShadow(
-              color: highlightColor,
-              blurRadius: 24,
-              offset: const Offset(-8, -8),
-            ),
-            // Inner shadow for depth
-            BoxShadow(
-              color: shadowColor.withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(2, 2),
-              spreadRadius: -4,
-            ),
-          ],
+          boxShadow: boxShadow ??
+              [
+                // Dark shadow (bottom right)
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: 24,
+                  offset: const Offset(8, 8),
+                ),
+                // Light highlight (top left)
+                BoxShadow(
+                  color: highlightColor,
+                  blurRadius: 24,
+                  offset: const Offset(-8, -8),
+                ),
+                // Inner shadow for depth
+                BoxShadow(
+                  color: shadowColor.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(2, 2),
+                  spreadRadius: -4,
+                ),
+              ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

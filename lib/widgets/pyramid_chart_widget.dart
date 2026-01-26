@@ -53,7 +53,7 @@ class PyramidChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   PyramidChartWidget({
     super.key,
@@ -72,7 +72,7 @@ class PyramidChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   }) : assert(
           data.isNotEmpty,
           'PyramidChartWidget requires at least one data segment',
@@ -110,10 +110,6 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.shadow) {
-      return const SizedBox.shrink();
-    }
-    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     Widget container = ChartContainer(
@@ -128,6 +124,7 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding,
+      boxShadow: widget.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

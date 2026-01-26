@@ -30,7 +30,7 @@ class RadialChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   const RadialChartWidget({
     super.key,
@@ -54,7 +54,7 @@ class RadialChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   });
 
   @override
@@ -90,10 +90,6 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.shadow) {
-      return const SizedBox.shrink();
-    }
-    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     Widget container = ChartContainer(
@@ -108,6 +104,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding,
+      boxShadow: widget.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

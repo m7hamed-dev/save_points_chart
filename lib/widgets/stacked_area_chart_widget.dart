@@ -52,7 +52,7 @@ class StackedAreaChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   const StackedAreaChartWidget({
     super.key,
@@ -75,7 +75,7 @@ class StackedAreaChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   }) : assert(dataSets.length > 1, 'Provide at least two datasets to stack.');
 
   @override
@@ -114,10 +114,6 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.shadow) {
-      return const SizedBox.shrink();
-    }
-    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
 
@@ -135,6 +131,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding,
+      boxShadow: widget.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

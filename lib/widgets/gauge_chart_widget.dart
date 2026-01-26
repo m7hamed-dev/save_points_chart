@@ -65,7 +65,7 @@ class GaugeChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   const GaugeChartWidget({
     super.key,
@@ -94,7 +94,7 @@ class GaugeChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   })  : assert(maxValue > minValue, 'Max value must be greater than min value'),
         assert(segments > 0, 'Segments must be positive');
 
@@ -129,10 +129,6 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.shadow) {
-      return const SizedBox.shrink();
-    }
-    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     Widget container = ChartContainer(
@@ -147,6 +143,7 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding,
+      boxShadow: widget.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

@@ -56,7 +56,7 @@ class RadarChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   RadarChartWidget({
     super.key,
@@ -80,7 +80,7 @@ class RadarChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   })  : assert(
           dataSets.isNotEmpty,
           'RadarChartWidget requires at least one data set',
@@ -120,10 +120,6 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.shadow) {
-      return const SizedBox.shrink();
-    }
-    
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     Widget container = ChartContainer(
@@ -138,6 +134,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding,
+      boxShadow: widget.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

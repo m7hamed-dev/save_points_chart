@@ -30,7 +30,7 @@ class SparklineChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool shadow;
+  final List<BoxShadow>? boxShadow;
 
   const SparklineChartWidget({
     super.key,
@@ -54,7 +54,7 @@ class SparklineChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.shadow = true,
+    this.boxShadow,
   });
 
   @override
@@ -125,6 +125,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       isError: widget.isError,
       errorMessage: widget.errorMessage,
       padding: widget.padding ?? const EdgeInsets.all(12.0),
+      boxShadow: widget.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
