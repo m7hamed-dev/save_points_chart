@@ -443,7 +443,7 @@ The theme automatically updates all charts and widgets that use `ThemeProvider.o
 
 ## 📱 Example App
 
-Try the live demo: **[https://startling-concha-05444f.netlify.app/](https://startling-concha-05444f.netlify.app/)**
+Try the live demo: **[https://save-points-charts.netlify.app/](https://startling-concha-05444f.netlify.app/)**
 
 Or check out the example app in the repository to see all chart types in action.
 
