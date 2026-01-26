@@ -158,7 +158,7 @@ class AreaChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   /// Creates an area chart widget.
   ///
@@ -204,7 +204,7 @@ class AreaChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   });
 
   @override
@@ -243,7 +243,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

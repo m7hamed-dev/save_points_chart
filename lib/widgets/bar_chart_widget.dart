@@ -32,7 +32,7 @@ class BarChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   const BarChartWidget({
     super.key,
@@ -58,7 +58,7 @@ class BarChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   });
 
   @override
@@ -177,7 +177,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

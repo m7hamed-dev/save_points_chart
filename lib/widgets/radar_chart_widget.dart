@@ -56,7 +56,7 @@ class RadarChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   RadarChartWidget({
     super.key,
@@ -80,7 +80,7 @@ class RadarChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   })  : assert(
           dataSets.isNotEmpty,
           'RadarChartWidget requires at least one data set',
@@ -120,7 +120,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

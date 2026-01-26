@@ -30,7 +30,7 @@ class RadialChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   const RadialChartWidget({
     super.key,
@@ -54,7 +54,7 @@ class RadialChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   });
 
   @override
@@ -90,7 +90,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

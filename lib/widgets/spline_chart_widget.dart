@@ -61,7 +61,7 @@ class SplineChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   SplineChartWidget({
     super.key,
@@ -87,7 +87,7 @@ class SplineChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   })  : assert(
           dataSets.isNotEmpty,
           'SplineChartWidget requires at least one data set',
@@ -200,7 +200,7 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

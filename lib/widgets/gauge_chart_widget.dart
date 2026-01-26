@@ -65,7 +65,7 @@ class GaugeChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   const GaugeChartWidget({
     super.key,
@@ -94,7 +94,7 @@ class GaugeChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   })  : assert(maxValue > minValue, 'Max value must be greater than min value'),
         assert(segments > 0, 'Segments must be positive');
 
@@ -129,7 +129,7 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

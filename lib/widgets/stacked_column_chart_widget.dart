@@ -71,7 +71,7 @@ class StackedColumnChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   StackedColumnChartWidget({
     super.key,
@@ -95,7 +95,7 @@ class StackedColumnChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   })  : assert(
           dataSets.isNotEmpty,
           'StackedColumnChartWidget requires at least one data set',
@@ -135,7 +135,7 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

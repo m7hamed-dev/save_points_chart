@@ -32,7 +32,7 @@ class DonutChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   });
 
   final List<PieData> data;
@@ -54,7 +54,7 @@ class DonutChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   @override
   State<DonutChartWidget> createState() => _DonutChartWidgetState();
@@ -88,7 +88,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     

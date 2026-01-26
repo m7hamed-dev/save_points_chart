@@ -30,7 +30,7 @@ class SparklineChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   const SparklineChartWidget({
     super.key,
@@ -54,7 +54,7 @@ class SparklineChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   });
 
   @override

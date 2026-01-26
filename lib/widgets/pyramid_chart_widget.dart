@@ -53,7 +53,7 @@ class PyramidChartWidget extends StatefulWidget {
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final bool show;
+  final bool shadow;
 
   PyramidChartWidget({
     super.key,
@@ -72,7 +72,7 @@ class PyramidChartWidget extends StatefulWidget {
     this.height,
     this.padding,
     this.margin,
-    this.show = true,
+    this.shadow = true,
   }) : assert(
           data.isNotEmpty,
           'PyramidChartWidget requires at least one data segment',
@@ -110,7 +110,7 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.show) {
+    if (!widget.shadow) {
       return const SizedBox.shrink();
     }
     
