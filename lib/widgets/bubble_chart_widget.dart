@@ -67,7 +67,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 /// - `BubbleDataSet` for bubble data structure (import from models)
 class BubbleChartWidget extends StatefulWidget {
   final List<BubbleDataSet> dataSets;
-  final ChartTheme? theme;
   final double minBubbleSize;
   final double maxBubbleSize;
   final bool showGrid;
@@ -77,18 +76,14 @@ class BubbleChartWidget extends StatefulWidget {
   final String? subtitle;
   final Widget? header;
   final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final BubbleTapCallback? onBubbleTap;
   final BubbleHoverCallback? onBubbleHover;
   final ChartTapCallback? onChartTap;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   /// Creates a bubble chart widget.
@@ -121,7 +116,6 @@ class BubbleChartWidget extends StatefulWidget {
   BubbleChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.minBubbleSize = 5.0,
     this.maxBubbleSize = 30.0,
     this.showGrid = true,
@@ -131,18 +125,14 @@ class BubbleChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.onBubbleTap,
     this.onBubbleHover,
     this.onChartTap,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   })  : assert(minBubbleSize > 0, 'Min bubble size must be positive'),
         assert(
@@ -283,9 +273,8 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -300,14 +289,14 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -321,14 +310,14 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

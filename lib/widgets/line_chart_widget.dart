@@ -53,7 +53,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 /// - [AreaChartWidget] for area charts
 class LineChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme? theme;
   final double lineWidth;
   final bool showArea;
   final bool showPoints;
@@ -64,24 +63,20 @@ class LineChartWidget extends StatefulWidget {
   final String? subtitle;
   final Widget? header;
   final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final ChartPointCallback? onPointTap;
   final ChartPointHoverCallback? onPointHover;
   final ChartTapCallback? onChartTap;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   /// Creates a line chart widget.
   ///
   /// [dataSets] must not be empty. Each dataset contains one data point.
-  /// [theme] is required for styling.
+  /// Use [config] for theme, glassmorphism, empty/error messages, and shadows.
   ///
   /// The [lineWidth] defaults to 3.0 pixels. Set [showArea] to true to fill
   /// the area under the line with a gradient. Use [onPointTap] to handle
@@ -89,7 +84,6 @@ class LineChartWidget extends StatefulWidget {
   LineChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.lineWidth = 3.0,
     this.showArea = true,
     this.showPoints = true,
@@ -100,18 +94,14 @@ class LineChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.onPointTap,
     this.onPointHover,
     this.onChartTap,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   })  : assert(lineWidth > 0, 'Line width must be positive'),
         assert(
@@ -229,9 +219,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -244,15 +233,14 @@ class _LineChartWidgetState extends State<LineChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism:
-            widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -266,15 +254,14 @@ class _LineChartWidgetState extends State<LineChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism:
-          widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
         emptyWidget: effectiveEmptyWidget,

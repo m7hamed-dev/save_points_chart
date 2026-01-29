@@ -54,7 +54,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 /// ```
 class StackedColumnChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme? theme;
   final double barWidth;
   final double borderRadius;
   final bool showGrid;
@@ -64,22 +63,17 @@ class StackedColumnChartWidget extends StatefulWidget {
   final String? subtitle;
   final Widget? header;
   final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final BarCallback? onBarTap;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   StackedColumnChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.barWidth = 30.0,
     this.borderRadius = 4.0,
     this.showGrid = true,
@@ -89,16 +83,12 @@ class StackedColumnChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.onBarTap,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   }) : assert(barWidth > 0, 'Bar width must be positive');
 
@@ -135,9 +125,8 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -150,14 +139,14 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -171,14 +160,14 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
         emptyWidget: effectiveEmptyWidget,

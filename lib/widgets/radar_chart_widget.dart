@@ -39,7 +39,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 /// ```
 class RadarChartWidget extends StatefulWidget {
   final List<RadarDataSet> dataSets;
-  final ChartTheme? theme;
   final double maxValue;
   final int gridLevels;
   final bool showGrid;
@@ -49,22 +48,17 @@ class RadarChartWidget extends StatefulWidget {
   final String? subtitle;
   final Widget? header;
   final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final ChartPointCallback? onPointTap;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   RadarChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.maxValue = 100.0,
     this.gridLevels = 5,
     this.showGrid = true,
@@ -74,16 +68,12 @@ class RadarChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.onPointTap,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   })  : assert(maxValue > 0, 'Max value must be positive'),
         assert(gridLevels > 0, 'Grid levels must be positive');
@@ -120,9 +110,8 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -135,14 +124,14 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -156,14 +145,14 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,

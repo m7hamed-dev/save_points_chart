@@ -71,11 +71,6 @@ class AreaChartWidget extends StatefulWidget {
   /// Must not be empty. Each dataset must contain at least one data point.
   final List<ChartDataSet> dataSets;
 
-  /// The theme to use for styling the chart.
-  ///
-  /// If null, the theme will be inferred from the current Material theme.
-  final ChartTheme? theme;
-
   /// The width of the line connecting data points.
   ///
   /// Defaults to 3.0 pixels.
@@ -121,16 +116,6 @@ class AreaChartWidget extends StatefulWidget {
   /// If null, no footer is shown.
   final Widget? footer;
 
-  /// Whether to apply glassmorphism effects to the chart container.
-  ///
-  /// Defaults to false.
-  final bool useGlassmorphism;
-
-  /// Whether to apply neumorphism effects to the chart container.
-  ///
-  /// Defaults to false.
-  final bool useNeumorphism;
-
   /// Callback invoked when a data point is tapped.
   ///
   /// Provides the tapped point, dataset index, point index, and global position.
@@ -153,14 +138,9 @@ class AreaChartWidget extends StatefulWidget {
   /// When true, an error message is displayed. Defaults to false.
   final bool isError;
 
-  /// The error message to display when [isError] is true.
-  ///
-  /// If null, a default error message is shown.
-  final String? errorMessage;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   /// Creates an area chart widget.
@@ -187,7 +167,6 @@ class AreaChartWidget extends StatefulWidget {
   const AreaChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.lineWidth = 3.0,
     this.showPoints = true,
     this.showGrid = true,
@@ -197,17 +176,13 @@ class AreaChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.onPointTap,
     this.onChartTap,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   });
 
@@ -247,9 +222,8 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -262,14 +236,14 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -283,14 +257,14 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
         emptyWidget: effectiveEmptyWidget,

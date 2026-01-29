@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:save_points_chart/main.dart';
 import 'package:save_points_chart/providers/theme_provider.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/theme/charts_config.dart';
 import 'package:save_points_chart/widgets/line_chart_widget.dart';
 import 'package:save_points_chart/widgets/bar_chart_widget.dart';
 import 'package:save_points_chart/widgets/area_chart_widget.dart';
@@ -116,7 +117,16 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         ],
       ),
       drawer: _buildDrawer(),
-      body: _buildChartContent(chartTheme),
+      body: _buildChartContent(
+        chartTheme,
+        ChartsConfig(
+          theme: chartTheme,
+          useGlassmorphism: _useGlassmorphism,
+          useNeumorphism: _useNeumorphism,
+          errorMessage:
+              _isError ? 'Unable to load chart data. Please try again.' : null,
+        ),
+      ),
     );
   }
 
@@ -337,46 +347,46 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildChartContent(ChartTheme chartTheme) {
+  Widget _buildChartContent(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     switch (_selectedIndex) {
       case 0:
-        return _buildLineChart(chartTheme);
+        return _buildLineChart(chartTheme, chartsConfig);
       case 1:
-        return _buildBarChart(chartTheme);
+        return _buildBarChart(chartTheme, chartsConfig);
       case 2:
-        return _buildAreaChart(chartTheme);
+        return _buildAreaChart(chartTheme, chartsConfig);
       case 3:
-        return _buildPieChart(chartTheme);
+        return _buildPieChart(chartTheme, chartsConfig);
       case 4:
-        return _buildDonutChart(chartTheme);
+        return _buildDonutChart(chartTheme, chartsConfig);
       case 5:
-        return _buildRadialChart(chartTheme);
+        return _buildRadialChart(chartTheme, chartsConfig);
       case 6:
-        return _buildSparklineChart(chartTheme);
+        return _buildSparklineChart(chartTheme, chartsConfig);
       case 7:
-        return _buildScatterChart(chartTheme);
+        return _buildScatterChart(chartTheme, chartsConfig);
       case 8:
-        return _buildBubbleChart(chartTheme);
+        return _buildBubbleChart(chartTheme, chartsConfig);
       case 9:
-        return _buildRadarChart(chartTheme);
+        return _buildRadarChart(chartTheme, chartsConfig);
       case 10:
-        return _buildGaugeChart(chartTheme);
+        return _buildGaugeChart(chartTheme, chartsConfig);
       case 11:
-        return _buildSplineChart(chartTheme);
+        return _buildSplineChart(chartTheme, chartsConfig);
       case 12:
-        return _buildStepLineChart(chartTheme);
+        return _buildStepLineChart(chartTheme, chartsConfig);
       case 13:
-        return _buildStackedColumnChart(chartTheme);
+        return _buildStackedColumnChart(chartTheme, chartsConfig);
       case 14:
-        return _buildPyramidChart(chartTheme);
+        return _buildPyramidChart(chartTheme, chartsConfig);
       case 15:
-        return _buildFunnelChart(chartTheme);
+        return _buildFunnelChart(chartTheme, chartsConfig);
       default:
-        return _buildLineChart(chartTheme);
+        return _buildLineChart(chartTheme, chartsConfig);
     }
   }
 
-  Widget _buildLineChart(ChartTheme chartTheme) {
+  Widget _buildLineChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final lineDataSets = SampleData.generateMultiLineData();
     final usersDataSets = SampleData.generateUsersData();
 
@@ -387,24 +397,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LineChartWidget(
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: Colors.black.withValues(alpha: 0.1),
-            //     blurRadius: 10,
-            //     offset: const Offset(0, 4),
-            //   ),
-            // ],
             dataSets: lineDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Sales & Revenue Trend',
             subtitle: 'Last 12 months performance - Hover or tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             isLoading: _isLoading,
             isError: _isError,
-            errorMessage: _isError
-                ? 'Unable to load chart data. Please try again.'
-                : null,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= lineDataSets.length) {
                 return;
@@ -504,20 +502,16 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   ),
                 )
                 .toList(),
-            theme: chartTheme.copyWith(showGrid: false),
+            config: chartsConfig,
             title: 'Temperature Over Time',
             subtitle: 'Without grid lines',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
           ),
           const SizedBox(height: 24),
           LineChartWidget(
             dataSets: usersDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Users by Name (No Labels)',
             subtitle: 'User data without axis labels',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= usersDataSets.length) {
                 return;
@@ -555,11 +549,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           LineChartWidget(
             dataSets: usersDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Users by Name',
             subtitle: 'User data visualization - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= usersDataSets.length) {
                 return;
@@ -599,7 +591,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildBarChart(ChartTheme chartTheme) {
+  Widget _buildBarChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final barDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -609,11 +601,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           BarChartWidget(
             barRounded: false,
             dataSets: barDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Monthly Sales',
             subtitle: 'Quarterly breakdown - Tap on bars!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onBarTap: (point, datasetIndex, barIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= barDataSets.length) {
                 return;
@@ -650,22 +640,18 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           BarChartWidget(
             barRounded: false,
             dataSets: SampleData.generateMultiLineData(),
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Grouped Bar Chart',
             subtitle: 'Multiple datasets comparison',
             isGrouped: true,
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
           ),
           const SizedBox(height: 24),
           BarChartWidget(
             barRounded: false,
             dataSets: SampleData.generateUsersData(),
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Users by Name',
             subtitle: 'User data visualization - Tap on bars!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onBarTap: (point, datasetIndex, barIndex, position) {
               final userLabel = point.label ?? 'User ${point.x.toInt() + 1}';
               final dataSet = SampleData.generateUsersData()[datasetIndex];
@@ -702,7 +688,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildAreaChart(ChartTheme chartTheme) {
+  Widget _buildAreaChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final areaDataSets = SampleData.generateMultiLineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -711,11 +697,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           AreaChartWidget(
             dataSets: areaDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Revenue Area Chart',
             subtitle: 'Filled area visualization - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= areaDataSets.length) {
                 return;
@@ -758,20 +742,16 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 ),
               ),
             ],
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Growth Metrics',
             subtitle: 'Single dataset area chart',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
           ),
           const SizedBox(height: 24),
           AreaChartWidget(
             dataSets: SampleData.generateUsersData(),
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Users Growth Trend',
             subtitle: 'User data as area chart - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               final userLabel = point.label ?? 'User ${point.x.toInt() + 1}';
               final dataSet = SampleData.generateUsersData()[datasetIndex];
@@ -808,7 +788,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildPieChart(ChartTheme chartTheme) {
+  Widget _buildPieChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -816,11 +796,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           PieChartWidget(
             data: SampleData.generatePieData(),
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Device Distribution',
             subtitle: 'User devices breakdown - Tap on segments!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onSegmentTap: (segment, segmentIndex, position) {
               ChartContextMenuHelper.show(
                 context,
@@ -854,17 +832,15 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildDonutChart(ChartTheme chartTheme) {
+  Widget _buildDonutChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: DonutChartWidget(
         // height: 900,
         data: SampleData.generatePieData(),
-        theme: chartTheme,
+        config: chartsConfig,
         title: 'Sales Distribution',
         subtitle: 'Donut chart with center value - Tap on segments!',
-        useGlassmorphism: _useGlassmorphism,
-        useNeumorphism: _useNeumorphism,
         onSegmentTap: (segment, segmentIndex, position) {
           ChartContextMenuHelper.show(
             context,
@@ -896,7 +872,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildRadialChart(ChartTheme chartTheme) {
+  Widget _buildRadialChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final radialDataSets = SampleData.generateRadialData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -905,11 +881,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           RadialChartWidget(
             dataSets: radialDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Performance Metrics',
             subtitle: 'Multi-dimensional analysis - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= radialDataSets.length) {
                 return;
@@ -950,7 +924,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildSparklineChart(ChartTheme chartTheme) {
+  Widget _buildSparklineChart(
+      ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final sparklineDataSets = SampleData.generateSparklineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -959,11 +934,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           SparklineChartWidget(
             dataSets: sparklineDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Trend Analysis',
             subtitle: 'Compact sparkline visualization - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 ||
                   datasetIndex >= sparklineDataSets.length) {
@@ -1018,10 +991,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       ),
                     );
                   }),
-                  theme: chartTheme,
+                  config: chartsConfig,
                   title: 'Positive Trend',
-                  useGlassmorphism: _useGlassmorphism,
-                  useNeumorphism: _useNeumorphism,
                   onPointTap: (point, datasetIndex, pointIndex, position) {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
@@ -1080,10 +1051,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                           ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
                     );
                   }),
-                  theme: chartTheme,
+                  config: chartsConfig,
                   title: 'Negative Trend',
-                  useGlassmorphism: _useGlassmorphism,
-                  useNeumorphism: _useNeumorphism,
                   onPointTap: (point, datasetIndex, pointIndex, position) {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
@@ -1136,7 +1105,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildScatterChart(ChartTheme chartTheme) {
+  Widget _buildScatterChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final scatterDataSets = SampleData.generateScatterData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1145,11 +1114,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           ScatterChartWidget(
             dataSets: scatterDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Product Correlation',
             subtitle: 'Scatter plot showing relationship - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= scatterDataSets.length) {
                 return;
@@ -1181,7 +1148,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildBubbleChart(ChartTheme chartTheme) {
+  Widget _buildBubbleChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final bubbleDataSets = SampleData.generateBubbleData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1190,11 +1157,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           BubbleChartWidget(
             dataSets: bubbleDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Regional Performance',
             subtitle: 'Bubble chart with size dimension - Tap on bubbles!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onBubbleTap: (point, datasetIndex, pointIndex, position) {
               // Add bounds checking to prevent RangeError
               if (datasetIndex < 0 || datasetIndex >= bubbleDataSets.length) {
@@ -1232,7 +1197,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildRadarChart(ChartTheme chartTheme) {
+  Widget _buildRadarChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final radarDataSets = SampleData.generateRadarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1241,11 +1206,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           RadarChartWidget(
             dataSets: radarDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Team Performance Comparison',
             subtitle: 'Multi-dimensional radar chart - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= radarDataSets.length) {
                 return;
@@ -1281,7 +1244,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildGaugeChart(ChartTheme chartTheme) {
+  Widget _buildGaugeChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -1289,13 +1252,11 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           GaugeChartWidget(
             value: 75,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Performance Score',
             subtitle: 'Current performance metric - Tap on chart!',
             centerLabel: 'Score',
             unit: '%',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onChartTap: () {
               _showDetailsDialog(
                 context,
@@ -1311,13 +1272,11 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           GaugeChartWidget(
             value: 85,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Customer Satisfaction',
             subtitle: 'Customer satisfaction rating - Tap on chart!',
             centerLabel: 'Satisfaction',
             unit: '%',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onChartTap: () {
               _showDetailsDialog(
                 context,
@@ -1333,13 +1292,11 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           GaugeChartWidget(
             value: 60,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Sales Target',
             subtitle: 'Progress towards sales goal - Tap on chart!',
             centerLabel: 'Progress',
             unit: '%',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onChartTap: () {
               _showDetailsDialog(
                 context,
@@ -1353,7 +1310,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildSplineChart(ChartTheme chartTheme) {
+  Widget _buildSplineChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final splineDataSets = SampleData.generateMultiLineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1362,12 +1319,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           SplineChartWidget(
             dataSets: splineDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Smooth Spline Chart',
             subtitle:
                 'Spline curves with smooth bezier interpolation - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= splineDataSets.length) {
                 return;
@@ -1399,7 +1354,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildStepLineChart(ChartTheme chartTheme) {
+  Widget _buildStepLineChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final stepLineDataSets = SampleData.generateMultiLineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1408,11 +1363,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           StepLineChartWidget(
             dataSets: stepLineDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Step Line Chart',
             subtitle: 'Step function visualization - Tap on points!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= stepLineDataSets.length) {
                 return;
@@ -1444,7 +1397,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildStackedColumnChart(ChartTheme chartTheme) {
+  Widget _buildStackedColumnChart(
+      ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final stackedBarDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1453,11 +1407,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           StackedColumnChartWidget(
             dataSets: stackedBarDataSets,
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Stacked Column Chart',
             subtitle: 'Multiple datasets stacked vertically - Tap on bars!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onBarTap: (point, datasetIndex, barIndex, position) {
               if (datasetIndex < 0 ||
                   datasetIndex >= stackedBarDataSets.length) {
@@ -1490,7 +1442,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildPyramidChart(ChartTheme chartTheme) {
+  Widget _buildPyramidChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -1498,11 +1450,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           PyramidChartWidget(
             data: SampleData.generatePieData(),
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Pyramid Chart',
             subtitle: 'Hierarchical data visualization - Tap on segments!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onSegmentTap: (segment, segmentIndex, position) {
               ChartContextMenuHelper.show(
                 context,
@@ -1524,7 +1474,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildFunnelChart(ChartTheme chartTheme) {
+  Widget _buildFunnelChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -1532,11 +1482,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         children: [
           FunnelChartWidget(
             data: SampleData.generatePieData(),
-            theme: chartTheme,
+            config: chartsConfig,
             title: 'Funnel Chart',
             subtitle: 'Sales funnel and conversion tracking - Tap on segments!',
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
             onSegmentTap: (segment, segmentIndex, position) {
               ChartContextMenuHelper.show(
                 context,

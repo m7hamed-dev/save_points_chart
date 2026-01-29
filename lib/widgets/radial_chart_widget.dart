@@ -13,7 +13,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 /// Modern radial/radar chart
 class RadialChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme? theme;
   final double lineWidth;
   final bool showPoints;
   final bool showGrid;
@@ -22,23 +21,18 @@ class RadialChartWidget extends StatefulWidget {
   final String? subtitle;
   final Widget? header;
   final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final ChartPointCallback? onPointTap;
   final ChartPointHoverCallback? onPointHover;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   const RadialChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.lineWidth = 3.0,
     this.showPoints = true,
     this.showGrid = true,
@@ -47,17 +41,13 @@ class RadialChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.onPointTap,
     this.onPointHover,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   });
 
@@ -94,9 +84,8 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -109,14 +98,14 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -130,14 +119,14 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
         emptyWidget: effectiveEmptyWidget,

@@ -13,7 +13,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 /// Compact sparkline chart for inline data visualization
 class SparklineChartWidget extends StatefulWidget {
   final List<ChartDataSet> dataSets;
-  final ChartTheme? theme;
   final double lineWidth;
   final bool showArea;
   final bool showLabel;
@@ -23,22 +22,17 @@ class SparklineChartWidget extends StatefulWidget {
   final String? subtitle;
   final Widget? header;
   final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final ChartPointCallback? onPointTap;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   const SparklineChartWidget({
     super.key,
     required this.dataSets,
-    this.theme,
     this.lineWidth = 2.0,
     this.showArea = true,
     this.showLabel = false,
@@ -48,16 +42,12 @@ class SparklineChartWidget extends StatefulWidget {
     this.subtitle,
     this.header,
     this.footer,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.onPointTap,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   });
 
@@ -96,9 +86,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -111,14 +100,14 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding ?? const EdgeInsets.all(12.0),
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -148,14 +137,14 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding ?? const EdgeInsets.all(12.0),
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
         emptyWidget: effectiveEmptyWidget,

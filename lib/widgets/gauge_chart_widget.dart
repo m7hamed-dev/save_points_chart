@@ -48,7 +48,6 @@ class GaugeChartWidget extends StatefulWidget {
   /// The sweep angle in degrees (how much of the circle to use).
   final double sweepAngleDegrees;
 
-  final ChartTheme? theme;
   final bool showGrid;
   final bool showAxis;
   final bool showLabel;
@@ -58,16 +57,12 @@ class GaugeChartWidget extends StatefulWidget {
   final Widget? footer;
   final String? centerLabel;
   final String? unit;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
   final VoidCallback? onChartTap;
   final bool isLoading;
   final bool isError;
-  final String? errorMessage;
   final double? height;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
   final ChartsConfig? config;
 
   const GaugeChartWidget({
@@ -78,7 +73,6 @@ class GaugeChartWidget extends StatefulWidget {
     this.segments = 5,
     this.startAngleDegrees = 180.0,
     this.sweepAngleDegrees = 180.0,
-    this.theme,
     this.showGrid = true,
     this.showAxis = true,
     this.showLabel = true,
@@ -88,16 +82,12 @@ class GaugeChartWidget extends StatefulWidget {
     this.footer,
     this.centerLabel,
     this.unit,
-    this.useGlassmorphism = false,
-    this.useNeumorphism = false,
     this.onChartTap,
     this.isLoading = false,
     this.isError = false,
-    this.errorMessage,
     this.height,
     this.padding,
     this.margin,
-    this.boxShadow,
     this.config,
   })  : assert(maxValue > minValue, 'Max value must be greater than min value'),
         assert(segments > 0, 'Segments must be positive');
@@ -133,9 +123,8 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ??
-        widget.theme ??
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme =
+        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
@@ -148,14 +137,14 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+        useNeumorphism: widget.config?.useNeumorphism ?? false,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorMessage: widget.config?.errorMessage,
         errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        boxShadow: widget.config?.boxShadow,
         child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
@@ -169,14 +158,14 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
-      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorMessage: widget.config?.errorMessage,
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+      boxShadow: widget.config?.boxShadow,
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _animation,
@@ -213,8 +202,10 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
                             elementIndex: 0,
                             datasetLabel: widget.title ?? 'Gauge',
                             theme: effectiveTheme,
-                            useGlassmorphism: widget.useGlassmorphism,
-                            useNeumorphism: widget.useNeumorphism,
+                            useGlassmorphism:
+                                widget.config?.useGlassmorphism ?? false,
+                            useNeumorphism:
+                                widget.config?.useNeumorphism ?? false,
                             onViewDetails: () {
                               widget.onChartTap?.call();
                             },
