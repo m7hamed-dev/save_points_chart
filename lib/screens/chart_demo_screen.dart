@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/main.dart';
 import 'package:save_points_chart/providers/theme_provider.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/widgets/line_chart_widget.dart';
@@ -386,13 +387,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LineChartWidget(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withValues(alpha: 0.1),
+            //     blurRadius: 10,
+            //     offset: const Offset(0, 4),
+            //   ),
+            // ],
             dataSets: lineDataSets,
             theme: chartTheme,
             title: 'Sales & Revenue Trend',

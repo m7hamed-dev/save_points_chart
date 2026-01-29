@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/providers/theme_provider.dart';
 import 'package:save_points_chart/screens/chart_demo_screen.dart';
+import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/theme/charts_config.dart';
 
 void main() {
   runApp(const MyApp());
