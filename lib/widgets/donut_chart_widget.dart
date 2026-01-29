@@ -90,7 +90,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    
+
     // Handle empty data case
     if (widget.data.isEmpty) {
       Widget container = ChartContainer(
@@ -116,18 +116,52 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
           ),
         ),
       );
-      
+
       if (widget.margin != null) {
         container = Padding(
           padding: widget.margin!,
           child: container,
         );
       }
-      
+
       return container;
     }
-    
+
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
+
+    // Handle all-zero data: painter would draw nothing and legend would show NaN%
+    if (total == 0 || !total.isFinite) {
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding,
+        boxShadow: widget.boxShadow,
+        child: Center(
+          child: Text(
+            'No values to display',
+            style: TextStyle(
+              color: effectiveTheme.textColor.withValues(alpha: 0.5),
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+      if (widget.margin != null) {
+        container = Padding(
+          padding: widget.margin!,
+          child: container,
+        );
+      }
+      return container;
+    }
 
     final Widget content = Row(
       children: [
@@ -140,7 +174,9 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     final chartSize = widget.height != null
-                        ? math.min(constraints.maxWidth, widget.height!).toDouble()
+                        ? math
+                            .min(constraints.maxWidth, widget.height!)
+                            .toDouble()
                         : math.min(constraints.maxWidth, 280.0).toDouble();
                     // Use square size for consistent radius calculation
                     final size = Size(chartSize, chartSize);
@@ -302,14 +338,14 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       boxShadow: widget.boxShadow,
       child: content,
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

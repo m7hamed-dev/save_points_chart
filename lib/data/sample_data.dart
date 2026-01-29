@@ -64,13 +64,13 @@ class SampleData {
   }
 
   static List<PieData> generatePieData() {
-    // final data = [
-    //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
-    //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
-    //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
-    // ];
+    final data = [
+      PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
+      PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
+      PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
+    ];
 
-    // return data;
+    return data;
     return [
       const PieData(label: 'Mobile', value: 35, color: Color(0xFF6366F1)),
       const PieData(label: 'Desktop', value: 25, color: Color(0xFF8B5CF6)),
