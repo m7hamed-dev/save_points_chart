@@ -18,6 +18,18 @@ class SampleData {
   }
 
   static List<ChartDataSet> generateMultiLineData() {
+    final data = [
+      ChartDataPoint(x: 0, y: 0, label: 'Day 4'),
+      ChartDataPoint(x: 0, y: 0, label: 'Day 5'),
+    ];
+
+    return data.map((point) {
+      return ChartDataSet(
+        color: const Color(0xFF6366F1),
+        dataPoint: point,
+      );
+    }).toList();
+
     /// Sales Data Set
     final List<ChartDataSet> sales = List.generate(
       5,
