@@ -406,6 +406,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Pie and Donut chart content is built from shared chart/legend widgets for consistent row vs column behavior
 
+### Documentation
+- **ChartsConfig**: README now documents `ChartsConfig` (shared theme, effects, empty/error UI, shadows) and points to `lib/theme/charts_config.dart` for the full API
+
 ## [1.7.1] - 2025-01-26
 
 ### Fixed
