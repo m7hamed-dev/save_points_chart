@@ -13,27 +13,6 @@ import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// Modern pie chart with gradient sections and animations
 class PieChartWidget extends StatefulWidget {
-  final List<PieData> data;
-  final ChartTheme? theme;
-  final double borderWidth;
-  final bool showLegend;
-  final bool showLabel;
-  final String? title;
-  final String? subtitle;
-  final Widget? header;
-  final Widget? footer;
-  final bool useGlassmorphism;
-  final bool useNeumorphism;
-  final PieSegmentCallback? onSegmentTap;
-  final bool isLoading;
-  final bool isError;
-  final String? errorMessage;
-  final double? height;
-  final EdgeInsets? padding;
-  final EdgeInsets? margin;
-  final List<BoxShadow>? boxShadow;
-  final ChartsConfig? config;
-
   const PieChartWidget({
     super.key,
     required this.data,
@@ -57,6 +36,27 @@ class PieChartWidget extends StatefulWidget {
     this.boxShadow,
     this.config,
   });
+
+  final List<PieData> data;
+  final ChartTheme? theme;
+  final double borderWidth;
+  final bool showLegend;
+  final bool showLabel;
+  final String? title;
+  final String? subtitle;
+  final Widget? header;
+  final Widget? footer;
+  final bool useGlassmorphism;
+  final bool useNeumorphism;
+  final PieSegmentCallback? onSegmentTap;
+  final bool isLoading;
+  final bool isError;
+  final String? errorMessage;
+  final double? height;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final List<BoxShadow>? boxShadow;
+  final ChartsConfig? config;
 
   @override
   State<PieChartWidget> createState() => _PieChartWidgetState();
@@ -83,12 +83,6 @@ class _PieChartWidgetState extends State<PieChartWidget>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final effectiveTheme = widget.config?.theme ??
         widget.theme ??
@@ -112,7 +106,8 @@ class _PieChartWidgetState extends State<PieChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+        useGlassmorphism:
+            widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
         useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
         isLoading: widget.isLoading,
         isError: widget.isError,
@@ -143,7 +138,8 @@ class _PieChartWidgetState extends State<PieChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+        useGlassmorphism:
+            widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
         useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
         isLoading: widget.isLoading,
         isError: widget.isError,
@@ -166,129 +162,11 @@ class _PieChartWidgetState extends State<PieChartWidget>
       children: [
         Expanded(
           flex: 2,
-          child: RepaintBoundary(
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return LayoutBuilder(
-                  builder: (context, constraints) {
-                    final size =
-                        math.min(constraints.maxWidth, 250.0).toDouble();
-                    return GestureDetector(
-                      behavior: HitTestBehavior
-                          .translucent, // Allow taps even when overlay is present
-                      onTapDown: widget.onSegmentTap != null
-                          ? (details) {
-                              // Hide any existing context menu first to prevent blocking
-                              ChartContextMenuHelper.hide();
-
-                              // Use localPosition directly (relative to SizedBox)
-                              final result =
-                                  ChartInteractionHelper.findPieSegment(
-                                details.localPosition,
-                                widget.data,
-                                Size(size, widget.height ?? 250.0),
-                                0.0,
-                              );
-
-                              if (result != null && result.isHit) {
-                                // Provide haptic feedback
-                                HapticFeedback.selectionClick();
-
-                                // Set new selection (optimized single setState)
-                                setState(() {
-                                  _selectedSegment = result;
-                                });
-
-                                // Get global position for context menu
-                                final RenderBox? renderBox =
-                                    context.findRenderObject() as RenderBox?;
-                                final globalPosition = renderBox != null
-                                    ? renderBox
-                                        .localToGlobal(details.localPosition)
-                                    : details.localPosition;
-
-                                // Small delay to ensure overlay is removed before showing new menu
-                                Future.microtask(() {
-                                  widget.onSegmentTap?.call(
-                                    result.segment!,
-                                    result.elementIndex!,
-                                    globalPosition,
-                                  );
-                                });
-                              } else {
-                                // Clear selection if tap is outside any segment
-                                setState(() {
-                                  _selectedSegment = null;
-                                });
-                              }
-                            }
-                          : null,
-                      child: SizedBox(
-                        width: size,
-                        height: widget.height ?? 250.0,
-                        child: CustomPaint(
-                          size: Size(size, widget.height ?? 250.0),
-                          painter: PieChartPainter(
-                            data: widget.data,
-                            theme: effectiveTheme,
-                            borderWidth: widget.borderWidth,
-                            showLabel: widget.showLabel,
-                            animationProgress: _animation.value,
-                            selectedSegment: _selectedSegment,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          child: _pieChart(effectiveTheme),
         ),
         if (widget.showLegend && effectiveTheme.showLegend)
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: widget.data.map((item) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 16,
-                        height: 16,
-                        decoration: BoxDecoration(
-                          color: item.color,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          item.label,
-                          style: TextStyle(
-                            color: effectiveTheme.textColor,
-                            fontSize: 12,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text(
-                        '${((item.value / total) * 100).toStringAsFixed(1)}%',
-                        style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
+            child: _data(effectiveTheme, total),
           ),
       ],
     );
@@ -299,7 +177,8 @@ class _PieChartWidgetState extends State<PieChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+      useGlassmorphism:
+          widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
       useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
       isLoading: widget.isLoading,
       isError: widget.isError,
@@ -318,5 +197,133 @@ class _PieChartWidgetState extends State<PieChartWidget>
     }
 
     return container;
+  }
+
+  Column _data(ChartTheme effectiveTheme, double total) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widget.data.map((item) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            children: [
+              Container(
+                width: 16,
+                height: 16,
+                decoration: BoxDecoration(
+                  color: item.color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  item.label,
+                  style: TextStyle(
+                    color: effectiveTheme.textColor,
+                    fontSize: 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Text(
+                '${((item.value / total) * 100).toStringAsFixed(1)}%',
+                style: TextStyle(
+                  color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  RepaintBoundary _pieChart(ChartTheme effectiveTheme) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final size = math.min(constraints.maxWidth, 250.0).toDouble();
+              return GestureDetector(
+                behavior: HitTestBehavior
+                    .translucent, // Allow taps even when overlay is present
+                onTapDown: widget.onSegmentTap != null
+                    ? (details) {
+                        // Hide any existing context menu first to prevent blocking
+                        ChartContextMenuHelper.hide();
+
+                        // Use localPosition directly (relative to SizedBox)
+                        final result = ChartInteractionHelper.findPieSegment(
+                          details.localPosition,
+                          widget.data,
+                          Size(size, widget.height ?? 250.0),
+                          0.0,
+                        );
+
+                        if (result != null && result.isHit) {
+                          // Provide haptic feedback
+                          HapticFeedback.selectionClick();
+
+                          // Set new selection (optimized single setState)
+                          setState(() {
+                            _selectedSegment = result;
+                          });
+
+                          // Get global position for context menu
+                          final RenderBox? renderBox =
+                              context.findRenderObject() as RenderBox?;
+                          final globalPosition = renderBox != null
+                              ? renderBox.localToGlobal(details.localPosition)
+                              : details.localPosition;
+
+                          // Small delay to ensure overlay is removed before showing new menu
+                          Future.microtask(() {
+                            widget.onSegmentTap?.call(
+                              result.segment!,
+                              result.elementIndex!,
+                              globalPosition,
+                            );
+                          });
+                        } else {
+                          // Clear selection if tap is outside any segment
+                          setState(() {
+                            _selectedSegment = null;
+                          });
+                        }
+                      }
+                    : null,
+                child: SizedBox(
+                  width: size,
+                  height: widget.height ?? 250.0,
+                  child: CustomPaint(
+                    size: Size(size, widget.height ?? 250.0),
+                    painter: PieChartPainter(
+                      data: widget.data,
+                      theme: effectiveTheme,
+                      borderWidth: widget.borderWidth,
+                      showLabel: widget.showLabel,
+                      animationProgress: _animation.value,
+                      selectedSegment: _selectedSegment,
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
