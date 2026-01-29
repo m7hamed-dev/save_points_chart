@@ -792,9 +792,44 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 24,
         children: [
           PieChartWidget(
             data: SampleData.generatePieData(),
+            config: chartsConfig,
+            title: 'Device Distribution',
+            subtitle: 'User devices breakdown - Tap on segments!',
+            onSegmentTap: (segment, segmentIndex, position) {
+              ChartContextMenuHelper.show(
+                context,
+                point: null,
+                segment: segment,
+                position: position,
+                elementIndex: segmentIndex,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(context, segment: segment);
+                },
+                onExport: () {
+                  _showExportSnackBar(
+                    context,
+                    'Exporting ${segment.label} data...',
+                  );
+                },
+                onShare: () {
+                  _showExportSnackBar(
+                    context,
+                    'Sharing ${segment.label} data...',
+                  );
+                },
+              );
+            },
+          ),
+          PieChartWidget(
+            data: SampleData.generatePieData(),
+            legendLayout: Axis.vertical,
             config: chartsConfig,
             title: 'Device Distribution',
             subtitle: 'User devices breakdown - Tap on segments!',
@@ -834,39 +869,77 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   Widget _buildDonutChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
-      child: DonutChartWidget(
-        // height: 900,
-        data: SampleData.generatePieData(),
-        config: chartsConfig,
-        title: 'Sales Distribution',
-        subtitle: 'Donut chart with center value - Tap on segments!',
-        onSegmentTap: (segment, segmentIndex, position) {
-          ChartContextMenuHelper.show(
-            context,
-            point: null,
-            segment: segment,
-            position: position,
-            elementIndex: segmentIndex,
-            theme: chartTheme,
-            useGlassmorphism: _useGlassmorphism,
-            useNeumorphism: _useNeumorphism,
-            onViewDetails: () {
-              _showDetailsDialog(context, segment: segment);
-            },
-            onExport: () {
-              _showExportSnackBar(
+      child: Column(
+        spacing: 24.0,
+        children: [
+          DonutChartWidget(
+            data: SampleData.generatePieData(),
+            config: chartsConfig,
+            title: 'Sales Distribution',
+            subtitle: 'Donut chart with center value - Tap on segments!',
+            onSegmentTap: (segment, segmentIndex, position) {
+              ChartContextMenuHelper.show(
                 context,
-                'Exporting ${segment.label} data...',
+                point: null,
+                segment: segment,
+                position: position,
+                elementIndex: segmentIndex,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(context, segment: segment);
+                },
+                onExport: () {
+                  _showExportSnackBar(
+                    context,
+                    'Exporting ${segment.label} data...',
+                  );
+                },
+                onShare: () {
+                  _showExportSnackBar(
+                    context,
+                    'Sharing ${segment.label} data...',
+                  );
+                },
               );
             },
-            onShare: () {
-              _showExportSnackBar(
+          ),
+          DonutChartWidget(
+            data: SampleData.generatePieData(),
+            config: chartsConfig,
+            legendLayout: Axis.vertical,
+            title: 'Sales Distribution',
+            subtitle: 'Donut chart with center value - Tap on segments!',
+            onSegmentTap: (segment, segmentIndex, position) {
+              ChartContextMenuHelper.show(
                 context,
-                'Sharing ${segment.label} data...',
+                point: null,
+                segment: segment,
+                position: position,
+                elementIndex: segmentIndex,
+                theme: chartTheme,
+                useGlassmorphism: _useGlassmorphism,
+                useNeumorphism: _useNeumorphism,
+                onViewDetails: () {
+                  _showDetailsDialog(context, segment: segment);
+                },
+                onExport: () {
+                  _showExportSnackBar(
+                    context,
+                    'Exporting ${segment.label} data...',
+                  );
+                },
+                onShare: () {
+                  _showExportSnackBar(
+                    context,
+                    'Sharing ${segment.label} data...',
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -924,7 +997,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildSparklineChart(
-      ChartTheme chartTheme, ChartsConfig chartsConfig,) {
+    ChartTheme chartTheme,
+    ChartsConfig chartsConfig,
+  ) {
     final sparklineDataSets = SampleData.generateSparklineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1397,7 +1472,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildStackedColumnChart(
-      ChartTheme chartTheme, ChartsConfig chartsConfig,) {
+    ChartTheme chartTheme,
+    ChartsConfig chartsConfig,
+  ) {
     final stackedBarDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
