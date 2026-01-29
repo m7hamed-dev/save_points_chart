@@ -19,6 +19,7 @@ class PieChartWidget extends StatefulWidget {
     this.borderWidth = 2.0,
     this.showLegend = true,
     this.showLabel = true,
+    this.legendLayout = Axis.horizontal,
     this.title,
     this.subtitle,
     this.header,
@@ -36,6 +37,10 @@ class PieChartWidget extends StatefulWidget {
   final double borderWidth;
   final bool showLegend;
   final bool showLabel;
+
+  /// Layout of chart and legend: [Axis.horizontal] = Row (chart left, legend right),
+  /// [Axis.vertical] = Column (chart top, legend below).
+  final Axis legendLayout;
   final String? title;
   final String? subtitle;
   final Widget? header;
@@ -145,18 +150,29 @@ class _PieChartWidgetState extends State<PieChartWidget>
       return container;
     }
 
-    final Widget content = Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: _pieChart(effectiveTheme),
-        ),
-        if (widget.showLegend && effectiveTheme.showLegend)
-          Expanded(
-            child: _data(effectiveTheme, total),
-          ),
-      ],
-    );
+    final Widget content = widget.legendLayout == Axis.vertical
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _pieChart(effectiveTheme),
+              if (widget.showLegend && effectiveTheme.showLegend) ...[
+                const SizedBox(height: 16),
+                Center(child: _data(effectiveTheme, total)),
+              ],
+            ],
+          )
+        : Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: _pieChart(effectiveTheme),
+              ),
+              if (widget.showLegend && effectiveTheme.showLegend)
+                Expanded(
+                  child: _data(effectiveTheme, total),
+                ),
+            ],
+          );
 
     Widget container = ChartContainer(
       theme: effectiveTheme,
