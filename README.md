@@ -281,6 +281,26 @@ LineChartWidget(
 
 If `height` is not specified, charts use default heights optimized for each chart type.
 
+### Pie & Donut chart layout (row or column)
+
+`PieChartWidget` and `DonutChartWidget` support a `legendLayout` parameter to show the chart and legend in a row or column:
+
+```dart
+// Row (default): chart left, legend right
+PieChartWidget(data: pieData)
+
+// Column: chart on top, legend below — good for narrow screens
+PieChartWidget(
+  data: pieData,
+  legendLayout: Axis.vertical,
+)
+
+DonutChartWidget(
+  data: donutData,
+  legendLayout: Axis.vertical,
+)
+```
+
 ### Header and Footer
 
 All charts support optional header and footer widgets for additional content:
@@ -482,11 +502,13 @@ Or check out the example app in the repository to see all chart types in action.
 - Customizable colors
 - Legend support
 - Smooth animations
+- **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`Axis.vertical`)
 
 ### Donut Chart
 - Center value display
 - Similar to pie with center space
 - Modern donut design
+- **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`Axis.vertical`)
 
 ### Radial Chart
 - Multi-dimensional data
