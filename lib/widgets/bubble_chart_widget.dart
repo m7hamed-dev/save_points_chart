@@ -89,7 +89,7 @@ class BubbleChartWidget extends StatefulWidget {
   /// Creates a bubble chart widget.
   ///
   /// [dataSets] must not be empty. Each dataset must contain at least one
-  /// bubble data point. [theme] is optional and will be inferred from the
+  /// bubble data point. [Theme] is optional and will be inferred from the
   /// Material theme if not provided.
   ///
   /// [minBubbleSize] and [maxBubbleSize] control the visual size range of
@@ -134,16 +134,10 @@ class BubbleChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
-  })  : assert(minBubbleSize > 0, 'Min bubble size must be positive'),
-        assert(
-          minBubbleSize.isFinite,
-          'Min bubble size must be finite',
-        ),
-        assert(maxBubbleSize > minBubbleSize, 'Max must be greater than min'),
-        assert(
-          maxBubbleSize.isFinite,
-          'Max bubble size must be finite',
-        );
+  }) : assert(minBubbleSize > 0, 'Min bubble size must be positive'),
+       assert(minBubbleSize.isFinite, 'Min bubble size must be finite'),
+       assert(maxBubbleSize > minBubbleSize, 'Max must be greater than min'),
+       assert(maxBubbleSize.isFinite, 'Max bubble size must be finite');
 
   @override
   State<BubbleChartWidget> createState() => _BubbleChartWidgetState();
@@ -218,10 +212,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
     if (widget.onBubbleHover == null) return;
 
     final bounds = _calculateBounds();
-    final chartPosition = Offset(
-      position.dx - 50.0,
-      position.dy - 20.0,
-    );
+    final chartPosition = Offset(position.dx - 50.0, position.dy - 20.0);
 
     // Convert bubble datasets to regular datasets for interaction helper
     // Each bubble point becomes a separate ChartDataSet
@@ -231,8 +222,11 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
         regularDataSets.add(
           ChartDataSet(
             color: bubbleDataSet.color,
-            dataPoint:
-                ChartDataPoint(x: point.x, y: point.y, label: point.label),
+            dataPoint: ChartDataPoint(
+              x: point.x,
+              y: point.y,
+              label: point.label,
+            ),
           ),
         );
       }
@@ -275,12 +269,14 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
           message: widget.config?.emptyMessage ?? 'No data available',
         );
-    final hasData = widget.dataSets.isNotEmpty &&
+    final hasData =
+        widget.dataSets.isNotEmpty &&
         widget.dataSets.every((ds) => ds.dataPoints.isNotEmpty);
     if (!hasData) {
       Widget container = ChartContainer(
@@ -325,10 +321,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
             return LayoutBuilder(
               builder: (context, constraints) {
                 final chartHeight = widget.height ?? 240.0;
-                final chartSize = Size(
-                  constraints.maxWidth - 70,
-                  chartHeight,
-                );
+                final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
                 return MouseRegion(
                   onHover: widget.onBubbleHover != null
@@ -385,15 +378,15 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
 
                             final result =
                                 ChartInteractionHelper.findNearestPoint(
-                              chartPosition,
-                              regularDataSets,
-                              chartSize,
-                              bounds['minX']!,
-                              bounds['maxX']!,
-                              bounds['minY']!,
-                              bounds['maxY']!,
-                              ChartInteractionConstants.tapRadius * 3,
-                            );
+                                  chartPosition,
+                                  regularDataSets,
+                                  chartSize,
+                                  bounds['minX']!,
+                                  bounds['maxX']!,
+                                  bounds['minY']!,
+                                  bounds['maxY']!,
+                                  ChartInteractionConstants.tapRadius * 3,
+                                );
 
                             if (result != null && result.isHit) {
                               HapticFeedback.selectionClick();
@@ -423,8 +416,10 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size:
-                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        size: Size(
+                          constraints.maxWidth,
+                          widget.height ?? 300.0,
+                        ),
                         painter: BubbleChartPainter(
                           theme: effectiveTheme,
                           bubbleDataSets: widget.dataSets,
@@ -449,10 +444,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

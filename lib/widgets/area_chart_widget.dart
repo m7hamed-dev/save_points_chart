@@ -146,7 +146,7 @@ class AreaChartWidget extends StatefulWidget {
   /// Creates an area chart widget.
   ///
   /// [dataSets] must not be empty. Each dataset must contain at least one
-  /// data point. [theme] is optional and will be inferred from the Material
+  /// data point. [Theme] is optional and will be inferred from the Material
   /// theme if not provided.
   ///
   /// The [lineWidth] defaults to 3.0 pixels. Use [onPointTap] to handle
@@ -224,7 +224,8 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
           message: widget.config?.emptyMessage ?? 'No data available',
@@ -334,15 +335,15 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
                             final result =
                                 ChartInteractionHelper.findNearestPoint(
-                              chartPosition,
-                              widget.dataSets,
-                              chartSize,
-                              bounds['minX']!,
-                              bounds['maxX']!,
-                              0.0,
-                              bounds['maxY']! * 1.15,
-                              ChartInteractionConstants.tapRadius,
-                            );
+                                  chartPosition,
+                                  widget.dataSets,
+                                  chartSize,
+                                  bounds['minX']!,
+                                  bounds['maxX']!,
+                                  0.0,
+                                  bounds['maxY']! * 1.15,
+                                  ChartInteractionConstants.tapRadius,
+                                );
 
                             if (result != null && result.isHit) {
                               // Provide haptic feedback
@@ -378,8 +379,10 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size:
-                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        size: Size(
+                          constraints.maxWidth,
+                          widget.height ?? 300.0,
+                        ),
                         painter: LineChartPainter(
                           theme: effectiveTheme,
                           dataSets: widget.dataSets,
@@ -403,10 +406,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;
