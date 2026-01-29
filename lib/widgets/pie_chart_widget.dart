@@ -72,7 +72,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
     _animation = CurvedAnimation(
