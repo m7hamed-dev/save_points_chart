@@ -21,7 +21,7 @@ class GaugeChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             GaugeChartWidget(
               value: 75,
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Performance Score',
               subtitle: 'Tap on chart to see details',
               centerLabel: 'Score',
@@ -40,4 +40,3 @@ class GaugeChartCard extends StatelessWidget {
     );
   }
 }
-

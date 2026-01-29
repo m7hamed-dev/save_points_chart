@@ -37,7 +37,7 @@ class DonutChartCard extends StatelessWidget {
                   color: Color(0xFFEC4899),
                 ),
               ],
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Product Sales',
               onSegmentTap: (segment, index, position) {
                 ScaffoldMessenger.of(context).showSnackBar(

@@ -22,7 +22,7 @@ class ScatterChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             ScatterChartWidget(
               dataSets: SampleData.generateScatterData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Product Correlation',
               subtitle: 'Tap on points to see details',
               onPointTap: (point, datasetIndex, pointIndex, position) {
@@ -41,4 +41,3 @@ class ScatterChartCard extends StatelessWidget {
     );
   }
 }
-

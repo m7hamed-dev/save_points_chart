@@ -42,7 +42,7 @@ class PieChartCard extends StatelessWidget {
                   color: Color(0xFF10B981),
                 ),
               ],
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Device Distribution',
               onSegmentTap: (segment, index, position) {
                 ScaffoldMessenger.of(context).showSnackBar(

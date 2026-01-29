@@ -22,7 +22,7 @@ class PyramidChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             PyramidChartWidget(
               data: SampleData.generatePieData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Pyramid Chart',
               subtitle: 'Tap on segments to see details',
               onSegmentTap: (segment, segmentIndex, position) {
@@ -41,4 +41,3 @@ class PyramidChartCard extends StatelessWidget {
     );
   }
 }
-

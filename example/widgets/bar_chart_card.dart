@@ -38,7 +38,7 @@ class BarChartCard extends StatelessWidget {
                   dataPoint: const ChartDataPoint(x: 3, y: 110, label: 'Q4'),
                 ),
               ],
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Quarterly Performance',
               onBarTap: (point, datasetIndex, pointIndex, position) {
                 ScaffoldMessenger.of(context).showSnackBar(

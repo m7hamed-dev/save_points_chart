@@ -22,7 +22,7 @@ class StackedColumnChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             StackedColumnChartWidget(
               dataSets: SampleData.generateBarData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Stacked Column Chart',
               subtitle: 'Tap on bars to see details',
               onBarTap: (point, datasetIndex, barIndex, position) {
@@ -41,4 +41,3 @@ class StackedColumnChartCard extends StatelessWidget {
     );
   }
 }
-

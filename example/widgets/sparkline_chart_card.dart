@@ -22,7 +22,7 @@ class SparklineChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             SparklineChartWidget(
               dataSets: SampleData.generateSparklineData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Trend Analysis',
               subtitle: 'Tap on points to see details',
               onPointTap: (point, datasetIndex, pointIndex, position) {
@@ -41,4 +41,3 @@ class SparklineChartCard extends StatelessWidget {
     );
   }
 }
-

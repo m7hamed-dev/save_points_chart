@@ -23,7 +23,7 @@ class BubbleChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             BubbleChartWidget(
               dataSets: bubbleDataSets,
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Regional Performance',
               subtitle: 'Tap on bubbles to see details',
               onBubbleTap: (point, datasetIndex, pointIndex, position) {
@@ -51,4 +51,3 @@ class BubbleChartCard extends StatelessWidget {
     );
   }
 }
-

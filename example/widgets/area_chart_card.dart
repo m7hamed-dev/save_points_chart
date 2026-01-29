@@ -47,7 +47,7 @@ class AreaChartCard extends StatelessWidget {
                       const ChartDataPoint(x: 4, y: 200, label: 'Week 5'),
                 ),
               ],
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Active Users',
               subtitle: 'Weekly growth',
               onPointTap: (point, datasetIndex, pointIndex, position) {

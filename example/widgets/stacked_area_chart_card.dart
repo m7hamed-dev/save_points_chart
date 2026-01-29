@@ -70,7 +70,7 @@ class StackedAreaChartCard extends StatelessWidget {
                   dataPoint: const ChartDataPoint(x: 3, y: 40, label: 'Q4'),
                 ),
               ],
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Stacked Revenue',
               subtitle: 'By platform (quarterly)',
               onPointTap: (point, datasetIndex, pointIndex, position) {

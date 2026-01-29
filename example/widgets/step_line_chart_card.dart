@@ -22,7 +22,7 @@ class StepLineChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             StepLineChartWidget(
               dataSets: SampleData.generateMultiLineData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Step Line Chart',
               subtitle: 'Tap on points to see details',
               onPointTap: (point, datasetIndex, pointIndex, position) {
@@ -41,4 +41,3 @@ class StepLineChartCard extends StatelessWidget {
     );
   }
 }
-

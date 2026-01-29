@@ -22,7 +22,7 @@ class SplineChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             SplineChartWidget(
               dataSets: SampleData.generateMultiLineData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Smooth Spline Chart',
               subtitle: 'Tap on points to see details',
               onPointTap: (point, datasetIndex, pointIndex, position) {
@@ -41,4 +41,3 @@ class SplineChartCard extends StatelessWidget {
     );
   }
 }
-

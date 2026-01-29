@@ -70,7 +70,7 @@ class LineChartCard extends StatelessWidget {
                   dataPoint: const ChartDataPoint(x: 5, y: 38, label: 'Jun'),
                 ),
               ],
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Monthly Sales & Revenue',
               subtitle: 'Last 6 months',
               onPointTap: (point, datasetIndex, pointIndex, position) {

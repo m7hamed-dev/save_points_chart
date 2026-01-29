@@ -22,7 +22,7 @@ class FunnelChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             FunnelChartWidget(
               data: SampleData.generatePieData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Funnel Chart',
               subtitle: 'Tap on segments to see details',
               onSegmentTap: (segment, segmentIndex, position) {
@@ -41,4 +41,3 @@ class FunnelChartCard extends StatelessWidget {
     );
   }
 }
-

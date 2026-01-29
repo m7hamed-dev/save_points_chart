@@ -22,7 +22,7 @@ class RadialChartCard extends StatelessWidget {
             const SizedBox(height: 8),
             RadialChartWidget(
               dataSets: SampleData.generateRadialData(),
-              theme: theme,
+              config: ChartsConfig(theme: theme),
               title: 'Performance Metrics',
               subtitle: 'Tap on points to see details',
               onPointTap: (point, datasetIndex, pointIndex, position) {
@@ -41,4 +41,3 @@ class RadialChartCard extends StatelessWidget {
     );
   }
 }
-
