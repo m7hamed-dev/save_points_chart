@@ -66,7 +66,7 @@ class StepLineChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  StepLineChartWidget({
+  const StepLineChartWidget({
     super.key,
     required this.dataSets,
     this.lineWidth = 3.0,
@@ -328,7 +328,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
                           size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0),
+                              constraints.maxWidth, widget.height ?? 300.0,),
                           painter: StepLineChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,

@@ -53,7 +53,7 @@ class FunnelChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  FunnelChartWidget({
+  const FunnelChartWidget({
     super.key,
     required this.data,
     this.title,

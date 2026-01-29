@@ -61,7 +61,7 @@ class SplineChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  SplineChartWidget({
+  const SplineChartWidget({
     super.key,
     required this.dataSets,
     this.lineWidth = 3.0,
@@ -323,7 +323,7 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
                           size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0),
+                              constraints.maxWidth, widget.height ?? 300.0,),
                           painter: SplineChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,

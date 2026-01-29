@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:save_points_chart/main.dart';
 import 'package:save_points_chart/providers/theme_provider.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
@@ -925,7 +924,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildSparklineChart(
-      ChartTheme chartTheme, ChartsConfig chartsConfig) {
+      ChartTheme chartTheme, ChartsConfig chartsConfig,) {
     final sparklineDataSets = SampleData.generateSparklineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1398,7 +1397,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   }
 
   Widget _buildStackedColumnChart(
-      ChartTheme chartTheme, ChartsConfig chartsConfig) {
+      ChartTheme chartTheme, ChartsConfig chartsConfig,) {
     final stackedBarDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),

@@ -341,7 +341,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
                           size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0),
+                              constraints.maxWidth, widget.height ?? 300.0,),
                           painter: BarChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,

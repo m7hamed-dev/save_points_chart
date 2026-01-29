@@ -53,7 +53,7 @@ class PyramidChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  PyramidChartWidget({
+  const PyramidChartWidget({
     super.key,
     required this.data,
     this.title,

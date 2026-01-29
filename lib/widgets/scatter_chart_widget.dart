@@ -57,7 +57,7 @@ class ScatterChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  ScatterChartWidget({
+  const ScatterChartWidget({
     super.key,
     required this.dataSets,
     this.pointSize = 8.0,
@@ -320,7 +320,7 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
                           size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0),
+                              constraints.maxWidth, widget.height ?? 300.0,),
                           painter: ScatterChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,

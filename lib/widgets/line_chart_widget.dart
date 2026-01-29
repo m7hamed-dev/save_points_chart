@@ -81,7 +81,7 @@ class LineChartWidget extends StatefulWidget {
   /// The [lineWidth] defaults to 3.0 pixels. Set [showArea] to true to fill
   /// the area under the line with a gradient. Use [onPointTap] to handle
   /// user interactions with data points.
-  LineChartWidget({
+  const LineChartWidget({
     super.key,
     required this.dataSets,
     this.lineWidth = 3.0,
@@ -366,7 +366,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
                           size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0),
+                              constraints.maxWidth, widget.height ?? 300.0,),
                           painter: LineChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,

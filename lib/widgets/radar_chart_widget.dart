@@ -56,7 +56,7 @@ class RadarChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  RadarChartWidget({
+  const RadarChartWidget({
     super.key,
     required this.dataSets,
     this.maxValue = 100.0,

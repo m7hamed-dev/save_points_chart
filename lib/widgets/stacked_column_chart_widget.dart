@@ -71,7 +71,7 @@ class StackedColumnChartWidget extends StatefulWidget {
   final EdgeInsets? margin;
   final ChartsConfig? config;
 
-  StackedColumnChartWidget({
+  const StackedColumnChartWidget({
     super.key,
     required this.dataSets,
     this.barWidth = 30.0,
