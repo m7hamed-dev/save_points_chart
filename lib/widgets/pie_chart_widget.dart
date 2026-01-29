@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/theme/charts_config.dart';
 import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
@@ -31,6 +32,7 @@ class PieChartWidget extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final List<BoxShadow>? boxShadow;
+  final ChartsConfig? config;
 
   const PieChartWidget({
     super.key,
@@ -53,6 +55,7 @@ class PieChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
+    this.config,
   });
 
   @override
@@ -87,8 +90,19 @@ class _PieChartWidgetState extends State<PieChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme = widget.config?.theme ??
+        widget.theme ??
+        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget = widget.config?.emptyWidget ??
+        ChartEmptyState(
+          theme: effectiveTheme,
+          message: widget.config?.emptyMessage ?? 'No data available',
+        );
+    final effectiveEmptyNoValuesWidget = widget.config?.emptyWidget ??
+        ChartEmptyState(
+          theme: effectiveTheme,
+          message: widget.config?.emptyMessage ?? 'No values to display',
+        );
 
     // Handle empty data case
     if (widget.data.isEmpty) {
@@ -98,14 +112,15 @@ class _PieChartWidgetState extends State<PieChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.useGlassmorphism,
-        useNeumorphism: widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.errorMessage,
+        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.boxShadow,
-        child: ChartEmptyState(theme: effectiveTheme),
+        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        child: effectiveEmptyWidget,
       );
 
       if (widget.margin != null) {
@@ -128,17 +143,15 @@ class _PieChartWidgetState extends State<PieChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.useGlassmorphism,
-        useNeumorphism: widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.errorMessage,
+        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.boxShadow,
-        child: ChartEmptyState(
-          theme: effectiveTheme,
-          message: 'No values to display',
-        ),
+        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        child: effectiveEmptyNoValuesWidget,
       );
       if (widget.margin != null) {
         container = Padding(
@@ -286,13 +299,14 @@ class _PieChartWidgetState extends State<PieChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.useGlassmorphism,
-      useNeumorphism: widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.errorMessage,
+      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.boxShadow,
+      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
       child: content,
     );
 

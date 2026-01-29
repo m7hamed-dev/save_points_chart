@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/theme/charts_config.dart';
 import 'package:save_points_chart/painters/spline_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
@@ -63,6 +64,7 @@ class SplineChartWidget extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final List<BoxShadow>? boxShadow;
+  final ChartsConfig? config;
 
   SplineChartWidget({
     super.key,
@@ -89,6 +91,7 @@ class SplineChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
+    this.config,
   }) : assert(lineWidth > 0, 'Line width must be positive');
 
   @override
@@ -197,8 +200,14 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme = widget.config?.theme ??
+        widget.theme ??
+        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget = widget.config?.emptyWidget ??
+        ChartEmptyState(
+          theme: effectiveTheme,
+          message: widget.config?.emptyMessage ?? 'No data available',
+        );
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -206,14 +215,15 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
         subtitle: widget.subtitle,
         header: widget.header,
         footer: widget.footer,
-        useGlassmorphism: widget.useGlassmorphism,
-        useNeumorphism: widget.useNeumorphism,
+        useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+        useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
         isLoading: widget.isLoading,
         isError: widget.isError,
-        errorMessage: widget.errorMessage,
+        errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+        errorWidget: widget.config?.errorWidget,
         padding: widget.padding,
-        boxShadow: widget.boxShadow,
-        child: ChartEmptyState(theme: effectiveTheme),
+        boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
+        child: effectiveEmptyWidget,
       );
       if (widget.margin != null) {
         container = Padding(padding: widget.margin!, child: container);
@@ -226,16 +236,17 @@ class _SplineChartWidgetState extends State<SplineChartWidget>
       subtitle: widget.subtitle,
       header: widget.header,
       footer: widget.footer,
-      useGlassmorphism: widget.useGlassmorphism,
-      useNeumorphism: widget.useNeumorphism,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? widget.useGlassmorphism,
+      useNeumorphism: widget.config?.useNeumorphism ?? widget.useNeumorphism,
       isLoading: widget.isLoading,
       isError: widget.isError,
-      errorMessage: widget.errorMessage,
+      errorMessage: widget.config?.errorMessage ?? widget.errorMessage,
+      errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
-      boxShadow: widget.boxShadow,
+      boxShadow: widget.config?.boxShadow ?? widget.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
-        emptyWidget: ChartEmptyState(theme: effectiveTheme),
+        emptyWidget: effectiveEmptyWidget,
         child: RepaintBoundary(
           child: AnimatedBuilder(
             animation: _animation,

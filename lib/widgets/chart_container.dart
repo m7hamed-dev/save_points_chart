@@ -45,6 +45,9 @@ class ChartContainer extends StatelessWidget {
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
+
+  /// Custom widget shown when [isError] is true. If null, default error UI with [errorMessage] is used.
+  final Widget? errorWidget;
   final List<BoxShadow>? boxShadow;
 
   /// Creates a chart container.
@@ -94,6 +97,7 @@ class ChartContainer extends StatelessWidget {
     this.isLoading = false,
     this.isError = false,
     this.errorMessage,
+    this.errorWidget,
     this.boxShadow,
   });
 
@@ -205,26 +209,28 @@ class ChartContainer extends StatelessWidget {
               child: SizedBox(
                 height: 300,
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.red.withValues(alpha: 0.7),
+                  child: errorWidget ??
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.red.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            errorMessage ?? 'Failed to load chart data',
+                            style: TextStyle(
+                              color: effectiveTheme.textColor
+                                  .withValues(alpha: 0.7),
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        errorMessage ?? 'Failed to load chart data',
-                        style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
                 ),
               ),
             )
@@ -388,26 +394,28 @@ class ChartContainer extends StatelessWidget {
               SizedBox(
                 height: 300,
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.red.withValues(alpha: 0.7),
+                  child: errorWidget ??
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.red.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            errorMessage ?? 'Failed to load chart data',
+                            style: TextStyle(
+                              color: effectiveTheme.textColor
+                                  .withValues(alpha: 0.7),
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        errorMessage ?? 'Failed to load chart data',
-                        style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
                 ),
               )
             else

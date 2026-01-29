@@ -39,6 +39,7 @@ export 'utils/chart_interaction_helper.dart';
 
 // Theme
 export 'theme/chart_theme.dart';
+export 'theme/charts_config.dart';
 
 // Widgets - All chart widgets automatically include ChartDataSet and ChartDataPoint via models export above
 export 'widgets/line_chart_widget.dart';
