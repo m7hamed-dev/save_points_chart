@@ -122,8 +122,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           theme: chartTheme,
           useGlassmorphism: _useGlassmorphism,
           useNeumorphism: _useNeumorphism,
-          errorMessage:
-              _isError ? 'Unable to load chart data. Please try again.' : null,
+          errorMessage: _isError
+              ? 'Unable to load chart data. Please try again.'
+              : null,
         ),
       ),
     );
@@ -137,7 +138,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           DrawerHeader(
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                begin: Alignment.topLeft,
+                begin: .topLeft,
                 end: Alignment.bottomRight,
                 colors: [
                   Color(0xFF6366F1),
@@ -155,9 +156,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: .start,
+              mainAxisAlignment: .end,
+              mainAxisSize: .min,
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -210,31 +211,19 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Line Chart',
             index: 0,
           ),
-          _buildDrawerItem(
-            icon: Icons.bar_chart,
-            title: 'Bar Chart',
-            index: 1,
-          ),
+          _buildDrawerItem(icon: Icons.bar_chart, title: 'Bar Chart', index: 1),
           _buildDrawerItem(
             icon: Icons.area_chart,
             title: 'Area Chart',
             index: 2,
           ),
-          _buildDrawerItem(
-            icon: Icons.pie_chart,
-            title: 'Pie Chart',
-            index: 3,
-          ),
+          _buildDrawerItem(icon: Icons.pie_chart, title: 'Pie Chart', index: 3),
           _buildDrawerItem(
             icon: Icons.donut_large,
             title: 'Donut Chart',
             index: 4,
           ),
-          _buildDrawerItem(
-            icon: Icons.radar,
-            title: 'Radial Chart',
-            index: 5,
-          ),
+          _buildDrawerItem(icon: Icons.radar, title: 'Radial Chart', index: 5),
           _buildDrawerItem(
             icon: Icons.trending_up,
             title: 'Sparkline Chart',
@@ -255,11 +244,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Radar Chart',
             index: 9,
           ),
-          _buildDrawerItem(
-            icon: Icons.speed,
-            title: 'Gauge Chart',
-            index: 10,
-          ),
+          _buildDrawerItem(icon: Icons.speed, title: 'Gauge Chart', index: 10),
           _buildDrawerItem(
             icon: Icons.timeline,
             title: 'Spline Chart',
@@ -333,9 +318,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
         ),
         selected: isSelected,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         onTap: () {
           setState(() {
             _selectedIndex = index;
@@ -1121,8 +1104,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   dataSets: List.generate(15, (i) {
                     return ChartDataSet(
                       color: const Color(0xFFEF4444),
-                      dataPoint:
-                          ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
+                      dataPoint: ChartDataPoint(
+                        x: i.toDouble(),
+                        y: 100 - i * 2,
+                      ),
                     );
                   }),
                   config: chartsConfig,
@@ -1131,8 +1116,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
                         color: const Color(0xFFEF4444),
-                        dataPoint:
-                            ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
+                        dataPoint: ChartDataPoint(
+                          x: i.toDouble(),
+                          y: 100 - i * 2,
+                        ),
                       );
                     });
                     final dataSet = datasetIndex < dataSets.length
@@ -1595,7 +1582,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         title: Text(point != null ? 'Point Details' : 'Segment Details'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             if (point != null) ...[
               if (userLabel != null)

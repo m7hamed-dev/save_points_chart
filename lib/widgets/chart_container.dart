@@ -119,7 +119,8 @@ class ChartContainer extends StatelessWidget {
         border: Border.all(
           color: effectiveTheme.gridColor.withValues(alpha: 0.3),
         ),
-        boxShadow: boxShadow ??
+        boxShadow:
+            boxShadow ??
             [
               // Soft outer shadow (enhanced)
               BoxShadow(
@@ -131,14 +132,14 @@ class ChartContainer extends StatelessWidget {
             ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         mainAxisSize: MainAxisSize.min,
         children: [
           if (title != null || subtitle != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   if (title != null)
                     Text(
@@ -160,8 +161,9 @@ class ChartContainer extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0.1,
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.65),
+                          color: effectiveTheme.textColor.withValues(
+                            alpha: 0.65,
+                          ),
                           height: 1.4,
                         ),
                       ),
@@ -192,8 +194,9 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         'Loading chart data...',
                         style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color: effectiveTheme.textColor.withValues(
+                            alpha: 0.7,
+                          ),
                           fontSize: 14,
                         ),
                       ),
@@ -209,7 +212,8 @@ class ChartContainer extends StatelessWidget {
               child: SizedBox(
                 height: 300,
                 child: Center(
-                  child: errorWidget ??
+                  child:
+                      errorWidget ??
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
@@ -223,8 +227,9 @@ class ChartContainer extends StatelessWidget {
                           Text(
                             errorMessage ?? 'Failed to load chart data',
                             style: TextStyle(
-                              color: effectiveTheme.textColor
-                                  .withValues(alpha: 0.7),
+                              color: effectiveTheme.textColor.withValues(
+                                alpha: 0.7,
+                              ),
                               fontSize: 14,
                             ),
                             textAlign: TextAlign.center,
@@ -242,10 +247,7 @@ class ChartContainer extends StatelessWidget {
               child: child,
             ),
           if (footer != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: footer!,
-            ),
+            Padding(padding: const EdgeInsets.only(top: 16.0), child: footer!),
         ],
       ),
     );
@@ -266,7 +268,8 @@ class ChartContainer extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.25),
             width: 1.5,
           ),
-          boxShadow: boxShadow ??
+          boxShadow:
+              boxShadow ??
               [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.15),
@@ -292,8 +295,9 @@ class ChartContainer extends StatelessWidget {
 
     if (useNeumorphism) {
       final isDark = effectiveTheme.backgroundColor.computeLuminance() < 0.5;
-      final shadowColor =
-          isDark ? Colors.black.withValues(alpha: 0.6) : Colors.grey.shade400;
+      final shadowColor = isDark
+          ? Colors.black.withValues(alpha: 0.6)
+          : Colors.grey.shade400;
       final highlightColor = isDark
           ? Colors.white.withValues(alpha: 0.08)
           : Colors.white.withValues(alpha: 0.9);
@@ -303,7 +307,8 @@ class ChartContainer extends StatelessWidget {
         decoration: BoxDecoration(
           color: effectiveTheme.backgroundColor,
           borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
-          boxShadow: boxShadow ??
+          boxShadow:
+              boxShadow ??
               [
                 // Dark shadow (bottom right)
                 BoxShadow(
@@ -327,14 +332,14 @@ class ChartContainer extends StatelessWidget {
               ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (title != null || subtitle != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     if (title != null)
                       Text(
@@ -352,8 +357,9 @@ class ChartContainer extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color:
-                                effectiveTheme.textColor.withValues(alpha: 0.7),
+                            color: effectiveTheme.textColor.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                       ),
@@ -381,8 +387,9 @@ class ChartContainer extends StatelessWidget {
                       Text(
                         'Loading chart data...',
                         style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.7),
+                          color: effectiveTheme.textColor.withValues(
+                            alpha: 0.7,
+                          ),
                           fontSize: 14,
                         ),
                       ),
@@ -394,7 +401,8 @@ class ChartContainer extends StatelessWidget {
               SizedBox(
                 height: 300,
                 child: Center(
-                  child: errorWidget ??
+                  child:
+                      errorWidget ??
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
@@ -408,8 +416,9 @@ class ChartContainer extends StatelessWidget {
                           Text(
                             errorMessage ?? 'Failed to load chart data',
                             style: TextStyle(
-                              color: effectiveTheme.textColor
-                                  .withValues(alpha: 0.7),
+                              color: effectiveTheme.textColor.withValues(
+                                alpha: 0.7,
+                              ),
                               fontSize: 14,
                             ),
                             textAlign: TextAlign.center,

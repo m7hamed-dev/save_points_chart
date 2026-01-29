@@ -93,7 +93,8 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
     _primaryColor = _computePrimaryColor();
     _formattedValue = _computeFormattedValue();
     _formattedXValue = _hasPoint ? widget.point!.x.toStringAsFixed(1) : null;
-    _label = widget.point?.label ??
+    _label =
+        widget.point?.label ??
         widget.segment?.label ??
         (_hasPoint ? 'Data Point' : 'Segment');
   }
@@ -136,10 +137,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
                 scale: 0.85 + (0.15 * value),
                 child: Transform.translate(
                   offset: Offset(0, 10 * (1 - value)),
-                  child: Opacity(
-                    opacity: value,
-                    child: child,
-                  ),
+                  child: Opacity(opacity: value, child: child),
                 ),
               ),
             );
@@ -179,10 +177,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
                 end: Alignment.bottomRight,
                 colors: gradientColors,
               ),
-              border: Border.all(
-                color: borderColor,
-                width: 1.5,
-              ),
+              border: Border.all(color: borderColor, width: 1.5),
               boxShadow: shadows,
             ),
             child: _buildMenuItems(context, isDark),
@@ -286,9 +281,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           color: backgroundColor,
-          border: Border.all(
-            color: borderColor,
-          ),
+          border: Border.all(color: borderColor),
           boxShadow: shadows,
         ),
         child: _buildMenuItems(context, isDark),
@@ -358,7 +351,10 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildHeader(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
+    BuildContext context,
+    bool isDark,
+    _MenuColorScheme colorScheme,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -373,7 +369,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           _buildHeaderRow(context, isDark, colorScheme),
           const SizedBox(height: 16),
@@ -384,14 +380,15 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildHeaderRow(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
+    BuildContext context,
+    bool isDark,
+    _MenuColorScheme colorScheme,
+  ) {
     return Row(
       children: [
         _buildHeaderIcon(colorScheme),
         const SizedBox(width: 14),
-        Expanded(
-          child: _buildHeaderText(context, isDark, colorScheme),
-        ),
+        Expanded(child: _buildHeaderText(context, isDark, colorScheme)),
         _buildCloseButton(colorScheme),
       ],
     );
@@ -420,9 +417,12 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildHeaderText(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
+    BuildContext context,
+    bool isDark,
+    _MenuColorScheme colorScheme,
+  ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Text(
           _label,
@@ -470,7 +470,10 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildValueDisplayCard(
-      BuildContext context, bool isDark, _MenuColorScheme colorScheme,) {
+    BuildContext context,
+    bool isDark,
+    _MenuColorScheme colorScheme,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -499,7 +502,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   Widget _buildValueColumn(_MenuColorScheme colorScheme) {
     return Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Text(
             'VALUE',
@@ -564,7 +567,8 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildMenuItemsList(BuildContext context, bool isDark) {
-    final hasActions = widget.onViewDetails != null ||
+    final hasActions =
+        widget.onViewDetails != null ||
         widget.onExport != null ||
         widget.onShare != null;
 
@@ -656,9 +660,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
               color: colors.bgColor,
-              border: Border.all(
-                color: colors.borderColor,
-              ),
+              border: Border.all(color: colors.borderColor),
             ),
             child: Row(
               children: [
@@ -716,11 +718,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
           ),
         ],
       ),
-      child: Icon(
-        icon,
-        size: 20,
-        color: _primaryColor,
-      ),
+      child: Icon(icon, size: 20, color: _primaryColor),
     );
   }
 
@@ -763,8 +761,10 @@ class ChartContextMenuHelper {
 
     final overlay = Overlay.of(context);
     final globalPosition = _calculateGlobalPosition(context, position);
-    final adjustedPosition =
-        _calculateAdjustedPosition(context, globalPosition);
+    final adjustedPosition = _calculateAdjustedPosition(
+      context,
+      globalPosition,
+    );
 
     _ensureBlurFilter(backgroundBlur);
 
@@ -805,12 +805,15 @@ class ChartContextMenuHelper {
   }
 
   static Offset _calculateGlobalPosition(
-      BuildContext context, Offset position,) {
+    BuildContext context,
+    Offset position,
+  ) {
     final renderBox = context.findRenderObject() as RenderBox?;
 
     try {
-      final globalPosition =
-          renderBox != null ? renderBox.localToGlobal(position) : position;
+      final globalPosition = renderBox != null
+          ? renderBox.localToGlobal(position)
+          : position;
 
       if (!globalPosition.dx.isFinite || !globalPosition.dy.isFinite) {
         return position;
@@ -855,14 +858,10 @@ class ChartContextMenuHelper {
             ? ClipRect(
                 child: BackdropFilter(
                   filter: _cachedBlurFilter!,
-                  child: Container(
-                    color: Colors.black.withValues(alpha: 0.1),
-                  ),
+                  child: Container(color: Colors.black.withValues(alpha: 0.1)),
                 ),
               )
-            : Container(
-                color: Colors.transparent,
-              ),
+            : Container(color: Colors.transparent),
       ),
     );
   }

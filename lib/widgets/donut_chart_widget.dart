@@ -89,12 +89,14 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
           message: widget.config?.emptyMessage ?? 'No data available',
         );
-    final effectiveEmptyNoValuesWidget = widget.config?.emptyWidget ??
+    final effectiveEmptyNoValuesWidget =
+        widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
           message: widget.config?.emptyMessage ?? 'No values to display',
@@ -120,10 +122,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       );
 
       if (widget.margin != null) {
-        container = Padding(
-          padding: widget.margin!,
-          child: container,
-        );
+        container = Padding(padding: widget.margin!, child: container);
       }
 
       return container;
@@ -150,10 +149,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         child: effectiveEmptyNoValuesWidget,
       );
       if (widget.margin != null) {
-        container = Padding(
-          padding: widget.margin!,
-          child: container,
-        );
+        container = Padding(padding: widget.margin!, child: container);
       }
       return container;
     }
@@ -178,11 +174,11 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                             ChartContextMenuHelper.hide();
                             final result =
                                 ChartInteractionHelper.findPieSegment(
-                              details.localPosition,
-                              widget.data,
-                              size,
-                              widget.centerSpaceRadius,
-                            );
+                                  details.localPosition,
+                                  widget.data,
+                                  size,
+                                  widget.centerSpaceRadius,
+                                );
                             if (result != null && result.isHit) {
                               HapticFeedback.selectionClick();
                               setState(() => _selectedSegment = result);
@@ -228,8 +224,9 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                       Text(
                         'Total',
                         style: TextStyle(
-                          color:
-                              effectiveTheme.textColor.withValues(alpha: 0.5),
+                          color: effectiveTheme.textColor.withValues(
+                            alpha: 0.5,
+                          ),
                           fontSize: 14,
                         ),
                       ),
@@ -253,7 +250,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
     final Widget legend = Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: widget.data.map((item) {
         return ListTile(
           dense: true,
@@ -271,10 +268,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
           ),
           title: Text(
             item.label,
-            style: TextStyle(
-              color: effectiveTheme.textColor,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
@@ -326,10 +320,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

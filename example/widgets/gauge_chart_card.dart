@@ -12,7 +12,7 @@ class GaugeChartCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             const Text(
               'Gauge Chart',
@@ -28,9 +28,7 @@ class GaugeChartCard extends StatelessWidget {
               unit: '%',
               onChartTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Performance Score: 75%'),
-                  ),
+                  const SnackBar(content: Text('Performance Score: 75%')),
                 );
               },
             ),

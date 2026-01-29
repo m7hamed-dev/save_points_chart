@@ -81,12 +81,14 @@ class _PieChartWidgetState extends State<PieChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
           message: widget.config?.emptyMessage ?? 'No data available',
         );
-    final effectiveEmptyNoValuesWidget = widget.config?.emptyWidget ??
+    final effectiveEmptyNoValuesWidget =
+        widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,
           message: widget.config?.emptyMessage ?? 'No values to display',
@@ -112,10 +114,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
       );
 
       if (widget.margin != null) {
-        container = Padding(
-          padding: widget.margin!,
-          child: container,
-        );
+        container = Padding(padding: widget.margin!, child: container);
       }
 
       return container;
@@ -142,10 +141,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
         child: effectiveEmptyNoValuesWidget,
       );
       if (widget.margin != null) {
-        container = Padding(
-          padding: widget.margin!,
-          child: container,
-        );
+        container = Padding(padding: widget.margin!, child: container);
       }
       return container;
     }
@@ -163,14 +159,9 @@ class _PieChartWidgetState extends State<PieChartWidget>
           )
         : Row(
             children: [
-              Expanded(
-                flex: 2,
-                child: _pieChart(effectiveTheme),
-              ),
+              Expanded(flex: 2, child: _pieChart(effectiveTheme)),
               if (widget.showLegend && effectiveTheme.showLegend)
-                Expanded(
-                  child: _data(effectiveTheme, total),
-                ),
+                Expanded(child: _data(effectiveTheme, total)),
             ],
           );
 
@@ -192,10 +183,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;
@@ -204,7 +192,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
   Column _data(ChartTheme effectiveTheme, double total) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: widget.data.map((item) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
