@@ -29,6 +29,17 @@ import 'package:save_points_chart/theme/chart_theme.dart';
 /// - [ChartTheme] for theme configuration
 /// - ChartContainer for container styling
 class ChartsConfig {
+  const ChartsConfig({
+    this.useGlassmorphism,
+    this.useNeumorphism,
+    this.emptyWidget,
+    this.emptyMessage,
+    this.errorWidget,
+    this.errorMessage,
+    this.boxShadow,
+    this.theme,
+  });
+
   /// Whether to apply glassmorphism (frosted glass) to the chart container.
   final bool? useGlassmorphism;
 
@@ -54,17 +65,6 @@ class ChartsConfig {
 
   /// Theme for colors, typography, and chart styling.
   final ChartTheme? theme;
-
-  const ChartsConfig({
-    this.useGlassmorphism,
-    this.useNeumorphism,
-    this.emptyWidget,
-    this.emptyMessage,
-    this.errorWidget,
-    this.errorMessage,
-    this.boxShadow,
-    this.theme,
-  });
 
   /// Creates a copy of this config with the given fields replaced.
   ChartsConfig copyWith({
