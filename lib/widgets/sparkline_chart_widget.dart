@@ -126,129 +126,133 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding ?? const EdgeInsets.all(12.0),
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final chartHeight = widget.height ?? 100.0;
-                final chartSize = Size(constraints.maxWidth, chartHeight);
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final chartHeight = widget.height ?? 100.0;
+                  final chartSize = Size(constraints.maxWidth, chartHeight);
 
-                // Calculate bounds for tap detection (with caching)
-                Map<String, double> bounds;
-                if (_cachedBounds != null) {
-                  bounds = _cachedBounds!;
-                } else {
-                  double minX = double.infinity;
-                  double maxX = double.negativeInfinity;
-                  double maxY = double.negativeInfinity;
+                  // Calculate bounds for tap detection (with caching)
+                  Map<String, double> bounds;
+                  if (_cachedBounds != null) {
+                    bounds = _cachedBounds!;
+                  } else {
+                    double minX = double.infinity;
+                    double maxX = double.negativeInfinity;
+                    double maxY = double.negativeInfinity;
 
-                  for (final dataSet in widget.dataSets) {
-                    final point = dataSet.dataPoint;
-                    if (point.x < minX) minX = point.x;
-                    if (point.x > maxX) maxX = point.x;
-                    if (point.y > maxY) maxY = point.y;
+                    for (final dataSet in widget.dataSets) {
+                      final point = dataSet.dataPoint;
+                      if (point.x < minX) minX = point.x;
+                      if (point.x > maxX) maxX = point.x;
+                      if (point.y > maxY) maxY = point.y;
+                    }
+
+                    bounds = {
+                      'minX': minX,
+                      'maxX': maxX,
+                      'maxY': maxY,
+                    };
+                    _cachedBounds = bounds;
                   }
 
-                  bounds = {
-                    'minX': minX,
-                    'maxX': maxX,
-                    'maxY': maxY,
-                  };
-                  _cachedBounds = bounds;
-                }
+                  return GestureDetector(
+                    behavior: HitTestBehavior
+                        .translucent, // Allow taps even when overlay is present
+                    onTapDown: widget.onPointTap != null
+                        ? (details) {
+                            // Hide any existing context menu first to prevent blocking
+                            ChartContextMenuHelper.hide();
 
-                return GestureDetector(
-                  behavior: HitTestBehavior
-                      .translucent, // Allow taps even when overlay is present
-                  onTapDown: widget.onPointTap != null
-                      ? (details) {
-                          // Hide any existing context menu first to prevent blocking
-                          ChartContextMenuHelper.hide();
+                            final result =
+                                ChartInteractionHelper.findNearestPoint(
+                              details.localPosition,
+                              modifiedDataSets,
+                              chartSize,
+                              bounds['minX']!,
+                              bounds['maxX']!,
+                              0.0,
+                              bounds['maxY']! * 1.15,
+                              ChartInteractionConstants.tapRadius,
+                            );
 
-                          final result =
-                              ChartInteractionHelper.findNearestPoint(
-                            details.localPosition,
-                            modifiedDataSets,
-                            chartSize,
-                            bounds['minX']!,
-                            bounds['maxX']!,
-                            0.0,
-                            bounds['maxY']! * 1.15,
-                            ChartInteractionConstants.tapRadius,
-                          );
+                            if (result != null && result.isHit) {
+                              // Provide haptic feedback
+                              HapticFeedback.selectionClick();
 
-                          if (result != null && result.isHit) {
-                            // Provide haptic feedback
-                            HapticFeedback.selectionClick();
+                              // Set new selection (optimized single setState)
+                              setState(() {
+                                _selectedPoint = result;
+                              });
 
-                            // Set new selection (optimized single setState)
-                            setState(() {
-                              _selectedPoint = result;
-                            });
+                              // Get global position for context menu
+                              final RenderBox? renderBox =
+                                  context.findRenderObject() as RenderBox?;
+                              final globalPosition = renderBox != null
+                                  ? renderBox
+                                      .localToGlobal(details.localPosition)
+                                  : details.localPosition;
 
-                            // Get global position for context menu
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
-                            // Small delay to ensure overlay is removed before showing new menu
-                            Future.microtask(() {
-                              widget.onPointTap?.call(
-                                result.point!,
-                                result.datasetIndex!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
-                            });
-                          } else {
-                            // Clear selection if tap is outside any point
-                            setState(() {
-                              _selectedPoint = null;
-                            });
+                              // Small delay to ensure overlay is removed before showing new menu
+                              Future.microtask(() {
+                                widget.onPointTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              // Clear selection if tap is outside any point
+                              setState(() {
+                                _selectedPoint = null;
+                              });
+                            }
                           }
-                        }
-                      : null,
-                  child: SizedBox(
-                    width: constraints.maxWidth,
-                    height: widget.height ?? 100.0,
-                    child: CustomPaint(
-                      size: chartSize,
-                      painter: LineChartPainter(
-                        theme: effectiveTheme.copyWith(
+                        : null,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: widget.height ?? 100.0,
+                      child: CustomPaint(
+                        size: chartSize,
+                        painter: LineChartPainter(
+                          theme: effectiveTheme.copyWith(
+                            showGrid: false,
+                            showAxis: false,
+                          ),
+                          dataSets: modifiedDataSets,
+                          lineWidth: widget.lineWidth,
+                          showArea: widget.showArea,
+                          showPoints: false,
                           showGrid: false,
                           showAxis: false,
+                          showLabel: widget.showLabel,
+                          animationProgress: _animation.value,
+                          selectedPoint: _selectedPoint,
                         ),
-                        dataSets: modifiedDataSets,
-                        lineWidth: widget.lineWidth,
-                        showArea: widget.showArea,
-                        showPoints: false,
-                        showGrid: false,
-                        showAxis: false,
-                        showLabel: widget.showLabel,
-                        animationProgress: _animation.value,
-                        selectedPoint: _selectedPoint,
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

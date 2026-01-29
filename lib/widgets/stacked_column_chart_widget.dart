@@ -96,11 +96,7 @@ class StackedColumnChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
-  })  : assert(
-          dataSets.isNotEmpty,
-          'StackedColumnChartWidget requires at least one data set',
-        ),
-        assert(barWidth > 0, 'Bar width must be positive');
+  }) : assert(barWidth > 0, 'Bar width must be positive');
 
   @override
   State<StackedColumnChartWidget> createState() =>
@@ -150,127 +146,132 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTapDown: widget.onBarTap != null
-                      ? (details) {
-                          ChartContextMenuHelper.hide();
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTapDown: widget.onBarTap != null
+                        ? (details) {
+                            ChartContextMenuHelper.hide();
 
-                          const leftPadding = 50.0;
-                          const topPadding = 20.0;
-                          final chartPosition = Offset(
-                            details.localPosition.dx - leftPadding,
-                            details.localPosition.dy - topPadding,
-                          );
+                            const leftPadding = 50.0;
+                            const topPadding = 20.0;
+                            final chartPosition = Offset(
+                              details.localPosition.dx - leftPadding,
+                              details.localPosition.dy - topPadding,
+                            );
 
-                          if (widget.dataSets.isEmpty) return;
+                            if (widget.dataSets.isEmpty) return;
 
-                          double minX = double.infinity;
-                          double maxX = double.negativeInfinity;
-                          double maxY = double.negativeInfinity;
+                            double minX = double.infinity;
+                            double maxX = double.negativeInfinity;
+                            double maxY = double.negativeInfinity;
 
-                          for (final dataSet in widget.dataSets) {
-                            final point = dataSet.dataPoint;
-                            if (point.x < minX) minX = point.x;
-                            if (point.x > maxX) maxX = point.x;
-                            if (point.y > maxY) maxY = point.y;
-                          }
+                            for (final dataSet in widget.dataSets) {
+                              final point = dataSet.dataPoint;
+                              if (point.x < minX) minX = point.x;
+                              if (point.x > maxX) maxX = point.x;
+                              if (point.y > maxY) maxY = point.y;
+                            }
 
-                          // For stacked, calculate total per x position
-                          final Map<double, double> totalsByX = {};
-                          for (final dataSet in widget.dataSets) {
-                            final point = dataSet.dataPoint;
-                            totalsByX[point.x] =
-                                (totalsByX[point.x] ?? 0) + point.y;
-                            if (totalsByX[point.x]! > maxY) {
-                              maxY = totalsByX[point.x]!;
+                            // For stacked, calculate total per x position
+                            final Map<double, double> totalsByX = {};
+                            for (final dataSet in widget.dataSets) {
+                              final point = dataSet.dataPoint;
+                              totalsByX[point.x] =
+                                  (totalsByX[point.x] ?? 0) + point.y;
+                              if (totalsByX[point.x]! > maxY) {
+                                maxY = totalsByX[point.x]!;
+                              }
+                            }
+
+                            final chartHeight = widget.height ?? 240.0;
+                            final chartSize = Size(
+                              constraints.maxWidth - 70,
+                              chartHeight,
+                            );
+
+                            final result = ChartInteractionHelper.findBar(
+                              chartPosition,
+                              widget.dataSets,
+                              chartSize,
+                              minX * 0.95,
+                              maxX * 1.05,
+                              0.0,
+                              maxY * 1.2,
+                              widget.barWidth,
+                            );
+
+                            if (result != null && result.isHit) {
+                              HapticFeedback.selectionClick();
+
+                              setState(() {
+                                _selectedBar = result;
+                              });
+
+                              final RenderBox? renderBox =
+                                  context.findRenderObject() as RenderBox?;
+                              final globalPosition = renderBox != null
+                                  ? renderBox
+                                      .localToGlobal(details.localPosition)
+                                  : details.localPosition;
+
+                              Future.microtask(() {
+                                widget.onBarTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              setState(() {
+                                _selectedBar = null;
+                              });
                             }
                           }
-
-                          final chartHeight = widget.height ?? 240.0;
-                          final chartSize = Size(
-                            constraints.maxWidth - 70,
-                            chartHeight,
-                          );
-
-                          final result = ChartInteractionHelper.findBar(
-                            chartPosition,
-                            widget.dataSets,
-                            chartSize,
-                            minX * 0.95,
-                            maxX * 1.05,
-                            0.0,
-                            maxY * 1.2,
-                            widget.barWidth,
-                          );
-
-                          if (result != null && result.isHit) {
-                            HapticFeedback.selectionClick();
-
-                            setState(() {
-                              _selectedBar = result;
-                            });
-
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
-                            Future.microtask(() {
-                              widget.onBarTap?.call(
-                                result.point!,
-                                result.datasetIndex!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
-                            });
-                          } else {
-                            setState(() {
-                              _selectedBar = null;
-                            });
-                          }
-                        }
-                      : null,
-                  child: SizedBox(
-                    width: constraints.maxWidth,
-                    height: widget.height ?? 300.0,
-                    child: CustomPaint(
-                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
-                      painter: StackedColumnChartPainter(
-                        theme: effectiveTheme,
-                        dataSets: widget.dataSets,
-                        barWidth: widget.barWidth,
-                        borderRadius: widget.borderRadius,
-                        showGrid: widget.showGrid,
-                        showAxis: widget.showAxis,
-                        showLabel: widget.showLabel,
-                        animationProgress: _animation.value,
-                        selectedBar: _selectedBar,
+                        : null,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: widget.height ?? 300.0,
+                      child: CustomPaint(
+                        size:
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        painter: StackedColumnChartPainter(
+                          theme: effectiveTheme,
+                          dataSets: widget.dataSets,
+                          barWidth: widget.barWidth,
+                          borderRadius: widget.borderRadius,
+                          showGrid: widget.showGrid,
+                          showAxis: widget.showAxis,
+                          showLabel: widget.showLabel,
+                          animationProgress: _animation.value,
+                          selectedBar: _selectedBar,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

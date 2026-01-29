@@ -194,150 +194,153 @@ class _BarChartWidgetState extends State<BarChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return MouseRegion(
-                  onHover: widget.onBarHover != null
-                      ? (event) {
-                          _handleHover(event.localPosition, constraints);
-                        }
-                      : null,
-                  onExit: widget.onBarHover != null
-                      ? (_) {
-                          setState(() {
-                            _hoveredBar = null;
-                          });
-                          widget.onBarHover?.call(null, null, null);
-                        }
-                      : null,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior
-                        .translucent, // Allow taps even when overlay is present
-                    onTapDown: widget.onBarTap != null
-                        ? (details) {
-                            // Hide any existing context menu first to prevent blocking
-                            ChartContextMenuHelper.hide();
-
-                            // Use localPosition directly (relative to SizedBox)
-                            const leftPadding = 50.0;
-                            const topPadding = 20.0;
-                            final chartPosition = Offset(
-                              details.localPosition.dx - leftPadding,
-                              details.localPosition.dy - topPadding,
-                            );
-
-                            // Calculate chart bounds (with caching)
-                            if (widget.dataSets.isEmpty) return;
-
-                            // Use cached bounds if available
-                            Map<String, double> bounds;
-                            if (_cachedBounds != null &&
-                                _cachedDataSets != null &&
-                                _cachedDataSets == widget.dataSets) {
-                              bounds = _cachedBounds!;
-                            } else {
-                              double minX = double.infinity;
-                              double maxX = double.negativeInfinity;
-                              double maxY = double.negativeInfinity;
-
-                              for (final dataSet in widget.dataSets) {
-                                final point = dataSet.dataPoint;
-                                if (point.x < minX) minX = point.x;
-                                if (point.x > maxX) maxX = point.x;
-                                if (point.y > maxY) maxY = point.y;
-                              }
-
-                              bounds = {
-                                'minX': minX,
-                                'maxX': maxX,
-                                'maxY': maxY,
-                              };
-                              _cachedBounds = bounds;
-                              _cachedDataSets = List.from(widget.dataSets);
-                            }
-
-                            final chartHeight = widget.height ?? 240.0;
-                            final chartSize = Size(
-                              constraints.maxWidth - 70,
-                              chartHeight,
-                            );
-
-                            final result = ChartInteractionHelper.findBar(
-                              chartPosition,
-                              widget.dataSets,
-                              chartSize,
-                              bounds['minX']! * 0.95,
-                              bounds['maxX']! * 1.05,
-                              0.0,
-                              bounds['maxY']! * 1.2,
-                              widget.barWidth,
-                            );
-
-                            if (result != null && result.isHit) {
-                              // Provide haptic feedback
-                              HapticFeedback.selectionClick();
-
-                              // Set new selection (optimized single setState)
-                              setState(() {
-                                _selectedBar = result;
-                              });
-
-                              // Get global position for context menu
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
-                              final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
-                                  : details.localPosition;
-
-                              // Small delay to ensure overlay is removed before showing new menu
-                              Future.microtask(() {
-                                widget.onBarTap?.call(
-                                  result.point!,
-                                  result.datasetIndex!,
-                                  result.elementIndex!,
-                                  globalPosition,
-                                );
-                              });
-                            } else {
-                              // Clear selection if tap is outside any bar
-                              setState(() {
-                                _selectedBar = null;
-                              });
-                            }
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return MouseRegion(
+                    onHover: widget.onBarHover != null
+                        ? (event) {
+                            _handleHover(event.localPosition, constraints);
                           }
                         : null,
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      height: widget.height ?? 300.0,
-                      child: CustomPaint(
-                        size:
-                            Size(constraints.maxWidth, widget.height ?? 300.0),
-                        painter: BarChartPainter(
-                          theme: effectiveTheme,
-                          dataSets: widget.dataSets,
-                          barWidth: widget.barWidth,
-                          borderRadius: widget.borderRadius,
-                          barRounded: widget.barRounded,
-                          showGrid: widget.showGrid,
-                          showAxis: widget.showAxis,
-                          showLabel: widget.showLabel,
-                          isGrouped: widget.isGrouped,
-                          animationProgress: _animation.value,
-                          selectedBar: _selectedBar,
-                          hoveredBar: _hoveredBar,
+                    onExit: widget.onBarHover != null
+                        ? (_) {
+                            setState(() {
+                              _hoveredBar = null;
+                            });
+                            widget.onBarHover?.call(null, null, null);
+                          }
+                        : null,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior
+                          .translucent, // Allow taps even when overlay is present
+                      onTapDown: widget.onBarTap != null
+                          ? (details) {
+                              // Hide any existing context menu first to prevent blocking
+                              ChartContextMenuHelper.hide();
+
+                              // Use localPosition directly (relative to SizedBox)
+                              const leftPadding = 50.0;
+                              const topPadding = 20.0;
+                              final chartPosition = Offset(
+                                details.localPosition.dx - leftPadding,
+                                details.localPosition.dy - topPadding,
+                              );
+
+                              // Calculate chart bounds (with caching)
+                              if (widget.dataSets.isEmpty) return;
+
+                              // Use cached bounds if available
+                              Map<String, double> bounds;
+                              if (_cachedBounds != null &&
+                                  _cachedDataSets != null &&
+                                  _cachedDataSets == widget.dataSets) {
+                                bounds = _cachedBounds!;
+                              } else {
+                                double minX = double.infinity;
+                                double maxX = double.negativeInfinity;
+                                double maxY = double.negativeInfinity;
+
+                                for (final dataSet in widget.dataSets) {
+                                  final point = dataSet.dataPoint;
+                                  if (point.x < minX) minX = point.x;
+                                  if (point.x > maxX) maxX = point.x;
+                                  if (point.y > maxY) maxY = point.y;
+                                }
+
+                                bounds = {
+                                  'minX': minX,
+                                  'maxX': maxX,
+                                  'maxY': maxY,
+                                };
+                                _cachedBounds = bounds;
+                                _cachedDataSets = List.from(widget.dataSets);
+                              }
+
+                              final chartHeight = widget.height ?? 240.0;
+                              final chartSize = Size(
+                                constraints.maxWidth - 70,
+                                chartHeight,
+                              );
+
+                              final result = ChartInteractionHelper.findBar(
+                                chartPosition,
+                                widget.dataSets,
+                                chartSize,
+                                bounds['minX']! * 0.95,
+                                bounds['maxX']! * 1.05,
+                                0.0,
+                                bounds['maxY']! * 1.2,
+                                widget.barWidth,
+                              );
+
+                              if (result != null && result.isHit) {
+                                // Provide haptic feedback
+                                HapticFeedback.selectionClick();
+
+                                // Set new selection (optimized single setState)
+                                setState(() {
+                                  _selectedBar = result;
+                                });
+
+                                // Get global position for context menu
+                                final RenderBox? renderBox =
+                                    context.findRenderObject() as RenderBox?;
+                                final globalPosition = renderBox != null
+                                    ? renderBox
+                                        .localToGlobal(details.localPosition)
+                                    : details.localPosition;
+
+                                // Small delay to ensure overlay is removed before showing new menu
+                                Future.microtask(() {
+                                  widget.onBarTap?.call(
+                                    result.point!,
+                                    result.datasetIndex!,
+                                    result.elementIndex!,
+                                    globalPosition,
+                                  );
+                                });
+                              } else {
+                                // Clear selection if tap is outside any bar
+                                setState(() {
+                                  _selectedBar = null;
+                                });
+                              }
+                            }
+                          : null,
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        height: widget.height ?? 300.0,
+                        child: CustomPaint(
+                          size: Size(
+                              constraints.maxWidth, widget.height ?? 300.0),
+                          painter: BarChartPainter(
+                            theme: effectiveTheme,
+                            dataSets: widget.dataSets,
+                            barWidth: widget.barWidth,
+                            borderRadius: widget.borderRadius,
+                            barRounded: widget.barRounded,
+                            showGrid: widget.showGrid,
+                            showAxis: widget.showAxis,
+                            showLabel: widget.showLabel,
+                            isGrouped: widget.isGrouped,
+                            animationProgress: _animation.value,
+                            selectedBar: _selectedBar,
+                            hoveredBar: _hoveredBar,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

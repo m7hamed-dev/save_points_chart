@@ -132,131 +132,136 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTapDown: widget.onPointTap != null
-                      ? (details) {
-                          ChartContextMenuHelper.hide();
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTapDown: widget.onPointTap != null
+                        ? (details) {
+                            ChartContextMenuHelper.hide();
 
-                          const leftPadding = 50.0;
-                          const topPadding = 20.0;
-                          final chartPosition = Offset(
-                            details.localPosition.dx - leftPadding,
-                            details.localPosition.dy - topPadding,
-                          );
+                            const leftPadding = 50.0;
+                            const topPadding = 20.0;
+                            final chartPosition = Offset(
+                              details.localPosition.dx - leftPadding,
+                              details.localPosition.dy - topPadding,
+                            );
 
-                          if (cumulativeDataSets.isEmpty) return;
+                            if (cumulativeDataSets.isEmpty) return;
 
-                          Map<String, double> bounds;
-                          if (_cachedBounds != null &&
-                              _cachedCumulativeData != null &&
-                              _cachedCumulativeData == cumulativeDataSets) {
-                            bounds = _cachedBounds!;
-                          } else {
-                            double minX = double.infinity;
-                            double maxX = double.negativeInfinity;
-                            double maxY = double.negativeInfinity;
+                            Map<String, double> bounds;
+                            if (_cachedBounds != null &&
+                                _cachedCumulativeData != null &&
+                                _cachedCumulativeData == cumulativeDataSets) {
+                              bounds = _cachedBounds!;
+                            } else {
+                              double minX = double.infinity;
+                              double maxX = double.negativeInfinity;
+                              double maxY = double.negativeInfinity;
 
-                            for (final dataSet in cumulativeDataSets) {
-                              final point = dataSet.dataPoint;
-                              if (point.x < minX) minX = point.x;
-                              if (point.x > maxX) maxX = point.x;
-                              if (point.y > maxY) maxY = point.y;
+                              for (final dataSet in cumulativeDataSets) {
+                                final point = dataSet.dataPoint;
+                                if (point.x < minX) minX = point.x;
+                                if (point.x > maxX) maxX = point.x;
+                                if (point.y > maxY) maxY = point.y;
+                              }
+
+                              bounds = {
+                                'minX': minX,
+                                'maxX': maxX,
+                                'maxY': maxY,
+                              };
+                              _cachedBounds = bounds;
+                              _cachedCumulativeData =
+                                  List.from(cumulativeDataSets);
                             }
 
-                            bounds = {
-                              'minX': minX,
-                              'maxX': maxX,
-                              'maxY': maxY,
-                            };
-                            _cachedBounds = bounds;
-                            _cachedCumulativeData =
-                                List.from(cumulativeDataSets);
+                            final chartHeight = widget.height ?? 240.0;
+                            final chartSize = Size(
+                              constraints.maxWidth - 70,
+                              chartHeight,
+                            );
+
+                            final result =
+                                ChartInteractionHelper.findNearestPoint(
+                              chartPosition,
+                              cumulativeDataSets,
+                              chartSize,
+                              bounds['minX']!,
+                              bounds['maxX']!,
+                              0.0,
+                              bounds['maxY']! * 1.1,
+                              ChartInteractionConstants.tapRadius,
+                            );
+
+                            if (result != null && result.isHit) {
+                              HapticFeedback.selectionClick();
+                              setState(() {
+                                _selectedPoint = result;
+                              });
+
+                              final renderBox =
+                                  context.findRenderObject() as RenderBox?;
+                              final globalPosition = renderBox != null
+                                  ? renderBox
+                                      .localToGlobal(details.localPosition)
+                                  : details.localPosition;
+
+                              Future.microtask(() {
+                                widget.onPointTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              setState(() {
+                                _selectedPoint = null;
+                              });
+                            }
                           }
-
-                          final chartHeight = widget.height ?? 240.0;
-                          final chartSize = Size(
-                            constraints.maxWidth - 70,
-                            chartHeight,
-                          );
-
-                          final result =
-                              ChartInteractionHelper.findNearestPoint(
-                            chartPosition,
-                            cumulativeDataSets,
-                            chartSize,
-                            bounds['minX']!,
-                            bounds['maxX']!,
-                            0.0,
-                            bounds['maxY']! * 1.1,
-                            ChartInteractionConstants.tapRadius,
-                          );
-
-                          if (result != null && result.isHit) {
-                            HapticFeedback.selectionClick();
-                            setState(() {
-                              _selectedPoint = result;
-                            });
-
-                            final renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
-                            Future.microtask(() {
-                              widget.onPointTap?.call(
-                                result.point!,
-                                result.datasetIndex!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
-                            });
-                          } else {
-                            setState(() {
-                              _selectedPoint = null;
-                            });
-                          }
-                        }
-                      : null,
-                  child: SizedBox(
-                    width: constraints.maxWidth,
-                    height: widget.height ?? 300.0,
-                    child: CustomPaint(
-                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
-                      painter: StackedAreaChartPainter(
-                        theme: effectiveTheme,
-                        dataSets: cumulativeDataSets,
-                        lineWidth: widget.lineWidth,
-                        showGrid: widget.showGrid,
-                        showAxis: widget.showAxis,
-                        showLabel: widget.showLabel,
-                        animationProgress: _animation.value,
-                        selectedPoint: _selectedPoint,
+                        : null,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: widget.height ?? 300.0,
+                      child: CustomPaint(
+                        size:
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        painter: StackedAreaChartPainter(
+                          theme: effectiveTheme,
+                          dataSets: cumulativeDataSets,
+                          lineWidth: widget.lineWidth,
+                          showGrid: widget.showGrid,
+                          showAxis: widget.showAxis,
+                          showLabel: widget.showLabel,
+                          animationProgress: _animation.value,
+                          selectedPoint: _selectedPoint,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 
@@ -278,7 +283,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
 
     // For each x position, calculate cumulative values by dataset index
     final Map<int, Map<double, double>> cumulativeByIndex = {};
-    
+
     for (final xValue in sortedXValues) {
       final datasetsAtX = groupedByX[xValue]!;
       // Sort by original index to maintain layer order
@@ -293,7 +298,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
         final dataSet = datasetsAtX[i];
         final originalIndex = sets.indexOf(dataSet);
         runningSum += dataSet.dataPoint.y;
-        
+
         if (!cumulativeByIndex.containsKey(originalIndex)) {
           cumulativeByIndex[originalIndex] = {};
         }
@@ -306,7 +311,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
     for (int i = 0; i < sets.length; i++) {
       final originalDataSet = sets[i];
       final cumulativeValues = cumulativeByIndex[i]!;
-      
+
       // Create a dataset for each x value with cumulative y
       for (final entry in cumulativeValues.entries) {
         cumulative.add(

@@ -258,145 +258,149 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior
-                      .translucent, // Allow taps even when overlay is present
-                  onTapDown: widget.onPointTap != null
-                      ? (details) {
-                          // Hide any existing context menu first to prevent blocking
-                          ChartContextMenuHelper.hide();
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior
+                        .translucent, // Allow taps even when overlay is present
+                    onTapDown: widget.onPointTap != null
+                        ? (details) {
+                            // Hide any existing context menu first to prevent blocking
+                            ChartContextMenuHelper.hide();
 
-                          // Use localPosition directly (relative to SizedBox)
-                          const leftPadding = 50.0;
-                          const topPadding = 20.0;
-                          final chartPosition = Offset(
-                            details.localPosition.dx - leftPadding,
-                            details.localPosition.dy - topPadding,
-                          );
+                            // Use localPosition directly (relative to SizedBox)
+                            const leftPadding = 50.0;
+                            const topPadding = 20.0;
+                            final chartPosition = Offset(
+                              details.localPosition.dx - leftPadding,
+                              details.localPosition.dy - topPadding,
+                            );
 
-                          if (widget.dataSets.isEmpty) return;
+                            if (widget.dataSets.isEmpty) return;
 
-                          // Use cached bounds if available
-                          Map<String, double> bounds;
-                          if (_cachedBounds != null &&
-                              _cachedDataSets != null &&
-                              _cachedDataSets == widget.dataSets) {
-                            bounds = _cachedBounds!;
-                          } else {
-                            double minX = double.infinity;
-                            double maxX = double.negativeInfinity;
-                            double maxY = double.negativeInfinity;
+                            // Use cached bounds if available
+                            Map<String, double> bounds;
+                            if (_cachedBounds != null &&
+                                _cachedDataSets != null &&
+                                _cachedDataSets == widget.dataSets) {
+                              bounds = _cachedBounds!;
+                            } else {
+                              double minX = double.infinity;
+                              double maxX = double.negativeInfinity;
+                              double maxY = double.negativeInfinity;
 
-                            for (final dataSet in widget.dataSets) {
-                              final point = dataSet.dataPoint;
-                              if (point.x < minX) minX = point.x;
-                              if (point.x > maxX) maxX = point.x;
-                              if (point.y > maxY) maxY = point.y;
+                              for (final dataSet in widget.dataSets) {
+                                final point = dataSet.dataPoint;
+                                if (point.x < minX) minX = point.x;
+                                if (point.x > maxX) maxX = point.x;
+                                if (point.y > maxY) maxY = point.y;
+                              }
+
+                              bounds = {
+                                'minX': minX,
+                                'maxX': maxX,
+                                'maxY': maxY,
+                              };
+                              _cachedBounds = bounds;
+                              _cachedDataSets = List.from(widget.dataSets);
                             }
 
-                            bounds = {
-                              'minX': minX,
-                              'maxX': maxX,
-                              'maxY': maxY,
-                            };
-                            _cachedBounds = bounds;
-                            _cachedDataSets = List.from(widget.dataSets);
-                          }
+                            final chartHeight = widget.height ?? 240.0;
+                            final chartSize = Size(
+                              constraints.maxWidth - 70,
+                              chartHeight,
+                            );
 
-                          final chartHeight = widget.height ?? 240.0;
-                          final chartSize = Size(
-                            constraints.maxWidth - 70,
-                            chartHeight,
-                          );
+                            // Get global position for context menu and callbacks
+                            final RenderBox? renderBox =
+                                context.findRenderObject() as RenderBox?;
+                            final globalPosition = renderBox != null
+                                ? renderBox.localToGlobal(details.localPosition)
+                                : details.localPosition;
 
-                          // Get global position for context menu and callbacks
-                          final RenderBox? renderBox =
-                              context.findRenderObject() as RenderBox?;
-                          final globalPosition = renderBox != null
-                              ? renderBox.localToGlobal(details.localPosition)
-                              : details.localPosition;
+                            final result =
+                                ChartInteractionHelper.findNearestPoint(
+                              chartPosition,
+                              widget.dataSets,
+                              chartSize,
+                              bounds['minX']!,
+                              bounds['maxX']!,
+                              0.0,
+                              bounds['maxY']! * 1.15,
+                              ChartInteractionConstants.tapRadius,
+                            );
 
-                          final result =
-                              ChartInteractionHelper.findNearestPoint(
-                            chartPosition,
-                            widget.dataSets,
-                            chartSize,
-                            bounds['minX']!,
-                            bounds['maxX']!,
-                            0.0,
-                            bounds['maxY']! * 1.15,
-                            ChartInteractionConstants.tapRadius,
-                          );
+                            if (result != null && result.isHit) {
+                              // Provide haptic feedback
+                              HapticFeedback.selectionClick();
 
-                          if (result != null && result.isHit) {
-                            // Provide haptic feedback
-                            HapticFeedback.selectionClick();
+                              // Set new selection (optimized single setState)
+                              setState(() {
+                                _selectedPoint = result;
+                              });
 
-                            // Set new selection (optimized single setState)
-                            setState(() {
-                              _selectedPoint = result;
-                            });
-
-                            // Small delay to ensure overlay is removed before showing new menu
-                            Future.microtask(() {
-                              widget.onPointTap?.call(
-                                result.point!,
-                                result.datasetIndex!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
-                            });
-                          } else {
-                            // Clear selection if tap is outside any point
-                            setState(() {
-                              _selectedPoint = null;
-                            });
-                            // Call onChartTap if no point was hit
-                            if (widget.onChartTap != null) {
-                              widget.onChartTap!(globalPosition);
+                              // Small delay to ensure overlay is removed before showing new menu
+                              Future.microtask(() {
+                                widget.onPointTap?.call(
+                                  result.point!,
+                                  result.datasetIndex!,
+                                  result.elementIndex!,
+                                  globalPosition,
+                                );
+                              });
+                            } else {
+                              // Clear selection if tap is outside any point
+                              setState(() {
+                                _selectedPoint = null;
+                              });
+                              // Call onChartTap if no point was hit
+                              if (widget.onChartTap != null) {
+                                widget.onChartTap!(globalPosition);
+                              }
                             }
                           }
-                        }
-                      : null,
-                  child: SizedBox(
-                    width: constraints.maxWidth,
-                    height: widget.height ?? 300.0,
-                    child: CustomPaint(
-                      size: Size(constraints.maxWidth, widget.height ?? 300.0),
-                      painter: LineChartPainter(
-                        theme: effectiveTheme,
-                        dataSets: widget.dataSets,
-                        lineWidth: widget.lineWidth,
-                        showPoints: widget.showPoints,
-                        showGrid: widget.showGrid,
-                        showAxis: widget.showAxis,
-                        showLabel: widget.showLabel,
-                        animationProgress: _animation.value,
-                        selectedPoint: _selectedPoint,
+                        : null,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: widget.height ?? 300.0,
+                      child: CustomPaint(
+                        size:
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        painter: LineChartPainter(
+                          theme: effectiveTheme,
+                          dataSets: widget.dataSets,
+                          lineWidth: widget.lineWidth,
+                          showPoints: widget.showPoints,
+                          showGrid: widget.showGrid,
+                          showAxis: widget.showAxis,
+                          showLabel: widget.showLabel,
+                          animationProgress: _animation.value,
+                          selectedPoint: _selectedPoint,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

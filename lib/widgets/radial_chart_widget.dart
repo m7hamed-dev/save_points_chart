@@ -105,114 +105,117 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final chartHeight = widget.height ?? 300.0;
-                final chartSize = Size(constraints.maxWidth, chartHeight);
-                return MouseRegion(
-                  onHover: widget.onPointHover != null
-                      ? (event) {
-                          _handleHover(event.localPosition, chartSize);
-                        }
-                      : null,
-                  onExit: widget.onPointHover != null
-                      ? (_) {
-                          setState(() {
-                            _hoveredPoint = null;
-                          });
-                          widget.onPointHover?.call(null, null, null);
-                        }
-                      : null,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior
-                        .translucent, // Allow taps even when overlay is present
-                    onTapDown: widget.onPointTap != null
-                        ? (details) {
-                            // Hide any existing context menu first to prevent blocking
-                            ChartContextMenuHelper.hide();
-
-                            final result = _findNearestRadialPoint(
-                              details.localPosition,
-                              chartSize,
-                            );
-
-                            if (result != null && result.isHit) {
-                              // Provide haptic feedback
-                              HapticFeedback.selectionClick();
-
-                              // Clear previous selection first
-                              setState(() {
-                                _selectedPoint = null;
-                              });
-
-                              // Set new selection
-                              setState(() {
-                                _selectedPoint = result;
-                              });
-
-                              // Get global position for context menu
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
-                              final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
-                                  : details.localPosition;
-
-                              // Small delay to ensure overlay is removed before showing new menu
-                              Future.microtask(() {
-                                widget.onPointTap?.call(
-                                  result.point!,
-                                  result.datasetIndex!,
-                                  result.elementIndex!,
-                                  globalPosition,
-                                );
-                              });
-                            } else {
-                              // Clear selection if tap is outside any point
-                              setState(() {
-                                _selectedPoint = null;
-                              });
-                            }
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final chartHeight = widget.height ?? 300.0;
+                  final chartSize = Size(constraints.maxWidth, chartHeight);
+                  return MouseRegion(
+                    onHover: widget.onPointHover != null
+                        ? (event) {
+                            _handleHover(event.localPosition, chartSize);
                           }
                         : null,
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      height: widget.height ?? 300.0,
-                      child: CustomPaint(
-                        size: chartSize,
-                        painter: RadialChartPainter(
-                          theme: effectiveTheme,
-                          dataSets: widget.dataSets,
-                          lineWidth: widget.lineWidth,
-                          showPoints: widget.showPoints,
-                          showGrid: widget.showGrid,
-                          showLabel: widget.showLabel,
-                          animationProgress: _animation.value,
-                          selectedPoint: _selectedPoint,
-                          hoveredPoint: _hoveredPoint,
+                    onExit: widget.onPointHover != null
+                        ? (_) {
+                            setState(() {
+                              _hoveredPoint = null;
+                            });
+                            widget.onPointHover?.call(null, null, null);
+                          }
+                        : null,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior
+                          .translucent, // Allow taps even when overlay is present
+                      onTapDown: widget.onPointTap != null
+                          ? (details) {
+                              // Hide any existing context menu first to prevent blocking
+                              ChartContextMenuHelper.hide();
+
+                              final result = _findNearestRadialPoint(
+                                details.localPosition,
+                                chartSize,
+                              );
+
+                              if (result != null && result.isHit) {
+                                // Provide haptic feedback
+                                HapticFeedback.selectionClick();
+
+                                // Clear previous selection first
+                                setState(() {
+                                  _selectedPoint = null;
+                                });
+
+                                // Set new selection
+                                setState(() {
+                                  _selectedPoint = result;
+                                });
+
+                                // Get global position for context menu
+                                final RenderBox? renderBox =
+                                    context.findRenderObject() as RenderBox?;
+                                final globalPosition = renderBox != null
+                                    ? renderBox
+                                        .localToGlobal(details.localPosition)
+                                    : details.localPosition;
+
+                                // Small delay to ensure overlay is removed before showing new menu
+                                Future.microtask(() {
+                                  widget.onPointTap?.call(
+                                    result.point!,
+                                    result.datasetIndex!,
+                                    result.elementIndex!,
+                                    globalPosition,
+                                  );
+                                });
+                              } else {
+                                // Clear selection if tap is outside any point
+                                setState(() {
+                                  _selectedPoint = null;
+                                });
+                              }
+                            }
+                          : null,
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        height: widget.height ?? 300.0,
+                        child: CustomPaint(
+                          size: chartSize,
+                          painter: RadialChartPainter(
+                            theme: effectiveTheme,
+                            dataSets: widget.dataSets,
+                            lineWidth: widget.lineWidth,
+                            showPoints: widget.showPoints,
+                            showGrid: widget.showGrid,
+                            showLabel: widget.showLabel,
+                            animationProgress: _animation.value,
+                            selectedPoint: _selectedPoint,
+                            hoveredPoint: _hoveredPoint,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 
@@ -275,10 +278,10 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
     // Collect all points from all datasets
     final points = widget.dataSets.map((ds) => ds.dataPoint).toList();
-    
+
     // Check if points is empty before reduce
     if (points.isEmpty) return null;
-    
+
     final maxValue = points.map((p) => p.y).reduce(math.max) * 1.2;
 
     // Validate maxValue

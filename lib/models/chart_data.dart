@@ -386,6 +386,50 @@ class ChartDataSet {
 
   @override
   int get hashCode => Object.hash(dataPoint, color);
+
+  /// Returns true if [dataSets] is empty or every data point has both x and y
+  /// equal to zero (no meaningful data to display).
+  ///
+  /// Use this to show an empty state widget instead of rendering the chart
+  /// when there is no data to display.
+  static bool isAllDataPointsEmpty(List<ChartDataSet> dataSets) {
+    if (dataSets.isEmpty) return true;
+    return dataSets.every(
+      (ds) => ds.dataPoint.x == 0 && ds.dataPoint.y == 0,
+    );
+  }
+}
+
+/// Wrapper that shows [emptyWidget] when all data points in [dataSets] have
+/// empty x and y (both zero). Otherwise builds [child].
+///
+/// Use this to display an empty state instead of the chart when there is
+/// no meaningful data.
+class ChartEmptyScope extends StatelessWidget {
+  /// The data sets to check. If empty or all points are (0, 0), [emptyWidget]
+  /// is shown.
+  final List<ChartDataSet> dataSets;
+
+  /// The chart (or other) content to show when there is data.
+  final Widget child;
+
+  /// Widget to show when all data points are empty. Defaults to [SizedBox.shrink].
+  final Widget? emptyWidget;
+
+  const ChartEmptyScope({
+    super.key,
+    required this.dataSets,
+    required this.child,
+    this.emptyWidget,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (ChartDataSet.isAllDataPointsEmpty(dataSets)) {
+      return emptyWidget ?? const SizedBox.shrink();
+    }
+    return child;
+  }
 }
 
 /// Represents a radar/spider chart data point.

@@ -82,11 +82,7 @@ class ScatterChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
-  })  : assert(
-          dataSets.isNotEmpty,
-          'ScatterChartWidget requires at least one data set',
-        ),
-        assert(pointSize > 0, 'Point size must be positive');
+  }) : assert(pointSize > 0, 'Point size must be positive');
 
   @override
   State<ScatterChartWidget> createState() => _ScatterChartWidgetState();
@@ -214,119 +210,124 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final chartHeight = widget.height ?? 240.0;
-                final chartSize = Size(
-                  constraints.maxWidth - 70,
-                  chartHeight,
-                );
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final chartHeight = widget.height ?? 240.0;
+                  final chartSize = Size(
+                    constraints.maxWidth - 70,
+                    chartHeight,
+                  );
 
-                return MouseRegion(
-                  onHover: widget.onPointHover != null
-                      ? (event) {
-                          _handleHover(event.localPosition, chartSize);
-                        }
-                      : null,
-                  onExit: widget.onPointHover != null
-                      ? (_) {
-                          setState(() {
-                            _hoveredPoint = null;
-                          });
-                          widget.onPointHover?.call(null, null, null);
-                        }
-                      : null,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTapDown: widget.onPointTap != null
-                        ? (details) {
-                            ChartContextMenuHelper.hide();
-
-                            const leftPadding = 50.0;
-                            const topPadding = 20.0;
-                            final chartPosition = Offset(
-                              details.localPosition.dx - leftPadding,
-                              details.localPosition.dy - topPadding,
-                            );
-
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
-                            final bounds = _calculateBounds();
-
-                            final result =
-                                ChartInteractionHelper.findNearestPoint(
-                              chartPosition,
-                              widget.dataSets,
-                              chartSize,
-                              bounds['minX']!,
-                              bounds['maxX']!,
-                              bounds['minY']!,
-                              bounds['maxY']!,
-                              ChartInteractionConstants.tapRadius * 2,
-                            );
-
-                            if (result != null && result.isHit) {
-                              HapticFeedback.selectionClick();
-                              setState(() {
-                                _selectedPoint = result;
-                              });
-                              Future.microtask(() {
-                                widget.onPointTap?.call(
-                                  result.point!,
-                                  result.datasetIndex!,
-                                  result.elementIndex!,
-                                  globalPosition,
-                                );
-                              });
-                            } else {
-                              setState(() {
-                                _selectedPoint = null;
-                              });
-                            }
+                  return MouseRegion(
+                    onHover: widget.onPointHover != null
+                        ? (event) {
+                            _handleHover(event.localPosition, chartSize);
                           }
                         : null,
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      height: widget.height ?? 300.0,
-                      child: CustomPaint(
-                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
-                        painter: ScatterChartPainter(
-                          theme: effectiveTheme,
-                          dataSets: widget.dataSets,
-                          pointSize: widget.pointSize,
-                          showGrid: widget.showGrid,
-                          showAxis: widget.showAxis,
-                          showLabel: widget.showLabel,
-                          animationProgress: _animation.value,
-                          selectedPoint: _selectedPoint,
-                          hoveredPoint: _hoveredPoint,
+                    onExit: widget.onPointHover != null
+                        ? (_) {
+                            setState(() {
+                              _hoveredPoint = null;
+                            });
+                            widget.onPointHover?.call(null, null, null);
+                          }
+                        : null,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTapDown: widget.onPointTap != null
+                          ? (details) {
+                              ChartContextMenuHelper.hide();
+
+                              const leftPadding = 50.0;
+                              const topPadding = 20.0;
+                              final chartPosition = Offset(
+                                details.localPosition.dx - leftPadding,
+                                details.localPosition.dy - topPadding,
+                              );
+
+                              final RenderBox? renderBox =
+                                  context.findRenderObject() as RenderBox?;
+                              final globalPosition = renderBox != null
+                                  ? renderBox
+                                      .localToGlobal(details.localPosition)
+                                  : details.localPosition;
+
+                              final bounds = _calculateBounds();
+
+                              final result =
+                                  ChartInteractionHelper.findNearestPoint(
+                                chartPosition,
+                                widget.dataSets,
+                                chartSize,
+                                bounds['minX']!,
+                                bounds['maxX']!,
+                                bounds['minY']!,
+                                bounds['maxY']!,
+                                ChartInteractionConstants.tapRadius * 2,
+                              );
+
+                              if (result != null && result.isHit) {
+                                HapticFeedback.selectionClick();
+                                setState(() {
+                                  _selectedPoint = result;
+                                });
+                                Future.microtask(() {
+                                  widget.onPointTap?.call(
+                                    result.point!,
+                                    result.datasetIndex!,
+                                    result.elementIndex!,
+                                    globalPosition,
+                                  );
+                                });
+                              } else {
+                                setState(() {
+                                  _selectedPoint = null;
+                                });
+                              }
+                            }
+                          : null,
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        height: widget.height ?? 300.0,
+                        child: CustomPaint(
+                          size: Size(
+                              constraints.maxWidth, widget.height ?? 300.0),
+                          painter: ScatterChartPainter(
+                            theme: effectiveTheme,
+                            dataSets: widget.dataSets,
+                            pointSize: widget.pointSize,
+                            showGrid: widget.showGrid,
+                            showAxis: widget.showAxis,
+                            showLabel: widget.showLabel,
+                            animationProgress: _animation.value,
+                            selectedPoint: _selectedPoint,
+                            hoveredPoint: _hoveredPoint,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

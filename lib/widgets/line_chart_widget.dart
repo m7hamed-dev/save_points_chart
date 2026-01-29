@@ -109,11 +109,7 @@ class LineChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
-  })  : assert(
-          dataSets.isNotEmpty,
-          'LineChartWidget requires at least one data set',
-        ),
-        assert(lineWidth > 0, 'Line width must be positive'),
+  })  : assert(lineWidth > 0, 'Line width must be positive'),
         assert(
           !isLoading || !isError,
           'Cannot be both loading and in error state',
@@ -244,137 +240,142 @@ class _LineChartWidgetState extends State<LineChartWidget>
       errorMessage: widget.errorMessage,
       padding: widget.padding,
       boxShadow: widget.boxShadow,
-      child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final chartHeight = widget.height ?? 240.0;
-                final chartSize = Size(
-                  constraints.maxWidth - 70,
-                  chartHeight,
-                );
+      child: ChartEmptyScope(
+        dataSets: widget.dataSets,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final chartHeight = widget.height ?? 240.0;
+                  final chartSize = Size(
+                    constraints.maxWidth - 70,
+                    chartHeight,
+                  );
 
-                return MouseRegion(
-                  onHover: widget.onPointHover != null
-                      ? (event) {
-                          _handleHover(event.localPosition, chartSize);
-                        }
-                      : null,
-                  onExit: widget.onPointHover != null
-                      ? (_) {
-                          setState(() {
-                            _hoveredPoint = null;
-                          });
-                          widget.onPointHover?.call(null, null, null);
-                        }
-                      : null,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior
-                        .translucent, // Allow taps even when overlay is present
-                    onTapDown: widget.onPointTap != null
-                        ? (details) {
-                            // Hide any existing context menu first to prevent blocking
-                            ChartContextMenuHelper.hide();
-
-                            // Use localPosition directly (relative to SizedBox)
-                            // Account for padding
-                            const leftPadding = 50.0;
-                            const topPadding = 20.0;
-                            final chartPosition = Offset(
-                              details.localPosition.dx - leftPadding,
-                              details.localPosition.dy - topPadding,
-                            );
-
-                            // Get global position for context menu
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
-                            final globalPosition = renderBox != null
-                                ? renderBox.localToGlobal(details.localPosition)
-                                : details.localPosition;
-
-                            // Calculate chart bounds
-                            final bounds = _calculateBounds();
-
-                            final result =
-                                ChartInteractionHelper.findNearestPoint(
-                              chartPosition,
-                              widget.dataSets,
-                              chartSize,
-                              bounds['minX']!,
-                              bounds['maxX']!,
-                              0.0,
-                              bounds['maxY']! * 1.15,
-                              ChartInteractionConstants.tapRadius,
-                            );
-
-                            if (result != null && result.isHit) {
-                              // Provide haptic feedback
-                              HapticFeedback.selectionClick();
-
-                              // Set new selection (optimized single setState)
-                              setState(() {
-                                _selectedPoint = result;
-                              });
-
-                              // Small delay to ensure overlay is removed before showing new menu
-                              Future.microtask(() {
-                                widget.onPointTap?.call(
-                                  result.point!,
-                                  result.datasetIndex!,
-                                  result.elementIndex!,
-                                  globalPosition,
-                                );
-                              });
-                            } else {
-                              // Clear selection if tap is outside any point
-                              setState(() {
-                                _selectedPoint = null;
-                              });
-                              // Call onChartTap if no point was hit
-                              if (widget.onChartTap != null) {
-                                widget.onChartTap!(globalPosition);
-                              }
-                            }
+                  return MouseRegion(
+                    onHover: widget.onPointHover != null
+                        ? (event) {
+                            _handleHover(event.localPosition, chartSize);
                           }
                         : null,
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      height: widget.height ?? 300.0,
-                      child: CustomPaint(
-                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
-                        painter: LineChartPainter(
-                          theme: effectiveTheme,
-                          dataSets: widget.dataSets,
-                          lineWidth: widget.lineWidth,
-                          showArea: widget.showArea,
-                          showPoints: widget.showPoints,
-                          showGrid: widget.showGrid,
-                          showAxis: widget.showAxis,
-                          showLabel: widget.showLabel,
-                          animationProgress: _animation.value,
-                          selectedPoint: _selectedPoint,
-                          hoveredPoint: _hoveredPoint,
+                    onExit: widget.onPointHover != null
+                        ? (_) {
+                            setState(() {
+                              _hoveredPoint = null;
+                            });
+                            widget.onPointHover?.call(null, null, null);
+                          }
+                        : null,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior
+                          .translucent, // Allow taps even when overlay is present
+                      onTapDown: widget.onPointTap != null
+                          ? (details) {
+                              // Hide any existing context menu first to prevent blocking
+                              ChartContextMenuHelper.hide();
+
+                              // Use localPosition directly (relative to SizedBox)
+                              // Account for padding
+                              const leftPadding = 50.0;
+                              const topPadding = 20.0;
+                              final chartPosition = Offset(
+                                details.localPosition.dx - leftPadding,
+                                details.localPosition.dy - topPadding,
+                              );
+
+                              // Get global position for context menu
+                              final RenderBox? renderBox =
+                                  context.findRenderObject() as RenderBox?;
+                              final globalPosition = renderBox != null
+                                  ? renderBox
+                                      .localToGlobal(details.localPosition)
+                                  : details.localPosition;
+
+                              // Calculate chart bounds
+                              final bounds = _calculateBounds();
+
+                              final result =
+                                  ChartInteractionHelper.findNearestPoint(
+                                chartPosition,
+                                widget.dataSets,
+                                chartSize,
+                                bounds['minX']!,
+                                bounds['maxX']!,
+                                0.0,
+                                bounds['maxY']! * 1.15,
+                                ChartInteractionConstants.tapRadius,
+                              );
+
+                              if (result != null && result.isHit) {
+                                // Provide haptic feedback
+                                HapticFeedback.selectionClick();
+
+                                // Set new selection (optimized single setState)
+                                setState(() {
+                                  _selectedPoint = result;
+                                });
+
+                                // Small delay to ensure overlay is removed before showing new menu
+                                Future.microtask(() {
+                                  widget.onPointTap?.call(
+                                    result.point!,
+                                    result.datasetIndex!,
+                                    result.elementIndex!,
+                                    globalPosition,
+                                  );
+                                });
+                              } else {
+                                // Clear selection if tap is outside any point
+                                setState(() {
+                                  _selectedPoint = null;
+                                });
+                                // Call onChartTap if no point was hit
+                                if (widget.onChartTap != null) {
+                                  widget.onChartTap!(globalPosition);
+                                }
+                              }
+                            }
+                          : null,
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        height: widget.height ?? 300.0,
+                        child: CustomPaint(
+                          size: Size(
+                              constraints.maxWidth, widget.height ?? 300.0),
+                          painter: LineChartPainter(
+                            theme: effectiveTheme,
+                            dataSets: widget.dataSets,
+                            lineWidth: widget.lineWidth,
+                            showArea: widget.showArea,
+                            showPoints: widget.showPoints,
+                            showGrid: widget.showGrid,
+                            showAxis: widget.showAxis,
+                            showLabel: widget.showLabel,
+                            animationProgress: _animation.value,
+                            selectedPoint: _selectedPoint,
+                            hoveredPoint: _hoveredPoint,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

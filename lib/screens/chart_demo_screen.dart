@@ -856,45 +856,41 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
   Widget _buildDonutChart(ChartTheme chartTheme) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DonutChartWidget(
-            data: SampleData.generatePieData(),
+      child: DonutChartWidget(
+        // height: 900,
+        data: SampleData.generatePieData(),
+        theme: chartTheme,
+        title: 'Sales Distribution',
+        subtitle: 'Donut chart with center value - Tap on segments!',
+        useGlassmorphism: _useGlassmorphism,
+        useNeumorphism: _useNeumorphism,
+        onSegmentTap: (segment, segmentIndex, position) {
+          ChartContextMenuHelper.show(
+            context,
+            point: null,
+            segment: segment,
+            position: position,
+            elementIndex: segmentIndex,
             theme: chartTheme,
-            title: 'Sales Distribution',
-            subtitle: 'Donut chart with center value - Tap on segments!',
             useGlassmorphism: _useGlassmorphism,
             useNeumorphism: _useNeumorphism,
-            onSegmentTap: (segment, segmentIndex, position) {
-              ChartContextMenuHelper.show(
+            onViewDetails: () {
+              _showDetailsDialog(context, segment: segment);
+            },
+            onExport: () {
+              _showExportSnackBar(
                 context,
-                point: null,
-                segment: segment,
-                position: position,
-                elementIndex: segmentIndex,
-                theme: chartTheme,
-                useGlassmorphism: _useGlassmorphism,
-                useNeumorphism: _useNeumorphism,
-                onViewDetails: () {
-                  _showDetailsDialog(context, segment: segment);
-                },
-                onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting ${segment.label} data...',
-                  );
-                },
-                onShare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Sharing ${segment.label} data...',
-                  );
-                },
+                'Exporting ${segment.label} data...',
               );
             },
-          ),
-        ],
+            onShare: () {
+              _showExportSnackBar(
+                context,
+                'Sharing ${segment.label} data...',
+              );
+            },
+          );
+        },
       ),
     );
   }
