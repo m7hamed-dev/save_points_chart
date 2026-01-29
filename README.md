@@ -134,7 +134,7 @@ lib/
 - **errorWidget** / **errorMessage** – Custom error state  
 - **boxShadow** – Container shadows  
 
-Use one config instance across multiple charts for consistent look and behavior. See `lib/theme/charts_config.dart` for the full API and dartdoc.
+Use one config instance across multiple charts for consistent look and behavior. See [Using ChartsConfig](#using-chartsconfig) for a full example and parameter table; `lib/theme/charts_config.dart` for the full API and dartdoc.
 
 ## 🚀 Usage
 
@@ -167,6 +167,37 @@ LineChartWidget(
   subtitle: 'Last 3 months',
 )
 ```
+
+### Using ChartsConfig
+
+[`ChartsConfig`](lib/theme/charts_config.dart) lets you set theme, visual effects, empty/error UI, and shadows in one place. Pass it to any chart via the `config` parameter; config values override the chart’s own parameters when provided. All fields are optional. Use one config instance across multiple charts for consistent look and behavior.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:save_points_chart/save_points_chart.dart';
+
+final config = ChartsConfig(
+  theme: ChartTheme.light(),
+  useGlassmorphism: true,
+  emptyMessage: 'No data yet',
+  errorMessage: 'Something went wrong',
+);
+
+LineChartWidget(
+  dataSets: dataSets,
+  config: config,
+  title: 'Sales Trend',
+  subtitle: 'Last 3 months',
+)
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `theme` | ChartTheme for colors and styling |
+| `useGlassmorphism` / `useNeumorphism` | Container effects (frosted glass / soft shadow) |
+| `emptyWidget` / `emptyMessage` | Custom empty state when there’s no data |
+| `errorWidget` / `errorMessage` | Custom error state |
+| `boxShadow` | Container shadows |
 
 ### With Theme Provider (Optional)
 
