@@ -7,6 +7,7 @@ import 'package:save_points_chart/painters/pyramid_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// A pyramid chart widget displaying hierarchical data in a pyramid shape.
 ///
@@ -73,10 +74,7 @@ class PyramidChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
-  }) : assert(
-          data.isNotEmpty,
-          'PyramidChartWidget requires at least one data segment',
-        );
+  });
 
   @override
   State<PyramidChartWidget> createState() => _PyramidChartWidgetState();
@@ -112,6 +110,52 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    if (widget.data.isEmpty) {
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding,
+        boxShadow: widget.boxShadow,
+        child: ChartEmptyState(theme: effectiveTheme),
+      );
+      if (widget.margin != null) {
+        container = Padding(padding: widget.margin!, child: container);
+      }
+      return container;
+    }
+    final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
+    if (total == 0 || !total.isFinite) {
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding,
+        boxShadow: widget.boxShadow,
+        child: ChartEmptyState(
+          theme: effectiveTheme,
+          message: 'No values to display',
+        ),
+      );
+      if (widget.margin != null) {
+        container = Padding(padding: widget.margin!, child: container);
+      }
+      return container;
+    }
     Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -192,14 +236,14 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

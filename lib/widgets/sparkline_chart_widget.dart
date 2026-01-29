@@ -7,6 +7,7 @@ import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// Compact sparkline chart for inline data visualization
 class SparklineChartWidget extends StatefulWidget {
@@ -92,10 +93,30 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    // Determine if trend is positive or negative
+    final effectiveTheme =
+        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.dataSets.isEmpty) {
-      return const SizedBox.shrink();
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding ?? const EdgeInsets.all(12.0),
+        boxShadow: widget.boxShadow,
+        child: ChartEmptyState(theme: effectiveTheme),
+      );
+      if (widget.margin != null) {
+        container = Padding(padding: widget.margin!, child: container);
+      }
+      return container;
     }
+    // Determine if trend is positive or negative
     final firstValue = widget.dataSets.first.dataPoint.y;
     final lastValue = widget.dataSets.last.dataPoint.y;
     final isPositive = lastValue >= firstValue;
@@ -111,8 +132,6 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       );
     }).toList();
 
-    final effectiveTheme =
-        widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -128,6 +147,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
       boxShadow: widget.boxShadow,
       child: ChartEmptyScope(
         dataSets: widget.dataSets,
+        emptyWidget: ChartEmptyState(theme: effectiveTheme),
         child: RepaintBoundary(
           child: AnimatedBuilder(
             animation: _animation,

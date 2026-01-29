@@ -7,6 +7,7 @@ import 'package:save_points_chart/painters/bubble_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// A modern bubble chart widget for visualizing three-dimensional data.
 ///
@@ -140,15 +141,7 @@ class BubbleChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
-  })  : assert(
-          dataSets.isNotEmpty,
-          'BubbleChartWidget requires at least one data set',
-        ),
-        assert(
-          dataSets.every((ds) => ds.dataPoints.isNotEmpty),
-          'All data sets must contain at least one data point',
-        ),
-        assert(minBubbleSize > 0, 'Min bubble size must be positive'),
+  })  : assert(minBubbleSize > 0, 'Min bubble size must be positive'),
         assert(
           minBubbleSize.isFinite,
           'Min bubble size must be finite',
@@ -245,7 +238,8 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
         regularDataSets.add(
           ChartDataSet(
             color: bubbleDataSet.color,
-            dataPoint: ChartDataPoint(x: point.x, y: point.y, label: point.label),
+            dataPoint:
+                ChartDataPoint(x: point.x, y: point.y, label: point.label),
           ),
         );
       }
@@ -288,6 +282,29 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final hasData = widget.dataSets.isNotEmpty &&
+        widget.dataSets.every((ds) => ds.dataPoints.isNotEmpty);
+    if (!hasData) {
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding,
+        boxShadow: widget.boxShadow,
+        child: ChartEmptyState(theme: effectiveTheme),
+      );
+      if (widget.margin != null) {
+        container = Padding(padding: widget.margin!, child: container);
+      }
+      return container;
+    }
     Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -406,7 +423,8 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
+                        size:
+                            Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: BubbleChartPainter(
                           theme: effectiveTheme,
                           bubbleDataSets: widget.dataSets,
@@ -429,14 +447,14 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

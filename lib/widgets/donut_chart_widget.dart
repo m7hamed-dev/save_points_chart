@@ -8,6 +8,7 @@ import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// Modern donut chart with gradient sections
 class DonutChartWidget extends StatefulWidget {
@@ -106,15 +107,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         errorMessage: widget.errorMessage,
         padding: widget.padding,
         boxShadow: widget.boxShadow,
-        child: Center(
-          child: Text(
-            'No data available',
-            style: TextStyle(
-              color: effectiveTheme.textColor.withValues(alpha: 0.5),
-              fontSize: 14,
-            ),
-          ),
-        ),
+        child: ChartEmptyState(theme: effectiveTheme),
       );
 
       if (widget.margin != null) {
@@ -144,14 +137,9 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         errorMessage: widget.errorMessage,
         padding: widget.padding,
         boxShadow: widget.boxShadow,
-        child: Center(
-          child: Text(
-            'No values to display',
-            style: TextStyle(
-              color: effectiveTheme.textColor.withValues(alpha: 0.5),
-              fontSize: 14,
-            ),
-          ),
+        child: ChartEmptyState(
+          theme: effectiveTheme,
+          message: 'No values to display',
         ),
       );
       if (widget.margin != null) {

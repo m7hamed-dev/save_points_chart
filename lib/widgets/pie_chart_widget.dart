@@ -8,6 +8,7 @@ import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// Modern pie chart with gradient sections and animations
 class PieChartWidget extends StatefulWidget {
@@ -88,7 +89,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    
+
     // Handle empty data case
     if (widget.data.isEmpty) {
       Widget container = ChartContainer(
@@ -104,28 +105,49 @@ class _PieChartWidgetState extends State<PieChartWidget>
         errorMessage: widget.errorMessage,
         padding: widget.padding,
         boxShadow: widget.boxShadow,
-        child: Center(
-          child: Text(
-            'No data available',
-            style: TextStyle(
-              color: effectiveTheme.textColor.withValues(alpha: 0.5),
-              fontSize: 14,
-            ),
-          ),
-        ),
+        child: ChartEmptyState(theme: effectiveTheme),
       );
-      
+
       if (widget.margin != null) {
         container = Padding(
           padding: widget.margin!,
           child: container,
         );
       }
-      
+
       return container;
     }
-    
+
     final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
+
+    // Handle all-zero data: painter would draw nothing and legend would show NaN%
+    if (total == 0 || !total.isFinite) {
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding,
+        boxShadow: widget.boxShadow,
+        child: ChartEmptyState(
+          theme: effectiveTheme,
+          message: 'No values to display',
+        ),
+      );
+      if (widget.margin != null) {
+        container = Padding(
+          padding: widget.margin!,
+          child: container,
+        );
+      }
+      return container;
+    }
 
     final Widget content = Row(
       children: [
@@ -273,14 +295,14 @@ class _PieChartWidgetState extends State<PieChartWidget>
       boxShadow: widget.boxShadow,
       child: content,
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }

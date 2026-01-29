@@ -60,6 +60,7 @@ export 'widgets/pyramid_chart_widget.dart';
 export 'widgets/funnel_chart_widget.dart';
 export 'widgets/chart_container.dart';
 export 'widgets/chart_context_menu.dart';
+export 'widgets/chart_empty_state.dart';
 
 // Providers
 export 'providers/theme_provider.dart';

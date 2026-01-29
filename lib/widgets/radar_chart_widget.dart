@@ -7,6 +7,7 @@ import 'package:save_points_chart/painters/radar_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
+import 'package:save_points_chart/widgets/chart_empty_state.dart';
 
 /// A modern radar/spider chart widget for multi-dimensional data visualization.
 ///
@@ -81,11 +82,7 @@ class RadarChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.boxShadow,
-  })  : assert(
-          dataSets.isNotEmpty,
-          'RadarChartWidget requires at least one data set',
-        ),
-        assert(maxValue > 0, 'Max value must be positive'),
+  })  : assert(maxValue > 0, 'Max value must be positive'),
         assert(gridLevels > 0, 'Grid levels must be positive');
 
   @override
@@ -122,6 +119,27 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
   Widget build(BuildContext context) {
     final effectiveTheme =
         widget.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    if (widget.dataSets.isEmpty) {
+      Widget container = ChartContainer(
+        theme: effectiveTheme,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        header: widget.header,
+        footer: widget.footer,
+        useGlassmorphism: widget.useGlassmorphism,
+        useNeumorphism: widget.useNeumorphism,
+        isLoading: widget.isLoading,
+        isError: widget.isError,
+        errorMessage: widget.errorMessage,
+        padding: widget.padding,
+        boxShadow: widget.boxShadow,
+        child: ChartEmptyState(theme: effectiveTheme),
+      );
+      if (widget.margin != null) {
+        container = Padding(padding: widget.margin!, child: container);
+      }
+      return container;
+    }
     Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -208,14 +226,14 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
         ),
       ),
     );
-    
+
     if (widget.margin != null) {
       container = Padding(
         padding: widget.margin!,
         child: container,
       );
     }
-    
+
     return container;
   }
 }
