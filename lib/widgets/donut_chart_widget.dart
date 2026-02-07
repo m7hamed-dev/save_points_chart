@@ -70,7 +70,9 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 2200),
+      duration:
+          widget.config?.animationDuration ??
+          const Duration(milliseconds: 2200),
       vsync: this,
     );
     _animation = CurvedAnimation(
@@ -78,12 +80,6 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       curve: Curves.easeOutCubic,
     );
     _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -337,5 +333,11 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     }
 
     return container;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
