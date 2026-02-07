@@ -62,6 +62,7 @@ class DonutChartWidget extends StatefulWidget {
 
 class _DonutChartWidgetState extends State<DonutChartWidget>
     with SingleTickerProviderStateMixin {
+  ///
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedSegment;

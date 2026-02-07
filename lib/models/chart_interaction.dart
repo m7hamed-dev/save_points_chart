@@ -82,12 +82,13 @@ class ChartInteractionConstants {
 /// - `ChartPointHoverCallback` for hover events (desktop/web only)
 /// - `onBubbleTap` for bubble chart-specific tap handling
 /// - `ChartInteractionConstants` for interaction configuration
-typedef ChartPointCallback = void Function(
-  ChartDataPoint point,
-  int datasetIndex,
-  int pointIndex,
-  Offset position,
-);
+typedef ChartPointCallback =
+    void Function(
+      ChartDataPoint point,
+      int datasetIndex,
+      int pointIndex,
+      Offset position,
+    );
 
 /// Callback for pie chart segment tap interactions.
 ///
@@ -117,11 +118,8 @@ typedef ChartPointCallback = void Function(
 ///
 /// See also:
 /// - [PieSegmentHoverCallback] for hover events (desktop/web only)
-typedef PieSegmentCallback = void Function(
-  PieData segment,
-  int segmentIndex,
-  Offset position,
-);
+typedef PieSegmentCallback =
+    void Function(PieData segment, int segmentIndex, Offset position);
 
 /// Callback for bar chart tap interactions.
 ///
@@ -150,12 +148,13 @@ typedef PieSegmentCallback = void Function(
 ///
 /// See also:
 /// - [BarHoverCallback] for hover events (desktop/web only)
-typedef BarCallback = void Function(
-  ChartDataPoint point,
-  int datasetIndex,
-  int barIndex,
-  Offset position,
-);
+typedef BarCallback =
+    void Function(
+      ChartDataPoint point,
+      int datasetIndex,
+      int barIndex,
+      Offset position,
+    );
 
 /// Callback for mouse hover events on chart points.
 ///
@@ -197,11 +196,8 @@ typedef BarCallback = void Function(
 /// - `ChartPointCallback` for tap events (all platforms)
 /// - `onBubbleHover` for bubble chart-specific hover handling
 /// - `ChartInteractionConstants` for interaction configuration
-typedef ChartPointHoverCallback = void Function(
-  ChartDataPoint? point,
-  int? datasetIndex,
-  int? pointIndex,
-);
+typedef ChartPointHoverCallback =
+    void Function(ChartDataPoint? point, int? datasetIndex, int? pointIndex);
 
 /// Callback for mouse hover events on pie chart segments.
 ///
@@ -234,10 +230,8 @@ typedef ChartPointHoverCallback = void Function(
 ///
 /// See also:
 /// - [PieSegmentCallback] for tap events (all platforms)
-typedef PieSegmentHoverCallback = void Function(
-  PieData? segment,
-  int? segmentIndex,
-);
+typedef PieSegmentHoverCallback =
+    void Function(PieData? segment, int? segmentIndex);
 
 /// Callback for mouse hover events on bars.
 ///
@@ -269,11 +263,8 @@ typedef PieSegmentHoverCallback = void Function(
 ///
 /// See also:
 /// - [BarCallback] for tap events (all platforms)
-typedef BarHoverCallback = void Function(
-  ChartDataPoint? point,
-  int? datasetIndex,
-  int? barIndex,
-);
+typedef BarHoverCallback =
+    void Function(ChartDataPoint? point, int? datasetIndex, int? barIndex);
 
 /// Callback for bubble chart tap interactions.
 ///
@@ -378,9 +369,7 @@ typedef BubbleHoverCallback = ChartPointHoverCallback;
 /// - [ChartPointCallback] for point tap events
 /// - [PieSegmentCallback] for segment tap events
 /// - [BarCallback] for bar tap events
-typedef ChartTapCallback = void Function(
-  Offset position,
-);
+typedef ChartTapCallback = void Function(Offset position);
 
 /// Result of a chart interaction.
 ///
@@ -404,6 +393,33 @@ typedef ChartTapCallback = void Function(
 /// - `ChartInteractionHelper` for finding interactions (import from utils)
 /// - `ChartInteractionConstants` for interaction configuration
 class ChartInteractionResult {
+  /// Creates a chart interaction result.
+  ///
+  /// [isHit] defaults to false. Set to true when an element is found.
+  /// Either [point] or [segment] should be provided (not both).
+  const ChartInteractionResult({
+    this.point,
+    this.segment,
+    this.datasetIndex,
+    this.elementIndex,
+    this.isHit = false,
+  }) : assert(
+         point == null || segment == null,
+         'Cannot have both point and segment',
+       ),
+       assert(
+         !isHit || (point != null || segment != null),
+         'isHit true requires point or segment',
+       ),
+       assert(
+         !isHit || datasetIndex != null,
+         'isHit true requires datasetIndex',
+       ),
+       assert(
+         !isHit || elementIndex != null,
+         'isHit true requires elementIndex',
+       );
+
   /// The data point that was interacted with, if applicable.
   ///
   /// Non-null for point-based charts (line, bar, area, scatter, etc.)
@@ -435,42 +451,15 @@ class ChartInteractionResult {
   /// false otherwise. When false, all other fields will be null.
   final bool isHit;
 
-  /// Creates a chart interaction result.
-  ///
-  /// [isHit] defaults to false. Set to true when an element is found.
-  /// Either [point] or [segment] should be provided (not both).
-  const ChartInteractionResult({
-    this.point,
-    this.segment,
-    this.datasetIndex,
-    this.elementIndex,
-    this.isHit = false,
-  })  : assert(
-          point == null || segment == null,
-          'Cannot have both point and segment',
-        ),
-        assert(
-          !isHit || (point != null || segment != null),
-          'isHit true requires point or segment',
-        ),
-        assert(
-          !isHit || datasetIndex != null,
-          'isHit true requires datasetIndex',
-        ),
-        assert(
-          !isHit || elementIndex != null,
-          'isHit true requires elementIndex',
-        );
-
   /// Creates a result representing no interaction.
   ///
   /// All fields will be null and [isHit] will be false.
   const ChartInteractionResult.none()
-      : point = null,
-        segment = null,
-        datasetIndex = null,
-        elementIndex = null,
-        isHit = false;
+    : point = null,
+      segment = null,
+      datasetIndex = null,
+      elementIndex = null,
+      isHit = false;
 
   /// Creates a copy of this result with the given fields replaced.
   ///
@@ -513,11 +502,6 @@ class ChartInteractionResult {
           isHit == other.isHit;
 
   @override
-  int get hashCode => Object.hash(
-        point,
-        segment,
-        datasetIndex,
-        elementIndex,
-        isHit,
-      );
+  int get hashCode =>
+      Object.hash(point, segment, datasetIndex, elementIndex, isHit);
 }
