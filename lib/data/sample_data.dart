@@ -86,7 +86,14 @@ class SampleData {
         showLabel: showLabel,
         circleSize: circleSize,
       ),
-      const PieData(label: 'Tablet', value: 10, color: Color(0xFFEC4899)),
+      PieData(
+        label: 'Tablet',
+        value: 10,
+        color: Color(0xFFEC4899),
+        showValue: showValue,
+        showLabel: showLabel,
+        circleSize: circleSize,
+      ),
       PieData(
         label: 'Other',
         value: 30,
