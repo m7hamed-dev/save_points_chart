@@ -183,7 +183,7 @@ class ChartContainer extends StatelessWidget {
                 height: 300,
                 child: Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: .center,
                     children: [
                       CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
@@ -215,7 +215,7 @@ class ChartContainer extends StatelessWidget {
                   child:
                       errorWidget ??
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: .center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
@@ -376,7 +376,7 @@ class ChartContainer extends StatelessWidget {
                 height: 300,
                 child: Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: .center,
                     children: [
                       CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
@@ -404,7 +404,7 @@ class ChartContainer extends StatelessWidget {
                   child:
                       errorWidget ??
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: .center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(

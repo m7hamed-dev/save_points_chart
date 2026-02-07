@@ -191,7 +191,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
 
   Column _data(ChartTheme effectiveTheme, double total) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: .center,
       crossAxisAlignment: .start,
       children: widget.data.map((item) {
         return Padding(

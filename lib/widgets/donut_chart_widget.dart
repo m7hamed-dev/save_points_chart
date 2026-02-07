@@ -247,7 +247,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     );
 
     final Widget legend = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: .center,
       crossAxisAlignment: .start,
       children: widget.data.map((item) {
         /// item data: label, color, value, percentage
