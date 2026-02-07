@@ -10,6 +10,7 @@ import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
+import 'package:save_points_chart/widgets/show_empty_or_widget.dart';
 
 /// Modern donut chart with gradient sections
 class DonutChartWidget extends StatefulWidget {
@@ -261,8 +262,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         return ListTile(
           dense: true,
           leading: Container(
-            width: 18,
-            height: 18,
+            width: item.width,
+            height: item.height,
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
@@ -277,16 +278,17 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
             style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
-          subtitle: item.showValue
-              ? Text(
-                  '$percentage%',
-                  style: TextStyle(
-                    color: effectiveTheme.textColor.withValues(alpha: 0.7),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-              : null,
+          subtitle: ShowEmptyOrWidget(
+            showWidget: item.showValue,
+            widget: Text(
+              '$percentage%',
+              style: TextStyle(
+                color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         );
       }).toList(),
     );
