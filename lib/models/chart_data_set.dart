@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/models/chart_data.dart' show BubbleDataSet, RadarDataSet;
 import 'package:save_points_chart/models/chart_data_point.dart';
+import 'package:save_points_chart/save_points_chart.dart' show BubbleDataSet, RadarDataSet;
 
 /// Represents a single data point in a chart.
 ///

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/bubble_data_point.dart';
+import 'package:save_points_chart/models/chart_data.dart' show ChartDataSet;
+import 'package:save_points_chart/models/chart_data_set.dart' show ChartDataSet;
+import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet;
 
 /// Represents a collection of bubble data points.
 ///

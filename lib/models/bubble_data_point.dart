@@ -1,4 +1,7 @@
+import 'package:save_points_chart/models/bubble_data_set.dart' show BubbleDataSet;
+import 'package:save_points_chart/models/chart_data.dart' show BubbleDataSet;
 import 'package:save_points_chart/models/chart_data_point.dart';
+import 'package:save_points_chart/save_points_chart.dart' show BubbleDataSet;
 
 /// Represents a bubble data point with size information.
 ///

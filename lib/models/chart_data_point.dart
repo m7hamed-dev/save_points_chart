@@ -1,3 +1,6 @@
+import 'package:save_points_chart/models/chart_data.dart' show ChartDataSet, BubbleDataPoint;
+import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet, BubbleDataPoint;
+
 /// Represents a single data point in a chart.
 ///
 /// Each point has an x-coordinate (horizontal position) and y-coordinate

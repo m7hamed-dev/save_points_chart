@@ -33,8 +33,7 @@ class PieData {
     required this.color,
     this.showValue = true,
     this.showLabel = true,
-    this.width = 16.0,
-    this.height = 16.0,
+    this.circleSize,
   });
 
   /// The label displayed in the legend and tooltips.
@@ -51,7 +50,7 @@ class PieData {
   final double value;
 
   /// width and height
-  final double? width, height;
+  final double? circleSize;
 
   /// The color used to render this segment.
   ///

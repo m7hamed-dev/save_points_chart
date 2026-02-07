@@ -1,3 +1,6 @@
+import 'package:save_points_chart/models/chart_data.dart' show RadarDataSet, ChartDataPoint;
+import 'package:save_points_chart/save_points_chart.dart' show RadarDataSet, ChartDataPoint;
+
 /// Represents a radar/spider chart data point.
 ///
 /// Each point has a label (axis name) and a value (distance from center).

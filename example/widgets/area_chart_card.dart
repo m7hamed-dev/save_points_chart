@@ -20,42 +20,42 @@ class AreaChartCard extends StatelessWidget {
             ),
             // const SizedBox(height: 8),
             AreaChartWidget(
-              dataSets: [
+              dataSets: const [
                 ChartDataSet(
-                  color: const Color(0xFF8B5CF6),
-                  dataPoint: const ChartDataPoint(
+                  color: Color(0xFF8B5CF6),
+                  dataPoint: ChartDataPoint(
                     x: 0,
                     y: 100,
                     label: 'Week 1',
                   ),
                 ),
                 ChartDataSet(
-                  color: const Color(0xFF8B5CF6),
-                  dataPoint: const ChartDataPoint(
+                  color: Color(0xFF8B5CF6),
+                  dataPoint: ChartDataPoint(
                     x: 1,
                     y: 150,
                     label: 'Week 2',
                   ),
                 ),
                 ChartDataSet(
-                  color: const Color(0xFF8B5CF6),
-                  dataPoint: const ChartDataPoint(
+                  color: Color(0xFF8B5CF6),
+                  dataPoint: ChartDataPoint(
                     x: 2,
                     y: 120,
                     label: 'Week 3',
                   ),
                 ),
                 ChartDataSet(
-                  color: const Color(0xFF8B5CF6),
-                  dataPoint: const ChartDataPoint(
+                  color: Color(0xFF8B5CF6),
+                  dataPoint: ChartDataPoint(
                     x: 3,
                     y: 180,
                     label: 'Week 4',
                   ),
                 ),
                 ChartDataSet(
-                  color: const Color(0xFF8B5CF6),
-                  dataPoint: const ChartDataPoint(
+                  color: Color(0xFF8B5CF6),
+                  dataPoint: ChartDataPoint(
                     x: 4,
                     y: 200,
                     label: 'Week 5',

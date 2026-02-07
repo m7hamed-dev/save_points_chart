@@ -19,34 +19,28 @@ class SampleData {
 
   static List<ChartDataSet> generateMultiLineData() {
     /// Sales Data Set
-    final List<ChartDataSet> sales = List.generate(
-      5,
-      (index) {
-        return ChartDataSet(
-          color: const Color(0xFF6366F1),
-          dataPoint: ChartDataPoint(
-            x: index.toDouble(),
-            y: 20 + (index * 9) + (index % 3) * 10,
-            label: 'M${index + 1}',
-          ),
-        );
-      },
-    );
+    final List<ChartDataSet> sales = List.generate(5, (index) {
+      return ChartDataSet(
+        color: const Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: 20 + (index * 9) + (index % 3) * 10,
+          label: 'M${index + 1}',
+        ),
+      );
+    });
 
     /// Revenue Data Set
-    final List<ChartDataSet> revenue = List.generate(
-      5,
-      (index) {
-        return ChartDataSet(
-          color: const Color(0xFF10B981),
-          dataPoint: ChartDataPoint(
-            x: index.toDouble(),
-            y: 30 + (index * 3) + (index % 2) * 15,
-            label: 'M${index + 1}',
-          ),
-        );
-      },
-    );
+    final List<ChartDataSet> revenue = List.generate(5, (index) {
+      return ChartDataSet(
+        color: const Color(0xFF10B981),
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: 30 + (index * 3) + (index % 2) * 15,
+          label: 'M${index + 1}',
+        ),
+      );
+    });
     return [...sales, ...revenue];
   }
 
@@ -63,7 +57,11 @@ class SampleData {
     });
   }
 
-  static List<PieData> generatePieData() {
+  static List<PieData> generatePieData({
+    bool showValue = true,
+    bool showLabel = true,
+    double? circleSize,
+  }) {
     // final data = [
     //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
     //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
@@ -72,38 +70,59 @@ class SampleData {
 
     // return data;
     return [
-      const PieData(label: 'Mobile', value: 35, color: Color(0xFF6366F1)),
-      const PieData(label: 'Desktop', value: 25, color: Color(0xFF8B5CF6)),
+      PieData(
+        label: 'Mobile',
+        value: 35,
+        color: const Color(0xFF6366F1),
+        showValue: showValue,
+        showLabel: showLabel,
+        circleSize: circleSize,
+      ),
+      PieData(
+        label: 'Desktop',
+        value: 25,
+        color: const Color(0xFF8B5CF6),
+        showValue: showValue,
+        showLabel: showLabel,
+        circleSize: circleSize,
+      ),
       const PieData(label: 'Tablet', value: 10, color: Color(0xFFEC4899)),
-      const PieData(label: 'Other', value: 30, color: Color(0xFF10B981)),
+      PieData(
+        label: 'Other',
+        value: 30,
+        color: const Color(0xFF10B981),
+        showValue: showValue,
+        showLabel: showLabel,
+        circleSize: circleSize,
+      ),
     ];
   }
 
   static List<ChartDataSet> generateRadialData() {
     return [
-      ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: const ChartDataPoint(x: 0, y: 80, label: 'Speed'),
+      const ChartDataSet(
+        color: Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(x: 0, y: 80, label: 'Speed'),
       ),
-      ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: const ChartDataPoint(x: 1, y: 90, label: 'Quality'),
+      const ChartDataSet(
+        color: Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(x: 1, y: 90, label: 'Quality'),
       ),
-      ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: const ChartDataPoint(x: 2, y: 70, label: 'Design'),
+      const ChartDataSet(
+        color: Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(x: 2, y: 70, label: 'Design'),
       ),
-      ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: const ChartDataPoint(x: 3, y: 85, label: 'Support'),
+      const ChartDataSet(
+        color: Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(x: 3, y: 85, label: 'Support'),
       ),
-      ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: const ChartDataPoint(x: 4, y: 75, label: 'Features'),
+      const ChartDataSet(
+        color: Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(x: 4, y: 75, label: 'Features'),
       ),
-      ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: const ChartDataPoint(x: 5, y: 95, label: 'Value'),
+      const ChartDataSet(
+        color: Color(0xFF6366F1),
+        dataPoint: ChartDataPoint(x: 5, y: 95, label: 'Value'),
       ),
     ];
   }
@@ -122,25 +141,14 @@ class SampleData {
 
   static List<ChartDataSet> generateUsersData() {
     final data = [
-      const ChartDataPoint(
-        x: 0,
-        y: 100,
-        label: 'mohamed',
-      ),
-      const ChartDataPoint(
-        x: 1,
-        y: 200,
-        label: 'ahmed',
-      ),
+      const ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
+      const ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
       const ChartDataPoint(x: 2, y: 300, label: 'ali'),
       const ChartDataPoint(x: 3, y: 400, label: 'omar'),
       const ChartDataPoint(x: 4, y: 500, label: 'khalid'),
     ];
     return data.map((point) {
-      return ChartDataSet(
-        color: const Color(0xFF6366F1),
-        dataPoint: point,
-      );
+      return ChartDataSet(color: const Color(0xFF6366F1), dataPoint: point);
     }).toList();
   }
 

@@ -262,8 +262,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         return ListTile(
           dense: true,
           leading: Container(
-            width: item.width,
-            height: item.height,
+            width: item.circleSize,
+            height: item.circleSize,
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
@@ -273,10 +273,13 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               ),
             ),
           ),
-          title: Text(
-            label,
-            style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
+          title: ShowEmptyOrWidget(
+            showWidget: item.showLabel ?? true,
+            widget: Text(
+              label,
+              style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           subtitle: ShowEmptyOrWidget(
             showWidget: item.showValue,

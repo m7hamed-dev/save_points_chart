@@ -922,6 +922,17 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               );
             },
           ),
+          DonutChartWidget(
+            data: SampleData.generatePieData(
+              showValue: false,
+              showLabel: false,
+              circleSize: 32.0,
+            ),
+            config: chartsConfig,
+            legendLayout: Axis.vertical,
+            title: 'Sales Distribution',
+            subtitle: 'With custom width and height',
+          ),
         ],
       ),
     );
