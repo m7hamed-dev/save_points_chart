@@ -268,13 +268,13 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               color: color,
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.black.withValues(alpha: 0.2),
+                color: Colors.black.withValues(alpha: 0.5),
                 width: 2.0,
               ),
             ),
           ),
           title: ShowEmptyOrWidget(
-            showWidget: item.showLabel ?? true,
+            showWidget: item.showLabel,
             widget: Text(
               label,
               style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),

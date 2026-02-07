@@ -60,7 +60,7 @@ class SampleData {
   static List<PieData> generatePieData({
     bool showValue = true,
     bool showLabel = true,
-    double? circleSize,
+    double circleSize = 18.0,
   }) {
     // final data = [
     //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
