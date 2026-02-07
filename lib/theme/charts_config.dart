@@ -38,6 +38,7 @@ class ChartsConfig {
     this.errorMessage,
     this.boxShadow,
     this.theme,
+    this.animationDuration,
   });
 
   /// Whether to apply glassmorphism (frosted glass) to the chart container.
@@ -66,8 +67,12 @@ class ChartsConfig {
   /// Theme for colors, typography, and chart styling.
   final ChartTheme? theme;
 
+  /// Animation duration for the chart.
+  final Duration? animationDuration;
+
   /// Creates a copy of this config with the given fields replaced.
   ChartsConfig copyWith({
+    ChartTheme? theme,
     bool? useGlassmorphism,
     bool? useNeumorphism,
     Widget? emptyWidget,
@@ -75,7 +80,7 @@ class ChartsConfig {
     Widget? errorWidget,
     String? errorMessage,
     List<BoxShadow>? boxShadow,
-    ChartTheme? theme,
+    Duration? animationDuration,
   }) {
     return ChartsConfig(
       useGlassmorphism: useGlassmorphism ?? this.useGlassmorphism,
@@ -86,6 +91,7 @@ class ChartsConfig {
       errorMessage: errorMessage ?? this.errorMessage,
       boxShadow: boxShadow ?? this.boxShadow,
       theme: theme ?? this.theme,
+      animationDuration: animationDuration ?? this.animationDuration,
     );
   }
 }

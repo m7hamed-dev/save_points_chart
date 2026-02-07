@@ -18,7 +18,7 @@ class DonutChartWidget extends StatefulWidget {
     super.key,
     required this.data,
     this.borderWidth = 2.0,
-    this.centerSpaceRadius = 60.0,
+    this.centerSpaceRadius = 70.0,
     this.showLegend = true,
     this.showLabel = true,
     this.legendLayout = Axis.horizontal,
@@ -70,7 +70,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 2200),
       vsync: this,
     );
     _animation = CurvedAnimation(
