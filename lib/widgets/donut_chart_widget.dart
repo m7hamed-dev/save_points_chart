@@ -219,7 +219,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                     ),
                   ),
                   Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     children: [
                       Text(
                         'Total',
