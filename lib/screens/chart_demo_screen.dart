@@ -1592,7 +1592,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
       builder: (context) => AlertDialog(
         title: Text(point != null ? 'Point Details' : 'Segment Details'),
         content: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           crossAxisAlignment: .start,
           children: [
             if (point != null) ...[

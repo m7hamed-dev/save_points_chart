@@ -323,7 +323,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
     final colorScheme = _getMenuColorScheme(isDark);
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildHeader(context, isDark, colorScheme),

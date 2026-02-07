@@ -133,7 +133,7 @@ class ChartContainer extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: .start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           if (title != null || subtitle != null)
             Padding(
@@ -216,7 +216,7 @@ class ChartContainer extends StatelessWidget {
                       errorWidget ??
                       Column(
                         mainAxisAlignment: .center,
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: .min,
                         children: [
                           Icon(
                             Icons.error_outline,
@@ -333,7 +333,7 @@ class ChartContainer extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: .start,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             if (title != null || subtitle != null)
               Padding(
@@ -405,7 +405,7 @@ class ChartContainer extends StatelessWidget {
                       errorWidget ??
                       Column(
                         mainAxisAlignment: .center,
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: .min,
                         children: [
                           Icon(
                             Icons.error_outline,

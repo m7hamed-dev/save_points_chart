@@ -295,7 +295,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
     final Widget content = widget.legendLayout == .vertical
         ? Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               chart,
               if (widget.showLegend && effectiveTheme.showLegend) ...[

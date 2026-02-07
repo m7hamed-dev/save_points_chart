@@ -148,7 +148,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
 
     final Widget content = widget.legendLayout == .vertical
         ? Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               _pieChart(effectiveTheme),
               if (widget.showLegend && effectiveTheme.showLegend) ...[
