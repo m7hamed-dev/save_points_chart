@@ -335,12 +335,12 @@ PieChartWidget(data: pieData)
 // Column: chart on top, legend below — good for narrow screens
 PieChartWidget(
   data: pieData,
-  legendLayout: Axis.vertical,
+  legendLayout: .vertical,
 )
 
 DonutChartWidget(
   data: donutData,
-  legendLayout: Axis.vertical,
+  legendLayout: .vertical,
 )
 ```
 
@@ -563,13 +563,13 @@ Or check out the example app in the repository to see all chart types in action.
 - Customizable colors
 - Legend support
 - Smooth animations
-- **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`Axis.vertical`)
+- **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`.vertical`)
 
 ### Donut Chart
 - Center value display
 - Similar to pie with center space
 - Modern donut design
-- **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`Axis.vertical`)
+- **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`.vertical`)
 
 ### Radial Chart
 - Multi-dimensional data

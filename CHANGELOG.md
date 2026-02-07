@@ -398,10 +398,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Pie & Donut chart layout**: `legendLayout` parameter for row or column layout
-  - `PieChartWidget` and `DonutChartWidget` now support `legendLayout` (`Axis.horizontal` or `Axis.vertical`)
+  - `PieChartWidget` and `DonutChartWidget` now support `legendLayout` (`Axis.horizontal` or `.vertical`)
   - **Row** (default): chart on the left, legend on the right (`Axis.horizontal`)
-  - **Column**: chart on top, legend below (`Axis.vertical`)
-  - Use `legendLayout: Axis.vertical` for stacked layout on narrow screens or compact UIs
+  - **Column**: chart on top, legend below (`.vertical`)
+  - Use `legendLayout: .vertical` for stacked layout on narrow screens or compact UIs
 
 ### Changed
 - Pie and Donut chart content is built from shared chart/legend widgets for consistent row vs column behavior

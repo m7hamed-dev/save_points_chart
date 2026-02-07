@@ -42,7 +42,7 @@ class DonutChartWidget extends StatefulWidget {
   final bool showLabel;
 
   /// Layout of chart and legend: [Axis.horizontal] = Row (chart left, legend right),
-  /// [Axis.vertical] = Column (chart top, legend below).
+  /// [.vertical] = Column (chart top, legend below).
   final Axis legendLayout;
   final String? title;
   final String? subtitle;
@@ -293,7 +293,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       }).toList(),
     );
 
-    final Widget content = widget.legendLayout == Axis.vertical
+    final Widget content = widget.legendLayout == .vertical
         ? Column(
             mainAxisSize: MainAxisSize.min,
             children: [

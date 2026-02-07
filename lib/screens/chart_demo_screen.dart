@@ -812,7 +812,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           PieChartWidget(
             data: SampleData.generatePieData(),
-            legendLayout: Axis.vertical,
+            legendLayout: .vertical,
             config: chartsConfig,
             title: 'Device Distribution',
             subtitle: 'User devices breakdown - Tap on segments!',
@@ -891,7 +891,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           DonutChartWidget(
             data: SampleData.generatePieData(),
             config: chartsConfig,
-            legendLayout: Axis.vertical,
+            legendLayout: .vertical,
             title: 'Sales Distribution',
             subtitle: 'Donut chart with center value - Tap on segments!',
             onSegmentTap: (segment, segmentIndex, position) {
@@ -924,13 +924,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           DonutChartWidget(
             config: chartsConfig,
-            legendLayout: Axis.vertical,
+            legendLayout: .vertical,
             title: 'Sales Distribution',
             subtitle: 'With custom width and height',
             data: SampleData.generatePieData(
               showValue: false,
               showLabel: false,
-              circleSize: 40.0,
+              circleSize: 80.0,
             ),
           ),
         ],
