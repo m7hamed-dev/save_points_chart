@@ -252,13 +252,19 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: .start,
       children: widget.data.map((item) {
+        /// item data: label, color, value, percentage
+        final label = item.label;
+        final color = item.color;
+        final value = item.value;
+        final percentage = ((value / total) * 100).toStringAsFixed(1);
+
         return ListTile(
           dense: true,
           leading: Container(
             width: 18,
             height: 18,
             decoration: BoxDecoration(
-              color: item.color,
+              color: color,
               shape: BoxShape.circle,
               border: Border.all(
                 color: Colors.black.withValues(alpha: 0.2),
@@ -267,18 +273,20 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
             ),
           ),
           title: Text(
-            item.label,
+            label,
             style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
-          subtitle: Text(
-            '${((item.value / total) * 100).toStringAsFixed(1)}%',
-            style: TextStyle(
-              color: effectiveTheme.textColor.withValues(alpha: 0.7),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          subtitle: item.showValue
+              ? Text(
+                  '$percentage%',
+                  style: TextStyle(
+                    color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : null,
         );
       }).toList(),
     );

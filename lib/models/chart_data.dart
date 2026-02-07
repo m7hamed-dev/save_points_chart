@@ -22,6 +22,20 @@ import 'package:flutter/material.dart';
 /// - [ChartDataSet] for collections of data points
 /// - [BubbleDataPoint] for bubble charts with size information
 class ChartDataPoint {
+  /// Creates a chart data point.
+  ///
+  /// [x] and [y] are required and must be finite numbers.
+  /// [label] is optional and can be used for axis labels or tooltips.
+  /// [showValue] defaults to true to display the value on the chart.
+  ///
+  /// Throws an [AssertionError] if [x] or [y] are not finite.
+  const ChartDataPoint({
+    required this.x,
+    required this.y,
+    this.label,
+    this.showValue = true,
+  });
+
   /// The x-coordinate (horizontal position) of the data point.
   ///
   /// This value represents the horizontal position on the chart.
@@ -40,17 +54,11 @@ class ChartDataPoint {
   /// will use the x or y value as a fallback.
   final String? label;
 
-  /// Creates a chart data point.
+  /// Whether to show the value for this data point.
   ///
-  /// [x] and [y] are required and must be finite numbers.
-  /// [label] is optional and can be used for axis labels or tooltips.
-  ///
-  /// Throws an [AssertionError] if [x] or [y] are not finite.
-  const ChartDataPoint({
-    required this.x,
-    required this.y,
-    this.label,
-  });
+  /// When true (default), the value will be displayed on the chart.
+  /// When false, the value will be hidden.
+  final bool showValue;
 
   /// Creates a copy of this data point with the given fields replaced.
   ///
@@ -60,17 +68,19 @@ class ChartDataPoint {
     double? x,
     double? y,
     String? label,
+    bool? showValue,
   }) {
     return ChartDataPoint(
       x: x ?? this.x,
       y: y ?? this.y,
       label: label ?? this.label,
+      showValue: showValue ?? this.showValue,
     );
   }
 
   @override
   String toString() =>
-      'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"})';
+      'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"}, showValue: $showValue)';
 
   @override
   bool operator ==(Object other) =>
@@ -79,10 +89,11 @@ class ChartDataPoint {
           runtimeType == other.runtimeType &&
           x == other.x &&
           y == other.y &&
-          label == other.label;
+          label == other.label &&
+          showValue == other.showValue;
 
   @override
-  int get hashCode => Object.hash(x, y, label);
+  int get hashCode => Object.hash(x, y, label, showValue);
 }
 
 /// Represents a segment in a pie or donut chart.
@@ -104,6 +115,21 @@ class ChartDataPoint {
 /// See also:
 /// - [ChartDataPoint] for point-based charts
 class PieData {
+  /// Creates a pie chart segment.
+  ///
+  /// [label] must not be empty. [value] must be non-negative and finite.
+  /// [color] is required for rendering.
+  /// [showValue] defaults to true to display the value on the chart.
+  ///
+  /// Throws an [AssertionError] if [value] is negative or not finite,
+  /// or if [label] is empty.
+  const PieData({
+    required this.label,
+    required this.value,
+    required this.color,
+    this.showValue = true,
+  });
+
   /// The label displayed in the legend and tooltips.
   ///
   /// Should be a short, descriptive string (e.g., "Mobile", "Desktop").
@@ -121,18 +147,11 @@ class PieData {
   /// This color is used for the segment fill, legend, and tooltips.
   final Color color;
 
-  /// Creates a pie chart segment.
+  /// Whether to show the value for this segment.
   ///
-  /// [label] must not be empty. [value] must be non-negative and finite.
-  /// [color] is required for rendering.
-  ///
-  /// Throws an [AssertionError] if [value] is negative or not finite,
-  /// or if [label] is empty.
-  const PieData({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  /// When true (default), the value will be displayed on the chart.
+  /// When false, the value will be hidden.
+  final bool showValue;
 
   /// Creates a copy of this pie data with the given fields replaced.
   ///
@@ -142,16 +161,19 @@ class PieData {
     String? label,
     double? value,
     Color? color,
+    bool? showValue,
   }) {
     return PieData(
       label: label ?? this.label,
       value: value ?? this.value,
       color: color ?? this.color,
+      showValue: showValue ?? this.showValue,
     );
   }
 
   @override
-  String toString() => 'PieData(label: $label, value: $value, color: $color)';
+  String toString() =>
+      'PieData(label: $label, value: $value, color: $color, showValue: $showValue)';
 
   @override
   bool operator ==(Object other) =>
@@ -160,10 +182,11 @@ class PieData {
           runtimeType == other.runtimeType &&
           label == other.label &&
           value == other.value &&
-          color == other.color;
+          color == other.color &&
+          showValue == other.showValue;
 
   @override
-  int get hashCode => Object.hash(label, value, color);
+  int get hashCode => Object.hash(label, value, color, showValue);
 }
 
 /// Represents a bubble data point with size information.
@@ -197,6 +220,7 @@ class BubbleDataPoint extends ChartDataPoint {
   ///
   /// [x], [y], and [size] are required and must be finite numbers.
   /// [label] is optional.
+  /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [size] is not positive or not finite.
   const BubbleDataPoint({
@@ -204,6 +228,7 @@ class BubbleDataPoint extends ChartDataPoint {
     required super.y,
     required this.size,
     super.label,
+    super.showValue,
   });
 
   /// Creates a copy of this bubble data point with the given fields replaced.
@@ -216,12 +241,14 @@ class BubbleDataPoint extends ChartDataPoint {
     double? y,
     double? size,
     String? label,
+    bool? showValue,
   }) {
     return BubbleDataPoint(
       x: x ?? this.x,
       y: y ?? this.y,
       size: size ?? this.size,
       label: label ?? this.label,
+      showValue: showValue ?? this.showValue,
     );
   }
 
@@ -279,22 +306,17 @@ class BubbleDataSet {
   /// [dataPoints] is required and must not be empty.
   ///
   /// Throws an [AssertionError] if [dataPoints] is empty.
-  BubbleDataSet({
-    required this.color,
-    required this.dataPoints,
-  }) : assert(
-          dataPoints.isNotEmpty,
-          'BubbleDataSet dataPoints must not be empty',
-        );
+  BubbleDataSet({required this.color, required this.dataPoints})
+    : assert(
+        dataPoints.isNotEmpty,
+        'BubbleDataSet dataPoints must not be empty',
+      );
 
   /// Creates a copy of this bubble data set with the given fields replaced.
   ///
   /// Returns a new [BubbleDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  BubbleDataSet copyWith({
-    Color? color,
-    List<BubbleDataPoint>? dataPoints,
-  }) {
+  BubbleDataSet copyWith({Color? color, List<BubbleDataPoint>? dataPoints}) {
     return BubbleDataSet(
       color: color ?? this.color,
       dataPoints: dataPoints ?? this.dataPoints,
@@ -338,6 +360,12 @@ class BubbleDataSet {
 /// - [BubbleDataSet] for bubble charts
 /// - [RadarDataSet] for radar charts
 class ChartDataSet {
+  /// Creates a chart data set.
+  ///
+  /// [dataPoint] is required.
+  /// [color] is required for rendering.
+  const ChartDataSet({required this.color, required this.dataPoint});
+
   /// The single data point in this dataset.
   ///
   /// Each dataset represents one point on the chart.
@@ -350,23 +378,11 @@ class ChartDataSet {
   /// use distinct colors for each dataset to improve readability.
   final Color color;
 
-  /// Creates a chart data set.
-  ///
-  /// [dataPoint] is required.
-  /// [color] is required for rendering.
-  ChartDataSet({
-    required this.color,
-    required this.dataPoint,
-  });
-
   /// Creates a copy of this data set with the given fields replaced.
   ///
   /// Returns a new [ChartDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  ChartDataSet copyWith({
-    ChartDataPoint? dataPoint,
-    Color? color,
-  }) {
+  ChartDataSet copyWith({ChartDataPoint? dataPoint, Color? color}) {
     return ChartDataSet(
       dataPoint: dataPoint ?? this.dataPoint,
       color: color ?? this.color,
@@ -394,9 +410,7 @@ class ChartDataSet {
   /// when there is no data to display.
   static bool isAllDataPointsEmpty(List<ChartDataSet> dataSets) {
     if (dataSets.isEmpty) return true;
-    return dataSets.every(
-      (ds) => ds.dataPoint.x == 0 && ds.dataPoint.y == 0,
-    );
+    return dataSets.every((ds) => ds.dataPoint.x == 0 && ds.dataPoint.y == 0);
   }
 }
 
@@ -406,6 +420,13 @@ class ChartDataSet {
 /// Use this to display an empty state instead of the chart when there is
 /// no meaningful data.
 class ChartEmptyScope extends StatelessWidget {
+  const ChartEmptyScope({
+    super.key,
+    required this.dataSets,
+    required this.child,
+    this.emptyWidget,
+  });
+
   /// The data sets to check. If empty or all points are (0, 0), [emptyWidget]
   /// is shown.
   final List<ChartDataSet> dataSets;
@@ -415,13 +436,6 @@ class ChartEmptyScope extends StatelessWidget {
 
   /// Widget to show when all data points are empty. Defaults to [SizedBox.shrink].
   final Widget? emptyWidget;
-
-  const ChartEmptyScope({
-    super.key,
-    required this.dataSets,
-    required this.child,
-    this.emptyWidget,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -450,6 +464,19 @@ class ChartEmptyScope extends StatelessWidget {
 /// - [RadarDataSet] for collections of radar data points
 /// - [ChartDataPoint] for standard two-dimensional points
 class RadarDataPoint {
+  /// Creates a radar data point.
+  ///
+  /// [label] must not be empty. [value] must be non-negative and finite.
+  /// [showValue] defaults to true to display the value on the chart.
+  ///
+  /// Throws an [AssertionError] if [value] is negative or not finite,
+  /// or if [label] is empty.
+  const RadarDataPoint({
+    required this.label,
+    required this.value,
+    this.showValue = true,
+  });
+
   /// The label for this axis (e.g., "Speed", "Quality").
   ///
   /// Displayed along the axis line. Should be a short, descriptive string.
@@ -462,33 +489,27 @@ class RadarDataPoint {
   /// the center the point is plotted on this axis.
   final double value;
 
-  /// Creates a radar data point.
+  /// Whether to show the value for this data point.
   ///
-  /// [label] must not be empty. [value] must be non-negative and finite.
-  ///
-  /// Throws an [AssertionError] if [value] is negative or not finite,
-  /// or if [label] is empty.
-  const RadarDataPoint({
-    required this.label,
-    required this.value,
-  });
+  /// When true (default), the value will be displayed on the chart.
+  /// When false, the value will be hidden.
+  final bool showValue;
 
   /// Creates a copy of this radar data point with the given fields replaced.
   ///
   /// Returns a new [RadarDataPoint] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  RadarDataPoint copyWith({
-    String? label,
-    double? value,
-  }) {
+  RadarDataPoint copyWith({String? label, double? value, bool? showValue}) {
     return RadarDataPoint(
       label: label ?? this.label,
       value: value ?? this.value,
+      showValue: showValue ?? this.showValue,
     );
   }
 
   @override
-  String toString() => 'RadarDataPoint(label: $label, value: $value)';
+  String toString() =>
+      'RadarDataPoint(label: $label, value: $value, showValue: $showValue)';
 
   @override
   bool operator ==(Object other) =>
@@ -496,10 +517,11 @@ class RadarDataPoint {
       other is RadarDataPoint &&
           runtimeType == other.runtimeType &&
           label == other.label &&
-          value == other.value;
+          value == other.value &&
+          showValue == other.showValue;
 
   @override
-  int get hashCode => Object.hash(label, value);
+  int get hashCode => Object.hash(label, value, showValue);
 }
 
 /// Represents a collection of radar/spider chart data points.
@@ -523,6 +545,18 @@ class RadarDataPoint {
 /// - [RadarDataPoint] for individual radar points
 /// - [ChartDataSet] for standard two-dimensional data sets
 class RadarDataSet {
+  /// Creates a radar data set.
+  ///
+  /// [color] is required for rendering.
+  /// [dataPoints] is required and must not be empty.
+  ///
+  /// Throws an [AssertionError] if [dataPoints] is empty.
+  RadarDataSet({required this.color, required this.dataPoints})
+    : assert(
+        dataPoints.isNotEmpty,
+        'RadarDataSet dataPoints must not be empty',
+      );
+
   /// The color used to render the polygon and points in this data set.
   ///
   /// Applied to the polygon fill, outline, and points. Use distinct colors
@@ -536,28 +570,11 @@ class RadarDataSet {
   /// axis labels. Each [RadarDataPoint] has its own label for the axis name.
   final List<RadarDataPoint> dataPoints;
 
-  /// Creates a radar data set.
-  ///
-  /// [color] is required for rendering.
-  /// [dataPoints] is required and must not be empty.
-  ///
-  /// Throws an [AssertionError] if [dataPoints] is empty.
-  RadarDataSet({
-    required this.color,
-    required this.dataPoints,
-  }) : assert(
-          dataPoints.isNotEmpty,
-          'RadarDataSet dataPoints must not be empty',
-        );
-
   /// Creates a copy of this radar data set with the given fields replaced.
   ///
   /// Returns a new [RadarDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  RadarDataSet copyWith({
-    Color? color,
-    List<RadarDataPoint>? dataPoints,
-  }) {
+  RadarDataSet copyWith({Color? color, List<RadarDataPoint>? dataPoints}) {
     return RadarDataSet(
       color: color ?? this.color,
       dataPoints: dataPoints ?? this.dataPoints,
