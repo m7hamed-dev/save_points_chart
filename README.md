@@ -11,7 +11,15 @@ Try it out in your browser: **[Live Demo →](https://save-points-charts.netlify
 
 ## 🎥 Demo
 
-![Showcase Coach Preview](https://raw.githubusercontent.com/m7hamed-dev/save_points_sa_privacy_polices/main/chart-video.gif)
+![Showcase Coach Preview]
+
+
+![Image](https://github.com/user-attachments/assets/b03685d9-b6f2-40d1-b7eb-71d2f267a035)
+<img width="1200"  alt="Image" src="https://github.com/user-attachments/assets/84f0d696-8c2f-4009-826d-37ea906b8454" />
+<img width="1200"  alt="Image" src="https://github.com/user-attachments/assets/3d8905bb-fd7e-4476-926f-4c43ff2aba41" />
+
+## InfoGraphic
+<img width="1200"  alt="Image" src="https://github.com/user-attachments/assets/ebc13b42-7542-494f-8723-23bdf8fc90ab" />
 
 ## 🎯 Features
 
