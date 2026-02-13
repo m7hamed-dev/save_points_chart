@@ -419,7 +419,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Chart widget updates across area, bar, bubble, donut, funnel, gauge, line, pie, pyramid, radar, radial, scatter, sparkline, spline, stacked area, stacked column, step line, and chart container
 
-## [1.7.3] - 2025-01-29
+## [1.7.4] - 2025-01-29
 
 ### Changed
 - Version bump
