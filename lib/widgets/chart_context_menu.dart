@@ -3,45 +3,57 @@ import 'dart:ui' as ui;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 
-/// Color scheme for menu styling
-class _MenuColorScheme {
-  final List<Color> gradientColors;
-  final Color iconBgColor;
-  final Color titleColor;
-  final Color subtitleColor;
-  final Color valueLabelColor;
-  final Color closeButtonColor;
-  final Color valueBgColor;
-
-  const _MenuColorScheme({
-    required this.gradientColors,
-    required this.iconBgColor,
-    required this.titleColor,
-    required this.subtitleColor,
-    required this.valueLabelColor,
-    required this.closeButtonColor,
-    required this.valueBgColor,
-  });
-}
-
-/// Color scheme for menu item styling
-class _MenuItemColors {
-  final Color bgColor;
-  final Color iconBgColor;
-  final Color textColor;
-  final Color chevronColor;
+/// Web-inspired color scheme for modern UI
+class _WebUIColorScheme {
+  final Color surfaceColor;
   final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color textTertiary;
+  final Color accentColor;
+  final Color hoverColor;
+  final Color dividerColor;
 
-  const _MenuItemColors({
-    required this.bgColor,
-    required this.iconBgColor,
-    required this.textColor,
-    required this.chevronColor,
+  const _WebUIColorScheme({
+    required this.surfaceColor,
     required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.textTertiary,
+    required this.accentColor,
+    required this.hoverColor,
+    required this.dividerColor,
   });
+
+  factory _WebUIColorScheme.light(Color accentColor) {
+    return _WebUIColorScheme(
+      surfaceColor: Colors.white,
+      borderColor: const Color(0xFFE5E7EB),
+      textPrimary: const Color(0xFF111827),
+      textSecondary: const Color(0xFF6B7280),
+      textTertiary: const Color(0xFF9CA3AF),
+      accentColor: accentColor,
+      hoverColor: const Color(0xFFF9FAFB),
+      dividerColor: const Color(0xFFE5E7EB),
+    );
+  }
+
+  factory _WebUIColorScheme.dark(Color accentColor) {
+    return _WebUIColorScheme(
+      surfaceColor: const Color(0xFF1F2937),
+      borderColor: const Color(0xFF374151),
+      textPrimary: const Color(0xFFF9FAFB),
+      textSecondary: const Color(0xFFD1D5DB),
+      textTertiary: const Color(0xFF9CA3AF),
+      accentColor: accentColor,
+      hoverColor: const Color(0xFF374151),
+      dividerColor: const Color(0xFF4B5563),
+    );
+  }
 }
 
-/// An awesome context menu that appears when tapping on chart elements
+/// Modern web-style context menu for chart elements
+/// Inspired by contemporary web design systems (Vercel, Linear, Stripe)
 class ChartContextMenu extends StatefulWidget {
   const ChartContextMenu({
     super.key,
@@ -78,13 +90,16 @@ class ChartContextMenu extends StatefulWidget {
   State<ChartContextMenu> createState() => _ChartContextMenuState();
 }
 
-class _ChartContextMenuState extends State<ChartContextMenu> {
-  // Cached computed values to avoid recalculating on every build
+class _ChartContextMenuState extends State<ChartContextMenu>
+    with SingleTickerProviderStateMixin {
   late final Color _primaryColor;
   late final String _formattedValue;
   late final String? _formattedXValue;
   late final String _label;
   late final bool _hasPoint;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
@@ -97,13 +112,36 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
         widget.point?.label ??
         widget.segment?.label ??
         (_hasPoint ? 'Data Point' : 'Segment');
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+
+    _scaleAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Color _computePrimaryColor() {
     if (_hasPoint) {
       return _getColorForValue(widget.point!.y);
     }
-    return widget.segment?.color ?? Colors.blue;
+    return widget.segment?.color ?? const Color(0xFF3B82F6);
   }
 
   String _computeFormattedValue() {
@@ -116,8 +154,6 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    // Validate position to prevent NaN errors
     final safeDx = widget.position.dx.isFinite ? widget.position.dx : 0.0;
     final safeDy = widget.position.dy.isFinite ? widget.position.dy : 0.0;
 
@@ -126,52 +162,47 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
       top: safeDy,
       child: Material(
         color: Colors.transparent,
-        child: TweenAnimationBuilder<double>(
-          duration: const Duration(milliseconds: 400),
-          tween: Tween(begin: 0.0, end: 1.0),
-          curve: Curves.easeOutCubic,
-          builder: (context, value, child) {
-            // Use RepaintBoundary to prevent unnecessary repaints
-            return RepaintBoundary(
-              child: Transform.scale(
-                scale: 0.85 + (0.15 * value),
-                child: Transform.translate(
-                  offset: Offset(0, 10 * (1 - value)),
-                  child: Opacity(opacity: value, child: child),
-                ),
-              ),
-            );
-          },
-          child: _buildMenuContent(context, isDark),
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: Tween<double>(
+              begin: 0.92,
+              end: 1.0,
+            ).animate(_scaleAnimation),
+            child: RepaintBoundary(child: _buildWebStyleMenu(context, isDark)),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildMenuContent(BuildContext context, bool isDark) {
+  Widget _buildWebStyleMenu(BuildContext context, bool isDark) {
     if (widget.useGlassmorphism) {
       return _buildGlassmorphismMenu(context, isDark);
     } else if (widget.useNeumorphism) {
       return _buildNeumorphismMenu(context, isDark);
     } else {
-      return _buildDefaultMenu(context, isDark);
+      return _buildModernWebMenu(context, isDark);
     }
   }
 
   Widget _buildGlassmorphismMenu(BuildContext context, bool isDark) {
+    final colorScheme = isDark
+        ? _WebUIColorScheme.dark(_primaryColor)
+        : _WebUIColorScheme.light(_primaryColor);
     final gradientColors = _getGlassmorphismGradientColors(isDark);
     final borderColor = _getGlassmorphismBorderColor(isDark);
     final shadows = _getGlassmorphismShadows(isDark);
 
     return RepaintBoundary(
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            width: 300,
+            width: 320,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(16),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -180,7 +211,15 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
               border: Border.all(color: borderColor, width: 1.5),
               boxShadow: shadows,
             ),
-            child: _buildMenuItems(context, isDark),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildWebHeader(context, colorScheme),
+                _buildWebContent(context, colorScheme),
+                _buildWebActions(context, colorScheme),
+              ],
+            ),
           ),
         ),
       ),
@@ -228,18 +267,29 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
   }
 
   Widget _buildNeumorphismMenu(BuildContext context, bool isDark) {
+    final colorScheme = isDark
+        ? _WebUIColorScheme.dark(_primaryColor)
+        : _WebUIColorScheme.light(_primaryColor);
     final baseColor = _getNeumorphismBaseColor(isDark);
     final shadows = _getNeumorphismShadows(isDark);
 
     return RepaintBoundary(
       child: Container(
-        width: 300,
+        width: 320,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16),
           color: baseColor,
           boxShadow: shadows,
         ),
-        child: _buildMenuItems(context, isDark),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildWebHeader(context, colorScheme),
+            _buildWebContent(context, colorScheme),
+            _buildWebActions(context, colorScheme),
+          ],
+        ),
       ),
     );
   }
@@ -270,258 +320,177 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
     ];
   }
 
-  Widget _buildDefaultMenu(BuildContext context, bool isDark) {
-    final backgroundColor = _getDefaultMenuBackgroundColor(isDark);
-    final borderColor = _getDefaultMenuBorderColor(isDark);
-    final shadows = _getDefaultMenuShadows(isDark);
+  Widget _buildModernWebMenu(BuildContext context, bool isDark) {
+    final colorScheme = isDark
+        ? _WebUIColorScheme.dark(_primaryColor)
+        : _WebUIColorScheme.light(_primaryColor);
 
-    return RepaintBoundary(
-      child: Container(
-        width: 300,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          color: backgroundColor,
-          border: Border.all(color: borderColor),
-          boxShadow: shadows,
-        ),
-        child: _buildMenuItems(context, isDark),
-      ),
-    );
-  }
-
-  Color _getDefaultMenuBackgroundColor(bool isDark) {
-    return isDark ? const Color(0xFF1A1A1A) : Colors.white;
-  }
-
-  Color _getDefaultMenuBorderColor(bool isDark) {
-    return isDark
-        ? Colors.white.withValues(alpha: 0.12)
-        : Colors.grey.withValues(alpha: 0.15);
-  }
-
-  List<BoxShadow> _getDefaultMenuShadows(bool isDark) {
-    return [
-      BoxShadow(
-        color: isDark
-            ? Colors.black.withValues(alpha: 0.5)
-            : Colors.black.withValues(alpha: 0.12),
-        blurRadius: 32,
-        offset: const Offset(0, 12),
-        spreadRadius: -8,
-      ),
-      BoxShadow(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.03)
-            : Colors.white.withValues(alpha: 0.9),
-        blurRadius: 20,
-        offset: const Offset(-4, -4),
-      ),
-    ];
-  }
-
-  Widget _buildMenuItems(BuildContext context, bool isDark) {
-    final colorScheme = _getMenuColorScheme(isDark);
-
-    return Column(
-      mainAxisSize: .min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildHeader(context, isDark, colorScheme),
-        _buildMenuItemsList(context, isDark),
-      ],
-    );
-  }
-
-  _MenuColorScheme _getMenuColorScheme(bool isDark) {
-    return _MenuColorScheme(
-      gradientColors: [
-        _primaryColor.withValues(alpha: 0.25),
-        _primaryColor.withValues(alpha: 0.12),
-        _primaryColor.withValues(alpha: 0.05),
-      ],
-      iconBgColor: _primaryColor.withValues(alpha: 0.2),
-      titleColor: isDark ? Colors.white : const Color(0xFF1A1A1A),
-      subtitleColor: isDark ? Colors.white70 : const Color(0xFF6B6B6B),
-      valueLabelColor: isDark ? Colors.white60 : const Color(0xFF8E8E8E),
-      closeButtonColor: isDark ? Colors.white70 : const Color(0xFF6B6B6B),
-      valueBgColor: isDark
-          ? Colors.white.withValues(alpha: 0.08)
-          : Colors.black.withValues(alpha: 0.03),
-    );
-  }
-
-  Widget _buildHeader(
-    BuildContext context,
-    bool isDark,
-    _MenuColorScheme colorScheme,
-  ) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      width: 320,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colorScheme.gradientColors,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          _buildHeaderRow(context, isDark, colorScheme),
-          const SizedBox(height: 16),
-          _buildValueDisplayCard(context, isDark, colorScheme),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeaderRow(
-    BuildContext context,
-    bool isDark,
-    _MenuColorScheme colorScheme,
-  ) {
-    return Row(
-      children: [
-        _buildHeaderIcon(colorScheme),
-        const SizedBox(width: 14),
-        Expanded(child: _buildHeaderText(context, isDark, colorScheme)),
-        _buildCloseButton(colorScheme),
-      ],
-    );
-  }
-
-  Widget _buildHeaderIcon(_MenuColorScheme colorScheme) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: colorScheme.iconBgColor,
         borderRadius: BorderRadius.circular(12),
+        color: colorScheme.surfaceColor,
+        border: Border.all(color: colorScheme.borderColor),
         boxShadow: [
           BoxShadow(
-            color: _primaryColor.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.6)
+                : Colors.black.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+            spreadRadius: -4,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Icon(
-        _hasPoint ? Icons.show_chart_rounded : Icons.pie_chart_rounded,
-        color: _primaryColor,
-        size: 22,
-      ),
-    );
-  }
-
-  Widget _buildHeaderText(
-    BuildContext context,
-    bool isDark,
-    _MenuColorScheme colorScheme,
-  ) {
-    return Column(
-      crossAxisAlignment: .start,
-      children: [
-        Text(
-          _label,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-            color: colorScheme.titleColor,
-            letterSpacing: -0.3,
-            height: 1.2,
-          ),
-        ),
-        if (widget.datasetLabel != null) ...[
-          const SizedBox(height: 2),
-          Text(
-            widget.datasetLabel!,
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.subtitleColor,
-              fontWeight: FontWeight.w500,
-              letterSpacing: -0.2,
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildCloseButton(_MenuColorScheme colorScheme) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: widget.onClose,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          padding: const EdgeInsets.all(6),
-          child: Icon(
-            Icons.close_rounded,
-            size: 18,
-            color: colorScheme.closeButtonColor,
-          ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildWebHeader(context, colorScheme),
+            _buildWebContent(context, colorScheme),
+            _buildWebActions(context, colorScheme),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildValueDisplayCard(
-    BuildContext context,
-    bool isDark,
-    _MenuColorScheme colorScheme,
-  ) {
+  Widget _buildWebHeader(BuildContext context, _WebUIColorScheme colorScheme) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colorScheme.valueBgColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.black.withValues(alpha: 0.05),
+        border: Border(
+          bottom: BorderSide(color: colorScheme.dividerColor),
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildValueColumn(colorScheme),
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: _primaryColor,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: _primaryColor.withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.textPrimary,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                if (widget.datasetLabel != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.datasetLabel!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.textTertiary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          _WebCloseButton(onTap: widget.onClose, colorScheme: colorScheme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWebContent(BuildContext context, _WebUIColorScheme colorScheme) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildMetricCard(
+              label: 'Value',
+              value: _formattedValue,
+              colorScheme: colorScheme,
+              isAccent: true,
+            ),
+          ),
           if (_formattedXValue != null) ...[
-            _buildDivider(isDark),
-            const SizedBox(width: 16),
-            _buildXAxisColumn(isDark, colorScheme),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildMetricCard(
+                label: 'X Axis',
+                value: _formattedXValue,
+                colorScheme: colorScheme,
+                isAccent: false,
+              ),
+            ),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildValueColumn(_MenuColorScheme colorScheme) {
-    return Expanded(
+  Widget _buildMetricCard({
+    required String label,
+    required String? value,
+    required _WebUIColorScheme colorScheme,
+    required bool isAccent,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isAccent
+            ? _primaryColor.withValues(alpha: 0.08)
+            : colorScheme.hoverColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isAccent
+              ? _primaryColor.withValues(alpha: 0.2)
+              : colorScheme.borderColor,
+        ),
+      ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'VALUE',
+            label.toUpperCase(),
             style: TextStyle(
               fontSize: 10,
-              color: colorScheme.valueLabelColor,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.8,
+              color: colorScheme.textTertiary,
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 6),
           Text(
-            _formattedValue,
+            value ?? '0.00',
             style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              color: _primaryColor,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: isAccent ? _primaryColor : colorScheme.textPrimary,
               letterSpacing: -0.5,
-              height: 1.0,
             ),
           ),
         ],
@@ -529,44 +498,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
     );
   }
 
-  Widget _buildDivider(bool isDark) {
-    return Container(
-      width: 1,
-      height: 40,
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.1)
-          : Colors.black.withValues(alpha: 0.08),
-    );
-  }
-
-  Widget _buildXAxisColumn(bool isDark, _MenuColorScheme colorScheme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          'X AXIS',
-          style: TextStyle(
-            fontSize: 10,
-            color: colorScheme.valueLabelColor,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.8,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          _formattedXValue!,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: colorScheme.titleColor,
-            letterSpacing: -0.3,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuItemsList(BuildContext context, bool isDark) {
+  Widget _buildWebActions(BuildContext context, _WebUIColorScheme colorScheme) {
     final hasActions =
         widget.onViewDetails != null ||
         widget.onExport != null ||
@@ -574,161 +506,200 @@ class _ChartContextMenuState extends State<ChartContextMenu> {
 
     if (!hasActions) return const SizedBox.shrink();
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+    final actions = <_ActionItem>[];
+    if (widget.onViewDetails != null) {
+      actions.add(
+        _ActionItem(
+          icon: Icons.info_outline_rounded,
+          label: 'View Details',
+          onTap: () {
+            widget.onClose?.call();
+            widget.onViewDetails?.call();
+          },
+        ),
+      );
+    }
+    if (widget.onExport != null) {
+      actions.add(
+        _ActionItem(
+          icon: Icons.download_rounded,
+          label: 'Export Data',
+          onTap: () {
+            widget.onClose?.call();
+            widget.onExport?.call();
+          },
+        ),
+      );
+    }
+    if (widget.onShare != null) {
+      actions.add(
+        _ActionItem(
+          icon: Icons.share_rounded,
+          label: 'Share',
+          onTap: () {
+            widget.onClose?.call();
+            widget.onShare?.call();
+          },
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: colorScheme.dividerColor),
+        ),
+      ),
       child: Column(
-        children: [
-          if (widget.onViewDetails != null)
-            _buildMenuItem(
-              context,
-              icon: Icons.info_outline_rounded,
-              label: 'View Details',
-              onTap: () {
-                widget.onClose?.call();
-                widget.onViewDetails?.call();
-              },
-              isDark: isDark,
-              index: 0,
-            ),
-          if (widget.onExport != null)
-            _buildMenuItem(
-              context,
-              icon: Icons.download_rounded,
-              label: 'Export Data',
-              onTap: () {
-                widget.onClose?.call();
-                widget.onExport?.call();
-              },
-              isDark: isDark,
-              isLast: widget.onShare == null,
-              index: 1,
-            ),
-          if (widget.onShare != null)
-            _buildMenuItem(
-              context,
-              icon: Icons.share_rounded,
-              label: 'Share',
-              onTap: () {
-                widget.onClose?.call();
-                widget.onShare?.call();
-              },
-              isDark: isDark,
-              isLast: true,
-              index: 2,
-            ),
-        ],
+        children: actions
+            .asMap()
+            .entries
+            .map(
+              (entry) => _WebActionButton(
+                action: entry.value,
+                colorScheme: colorScheme,
+                isLast: entry.key == actions.length - 1,
+              ),
+            )
+            .toList(),
       ),
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    required bool isDark,
-    required int index,
-    bool isLast = false,
-  }) {
-    final colors = _getMenuItemColors(isDark);
+  static Color _getColorForValue(double value) {
+    if (value > 80) return const Color(0xFF10B981);
+    if (value > 50) return const Color(0xFF3B82F6);
+    if (value > 30) return const Color(0xFFF59E0B);
+    return const Color(0xFFEF4444);
+  }
+}
 
-    return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 300 + (index * 50)),
-      tween: Tween(begin: 0.0, end: 1.0),
-      curve: Curves.easeOutCubic,
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: Transform.translate(
-            offset: Offset(0, 10 * (1 - value)),
-            child: child,
-          ),
-        );
-      },
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          splashColor: _primaryColor.withValues(alpha: 0.1),
-          highlightColor: _primaryColor.withValues(alpha: 0.05),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            margin: EdgeInsets.only(bottom: isLast ? 0 : 6),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: colors.bgColor,
-              border: Border.all(color: colors.borderColor),
-            ),
-            child: Row(
-              children: [
-                _buildMenuItemIcon(icon, colors.iconBgColor),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textColor,
-                      letterSpacing: -0.2,
+class _ActionItem {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ActionItem({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+}
+
+class _WebActionButton extends StatefulWidget {
+  final _ActionItem action;
+  final _WebUIColorScheme colorScheme;
+  final bool isLast;
+
+  const _WebActionButton({
+    required this.action,
+    required this.colorScheme,
+    required this.isLast,
+  });
+
+  @override
+  State<_WebActionButton> createState() => _WebActionButtonState();
+}
+
+class _WebActionButtonState extends State<_WebActionButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.action.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? widget.colorScheme.hoverColor
+                : Colors.transparent,
+            border: widget.isLast
+                ? null
+                : Border(
+                    bottom: BorderSide(
+                      color: widget.colorScheme.dividerColor,
                     ),
                   ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                widget.action.icon,
+                size: 18,
+                color: widget.colorScheme.textSecondary,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  widget.action.label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: widget.colorScheme.textPrimary,
+                    letterSpacing: -0.1,
+                  ),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 14,
-                  color: colors.chevronColor,
+              ),
+              AnimatedRotation(
+                duration: const Duration(milliseconds: 150),
+                turns: _isHovered ? 0 : -0.125,
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 16,
+                  color: widget.colorScheme.textTertiary,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
 
-  _MenuItemColors _getMenuItemColors(bool isDark) {
-    return _MenuItemColors(
-      bgColor: isDark
-          ? Colors.white.withValues(alpha: 0.06)
-          : Colors.black.withValues(alpha: 0.03),
-      iconBgColor: _primaryColor.withValues(alpha: 0.15),
-      textColor: isDark ? Colors.white : const Color(0xFF1A1A1A),
-      chevronColor: isDark ? Colors.white38 : const Color(0xFFB0B0B0),
-      borderColor: isDark
-          ? Colors.white.withValues(alpha: 0.06)
-          : Colors.black.withValues(alpha: 0.04),
-    );
-  }
+class _WebCloseButton extends StatefulWidget {
+  final VoidCallback? onTap;
+  final _WebUIColorScheme colorScheme;
 
-  Widget _buildMenuItemIcon(IconData icon, Color iconBgColor) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: iconBgColor,
-        borderRadius: BorderRadius.circular(11),
-        boxShadow: [
-          BoxShadow(
-            color: _primaryColor.withValues(alpha: 0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+  const _WebCloseButton({required this.onTap, required this.colorScheme});
+
+  @override
+  State<_WebCloseButton> createState() => _WebCloseButtonState();
+}
+
+class _WebCloseButtonState extends State<_WebCloseButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? widget.colorScheme.hoverColor
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
           ),
-        ],
+          child: Icon(
+            Icons.close_rounded,
+            size: 16,
+            color: widget.colorScheme.textSecondary,
+          ),
+        ),
       ),
-      child: Icon(icon, size: 20, color: _primaryColor),
     );
-  }
-
-  static Color _getColorForValue(double value) {
-    // Modern color scheme based on value
-    // Using vibrant, modern colors with better gradients
-    if (value > 80) return const Color(0xFF10B981); // Modern green
-    if (value > 50) return const Color(0xFF3B82F6); // Modern blue
-    if (value > 30) return const Color(0xFFF59E0B); // Modern amber
-    return const Color(0xFFEF4444); // Modern red
   }
 }
 
