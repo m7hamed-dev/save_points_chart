@@ -476,7 +476,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           ),
           const SizedBox(height: 24),
           LineChartWidget(
-            dataSets: SampleData.generateLineData(count: 24, maxY: 40)
+            config: chartsConfig,
+            title: 'Temperature Over Time',
+            subtitle: 'Without grid lines',
+            dataSets: SampleData.generateLineData(count: 8, maxY: 40)
                 .map(
                   (point) => ChartDataSet(
                     color: const Color(0xFFEC4899),
@@ -484,9 +487,17 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   ),
                 )
                 .toList(),
-            config: chartsConfig,
-            title: 'Temperature Over Time',
-            subtitle: 'Without grid lines',
+            onPointTap: (point, datasetIndex, pointIndex, position) {
+              ChartContextMenuHelper.show(
+                context,
+                point: point,
+                segment: PieData(label: 'label', color: Colors.red),
+                position: position,
+                datasetIndex: datasetIndex,
+                elementIndex: pointIndex,
+                datasetLabel: point.label ?? '',
+              );
+            },
           ),
           const SizedBox(height: 24),
           LineChartWidget(
