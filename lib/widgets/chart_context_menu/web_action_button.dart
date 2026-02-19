@@ -34,13 +34,13 @@ class _WebActionButtonState extends State<WebActionButton> {
           curve: Curves.easeOut,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: _isHovered ? widget.colorScheme.hoverColor : Colors.transparent,
+            color: _isHovered
+                ? widget.colorScheme.hoverColor
+                : Colors.transparent,
             border: widget.isLast
                 ? null
                 : Border(
-                    bottom: BorderSide(
-                      color: widget.colorScheme.dividerColor,
-                    ),
+                    bottom: BorderSide(color: widget.colorScheme.dividerColor),
                   ),
           ),
           child: Row(
