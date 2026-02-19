@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
-import 'action_item.dart';
-import 'color_scheme.dart';
-import 'web_action_button.dart';
-import 'web_close_button.dart';
+import 'package:save_points_chart/widgets/chart_context_menu/action_item.dart';
+import 'package:save_points_chart/widgets/chart_context_menu/color_scheme.dart';
+import 'package:save_points_chart/widgets/chart_context_menu/web_action_button.dart';
+import 'package:save_points_chart/widgets/chart_context_menu/web_close_button.dart';
 
 /// Modern web-style context menu for chart elements
 /// Inspired by contemporary web design systems (Vercel, Linear, Stripe)

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
-import 'chart_context_menu_widget.dart';
+import 'package:save_points_chart/widgets/chart_context_menu/chart_context_menu_widget.dart';
 
 /// Helper class to show context menu as overlay
 class ChartContextMenuHelper {
