@@ -23,43 +23,23 @@ class AreaChartCard extends StatelessWidget {
               dataSets: const [
                 ChartDataSet(
                   color: Color(0xFF8B5CF6),
-                  dataPoint: ChartDataPoint(
-                    x: 0,
-                    y: 100,
-                    label: 'Week 1',
-                  ),
+                  dataPoint: ChartDataPoint(x: 0, y: 100, label: 'Week 1'),
                 ),
                 ChartDataSet(
                   color: Color(0xFF8B5CF6),
-                  dataPoint: ChartDataPoint(
-                    x: 1,
-                    y: 150,
-                    label: 'Week 2',
-                  ),
+                  dataPoint: ChartDataPoint(x: 1, y: 150, label: 'Week 2'),
                 ),
                 ChartDataSet(
                   color: Color(0xFF8B5CF6),
-                  dataPoint: ChartDataPoint(
-                    x: 2,
-                    y: 120,
-                    label: 'Week 3',
-                  ),
+                  dataPoint: ChartDataPoint(x: 2, y: 120, label: 'Week 3'),
                 ),
                 ChartDataSet(
                   color: Color(0xFF8B5CF6),
-                  dataPoint: ChartDataPoint(
-                    x: 3,
-                    y: 180,
-                    label: 'Week 4',
-                  ),
+                  dataPoint: ChartDataPoint(x: 3, y: 180, label: 'Week 4'),
                 ),
                 ChartDataSet(
                   color: Color(0xFF8B5CF6),
-                  dataPoint: ChartDataPoint(
-                    x: 4,
-                    y: 200,
-                    label: 'Week 5',
-                  ),
+                  dataPoint: ChartDataPoint(x: 4, y: 200, label: 'Week 5'),
                 ),
               ],
               config: ChartsConfig(theme: theme),
