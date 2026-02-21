@@ -174,11 +174,37 @@ class _LineChartWidgetState extends State<LineChartWidget>
     return _cachedBounds!;
   }
 
+  /// Get adjusted bounds matching the painter's logic
+  Map<String, double> _getAdjustedBounds(Size chartSize) {
+    final bounds = _calculateBounds();
+    final minX = bounds['minX']!;
+    final maxX = bounds['maxX']!;
+    final maxY = bounds['maxY']!;
+
+    final xRange = maxX - minX;
+    final maxPointRadius = 10.0;
+    final xPaddingInPixels = maxPointRadius;
+    final xPadding = (xRange > 0 && xRange.isFinite && chartSize.width > 0)
+        ? (xPaddingInPixels / chartSize.width) * xRange
+        : (xRange > 0 && xRange.isFinite)
+            ? xRange * 0.08
+            : 0.0;
+
+    final maxYAdjusted = maxY > 0 ? maxY * 1.2 : 1.0;
+
+    return {
+      'minX': minX - xPadding,
+      'maxX': maxX + xPadding,
+      'minY': 0.0,
+      'maxY': maxYAdjusted,
+    };
+  }
+
   /// Handle mouse hover events
   void _handleHover(Offset position, Size chartSize) {
     if (widget.onPointHover == null) return;
 
-    final bounds = _calculateBounds();
+    final bounds = _getAdjustedBounds(chartSize);
     final chartPosition = Offset(
       position.dx - 50.0, // leftPadding
       position.dy - 20.0, // topPadding
@@ -190,8 +216,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
       chartSize,
       bounds['minX']!,
       bounds['maxX']!,
-      0.0,
-      bounds['maxY']! * 1.15,
+      bounds['minY']!,
+      bounds['maxY']!,
       ChartInteractionConstants.hoverRadius,
     );
 
@@ -274,7 +300,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                   final chartHeight = widget.height ?? 240.0;
                   final chartSize = Size(
                     constraints.maxWidth - 70,
-                    chartHeight,
+                    chartHeight - 60, // Subtract top (20) and bottom (40) padding
                   );
 
                   return MouseRegion(
@@ -317,7 +343,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                                   : details.localPosition;
 
                               // Calculate chart bounds
-                              final bounds = _calculateBounds();
+                              final bounds = _getAdjustedBounds(chartSize);
 
                               final result =
                                   ChartInteractionHelper.findNearestPoint(
@@ -326,8 +352,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
                                 chartSize,
                                 bounds['minX']!,
                                 bounds['maxX']!,
-                                0.0,
-                                bounds['maxY']! * 1.15,
+                                bounds['minY']!,
+                                bounds['maxY']!,
                                 ChartInteractionConstants.tapRadius,
                               );
 
