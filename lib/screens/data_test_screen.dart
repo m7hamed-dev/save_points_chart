@@ -9,73 +9,133 @@ class DataTestScreen extends StatelessWidget {
 
   // ── Shared data derived from the JSON ──────────────────────────────────
 
-  static const _months = ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26'];
-  static const _operations = [9, 0, 0, 0, 12];
-  static const _totalOps = 21;
+  static const Map<String, dynamic> _jsonData = {
+    "success": true,
+    "data": {
+        "customer_count": 13,
+        "refrigerators_count": 47,
+        "area_active_count": 1,
+        "operations_counts": 21,
+        "refrigerators": [], // Truncated for brevity
+        "customers": [],
+        "maintenance_officers": [],
+        "representatives": [],
+        "operation": [],
+        "reports": [
+            {
+                "month": "2026-02",
+                "operations": 12
+            },
+            {
+                "month": "2026-01",
+                "operations": 0
+            },
+            {
+                "month": "2025-12",
+                "operations": 0
+            },
+            {
+                "month": "2025-11",
+                "operations": 0
+            },
+            {
+                "month": "2025-10",
+                "operations": 9
+            }
+        ],
+        "status": 200
+    },
+    "message": "messages.refrigerator_returned_successfully"
+  };
+
+  static List<Map<String, dynamic>> get _reports {
+    final reports = List<Map<String, dynamic>>.from(_jsonData['data']['reports']);
+    // Sort by month ascending (oldest to newest)
+    reports.sort((a, b) => (a['month'] as String).compareTo(b['month'] as String));
+    return reports;
+  }
+
+  static String _formatDate(String dateStr) {
+    final parts = dateStr.split('-');
+    final year = parts[0].substring(2);
+    final month = int.parse(parts[1]);
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${months[month]} $year';
+  }
+
+  static List<int> get _operations => _reports.map((e) => e['operations'] as int).toList();
+  static int get _totalOps => _operations.fold(0, (sum, item) => sum + item);
 
   static const _color = Color(0xFF6366F1);
 
-  static const List<ChartDataSet> _dataSets = [
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 0, y: 9, label: 'Oct 25'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 1, y: 0, label: 'Nov 25'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 2, y: 0, label: 'Dec 25'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 3, y: 0, label: 'Jan 26'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 4, y: 12, label: 'Feb 26'),
-    ),
-  ];
+  static List<ChartDataSet> get _dataSets {
+    return _reports.asMap().entries.map((entry) {
+      final index = entry.key;
+      final report = entry.value;
+      return ChartDataSet(
+        color: _color,
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: (report['operations'] as int).toDouble(),
+          label: _formatDate(report['month'] as String),
+        ),
+      );
+    }).toList();
+  }
 
-  static const List<PieData> _pieData = [
-    PieData(label: 'Oct 25', value: 9, color: Color(0xFF6366F1)),
-    PieData(label: 'Nov 25', color: Color(0xFF8B5CF6)),
-    PieData(label: 'Dec 25', color: Color(0xFFEC4899)),
-    PieData(label: 'Jan 26', color: Color(0xFF10B981)),
-    PieData(label: 'Feb 26', value: 12, color: Color(0xFFF59E0B)),
-  ];
+  static List<PieData> get _pieData {
+    final colors = [
+      const Color(0xFF6366F1),
+      const Color(0xFF8B5CF6),
+      const Color(0xFFEC4899),
+      const Color(0xFF10B981),
+      const Color(0xFFF59E0B),
+    ];
+    
+    return _reports.asMap().entries.map((entry) {
+      final index = entry.key;
+      final report = entry.value;
+      return PieData(
+        label: _formatDate(report['month'] as String),
+        value: (report['operations'] as int).toDouble(),
+        color: colors[index % colors.length],
+      );
+    }).toList();
+  }
 
-  static const List<PieData> _pieDataNonZero = [
-    PieData(label: 'Oct 25', value: 9, color: Color(0xFF6366F1)),
-    PieData(label: 'Feb 26', value: 12, color: Color(0xFFF59E0B)),
-  ];
+  static List<PieData> get _pieDataNonZero => _pieData.where((e) => e.value > 0).toList();
 
   static List<RadarDataSet> get _radarData => [
-    RadarDataSet(
-      color: _color,
-      dataPoints: List.generate(
-        _months.length,
-        (i) =>
-            RadarDataPoint(label: _months[i], value: _operations[i].toDouble()),
-      ),
-    ),
-  ];
+        RadarDataSet(
+          color: _color,
+          dataPoints: _reports.map((report) {
+            return RadarDataPoint(
+              label: _formatDate(report['month'] as String),
+              value: (report['operations'] as int).toDouble(),
+            );
+          }).toList(),
+        ),
+      ];
 
   static List<BubbleDataSet> get _bubbleData => [
-    BubbleDataSet(
-      color: _color,
-      dataPoints: List.generate(
-        _months.length,
-        (i) => BubbleDataPoint(
-          x: i.toDouble(),
-          y: _operations[i].toDouble(),
-          size: (_operations[i] + 2).toDouble(),
-          label: _months[i],
+        BubbleDataSet(
+          color: _color,
+          dataPoints: _reports.asMap().entries.map((entry) {
+            final index = entry.key;
+            final report = entry.value;
+            final operations = report['operations'] as int;
+            return BubbleDataPoint(
+              x: index.toDouble(),
+              y: operations.toDouble(),
+              size: (operations + 2).toDouble(),
+              label: _formatDate(report['month'] as String),
+            );
+          }).toList(),
         ),
-      ),
-    ),
-  ];
+      ];
 
   @override
   Widget build(BuildContext context) {

@@ -9,72 +9,137 @@ class DataTestPage extends StatelessWidget {
 
   // ── Shared data derived from the JSON ──────────────────────────────────
 
-  static const _months = ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26'];
-  static const _operations = [9, 0, 0, 0, 12];
-  static const _totalOps = 21;
+  static const Map<String, dynamic> _jsonData = {
+    "success": true,
+    "data": {
+      "customer_count": 13,
+      "refrigerators_count": 47,
+      "area_active_count": 1,
+      "operations_counts": 21,
+      "refrigerators":
+          [], // Truncated for brevity as requested, only reports are used for charts
+      "customers": [],
+      "maintenance_officers": [],
+      "representatives": [],
+      "operation": [],
+      "reports": [
+        {"month": "2002-02", "operations": 12},
+        {"month": "2026-01", "operations": 0},
+        {"month": "2025-12", "operations": 0},
+        {"month": "2019-11", "operations": 50},
+        {"month": "2025-10", "operations": 9},
+      ],
+      "status": 200,
+    },
+    "message": "messages.refrigerator_returned_successfully",
+  };
+
+  static List<Map<String, dynamic>> get _reports {
+    final reports = List<Map<String, dynamic>>.from(
+      _jsonData['data']['reports'],
+    );
+    // Sort by month ascending (oldest to newest)
+    reports.sort(
+      (a, b) => (a['month'] as String).compareTo(b['month'] as String),
+    );
+    return reports;
+  }
+
+  static String _formatDate(String dateStr) {
+    final parts = dateStr.split('-');
+    final year = parts[0].substring(2);
+    final month = int.parse(parts[1]);
+    const months = [
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${months[month]} $year';
+  }
+
+  static List<int> get _operations =>
+      _reports.map((e) => e['operations'] as int).toList();
+  static int get _totalOps =>
+      _reports.fold(0, (sum, item) => sum + (item['operations'] as int));
 
   static const _color = Color(0xFF6366F1);
 
-  static const List<ChartDataSet> _dataSets = [
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 0, y: 9, label: 'Oct 25'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 1, y: 0, label: 'Nov 25'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 2, y: 0, label: 'Dec 25'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 3, y: 0, label: 'Jan 26'),
-    ),
-    ChartDataSet(
-      color: _color,
-      dataPoint: ChartDataPoint(x: 4, y: 12, label: 'Feb 26'),
-    ),
-  ];
+  static List<ChartDataSet> get _dataSets {
+    return _reports.asMap().entries.map((entry) {
+      final index = entry.key;
+      final report = entry.value;
+      return ChartDataSet(
+        color: _color,
+        dataPoint: ChartDataPoint(
+          x: index.toDouble(),
+          y: (report['operations'] as int).toDouble(),
+          label: _formatDate(report['month'] as String),
+        ),
+      );
+    }).toList();
+  }
 
-  static const List<PieData> _pieData = [
-    PieData(label: 'Oct 25', value: 9, color: Color(0xFF6366F1)),
-    PieData(label: 'Nov 25', color: Color(0xFF8B5CF6)),
-    PieData(label: 'Dec 25', color: Color(0xFFEC4899)),
-    PieData(label: 'Jan 26', color: Color(0xFF10B981)),
-    PieData(label: 'Feb 26', value: 12, color: Color(0xFFF59E0B)),
-  ];
+  static List<PieData> get _pieData {
+    final colors = [
+      const Color(0xFF6366F1),
+      const Color(0xFF8B5CF6),
+      const Color(0xFFEC4899),
+      const Color(0xFF10B981),
+      const Color(0xFFF59E0B),
+    ];
 
-  static const List<PieData> _pieDataNonZero = [
-    PieData(label: 'Oct 25', value: 9, color: Color(0xFF6366F1)),
-    PieData(label: 'Feb 26', value: 12, color: Color(0xFFF59E0B)),
-  ];
+    return _reports.asMap().entries.map((entry) {
+      final index = entry.key;
+      final report = entry.value;
+      return PieData(
+        label: _formatDate(report['month'] as String),
+        value: (report['operations'] as int).toDouble(),
+        color: colors[index % colors.length],
+      );
+    }).toList();
+  }
+
+  static List<PieData> get _pieDataNonZero =>
+      _pieData.where((e) => e.value > 0).toList();
 
   static List<RadarDataSet> get _radarData => [
-        RadarDataSet(
-          color: _color,
-          dataPoints: List.generate(
-            _months.length,
-            (i) => RadarDataPoint(label: _months[i], value: _operations[i].toDouble()),
-          ),
-        ),
-      ];
+    RadarDataSet(
+      color: _color,
+      dataPoints: _reports.map((report) {
+        return RadarDataPoint(
+          label: _formatDate(report['month'] as String),
+          value: (report['operations'] as int).toDouble(),
+        );
+      }).toList(),
+    ),
+  ];
 
   static List<BubbleDataSet> get _bubbleData => [
-        BubbleDataSet(
-          color: _color,
-          dataPoints: List.generate(
-            _months.length,
-            (i) => BubbleDataPoint(
-              x: i.toDouble(),
-              y: _operations[i].toDouble(),
-              size: (_operations[i] + 2).toDouble(),
-              label: _months[i],
-            ),
-          ),
-        ),
-      ];
+    BubbleDataSet(
+      color: _color,
+      dataPoints: _reports.asMap().entries.map((entry) {
+        final index = entry.key;
+        final report = entry.value;
+        final operations = report['operations'] as int;
+        return BubbleDataPoint(
+          x: index.toDouble(),
+          y: operations.toDouble(),
+          size: (operations + 2).toDouble(),
+          label: _formatDate(report['month'] as String),
+        );
+      }).toList(),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -83,130 +148,186 @@ class DataTestPage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _section('Line Chart', LineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations',
-          subtitle: 'Oct 2025 – Feb 2026',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Area Chart', AreaChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Area)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Stacked Area Chart', StackedAreaChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Stacked Area)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Bar Chart', BarChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Bar)',
-          onBarTap: _onPointTap(context),
-        )),
-        _section('Stacked Column Chart', StackedColumnChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Stacked Column)',
-          onBarTap: _onPointTap(context),
-        )),
-        _section('Spline Chart', SplineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Spline)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Step Line Chart', StepLineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Step Line)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Sparkline Chart', SparklineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Operations Trend',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Scatter Chart', ScatterChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Scatter)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Pie Chart (non-zero only)', PieChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Distribution',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Pie Chart (all months)', PieChartWidget(
-          data: _pieData,
-          config: config,
-          title: 'Operations – All Months',
-          subtitle: 'Includes zero-value months',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Donut Chart', DonutChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Donut',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Pyramid Chart', PyramidChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Pyramid',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Funnel Chart', FunnelChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Funnel',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Radial Chart', RadialChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Operations Radial',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Bubble Chart', BubbleChartWidget(
-          dataSets: _bubbleData,
-          config: config,
-          title: 'Operations Bubble',
-          onBubbleTap: (point, datasetIndex, pointIndex, position) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  '${point.label ?? 'Bubble'} – ${point.y.toStringAsFixed(0)} ops',
+        _section(
+          'Line Chart',
+          LineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations',
+            subtitle: 'Oct 2025 – Feb 2026',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Area Chart',
+          AreaChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Area)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Stacked Area Chart',
+          StackedAreaChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Stacked Area)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Bar Chart',
+          BarChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Bar)',
+            onBarTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Stacked Column Chart',
+          StackedColumnChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Stacked Column)',
+            onBarTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Spline Chart',
+          SplineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Spline)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Step Line Chart',
+          StepLineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Step Line)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Sparkline Chart',
+          SparklineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Operations Trend',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Scatter Chart',
+          ScatterChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Scatter)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Pie Chart (non-zero only)',
+          PieChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Distribution',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Pie Chart (all months)',
+          PieChartWidget(
+            data: _pieData,
+            config: config,
+            title: 'Operations – All Months',
+            subtitle: 'Includes zero-value months',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Donut Chart',
+          DonutChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Donut',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Pyramid Chart',
+          PyramidChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Pyramid',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Funnel Chart',
+          FunnelChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Funnel',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Radial Chart',
+          RadialChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Operations Radial',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Bubble Chart',
+          BubbleChartWidget(
+            dataSets: _bubbleData,
+            config: config,
+            title: 'Operations Bubble',
+            onBubbleTap: (point, datasetIndex, pointIndex, position) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${point.label ?? 'Bubble'} – ${point.y.toStringAsFixed(0)} ops',
+                  ),
                 ),
-              ),
-            );
-          },
-        )),
-        _section('Radar Chart', RadarChartWidget(
-          dataSets: _radarData,
-          config: config,
-          title: 'Operations Radar',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Gauge Chart', GaugeChartWidget(
-          value: (_operations.last / _totalOps) * 100,
-          config: config,
-          title: 'Feb 2026 Share',
-          centerLabel: 'Feb',
-          unit: '%',
-          onChartTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Feb 2026: 12 operations (57.1%)')),
-            );
-          },
-        )),
+              );
+            },
+          ),
+        ),
+        _section(
+          'Radar Chart',
+          RadarChartWidget(
+            dataSets: _radarData,
+            config: config,
+            title: 'Operations Radar',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Gauge Chart',
+          GaugeChartWidget(
+            value: (_operations.last / _totalOps) * 100,
+            config: config,
+            title: 'Feb 2026 Share',
+            centerLabel: 'Feb',
+            unit: '%',
+            onChartTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Feb 2026: 12 operations (57.1%)'),
+                ),
+              );
+            },
+          ),
+        ),
         const SizedBox(height: 32),
       ],
     );
@@ -223,7 +344,13 @@ class DataTestPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 8),
               chart,
             ],
