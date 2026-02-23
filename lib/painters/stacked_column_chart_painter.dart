@@ -87,6 +87,15 @@ class StackedColumnChartPainter extends BaseChartPainter {
       final xValue = sortedXValues[xIndex];
       final xPos = (xIndex + 1) * xStep;
 
+      // Stagger animation for each column
+      final xProgress = math.max(
+        0.0,
+        math.min(
+          1.0,
+          (animationProgress - (xIndex / sortedXValues.length) * 0.3) / 0.7,
+        ),
+      );
+
       // Calculate cumulative heights for stacking
       double cumulativeY = 0.0;
 
@@ -107,7 +116,7 @@ class StackedColumnChartPainter extends BaseChartPainter {
           continue;
         }
 
-        final yHeight = (point.y / maxY) * chartSize.height * animationProgress;
+        final yHeight = (point.y / maxY) * chartSize.height * xProgress;
         final yStart = chartSize.height - cumulativeY;
         final yEnd = yStart - yHeight;
 

@@ -51,7 +51,8 @@ class PieChartPainter extends CustomPainter {
       return;
     }
 
-    double startAngle = -math.pi / 2; // Start from top
+    // Start from top, with rotation animation
+    double startAngle = -math.pi / 2 - (1.0 - animationProgress) * math.pi;
 
     for (int index = 0; index < data.length; index++) {
       final item = data[index];

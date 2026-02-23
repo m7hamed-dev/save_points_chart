@@ -150,21 +150,19 @@ class ChartTheme {
   /// final theme = ChartTheme.light();
   /// ```
   factory ChartTheme.light() {
-    return ChartTheme(
-      backgroundColor: const Color(0xFFFFFFFF),
-      textColor: const Color(0xFF1F2937), // Gray 900
-      gridColor: const Color(0xFFE5E7EB), // Gray 200
-      axisColor: const Color(0xFF9CA3AF), // Gray 400
-      gradientColors: const [
+    return const ChartTheme(
+      backgroundColor: Color(0xFFFFFFFF),
+      textColor: Color(0xFF1F2937), // Gray 900
+      gridColor: Color(0xFFE5E7EB), // Gray 200
+      axisColor: Color(0xFF9CA3AF), // Gray 400
+      gradientColors: [
         Color(0xFF6366F1), // Indigo 500
         Color(0xFF8B5CF6), // Violet 500
         Color(0xFFEC4899), // Pink 500
         Color(0xFF10B981), // Emerald 500
         Color(0xFFF59E0B), // Amber 500
       ],
-      shadowElevation: 4.0,
-      borderRadius: 16.0,
-      axisLabelStyle: const TextStyle(
+      axisLabelStyle: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w500,
         color: Color(0xFF6B7280), // Gray 500
@@ -186,12 +184,12 @@ class ChartTheme {
   /// final theme = ChartTheme.dark();
   /// ```
   factory ChartTheme.dark() {
-    return ChartTheme(
-      backgroundColor: const Color(0xFF1F2937), // Gray 800
-      textColor: const Color(0xFFF9FAFB), // Gray 50
-      gridColor: const Color(0xFF374151), // Gray 700
-      axisColor: const Color(0xFF6B7280), // Gray 500
-      gradientColors: const [
+    return const ChartTheme(
+      backgroundColor: Color(0xFF1F2937), // Gray 800
+      textColor: Color(0xFFF9FAFB), // Gray 50
+      gridColor: Color(0xFF374151), // Gray 700
+      axisColor: Color(0xFF6B7280), // Gray 500
+      gradientColors: [
         Color(0xFF818CF8), // Indigo 400
         Color(0xFFA78BFA), // Violet 400
         Color(0xFFF472B6), // Pink 400
@@ -199,8 +197,7 @@ class ChartTheme {
         Color(0xFFFBBF24), // Amber 400
       ],
       shadowElevation: 8.0,
-      borderRadius: 16.0,
-      axisLabelStyle: const TextStyle(
+      axisLabelStyle: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w500,
         color: Color(0xFF9CA3AF), // Gray 400

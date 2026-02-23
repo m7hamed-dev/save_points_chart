@@ -71,7 +71,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     );
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeOutCubic,
+      curve: Curves.easeOutQuart,
     );
     _controller.forward();
   }

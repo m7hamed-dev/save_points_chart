@@ -250,20 +250,20 @@ abstract class BaseChartPainter extends CustomPainter {
   
   /// Helper to draw dashed lines
   void _drawDashedLine(Canvas canvas, Offset p1, Offset p2, Paint paint, {double dashWidth = 4, double dashSpace = 4}) {
-    var path = Path();
-    var maxLength = (p2 - p1).distance;
-    var dx = (p2.dx - p1.dx) / maxLength;
-    var dy = (p2.dy - p1.dy) / maxLength;
+    final path = Path();
+    final maxLength = (p2 - p1).distance;
+    final dx = (p2.dx - p1.dx) / maxLength;
+    final dy = (p2.dy - p1.dy) / maxLength;
     var currentDistance = 0.0;
     
     while (currentDistance < maxLength) {
-      var startX = p1.dx + dx * currentDistance;
-      var startY = p1.dy + dy * currentDistance;
+      final startX = p1.dx + dx * currentDistance;
+      final startY = p1.dy + dy * currentDistance;
       
       // Draw dash
-      var endDistance = math.min(currentDistance + dashWidth, maxLength);
-      var endX = p1.dx + dx * endDistance;
-      var endY = p1.dy + dy * endDistance;
+      final endDistance = math.min(currentDistance + dashWidth, maxLength);
+      final endX = p1.dx + dx * endDistance;
+      final endY = p1.dy + dy * endDistance;
       
       path.moveTo(startX, startY);
       path.lineTo(endX, endY);

@@ -73,12 +73,12 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     _controller = AnimationController(
       duration:
           widget.config?.animationDuration ??
-          const Duration(milliseconds: 2200),
+          const Duration(milliseconds: 1500),
       vsync: this,
     );
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeOutCubic,
+      curve: Curves.easeOutQuart,
     );
     _controller.forward();
   }

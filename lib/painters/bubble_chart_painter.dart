@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/models/chart_data.dart';
@@ -47,7 +49,7 @@ class BubbleChartPainter extends BaseChartPainter {
     final rightPadding = theme.padding.right;
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
-    
+
     final chartSize = Size(
       size.width - leftPadding - rightPadding,
       size.height - topPadding - bottomPadding,
@@ -85,8 +87,9 @@ class BubbleChartPainter extends BaseChartPainter {
 
     // Calculate size range
     final sizeRange = maxSize - minSize;
-    final sizeScale =
-        sizeRange > 0 ? (maxBubbleSize - minBubbleSize) / sizeRange : 1.0;
+    final sizeScale = sizeRange > 0
+        ? (maxBubbleSize - minBubbleSize) / sizeRange
+        : 1.0;
 
     // Save canvas state
     canvas.save();
@@ -109,20 +112,32 @@ class BubbleChartPainter extends BaseChartPainter {
       dataSets: dataSets,
     );
 
+    // Calculate total points for staggering
+    int totalPoints = 0;
+    for (final ds in bubbleDataSets) {
+      totalPoints += ds.dataPoints.length;
+    }
+    int globalPointIndex = 0;
+
     // Draw bubbles
-    for (int datasetIndex = 0;
-        datasetIndex < bubbleDataSets.length;
-        datasetIndex++) {
+    for (
+      int datasetIndex = 0;
+      datasetIndex < bubbleDataSets.length;
+      datasetIndex++
+    ) {
       final dataSet = bubbleDataSets[datasetIndex];
       final color = dataSet.color;
 
-      for (int pointIndex = 0;
-          pointIndex < dataSet.dataPoints.length;
-          pointIndex++) {
+      for (
+        int pointIndex = 0;
+        pointIndex < dataSet.dataPoints.length;
+        pointIndex++
+      ) {
         final point = dataSet.dataPoints[pointIndex];
 
         // Validate point data to prevent NaN
         if (!point.x.isFinite || !point.y.isFinite || !point.size.isFinite) {
+          globalPointIndex++;
           continue;
         }
 
@@ -137,22 +152,39 @@ class BubbleChartPainter extends BaseChartPainter {
 
         // Validate canvas point
         if (!canvasPoint.dx.isFinite || !canvasPoint.dy.isFinite) {
+          globalPointIndex++;
           continue;
         }
 
         // Check if this bubble is selected or hovered
-        final isSelected = selectedBubble?.datasetIndex == datasetIndex &&
+        final isSelected =
+            selectedBubble?.datasetIndex == datasetIndex &&
             selectedBubble?.elementIndex == pointIndex;
-        final isHovered = hoveredBubble?.datasetIndex == datasetIndex &&
+        final isHovered =
+            hoveredBubble?.datasetIndex == datasetIndex &&
             hoveredBubble?.elementIndex == pointIndex;
 
-        // Calculate bubble size
+        // Calculate bubble size with staggered animation
         final normalizedSize = sizeRange > 0
             ? minBubbleSize + (point.size - minSize) * sizeScale
             : (minBubbleSize + maxBubbleSize) / 2;
+
+        final bubbleProgress = math.max(
+          0.0,
+          math.min(
+            1.0,
+            (animationProgress -
+                    (globalPointIndex / (totalPoints > 0 ? totalPoints : 1)) *
+                        0.5) /
+                0.5,
+          ),
+        );
+
         final currentSize =
             (isSelected || isHovered ? normalizedSize * 1.2 : normalizedSize) *
-                animationProgress;
+            bubbleProgress;
+
+        globalPointIndex++;
 
         // Validate size before drawing
         if (!currentSize.isFinite || currentSize <= 0) {
@@ -175,17 +207,11 @@ class BubbleChartPainter extends BaseChartPainter {
 
           // Main bubble with gradient
           final gradient = RadialGradient(
-            colors: [
-              currentColor,
-              currentColor.withValues(alpha: 0.5),
-            ],
+            colors: [currentColor, currentColor.withValues(alpha: 0.5)],
           );
           final bubblePaint = Paint()
             ..shader = gradient.createShader(
-              Rect.fromCircle(
-                center: canvasPoint,
-                radius: currentSize,
-              ),
+              Rect.fromCircle(center: canvasPoint, radius: currentSize),
             )
             ..style = PaintingStyle.fill;
 
