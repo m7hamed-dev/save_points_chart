@@ -52,29 +52,30 @@ class DataTestScreen extends StatelessWidget {
   ];
 
   static List<RadarDataSet> get _radarData => [
-        RadarDataSet(
-          color: _color,
-          dataPoints: List.generate(
-            _months.length,
-            (i) => RadarDataPoint(label: _months[i], value: _operations[i].toDouble()),
-          ),
-        ),
-      ];
+    RadarDataSet(
+      color: _color,
+      dataPoints: List.generate(
+        _months.length,
+        (i) =>
+            RadarDataPoint(label: _months[i], value: _operations[i].toDouble()),
+      ),
+    ),
+  ];
 
   static List<BubbleDataSet> get _bubbleData => [
-        BubbleDataSet(
-          color: _color,
-          dataPoints: List.generate(
-            _months.length,
-            (i) => BubbleDataPoint(
-              x: i.toDouble(),
-              y: _operations[i].toDouble(),
-              size: (_operations[i] + 2).toDouble(),
-              label: _months[i],
-            ),
-          ),
+    BubbleDataSet(
+      color: _color,
+      dataPoints: List.generate(
+        _months.length,
+        (i) => BubbleDataPoint(
+          x: i.toDouble(),
+          y: _operations[i].toDouble(),
+          size: (_operations[i] + 2).toDouble(),
+          label: _months[i],
         ),
-      ];
+      ),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -83,123 +84,179 @@ class DataTestScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _section('Line Chart', LineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations',
-          subtitle: 'Oct 2025 – Feb 2026',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Area Chart', AreaChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Area)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Stacked Area Chart', StackedAreaChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Stacked Area)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Bar Chart', BarChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Bar)',
-          onBarTap: _onBarTap(context),
-        )),
-        _section('Stacked Column Chart', StackedColumnChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Stacked Column)',
-          onBarTap: _onBarTap(context),
-        )),
-        _section('Spline Chart', SplineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Spline)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Step Line Chart', StepLineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Step Line)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Sparkline Chart', SparklineChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Operations Trend',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Scatter Chart', ScatterChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Monthly Operations (Scatter)',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Pie Chart (non-zero only)', PieChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Distribution',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Pie Chart (all months)', PieChartWidget(
-          data: _pieData,
-          config: config,
-          title: 'Operations – All Months',
-          subtitle: 'Includes zero-value months',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Donut Chart', DonutChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Donut',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Pyramid Chart', PyramidChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Pyramid',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Funnel Chart', FunnelChartWidget(
-          data: _pieDataNonZero,
-          config: config,
-          title: 'Operations Funnel',
-          onSegmentTap: _onSegmentTap(context),
-        )),
-        _section('Radial Chart', RadialChartWidget(
-          dataSets: _dataSets,
-          config: config,
-          title: 'Operations Radial',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Bubble Chart', BubbleChartWidget(
-          dataSets: _bubbleData,
-          config: config,
-          title: 'Operations Bubble',
-          onBubbleTap: _onBubbleTap(context),
-        )),
-        _section('Radar Chart', RadarChartWidget(
-          dataSets: _radarData,
-          config: config,
-          title: 'Operations Radar',
-          onPointTap: _onPointTap(context),
-        )),
-        _section('Gauge Chart', GaugeChartWidget(
-          value: (_operations.last / _totalOps) * 100,
-          config: config,
-          title: 'Feb 2026 Share',
-          centerLabel: 'Feb',
-          unit: '%',
-          onChartTap: () {
-            // Gauge doesn't use ChartContextMenuHelper as it's not point-based in the same way
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Feb 2026: 12 operations (57.1%)')),
-            );
-          },
-        )),
+        _section(
+          'Line Chart',
+          LineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations',
+            subtitle: 'Oct 2025 – Feb 2026',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Area Chart',
+          AreaChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Area)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Stacked Area Chart',
+          StackedAreaChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Stacked Area)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Bar Chart',
+          BarChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Bar)',
+            onBarTap: _onBarTap(context),
+          ),
+        ),
+        _section(
+          'Stacked Column Chart',
+          StackedColumnChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Stacked Column)',
+            onBarTap: _onBarTap(context),
+          ),
+        ),
+        _section(
+          'Spline Chart',
+          SplineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Spline)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Step Line Chart',
+          StepLineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Step Line)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Sparkline Chart',
+          SparklineChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Operations Trend',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Scatter Chart',
+          ScatterChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Monthly Operations (Scatter)',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Pie Chart (non-zero only)',
+          PieChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Distribution',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Pie Chart (all months)',
+          PieChartWidget(
+            data: _pieData,
+            config: config,
+            title: 'Operations – All Months',
+            subtitle: 'Includes zero-value months',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Donut Chart',
+          DonutChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Donut',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Pyramid Chart',
+          PyramidChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Pyramid',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Funnel Chart',
+          FunnelChartWidget(
+            data: _pieDataNonZero,
+            config: config,
+            title: 'Operations Funnel',
+            onSegmentTap: _onSegmentTap(context),
+          ),
+        ),
+        _section(
+          'Radial Chart',
+          RadialChartWidget(
+            dataSets: _dataSets,
+            config: config,
+            title: 'Operations Radial',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Bubble Chart',
+          BubbleChartWidget(
+            dataSets: _bubbleData,
+            config: config,
+            title: 'Operations Bubble',
+            onBubbleTap: _onBubbleTap(context),
+          ),
+        ),
+        _section(
+          'Radar Chart',
+          RadarChartWidget(
+            dataSets: _radarData,
+            config: config,
+            title: 'Operations Radar',
+            onPointTap: _onPointTap(context),
+          ),
+        ),
+        _section(
+          'Gauge Chart',
+          GaugeChartWidget(
+            value: (_operations.last / _totalOps) * 100,
+            config: config,
+            title: 'Feb 2026 Share',
+            centerLabel: 'Feb',
+            unit: '%',
+            onChartTap: () {
+              // Gauge doesn't use ChartContextMenuHelper as it's not point-based in the same way
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Feb 2026: 12 operations (57.1%)'),
+                ),
+              );
+            },
+          ),
+        ),
         const SizedBox(height: 32),
       ],
     );
@@ -216,7 +273,13 @@ class DataTestScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 8),
               chart,
             ],
@@ -321,7 +384,11 @@ class DataTestScreen extends StatelessWidget {
     };
   }
 
-  void _showDetailsDialog(BuildContext context, {ChartDataPoint? point, PieData? segment}) {
+  void _showDetailsDialog(
+    BuildContext context, {
+    ChartDataPoint? point,
+    PieData? segment,
+  }) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -333,7 +400,8 @@ class DataTestScreen extends StatelessWidget {
             if (point != null) ...[
               Text('Label: ${point.label ?? 'N/A'}'),
               Text('Value: ${point.y.toStringAsFixed(2)}'),
-              if (point is BubbleDataPoint) Text('Size: ${point.size.toStringAsFixed(2)}'),
+              if (point is BubbleDataPoint)
+                Text('Size: ${point.size.toStringAsFixed(2)}'),
             ] else if (segment != null) ...[
               Text('Label: ${segment.label}'),
               Text('Value: ${segment.value.toStringAsFixed(2)}'),

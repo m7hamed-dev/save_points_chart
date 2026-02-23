@@ -272,11 +272,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             index: 15,
           ),
           const Divider(),
-          _buildDrawerItem(
-            icon: Icons.science,
-            title: 'Data Test',
-            index: 16,
-          ),
+          _buildDrawerItem(icon: Icons.science, title: 'Data Test', index: 16),
         ],
       ),
     );
