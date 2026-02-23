@@ -491,7 +491,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               ChartContextMenuHelper.show(
                 context,
                 point: point,
-                segment: PieData(label: 'label', color: Colors.red),
+                segment: const PieData(label: 'label', color: Colors.red),
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
