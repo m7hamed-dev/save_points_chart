@@ -56,6 +56,8 @@ class ScatterChartWidget extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final ChartsConfig? config;
+  final int? xAxisLabelRotation;
+  final int? yAxisLabelRotation;
 
   const ScatterChartWidget({
     super.key,
@@ -76,6 +78,8 @@ class ScatterChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
+    this.xAxisLabelRotation,
+    this.yAxisLabelRotation,
   }) : assert(pointSize > 0, 'Point size must be positive');
 
   @override
@@ -189,8 +193,17 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
+    var effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    if (widget.xAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          xAxisLabelRotation: widget.xAxisLabelRotation);
+    }
+    if (widget.yAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          yAxisLabelRotation: widget.yAxisLabelRotation);
+    }
+
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,

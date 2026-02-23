@@ -47,6 +47,8 @@ class StackedAreaChartWidget extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final ChartsConfig? config;
+  final int? xAxisLabelRotation;
+  final int? yAxisLabelRotation;
 
   const StackedAreaChartWidget({
     super.key,
@@ -66,6 +68,8 @@ class StackedAreaChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
+    this.xAxisLabelRotation,
+    this.yAxisLabelRotation,
   }) : assert(dataSets.length > 1, 'Provide at least two datasets to stack.');
 
   @override
@@ -104,8 +108,17 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
+    var effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    if (widget.xAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          xAxisLabelRotation: widget.xAxisLabelRotation);
+    }
+    if (widget.yAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          yAxisLabelRotation: widget.yAxisLabelRotation);
+    }
+
     final effectiveEmptyWidget = widget.config?.emptyWidget ??
         ChartEmptyState(
           theme: effectiveTheme,

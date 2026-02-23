@@ -142,6 +142,8 @@ class AreaChartWidget extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final ChartsConfig? config;
+  final int? xAxisLabelRotation;
+  final int? yAxisLabelRotation;
 
   /// Creates an area chart widget.
   ///
@@ -184,6 +186,8 @@ class AreaChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
+    this.xAxisLabelRotation,
+    this.yAxisLabelRotation,
   });
 
   @override
@@ -222,8 +226,17 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
+    var effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    if (widget.xAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          xAxisLabelRotation: widget.xAxisLabelRotation);
+    }
+    if (widget.yAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          yAxisLabelRotation: widget.yAxisLabelRotation);
+    }
+
     final effectiveEmptyWidget =
         widget.config?.emptyWidget ??
         ChartEmptyState(

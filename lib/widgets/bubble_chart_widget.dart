@@ -85,6 +85,8 @@ class BubbleChartWidget extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final ChartsConfig? config;
+  final int? xAxisLabelRotation;
+  final int? yAxisLabelRotation;
 
   /// Creates a bubble chart widget.
   ///
@@ -134,6 +136,8 @@ class BubbleChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
+    this.xAxisLabelRotation,
+    this.yAxisLabelRotation,
   }) : assert(minBubbleSize > 0, 'Min bubble size must be positive'),
        assert(minBubbleSize.isFinite, 'Min bubble size must be finite'),
        assert(maxBubbleSize > minBubbleSize, 'Max must be greater than min'),
@@ -267,8 +271,17 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
+    var effectiveTheme =
         widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    if (widget.xAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          xAxisLabelRotation: widget.xAxisLabelRotation);
+    }
+    if (widget.yAxisLabelRotation != null) {
+      effectiveTheme = effectiveTheme.copyWith(
+          yAxisLabelRotation: widget.yAxisLabelRotation);
+    }
+
     final effectiveEmptyWidget =
         widget.config?.emptyWidget ??
         ChartEmptyState(
