@@ -256,38 +256,49 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         final value = item.value;
         final percentage = ((value / total) * 100).toStringAsFixed(1);
 
-        return ListTile(
-          dense: true,
-          leading: Container(
-            width: item.circleSize,
-            height: item.circleSize,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.5),
-                width: 2.0,
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            children: [
+              Container(
+                width: item.circleSize,
+                height: item.circleSize,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    width: 2.0,
+                  ),
+                ),
               ),
-            ),
-          ),
-          title: ShowEmptyOrWidget(
-            showWidget: item.showLabel,
-            widget: Text(
-              label,
-              style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          subtitle: ShowEmptyOrWidget(
-            showWidget: item.showValue,
-            widget: Text(
-              '$percentage%',
-              style: TextStyle(
-                color: effectiveTheme.textColor.withValues(alpha: 0.7),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+              const SizedBox(width: 8),
+              Expanded(
+                child: ShowEmptyOrWidget(
+                  showWidget: item.showLabel,
+                  widget: Text(
+                    label,
+                    style: TextStyle(
+                      color: effectiveTheme.textColor,
+                      fontSize: 12,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              ShowEmptyOrWidget(
+                showWidget: item.showValue,
+                widget: Text(
+                  '$percentage%',
+                  style: TextStyle(
+                    color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       }).toList(),
@@ -306,9 +317,9 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
           )
         : Row(
             children: [
-              Expanded(flex: 2, child: chart),
+              Expanded(flex: 3, child: chart),
               if (widget.showLegend && effectiveTheme.showLegend)
-                Expanded(child: legend),
+                Expanded(flex: 2, child: legend),
             ],
           );
 

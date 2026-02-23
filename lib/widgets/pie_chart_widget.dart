@@ -10,6 +10,7 @@ import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
+import 'package:save_points_chart/widgets/show_empty_or_widget.dart';
 
 /// Modern pie chart with gradient sections and animations
 class PieChartWidget extends StatefulWidget {
@@ -159,9 +160,9 @@ class _PieChartWidgetState extends State<PieChartWidget>
           )
         : Row(
             children: [
-              Expanded(flex: 2, child: _pieChart(effectiveTheme)),
+              Expanded(flex: 3, child: _pieChart(effectiveTheme)),
               if (widget.showLegend && effectiveTheme.showLegend)
-                Expanded(child: _data(effectiveTheme, total)),
+                Expanded(flex: 2, child: _data(effectiveTheme, total)),
             ],
           );
 
@@ -208,21 +209,27 @@ class _PieChartWidgetState extends State<PieChartWidget>
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  item.label,
-                  style: TextStyle(
-                    color: effectiveTheme.textColor,
-                    fontSize: 12,
+                child: ShowEmptyOrWidget(
+                  showWidget: item.showLabel,
+                  widget: Text(
+                    item.label,
+                    style: TextStyle(
+                      color: effectiveTheme.textColor,
+                      fontSize: 12,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                '${((item.value / total) * 100).toStringAsFixed(1)}%',
-                style: TextStyle(
-                  color: effectiveTheme.textColor.withValues(alpha: 0.7),
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+              ShowEmptyOrWidget(
+                showWidget: item.showValue,
+                widget: Text(
+                  '${((item.value / total) * 100).toStringAsFixed(1)}%',
+                  style: TextStyle(
+                    color: effectiveTheme.textColor.withValues(alpha: 0.7),
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
