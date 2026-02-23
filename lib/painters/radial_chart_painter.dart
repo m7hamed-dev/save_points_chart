@@ -36,7 +36,9 @@ class RadialChartPainter extends BaseChartPainter {
     }
 
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) / 2 - 40;
+    // Use theme padding to determine radius
+    final padding = math.max(theme.padding.top, theme.padding.bottom);
+    final radius = math.min(size.width, size.height) / 2 - padding;
 
     // Validate radius
     if (!radius.isFinite || radius <= 0) {

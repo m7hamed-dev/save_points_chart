@@ -101,11 +101,12 @@ class BarChartPainter extends BaseChartPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Professional padding
-    final leftPadding = 50.0;
-    final rightPadding = 20.0;
-    final topPadding = 20.0;
-    final bottomPadding = 40.0;
+    // Use theme padding
+    final leftPadding = theme.padding.left;
+    final rightPadding = theme.padding.right;
+    final topPadding = theme.padding.top;
+    final bottomPadding = theme.padding.bottom;
+    
     final chartSize = Size(
       size.width - leftPadding - rightPadding,
       size.height - topPadding - bottomPadding,

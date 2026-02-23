@@ -30,15 +30,17 @@ class StackedAreaChartPainter extends BaseChartPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const leftPadding = 50.0;
-    const rightPadding = 20.0;
-    const topPadding = 20.0;
-    const bottomPadding = 40.0;
+    // Use theme padding
+    final leftPadding = theme.padding.left;
+    final rightPadding = theme.padding.right;
+    final topPadding = theme.padding.top;
+    final bottomPadding = theme.padding.bottom;
+    
     final chartSize = Size(
       size.width - leftPadding - rightPadding,
       size.height - topPadding - bottomPadding,
     );
-    final chartOffset = const Offset(leftPadding, topPadding);
+    final chartOffset = Offset(leftPadding, topPadding);
 
     if (dataSets.isEmpty) return;
 

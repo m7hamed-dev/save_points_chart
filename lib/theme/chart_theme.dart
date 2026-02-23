@@ -108,6 +108,15 @@ class ChartTheme {
   /// - [LabelRotation] for common rotation constants
   final int yAxisLabelRotation;
 
+  /// Text style for axis labels.
+  final TextStyle? axisLabelStyle;
+
+  /// Text style for tooltips.
+  final TextStyle? tooltipStyle;
+
+  /// Padding around the chart content.
+  final EdgeInsets padding;
+
   const ChartTheme({
     required this.backgroundColor,
     required this.textColor,
@@ -122,6 +131,9 @@ class ChartTheme {
     this.showTooltip = true,
     this.xAxisLabelRotation = 0,
     this.yAxisLabelRotation = 0,
+    this.axisLabelStyle,
+    this.tooltipStyle,
+    this.padding = const EdgeInsets.fromLTRB(40, 20, 20, 40),
   });
 
   /// Create light theme with enhanced colors.
@@ -138,20 +150,25 @@ class ChartTheme {
   /// final theme = ChartTheme.light();
   /// ```
   factory ChartTheme.light() {
-    return const ChartTheme(
-      backgroundColor: Color(0xFFFFFFFF),
-      textColor: Color(0xFF111827),
-      gridColor: Color(0xFFE5E7EB),
-      axisColor: Color(0xFF6B7280),
-      gradientColors: [
-        Color(0xFF6366F1), // Indigo
-        Color(0xFF8B5CF6), // Purple
-        Color(0xFFEC4899), // Pink
-        Color(0xFF10B981), // Emerald
-        Color(0xFFF59E0B), // Amber
+    return ChartTheme(
+      backgroundColor: const Color(0xFFFFFFFF),
+      textColor: const Color(0xFF1F2937), // Gray 900
+      gridColor: const Color(0xFFE5E7EB), // Gray 200
+      axisColor: const Color(0xFF9CA3AF), // Gray 400
+      gradientColors: const [
+        Color(0xFF6366F1), // Indigo 500
+        Color(0xFF8B5CF6), // Violet 500
+        Color(0xFFEC4899), // Pink 500
+        Color(0xFF10B981), // Emerald 500
+        Color(0xFFF59E0B), // Amber 500
       ],
-      shadowElevation: 8.0,
-      borderRadius: 24.0,
+      shadowElevation: 4.0,
+      borderRadius: 16.0,
+      axisLabelStyle: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: Color(0xFF6B7280), // Gray 500
+      ),
     );
   }
 
@@ -169,20 +186,25 @@ class ChartTheme {
   /// final theme = ChartTheme.dark();
   /// ```
   factory ChartTheme.dark() {
-    return const ChartTheme(
-      backgroundColor: Color(0xFF1F2937),
-      textColor: Color(0xFFF9FAFB),
-      gridColor: Color(0xFF374151),
-      axisColor: Color(0xFF9CA3AF),
-      gradientColors: [
-        Color(0xFF818CF8), // Light Indigo
-        Color(0xFFA78BFA), // Light Purple
-        Color(0xFFF472B6), // Light Pink
-        Color(0xFF34D399), // Light Emerald
-        Color(0xFFFBBF24), // Light Amber
+    return ChartTheme(
+      backgroundColor: const Color(0xFF1F2937), // Gray 800
+      textColor: const Color(0xFFF9FAFB), // Gray 50
+      gridColor: const Color(0xFF374151), // Gray 700
+      axisColor: const Color(0xFF6B7280), // Gray 500
+      gradientColors: const [
+        Color(0xFF818CF8), // Indigo 400
+        Color(0xFFA78BFA), // Violet 400
+        Color(0xFFF472B6), // Pink 400
+        Color(0xFF34D399), // Emerald 400
+        Color(0xFFFBBF24), // Amber 400
       ],
-      shadowElevation: 16.0,
-      borderRadius: 24.0,
+      shadowElevation: 8.0,
+      borderRadius: 16.0,
+      axisLabelStyle: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: Color(0xFF9CA3AF), // Gray 400
+      ),
     );
   }
 
@@ -238,6 +260,9 @@ class ChartTheme {
     bool? showTooltip,
     int? xAxisLabelRotation,
     int? yAxisLabelRotation,
+    TextStyle? axisLabelStyle,
+    TextStyle? tooltipStyle,
+    EdgeInsets? padding,
   }) {
     return ChartTheme(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -253,6 +278,9 @@ class ChartTheme {
       showTooltip: showTooltip ?? this.showTooltip,
       xAxisLabelRotation: xAxisLabelRotation ?? this.xAxisLabelRotation,
       yAxisLabelRotation: yAxisLabelRotation ?? this.yAxisLabelRotation,
+      axisLabelStyle: axisLabelStyle ?? this.axisLabelStyle,
+      tooltipStyle: tooltipStyle ?? this.tooltipStyle,
+      padding: padding ?? this.padding,
     );
   }
 }

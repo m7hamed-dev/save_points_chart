@@ -214,41 +214,64 @@ abstract class BaseChartPainter extends CustomPainter {
   ) {
     if (!showGrid || !theme.showGrid) return;
 
-    // Create paint with enhanced styling
+    // Create paint with enhanced styling (dashed/dotted look)
     final gridPaint = Paint()
-      ..color = theme.gridColor.withValues(alpha: 0.4)
-      ..strokeWidth = 0.8
+      ..color = theme.gridColor.withValues(alpha: 0.5)
+      ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
     // Horizontal grid lines only (more professional)
     // Pre-calculate y positions and batch draw
     const horizontalLines = 5;
     final lineSpacing = size.height / horizontalLines;
-    final path = Path();
-
+    
+    // Draw dashed horizontal lines
     for (int i = 1; i < horizontalLines; i++) {
       final y = lineSpacing * i;
-      path.moveTo(0, y);
-      path.lineTo(size.width, y);
+      _drawDashedLine(canvas, Offset(0, y), Offset(size.width, y), gridPaint);
     }
-
-    canvas.drawPath(path, gridPaint);
     
-    // Add subtle vertical grid lines for better readability
+    // Vertical grid lines (very subtle, solid)
     final verticalLines = 6;
     final verticalSpacing = size.width / verticalLines;
-    final verticalPath = Path();
     final verticalPaint = Paint()
       ..color = theme.gridColor.withValues(alpha: 0.2)
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
     
+    final verticalPath = Path();
     for (int i = 1; i < verticalLines; i++) {
       final x = verticalSpacing * i;
       verticalPath.moveTo(x, 0);
       verticalPath.lineTo(x, size.height);
     }
     canvas.drawPath(verticalPath, verticalPaint);
+  }
+  
+  /// Helper to draw dashed lines
+  void _drawDashedLine(Canvas canvas, Offset p1, Offset p2, Paint paint, {double dashWidth = 4, double dashSpace = 4}) {
+    var path = Path();
+    var maxLength = (p2 - p1).distance;
+    var dx = (p2.dx - p1.dx) / maxLength;
+    var dy = (p2.dy - p1.dy) / maxLength;
+    var currentDistance = 0.0;
+    
+    while (currentDistance < maxLength) {
+      var startX = p1.dx + dx * currentDistance;
+      var startY = p1.dy + dy * currentDistance;
+      
+      // Draw dash
+      var endDistance = math.min(currentDistance + dashWidth, maxLength);
+      var endX = p1.dx + dx * endDistance;
+      var endY = p1.dy + dy * endDistance;
+      
+      path.moveTo(startX, startY);
+      path.lineTo(endX, endY);
+      
+      currentDistance += dashWidth + dashSpace;
+    }
+    
+    canvas.drawPath(path, paint);
   }
 
   /// Draw axis lines.
@@ -280,32 +303,29 @@ abstract class BaseChartPainter extends CustomPainter {
 
     // Enhanced axis styling with better visibility
     final axisPaint = Paint()
-      ..color = theme.axisColor.withValues(alpha: 0.75)
-      ..strokeWidth = 1.5
+      ..color = theme.axisColor.withValues(alpha: 0.5)
+      ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    // X-axis (bottom) - enhanced with subtle shadow effect
+    // X-axis (bottom) - Clean solid line
     canvas.drawLine(
       Offset(0, size.height),
       Offset(size.width, size.height),
       axisPaint,
     );
 
-    // Y-axis (left) - enhanced
-    canvas.drawLine(const Offset(0, 0), Offset(0, size.height), axisPaint);
+    // Y-axis (left) - Clean solid line
+    // canvas.drawLine(const Offset(0, 0), Offset(0, size.height), axisPaint);
     
-    // Add subtle axis highlights for depth
-    final highlightPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.3)
-      ..strokeWidth = 0.5
-      ..style = PaintingStyle.stroke;
-    
-    canvas.drawLine(
-      Offset(0, size.height - 0.5),
-      Offset(size.width, size.height - 0.5),
-      highlightPaint,
-    );
+    // Only draw ticks on Y axis for a cleaner look
+    const yTicks = 5;
+    final ySpacing = size.height / yTicks;
+    for (int i = 0; i <= yTicks; i++) {
+      final y = size.height - (ySpacing * i);
+      // Small tick mark
+      canvas.drawLine(Offset(-4, y), Offset(0, y), axisPaint);
+    }
   }
 
   /// Draw axis labels (optimized with text style caching).
@@ -353,8 +373,8 @@ abstract class BaseChartPainter extends CustomPainter {
     // Validate ranges are valid and non-zero
     if (!xRange.isFinite || !yRange.isFinite) return;
 
-    // Cache text style
-    final textStyle = TextStyle(
+    // Use theme text style if available
+    final textStyle = theme.axisLabelStyle ?? TextStyle(
       color: theme.axisColor.withValues(alpha: 0.8),
       fontSize: 11,
       fontWeight: FontWeight.w500,
@@ -405,7 +425,7 @@ abstract class BaseChartPainter extends CustomPainter {
           _paintRotatedLabel(
             canvas,
             textPainter,
-            Offset(x, size.height + 8),
+            Offset(x, size.height + 12), // Increased padding
             theme.xAxisLabelRotation,
           );
         }
@@ -434,7 +454,7 @@ abstract class BaseChartPainter extends CustomPainter {
           _paintRotatedLabel(
             canvas,
             textPainter,
-            Offset(x, size.height + 8),
+            Offset(x, size.height + 12), // Increased padding
             theme.xAxisLabelRotation,
           );
         }
@@ -465,7 +485,7 @@ abstract class BaseChartPainter extends CustomPainter {
 
         // Position label to the left of the Y-axis, centered vertically
         // Ensure we don't go too far left (assuming standard padding)
-        final labelX = -textPainter.width - 8;
+        final labelX = -textPainter.width - 12; // Increased padding
         
         _paintRotatedLabel(
           canvas,
