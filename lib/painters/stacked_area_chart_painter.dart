@@ -35,7 +35,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
     final rightPadding = theme.padding.right;
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
-    
+
     final chartSize = Size(
       size.width - leftPadding - rightPadding,
       size.height - topPadding - bottomPadding,
@@ -85,7 +85,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
     final Map<Color, List<ChartDataPoint>> seriesMap = {};
     // Also track the order of colors to maintain consistent stacking
     final List<Color> colorOrder = [];
-    
+
     for (final dataSet in dataSets) {
       if (!seriesMap.containsKey(dataSet.color)) {
         seriesMap[dataSet.color] = [];
@@ -107,18 +107,14 @@ class StackedAreaChartPainter extends BaseChartPainter {
     final sortedX = xValues.toList()..sort();
 
     // Map to store the "top" line of the previous layer at each X
-    final Map<double, double> previousLayerY = {
-      for (var x in sortedX) x: 0.0
-    };
+    final Map<double, double> previousLayerY = {for (var x in sortedX) x: 0.0};
 
     for (int i = 0; i < colorOrder.length; i++) {
       final color = colorOrder[i];
       final points = seriesMap[color]!;
-      
+
       // Create a map for quick lookup of current series Y at X
-      final Map<double, double> currentYMap = {
-        for (var p in points) p.x: p.y
-      };
+      final Map<double, double> currentYMap = {for (var p in points) p.x: p.y};
 
       // Construct points for the current layer (top line)
       // We iterate sortedX to ensure we have points at all X positions
@@ -129,17 +125,29 @@ class StackedAreaChartPainter extends BaseChartPainter {
         if (currentYMap.containsKey(x)) {
           final yTop = currentYMap[x]!;
           final yBottom = previousLayerY[x]!;
-          
-          topPoints.add(pointToCanvas(
-            ChartDataPoint(x: x, y: yTop), 
-            chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted
-          ));
-          
-          bottomPoints.add(pointToCanvas(
-            ChartDataPoint(x: x, y: yBottom), 
-            chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted
-          ));
-          
+
+          topPoints.add(
+            pointToCanvas(
+              ChartDataPoint(x: x, y: yTop),
+              chartSize,
+              minX - xPadding,
+              maxX + xPadding,
+              minY,
+              maxYAdjusted,
+            ),
+          );
+
+          bottomPoints.add(
+            pointToCanvas(
+              ChartDataPoint(x: x, y: yBottom),
+              chartSize,
+              minX - xPadding,
+              maxX + xPadding,
+              minY,
+              maxYAdjusted,
+            ),
+          );
+
           // Update previous layer for next iteration
           previousLayerY[x] = yTop;
         }
@@ -149,41 +157,47 @@ class StackedAreaChartPainter extends BaseChartPainter {
 
       final totalPoints = topPoints.length;
       final animatedPoints = (totalPoints * animationProgress).ceil();
-      
+
       // If animation is in progress, we only draw a subset of points
       // But for area fill, we need to be careful.
       // Easiest is to clip the path or just draw subset.
-      
-      final visibleTopPoints = topPoints.sublist(0, math.min(animatedPoints, topPoints.length));
-      final visibleBottomPoints = bottomPoints.sublist(0, math.min(animatedPoints, bottomPoints.length));
-      
+
+      final visibleTopPoints = topPoints.sublist(
+        0,
+        math.min(animatedPoints, topPoints.length),
+      );
+      final visibleBottomPoints = bottomPoints.sublist(
+        0,
+        math.min(animatedPoints, bottomPoints.length),
+      );
+
       if (visibleTopPoints.isEmpty) continue;
 
       // Draw the area
       final path = Path();
       path.moveTo(visibleTopPoints.first.dx, visibleTopPoints.first.dy);
-      
+
       // Draw top curve
       for (int j = 1; j < visibleTopPoints.length; j++) {
         final p0 = visibleTopPoints[j - 1];
         final p1 = visibleTopPoints[j];
         final dx = p1.dx - p0.dx;
-        
+
         final cp1 = Offset(p0.dx + dx * curveSmoothness, p0.dy);
         final cp2 = Offset(p1.dx - dx * curveSmoothness, p1.dy);
-        
+
         path.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, p1.dx, p1.dy);
       }
-      
+
       // Draw bottom curve (backwards)
       for (int j = visibleBottomPoints.length - 1; j >= 0; j--) {
         final p = visibleBottomPoints[j];
         if (j == visibleBottomPoints.length - 1) {
           path.lineTo(p.dx, p.dy);
         } else {
-          final pNext = visibleBottomPoints[j + 1]; // Previous in iteration
-          final dx = pNext.dx - p.dx; // Negative
-          
+          // final pNext = visibleBottomPoints[j + 1]; // Previous in iteration
+          // final dx = pNext.dx - p.dx; // Negative
+
           // Control points for backward curve (optional, lineTo is safer for bottom)
           // Using lineTo ensures no weird overlaps with previous layer's top curve
           path.lineTo(p.dx, p.dy);
@@ -196,7 +210,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
         ..color = color.withValues(alpha: 0.6)
         ..style = PaintingStyle.fill;
       canvas.drawPath(path, paint);
-      
+
       // Draw stroke
       final strokePaint = Paint()
         ..color = color
@@ -204,7 +218,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round;
-      
+
       // Create path for stroke (only top line)
       final strokePath = Path();
       strokePath.moveTo(visibleTopPoints.first.dx, visibleTopPoints.first.dy);
@@ -221,40 +235,36 @@ class StackedAreaChartPainter extends BaseChartPainter {
       // Draw points
       for (int j = 0; j < visibleTopPoints.length; j++) {
         final point = visibleTopPoints[j];
-        
+
         // Find original point for interaction check
         // We need to find the dataset index for this point
         // Since we grouped by color, we can iterate original dataSets to find match
         // This is slow but accurate
         int datasetIndex = -1;
-        int elementIndex = -1;
-        
+
         // Find matching point in original data
         // Note: xValues are doubles, equality check might be tricky, use epsilon
         final xVal = sortedX[j];
-        for(int d=0; d<dataSets.length; d++) {
-          if (dataSets[d].color == color && (dataSets[d].dataPoint.x - xVal).abs() < 0.0001) {
+        for (int d = 0; d < dataSets.length; d++) {
+          if (dataSets[d].color == color &&
+              (dataSets[d].dataPoint.x - xVal).abs() < 0.0001) {
             datasetIndex = d;
-            // elementIndex is usually index within a series, but here each point is a dataset?
-            // The interaction model passes pointIndex. 
-            // In other charts, pointIndex is index within the dataset's points list.
-            // But here ChartDataSet has 1 point.
-            // So elementIndex is likely 0.
-            elementIndex = 0; 
             break;
           }
         }
 
-        final isSelected = selectedPoint != null &&
+        final isSelected =
+            selectedPoint != null &&
             selectedPoint!.isHit &&
             selectedPoint!.datasetIndex == datasetIndex;
-            
-        final isHovered = hoveredPoint != null &&
+
+        final isHovered =
+            hoveredPoint != null &&
             hoveredPoint!.isHit &&
             hoveredPoint!.datasetIndex == datasetIndex;
 
         final radius = isSelected ? 6.0 : (isHovered ? 5.0 : 4.0);
-        
+
         final pointPaint = Paint()
           ..color = color
           ..style = PaintingStyle.fill;
