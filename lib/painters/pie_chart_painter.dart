@@ -78,12 +78,20 @@ class PieChartPainter extends CustomPainter {
           selectedSegment!.isHit &&
           selectedSegment!.elementIndex == index;
 
-      // Draw segment with professional gradient (brighter if selected)
-      final rect = Rect.fromCircle(center: center, radius: radius);
+      // Calculate offset for selected segment (explode effect)
       final midAngle = startAngle + sweepAngle / 2;
+      final offset = isSelected ? 12.0 : 0.0;
+      
+      final effectiveCenter = Offset(
+        center.dx + math.cos(midAngle) * offset,
+        center.dy + math.sin(midAngle) * offset,
+      );
+
+      // Draw segment with professional gradient (brighter if selected)
+      final rect = Rect.fromCircle(center: effectiveCenter, radius: radius);
       final gradientCenter = Offset(
-        center.dx + math.cos(midAngle) * (radius * 0.3),
-        center.dy + math.sin(midAngle) * (radius * 0.3),
+        effectiveCenter.dx + math.cos(midAngle) * (radius * 0.3),
+        effectiveCenter.dy + math.sin(midAngle) * (radius * 0.3),
       );
 
       // Enhanced gradient with better depth and highlights
@@ -100,8 +108,8 @@ class PieChartPainter extends CustomPainter {
       final paint = Paint()
         ..shader = RadialGradient(
           center: Alignment(
-            (gradientCenter.dx - center.dx) / radius,
-            (gradientCenter.dy - center.dy) / radius,
+            (gradientCenter.dx - effectiveCenter.dx) / radius,
+            (gradientCenter.dy - effectiveCenter.dy) / radius,
           ),
           radius: 0.9,
           colors: [
@@ -123,22 +131,22 @@ class PieChartPainter extends CustomPainter {
       if (centerSpaceRadius > 0) {
         // Donut chart
         final outerPath = Path()
-          ..moveTo(center.dx, center.dy)
+          ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
           ..arcTo(rect, startAngle, animatedSweepAngle, false)
-          ..lineTo(center.dx, center.dy)
+          ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
           ..close();
 
         final innerRect =
-            Rect.fromCircle(center: center, radius: centerSpaceRadius);
+            Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
         final innerPath = Path()
-          ..moveTo(center.dx, center.dy)
+          ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
           ..arcTo(
             innerRect,
             startAngle + animatedSweepAngle,
             -animatedSweepAngle,
             false,
           )
-          ..lineTo(center.dx, center.dy)
+          ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
           ..close();
 
         final combinedPath = Path.combine(
@@ -174,13 +182,13 @@ class PieChartPainter extends CustomPainter {
           final borderPaint = Paint()
             ..color = Colors.white
             ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth + 3;
+            ..strokeWidth = borderWidth + 1; // Slightly thinner border for exploded view
           canvas.drawPath(combinedPath, borderPaint);
         }
       } else {
         // Pie chart - draw shadow first
         final shadowRect = Rect.fromCircle(
-          center: Offset(center.dx + 2, center.dy + 2),
+          center: Offset(effectiveCenter.dx + 2, effectiveCenter.dy + 2),
           radius: radius,
         );
         canvas.drawArc(
@@ -225,7 +233,7 @@ class PieChartPainter extends CustomPainter {
           final borderPaint = Paint()
             ..color = Colors.white
             ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth + 3;
+            ..strokeWidth = borderWidth + 1; // Slightly thinner border for exploded view
           canvas.drawArc(
             rect,
             startAngle,
@@ -242,8 +250,10 @@ class PieChartPainter extends CustomPainter {
         final labelRadius = centerSpaceRadius > 0
             ? (radius + centerSpaceRadius) / 2
             : radius * 0.7;
-        final labelX = center.dx + math.cos(labelAngle) * labelRadius;
-        final labelY = center.dy + math.sin(labelAngle) * labelRadius;
+        
+        // Adjust label position based on effective center
+        final labelX = effectiveCenter.dx + math.cos(labelAngle) * labelRadius;
+        final labelY = effectiveCenter.dy + math.sin(labelAngle) * labelRadius;
 
         final percentage = ((item.value / total) * 100).toStringAsFixed(1);
 

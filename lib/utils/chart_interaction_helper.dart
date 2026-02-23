@@ -377,7 +377,6 @@ class ChartInteractionHelper {
     // Pre-calculate constants
     const startAngleOffset = -math.pi / 2;
     const twoPi = 2 * math.pi;
-    const piOver2 = math.pi / 2;
 
     double startAngle = startAngleOffset;
 
@@ -385,8 +384,8 @@ class ChartInteractionHelper {
     final dx = tapPosition.dx - center.dx;
     final dy = tapPosition.dy - center.dy;
     final tapAngle = math.atan2(dy, dx);
-    // Normalize to 0-2π range starting from top
-    final normalizedAngle = (tapAngle + piOver2 + twoPi) % twoPi;
+    // Normalize to 0-2π range
+    final normalizedAngle = (tapAngle + twoPi) % twoPi;
 
     // Pre-calculate value-to-angle conversion factor
     final valueToAngle = twoPi / total;

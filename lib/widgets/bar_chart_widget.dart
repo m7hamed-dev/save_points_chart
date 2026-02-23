@@ -71,6 +71,85 @@ class _BarChartWidgetState extends State<BarChartWidget>
   // Cache bounds to avoid recalculation
   Map<String, double>? _cachedBounds;
   List<ChartDataSet>? _cachedDataSets;
+  
+  // Cache grouped data for painter optimization
+  Map<double, List<ChartDataSet>>? _groupedData;
+  List<double>? _sortedXValues;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    _controller.forward();
+    _updateGroupedData();
+  }
+
+  @override
+  void didUpdateWidget(BarChartWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.dataSets != oldWidget.dataSets || 
+        widget.isGrouped != oldWidget.isGrouped) {
+      _updateGroupedData();
+      // Clear bounds cache if data changed
+      if (widget.dataSets != oldWidget.dataSets) {
+        _cachedBounds = null;
+        _cachedDataSets = null;
+      }
+    }
+  }
+
+  void _updateGroupedData() {
+    if (!widget.isGrouped) {
+      _groupedData = null;
+      _sortedXValues = null;
+      return;
+    }
+
+    final Map<double, List<ChartDataSet>> groupedByX = {};
+    for (final dataSet in widget.dataSets) {
+      final x = dataSet.dataPoint.x;
+      groupedByX.putIfAbsent(x, () => []).add(dataSet);
+    }
+    
+    _groupedData = groupedByX;
+    _sortedXValues = groupedByX.keys.toList()..sort();
+  }
+
+  Map<String, double> _getOrCalculateBounds() {
+    if (_cachedBounds != null &&
+        _cachedDataSets != null &&
+        _cachedDataSets == widget.dataSets) {
+      return _cachedBounds!;
+    }
+
+    double minX = double.infinity;
+    double maxX = double.negativeInfinity;
+    double maxY = double.negativeInfinity;
+
+    for (final dataSet in widget.dataSets) {
+      final point = dataSet.dataPoint;
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
+    }
+
+    final bounds = {
+      'minX': minX,
+      'maxX': maxX,
+      'maxY': maxY,
+    };
+    
+    _cachedBounds = bounds;
+    _cachedDataSets = List.from(widget.dataSets);
+    return bounds;
+  }
 
   /// Handle mouse hover events
   void _handleHover(Offset position, BoxConstraints constraints) {
@@ -85,32 +164,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
 
     if (widget.dataSets.isEmpty) return;
 
-    // Use cached bounds if available
-    Map<String, double> bounds;
-    if (_cachedBounds != null &&
-        _cachedDataSets != null &&
-        _cachedDataSets == widget.dataSets) {
-      bounds = _cachedBounds!;
-    } else {
-      double minX = double.infinity;
-      double maxX = double.negativeInfinity;
-      double maxY = double.negativeInfinity;
-
-      for (final dataSet in widget.dataSets) {
-        final point = dataSet.dataPoint;
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y > maxY) maxY = point.y;
-      }
-
-      bounds = {
-        'minX': minX,
-        'maxX': maxX,
-        'maxY': maxY,
-      };
-      _cachedBounds = bounds;
-      _cachedDataSets = List.from(widget.dataSets);
-    }
+    final bounds = _getOrCalculateBounds();
 
     final chartHeight = widget.height ?? 240.0;
     final chartSize = Size(
@@ -149,20 +203,6 @@ class _BarChartWidgetState extends State<BarChartWidget>
         widget.onBarHover?.call(null, null, null);
       }
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    );
-    _controller.forward();
   }
 
   @override
@@ -258,32 +298,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                               // Calculate chart bounds (with caching)
                               if (widget.dataSets.isEmpty) return;
 
-                              // Use cached bounds if available
-                              Map<String, double> bounds;
-                              if (_cachedBounds != null &&
-                                  _cachedDataSets != null &&
-                                  _cachedDataSets == widget.dataSets) {
-                                bounds = _cachedBounds!;
-                              } else {
-                                double minX = double.infinity;
-                                double maxX = double.negativeInfinity;
-                                double maxY = double.negativeInfinity;
-
-                                for (final dataSet in widget.dataSets) {
-                                  final point = dataSet.dataPoint;
-                                  if (point.x < minX) minX = point.x;
-                                  if (point.x > maxX) maxX = point.x;
-                                  if (point.y > maxY) maxY = point.y;
-                                }
-
-                                bounds = {
-                                  'minX': minX,
-                                  'maxX': maxX,
-                                  'maxY': maxY,
-                                };
-                                _cachedBounds = bounds;
-                                _cachedDataSets = List.from(widget.dataSets);
-                              }
+                              final bounds = _getOrCalculateBounds();
 
                               final chartHeight = widget.height ?? 240.0;
                               final chartSize = Size(
@@ -355,6 +370,8 @@ class _BarChartWidgetState extends State<BarChartWidget>
                             animationProgress: _animation.value,
                             selectedBar: _selectedBar,
                             hoveredBar: _hoveredBar,
+                            groupedData: _groupedData,
+                            sortedXValues: _sortedXValues,
                           ),
                         ),
                       ),

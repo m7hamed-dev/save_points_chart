@@ -463,10 +463,14 @@ abstract class BaseChartPainter extends CustomPainter {
         );
         textPainter.layout();
 
+        // Position label to the left of the Y-axis, centered vertically
+        // Ensure we don't go too far left (assuming standard padding)
+        final labelX = -textPainter.width - 8;
+        
         _paintRotatedLabel(
           canvas,
           textPainter,
-          Offset(-textPainter.width - 8, y),
+          Offset(labelX, y),
           theme.yAxisLabelRotation,
         );
       }

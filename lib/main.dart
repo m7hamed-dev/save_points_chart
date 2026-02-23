@@ -25,6 +25,30 @@ class _MaterialAppWithTheme extends StatefulWidget {
 }
 
 class _MaterialAppWithThemeState extends State<_MaterialAppWithTheme> {
+  // Define themes here to keep build method clean
+  ThemeData _buildTheme(Brightness brightness) {
+    // Use slightly different seed colors for light/dark to optimize contrast
+    final seedColor = brightness == Brightness.light 
+        ? const Color(0xFF6366F1) 
+        : const Color(0xFF818CF8);
+        
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: brightness,
+    );
+    
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      cardTheme: CardThemeData(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use Builder to ensure we get the correct context for ThemeProvider
@@ -38,31 +62,8 @@ class _MaterialAppWithThemeState extends State<_MaterialAppWithTheme> {
           key: ValueKey(themeProvider.themeMode),
           title: 'Modern Charts',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF6366F1),
-            ),
-            cardTheme: CardThemeData(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF818CF8),
-              brightness: Brightness.dark,
-            ),
-            cardTheme: CardThemeData(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
+          theme: _buildTheme(Brightness.light),
+          darkTheme: _buildTheme(Brightness.dark),
           themeMode: themeProvider.themeMode,
           home: const ChartDemoScreen(),
         );
