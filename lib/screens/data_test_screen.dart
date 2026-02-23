@@ -106,13 +106,13 @@ class DataTestScreen extends StatelessWidget {
           dataSets: _dataSets,
           config: config,
           title: 'Monthly Operations (Bar)',
-          onBarTap: _onPointTap(context),
+          onBarTap: _onBarTap(context),
         )),
         _section('Stacked Column Chart', StackedColumnChartWidget(
           dataSets: _dataSets,
           config: config,
           title: 'Monthly Operations (Stacked Column)',
-          onBarTap: _onPointTap(context),
+          onBarTap: _onBarTap(context),
         )),
         _section('Spline Chart', SplineChartWidget(
           dataSets: _dataSets,
@@ -179,15 +179,7 @@ class DataTestScreen extends StatelessWidget {
           dataSets: _bubbleData,
           config: config,
           title: 'Operations Bubble',
-          onBubbleTap: (point, datasetIndex, pointIndex, position) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  '${point.label ?? 'Bubble'} – ${point.y.toStringAsFixed(0)} ops',
-                ),
-              ),
-            );
-          },
+          onBubbleTap: _onBubbleTap(context),
         )),
         _section('Radar Chart', RadarChartWidget(
           dataSets: _radarData,
@@ -202,6 +194,7 @@ class DataTestScreen extends StatelessWidget {
           centerLabel: 'Feb',
           unit: '%',
           onChartTap: () {
+            // Gauge doesn't use ChartContextMenuHelper as it's not point-based in the same way
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Feb 2026: 12 operations (57.1%)')),
             );
@@ -233,27 +226,133 @@ class DataTestScreen extends StatelessWidget {
     );
   }
 
-  static ChartPointCallback _onPointTap(BuildContext context) {
+  ChartPointCallback _onPointTap(BuildContext context) {
     return (point, datasetIndex, pointIndex, position) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${point.label ?? 'Point'} – ${point.y.toStringAsFixed(0)} operations',
-          ),
-        ),
+      ChartContextMenuHelper.show(
+        context,
+        point: point,
+        segment: null,
+        position: position,
+        datasetIndex: datasetIndex,
+        elementIndex: pointIndex,
+        datasetLabel: point.label ?? 'Point',
+        theme: theme,
+        onViewDetails: () {
+          _showDetailsDialog(context, point: point);
+        },
+        onExport: () {
+          _showSnackBar(context, 'Exporting ${point.label ?? 'data'}...');
+        },
+        onShare: () {
+          _showSnackBar(context, 'Sharing ${point.label ?? 'data'}...');
+        },
       );
     };
   }
 
-  static PieSegmentCallback _onSegmentTap(BuildContext context) {
-    return (segment, index, position) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${segment.label} – ${segment.value.toStringAsFixed(0)} operations',
-          ),
-        ),
+  BarCallback _onBarTap(BuildContext context) {
+    return (point, datasetIndex, barIndex, position) {
+      ChartContextMenuHelper.show(
+        context,
+        point: point,
+        segment: null,
+        position: position,
+        datasetIndex: datasetIndex,
+        elementIndex: barIndex,
+        datasetLabel: point.label ?? 'Bar',
+        theme: theme,
+        onViewDetails: () {
+          _showDetailsDialog(context, point: point);
+        },
+        onExport: () {
+          _showSnackBar(context, 'Exporting ${point.label ?? 'data'}...');
+        },
+        onShare: () {
+          _showSnackBar(context, 'Sharing ${point.label ?? 'data'}...');
+        },
       );
     };
+  }
+
+  BubbleTapCallback _onBubbleTap(BuildContext context) {
+    return (point, datasetIndex, pointIndex, position) {
+      ChartContextMenuHelper.show(
+        context,
+        point: point,
+        segment: null,
+        position: position,
+        datasetIndex: datasetIndex,
+        elementIndex: pointIndex,
+        datasetLabel: point.label ?? 'Bubble',
+        theme: theme,
+        onViewDetails: () {
+          _showDetailsDialog(context, point: point);
+        },
+        onExport: () {
+          _showSnackBar(context, 'Exporting ${point.label ?? 'data'}...');
+        },
+        onShare: () {
+          _showSnackBar(context, 'Sharing ${point.label ?? 'data'}...');
+        },
+      );
+    };
+  }
+
+  PieSegmentCallback _onSegmentTap(BuildContext context) {
+    return (segment, index, position) {
+      ChartContextMenuHelper.show(
+        context,
+        point: null,
+        segment: segment,
+        position: position,
+        elementIndex: index,
+        datasetLabel: segment.label,
+        theme: theme,
+        onViewDetails: () {
+          _showDetailsDialog(context, segment: segment);
+        },
+        onExport: () {
+          _showSnackBar(context, 'Exporting ${segment.label}...');
+        },
+        onShare: () {
+          _showSnackBar(context, 'Sharing ${segment.label}...');
+        },
+      );
+    };
+  }
+
+  void _showDetailsDialog(BuildContext context, {ChartDataPoint? point, PieData? segment}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(point != null ? 'Point Details' : 'Segment Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (point != null) ...[
+              Text('Label: ${point.label ?? 'N/A'}'),
+              Text('Value: ${point.y.toStringAsFixed(2)}'),
+              if (point is BubbleDataPoint) Text('Size: ${point.size.toStringAsFixed(2)}'),
+            ] else if (segment != null) ...[
+              Text('Label: ${segment.label}'),
+              Text('Value: ${segment.value.toStringAsFixed(2)}'),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
+    );
   }
 }

@@ -64,7 +64,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
     }
 
     final minY = 0.0;
-    final maxYAdjusted = maxY > 0 ? maxY * 1.1 : 1.0;
+    final maxYAdjusted = getNiceMaxY(maxY);
     final xRange = maxX - minX;
     final xPadding = (xRange > 0 && xRange.isFinite) ? xRange * 0.05 : 0.0;
 
@@ -81,153 +81,182 @@ class StackedAreaChartPainter extends BaseChartPainter {
     drawGrid(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
     drawAxes(canvas, chartSize, minX, maxX, minY, maxYAdjusted);
 
-    // Precompute cumulative paths; dataSets are already cumulative, but
-    // we still need previous layer for fill.
-    List<Offset>? previousPoints;
-
-    // Group datasets by x-coordinate, then by color for stacking
-    final Map<double, Map<Color, List<ChartDataPoint>>> groupedByX = {};
+    // Group points by color (series)
+    final Map<Color, List<ChartDataPoint>> seriesMap = {};
+    // Also track the order of colors to maintain consistent stacking
+    final List<Color> colorOrder = [];
+    
     for (final dataSet in dataSets) {
-      final x = dataSet.dataPoint.x;
-      if (!groupedByX.containsKey(x)) {
-        groupedByX[x] = {};
+      if (!seriesMap.containsKey(dataSet.color)) {
+        seriesMap[dataSet.color] = [];
+        colorOrder.add(dataSet.color);
       }
-      if (!groupedByX[x]!.containsKey(dataSet.color)) {
-        groupedByX[x]![dataSet.color] = [];
-      }
-      groupedByX[x]![dataSet.color]!.add(dataSet.dataPoint);
+      seriesMap[dataSet.color]!.add(dataSet.dataPoint);
     }
 
-    // Process each x position
-    final sortedXValues = groupedByX.keys.toList()..sort();
-    
-    for (int dsIndex = 0; dsIndex < sortedXValues.length; dsIndex++) {
-      final xValue = sortedXValues[dsIndex];
-      final colorGroups = groupedByX[xValue]!;
+    // Sort points within each series by X
+    for (final series in seriesMap.values) {
+      series.sort((a, b) => a.x.compareTo(b.x));
+    }
+
+    // Identify all unique X values for stacking logic
+    final Set<double> xValues = {};
+    for (final ds in dataSets) {
+      xValues.add(ds.dataPoint.x);
+    }
+    final sortedX = xValues.toList()..sort();
+
+    // Map to store the "top" line of the previous layer at each X
+    final Map<double, double> previousLayerY = {
+      for (var x in sortedX) x: 0.0
+    };
+
+    for (int i = 0; i < colorOrder.length; i++) {
+      final color = colorOrder[i];
+      final points = seriesMap[color]!;
       
-      // For each color at this x position, get the point
-      for (final colorEntry in colorGroups.entries) {
-        final color = colorEntry.key;
-        final pointsList = colorEntry.value;
-        if (pointsList.isEmpty) continue;
-        
-        // For stacked area, we need to process all points at this x
-        final points = pointsList
-          .map(
-            (point) => pointToCanvas(
-              point,
-              chartSize,
-              minX - xPadding,
-              maxX + xPadding,
-              minY,
-              maxYAdjusted,
-            ),
-          )
-          .where((p) => p.dx.isFinite && p.dy.isFinite)
-          .toList();
+      // Create a map for quick lookup of current series Y at X
+      final Map<double, double> currentYMap = {
+        for (var p in points) p.x: p.y
+      };
 
-      if (points.isEmpty) continue;
+      // Construct points for the current layer (top line)
+      // We iterate sortedX to ensure we have points at all X positions
+      final List<Offset> topPoints = [];
+      final List<Offset> bottomPoints = [];
 
-      final totalPoints = points.length;
-      final animatedPoints = (totalPoints * animationProgress).ceil();
-
-      // Build upper curve path
-      final upperPath = Path();
-      upperPath.moveTo(points.first.dx, points.first.dy);
-
-      for (int i = 1; i < animatedPoints && i < points.length; i++) {
-        final prevPoint = points[i - 1];
-        final currentPoint = points[i];
-        final dx = currentPoint.dx - prevPoint.dx;
-        if (!dx.isFinite) continue;
-
-        Offset targetPoint = currentPoint;
-        if (i == animatedPoints - 1 && animationProgress < 1.0) {
-          final partialProgress = (animationProgress * totalPoints) - (i - 1);
-          final lerped =
-              Offset.lerp(prevPoint, currentPoint, partialProgress) ??
-                  currentPoint;
-          targetPoint = lerped;
+      for (final x in sortedX) {
+        if (currentYMap.containsKey(x)) {
+          final yTop = currentYMap[x]!;
+          final yBottom = previousLayerY[x]!;
+          
+          topPoints.add(pointToCanvas(
+            ChartDataPoint(x: x, y: yTop), 
+            chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted
+          ));
+          
+          bottomPoints.add(pointToCanvas(
+            ChartDataPoint(x: x, y: yBottom), 
+            chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted
+          ));
+          
+          // Update previous layer for next iteration
+          previousLayerY[x] = yTop;
         }
-
-        final cp1 = Offset(prevPoint.dx + dx * curveSmoothness, prevPoint.dy);
-        final cp2 =
-            Offset(targetPoint.dx - dx * curveSmoothness, targetPoint.dy);
-        upperPath.cubicTo(
-          cp1.dx,
-          cp1.dy,
-          cp2.dx,
-          cp2.dy,
-          targetPoint.dx,
-          targetPoint.dy,
-        );
       }
 
-      // Build fill path between previous layer and current
-      final fillPath = Path();
-      final baseline = previousPoints ??
-          List.generate(
-            points.length,
-            (i) => Offset(points[i].dx, chartSize.height),
-          );
+      if (topPoints.isEmpty) continue;
 
-      // Start at first baseline point
-      fillPath.moveTo(baseline.first.dx, baseline.first.dy);
+      final totalPoints = topPoints.length;
+      final animatedPoints = (totalPoints * animationProgress).ceil();
+      
+      // If animation is in progress, we only draw a subset of points
+      // But for area fill, we need to be careful.
+      // Easiest is to clip the path or just draw subset.
+      
+      final visibleTopPoints = topPoints.sublist(0, math.min(animatedPoints, topPoints.length));
+      final visibleBottomPoints = bottomPoints.sublist(0, math.min(animatedPoints, bottomPoints.length));
+      
+      if (visibleTopPoints.isEmpty) continue;
 
-      // Upper curve forward
-      fillPath.addPath(upperPath, Offset.zero);
-
-      // Baseline backward to close
-      for (int i = math.min(animatedPoints, baseline.length) - 1; i >= 0; i--) {
-        fillPath.lineTo(baseline[i].dx, baseline[i].dy);
+      // Draw the area
+      final path = Path();
+      path.moveTo(visibleTopPoints.first.dx, visibleTopPoints.first.dy);
+      
+      // Draw top curve
+      for (int j = 1; j < visibleTopPoints.length; j++) {
+        final p0 = visibleTopPoints[j - 1];
+        final p1 = visibleTopPoints[j];
+        final dx = p1.dx - p0.dx;
+        
+        final cp1 = Offset(p0.dx + dx * curveSmoothness, p0.dy);
+        final cp2 = Offset(p1.dx - dx * curveSmoothness, p1.dy);
+        
+        path.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, p1.dx, p1.dy);
       }
-      fillPath.close();
+      
+      // Draw bottom curve (backwards)
+      for (int j = visibleBottomPoints.length - 1; j >= 0; j--) {
+        final p = visibleBottomPoints[j];
+        if (j == visibleBottomPoints.length - 1) {
+          path.lineTo(p.dx, p.dy);
+        } else {
+          final pNext = visibleBottomPoints[j + 1]; // Previous in iteration
+          final dx = pNext.dx - p.dx; // Negative
+          
+          // Control points for backward curve (optional, lineTo is safer for bottom)
+          // Using lineTo ensures no weird overlaps with previous layer's top curve
+          path.lineTo(p.dx, p.dy);
+        }
+      }
+      path.close();
 
-      // color is already defined from the loop
-      final areaPaint = Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            color.withValues(alpha: 0.5 * animationProgress),
-            color.withValues(alpha: 0.18 * animationProgress),
-            color.withValues(alpha: 0.0),
-          ],
-          stops: const [0.0, 0.6, 1.0],
-        ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
+      // Draw fill
+      final paint = Paint()
+        ..color = color.withValues(alpha: 0.6)
         ..style = PaintingStyle.fill;
-
-      canvas.drawPath(fillPath, areaPaint);
-
-      // Draw outline on top
-      final linePaint = Paint()
+      canvas.drawPath(path, paint);
+      
+      // Draw stroke
+      final strokePaint = Paint()
         ..color = color
         ..strokeWidth = lineWidth
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round;
-      canvas.drawPath(upperPath, linePaint);
+      
+      // Create path for stroke (only top line)
+      final strokePath = Path();
+      strokePath.moveTo(visibleTopPoints.first.dx, visibleTopPoints.first.dy);
+      for (int j = 1; j < visibleTopPoints.length; j++) {
+        final p0 = visibleTopPoints[j - 1];
+        final p1 = visibleTopPoints[j];
+        final dx = p1.dx - p0.dx;
+        final cp1 = Offset(p0.dx + dx * curveSmoothness, p0.dy);
+        final cp2 = Offset(p1.dx - dx * curveSmoothness, p1.dy);
+        strokePath.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, p1.dx, p1.dy);
+      }
+      canvas.drawPath(strokePath, strokePaint);
 
-      // Points (optional highlight)
-      final animatedPts = math.min(animatedPoints, points.length);
-      for (int i = 0; i < animatedPts; i++) {
-        final point = points[i];
+      // Draw points
+      for (int j = 0; j < visibleTopPoints.length; j++) {
+        final point = visibleTopPoints[j];
+        
+        // Find original point for interaction check
+        // We need to find the dataset index for this point
+        // Since we grouped by color, we can iterate original dataSets to find match
+        // This is slow but accurate
+        int datasetIndex = -1;
+        int elementIndex = -1;
+        
+        // Find matching point in original data
+        // Note: xValues are doubles, equality check might be tricky, use epsilon
+        final xVal = sortedX[j];
+        for(int d=0; d<dataSets.length; d++) {
+          if (dataSets[d].color == color && (dataSets[d].dataPoint.x - xVal).abs() < 0.0001) {
+            datasetIndex = d;
+            // elementIndex is usually index within a series, but here each point is a dataset?
+            // The interaction model passes pointIndex. 
+            // In other charts, pointIndex is index within the dataset's points list.
+            // But here ChartDataSet has 1 point.
+            // So elementIndex is likely 0.
+            elementIndex = 0; 
+            break;
+          }
+        }
+
         final isSelected = selectedPoint != null &&
             selectedPoint!.isHit &&
-            selectedPoint!.datasetIndex == dsIndex &&
-            selectedPoint!.elementIndex == i;
+            selectedPoint!.datasetIndex == datasetIndex;
+            
         final isHovered = hoveredPoint != null &&
             hoveredPoint!.isHit &&
-            hoveredPoint!.datasetIndex == dsIndex &&
-            hoveredPoint!.elementIndex == i;
-        final opacity = i < animatedPts - 1 ? 1.0 : animationProgress;
-        final radius = isSelected
-            ? 6.0
-            : isHovered
-                ? 5.0
-                : 4.0;
+            hoveredPoint!.datasetIndex == datasetIndex;
+
+        final radius = isSelected ? 6.0 : (isHovered ? 5.0 : 4.0);
+        
         final pointPaint = Paint()
-          ..color = color.withValues(alpha: opacity)
+          ..color = color
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, radius, pointPaint);
 
@@ -236,9 +265,6 @@ class StackedAreaChartPainter extends BaseChartPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = isSelected ? 3.0 : 1.5;
         canvas.drawCircle(point, radius, borderPaint);
-      }
-
-      previousPoints = points;
       }
     }
 

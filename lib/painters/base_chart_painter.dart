@@ -547,6 +547,36 @@ abstract class BaseChartPainter extends CustomPainter {
     canvas.restore();
   }
 
+  /// Helper to calculate a "nice" maximum Y value for axis scaling.
+  ///
+  /// Returns a value slightly larger than [maxY] that is a multiple of
+  /// 1, 2, 5, or 10 times a power of 10, ensuring clean axis intervals.
+  ///
+  /// Parameters:
+  /// - [maxY] - The maximum data value
+  /// - [targetIntervals] - Desired number of intervals (default 5)
+  double getNiceMaxY(double maxY, {int targetIntervals = 5}) {
+    if (maxY <= 0) return 1.0;
+    
+    final rawStep = maxY / targetIntervals;
+    final magnitude = math.pow(10, (math.log(rawStep) / math.ln10).floor()).toDouble();
+    final normalizedStep = rawStep / magnitude;
+    
+    double niceStep;
+    if (normalizedStep <= 1.0) {
+      niceStep = 1.0;
+    } else if (normalizedStep <= 2.0) {
+      niceStep = 2.0;
+    } else if (normalizedStep <= 5.0) {
+      niceStep = 5.0;
+    } else {
+      niceStep = 10.0;
+    }
+    
+    final step = niceStep * magnitude;
+    return step * targetIntervals;
+  }
+
   /// Get data bounds (to be overridden by subclasses).
   ///
   /// This method is a placeholder for subclasses to implement custom
