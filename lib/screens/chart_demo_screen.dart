@@ -21,6 +21,7 @@ import 'package:save_points_chart/widgets/funnel_chart_widget.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/data/sample_data.dart';
+import 'package:save_points_chart/screens/data_test_screen.dart';
 
 class ChartDemoScreen extends StatefulWidget {
   const ChartDemoScreen({super.key});
@@ -270,6 +271,12 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Funnel Chart',
             index: 15,
           ),
+          const Divider(),
+          _buildDrawerItem(
+            icon: Icons.science,
+            title: 'Data Test',
+            index: 16,
+          ),
         ],
       ),
     );
@@ -363,6 +370,8 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         return _buildPyramidChart(chartTheme, chartsConfig);
       case 15:
         return _buildFunnelChart(chartTheme, chartsConfig);
+      case 16:
+        return DataTestScreen(theme: chartTheme);
       default:
         return _buildLineChart(chartTheme, chartsConfig);
     }

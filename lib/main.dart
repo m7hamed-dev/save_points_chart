@@ -11,9 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ThemeProvider(
-      child: _MaterialAppWithTheme(),
-    );
+    return const ThemeProvider(child: _MaterialAppWithTheme());
   }
 }
 
@@ -28,23 +26,21 @@ class _MaterialAppWithThemeState extends State<_MaterialAppWithTheme> {
   // Define themes here to keep build method clean
   ThemeData _buildTheme(Brightness brightness) {
     // Use slightly different seed colors for light/dark to optimize contrast
-    final seedColor = brightness == Brightness.light 
-        ? const Color(0xFF6366F1) 
+    final seedColor = brightness == Brightness.light
+        ? const Color(0xFF6366F1)
         : const Color(0xFF818CF8);
-        
+
     final colorScheme = ColorScheme.fromSeed(
       seedColor: seedColor,
       brightness: brightness,
     );
-    
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }

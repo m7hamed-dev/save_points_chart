@@ -3,6 +3,7 @@ import 'package:save_points_chart/save_points_chart.dart';
 import 'widgets/area_chart_card.dart';
 import 'widgets/bar_chart_card.dart';
 import 'widgets/bubble_chart_card.dart';
+import 'widgets/data_test_page.dart';
 import 'widgets/donut_chart_card.dart';
 import 'widgets/funnel_chart_card.dart';
 import 'widgets/gauge_chart_card.dart';
@@ -48,6 +49,7 @@ class ChartExamplePage extends StatefulWidget {
 
 class _ChartExamplePageState extends State<ChartExamplePage> {
   bool _isDarkMode = false;
+  int _tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -58,44 +60,59 @@ class _ChartExamplePageState extends State<ChartExamplePage> {
         title: const Text('Save Points Chart Examples'),
         actions: [_iconChangeTheme()],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          LineChartCard(theme: theme),
-          const SizedBox(height: 16),
-          AreaChartCard(theme: theme),
-          const SizedBox(height: 16),
-          StackedAreaChartCard(theme: theme),
-          const SizedBox(height: 16),
-          BarChartCard(theme: theme),
-          const SizedBox(height: 16),
-          StackedColumnChartCard(theme: theme),
-          const SizedBox(height: 16),
-          PieChartCard(theme: theme),
-          const SizedBox(height: 16),
-          DonutChartCard(theme: theme),
-          const SizedBox(height: 16),
-          PyramidChartCard(theme: theme),
-          const SizedBox(height: 16),
-          FunnelChartCard(theme: theme),
-          const SizedBox(height: 16),
-          RadialChartCard(theme: theme),
-          const SizedBox(height: 16),
-          SparklineChartCard(theme: theme),
-          const SizedBox(height: 16),
-          ScatterChartCard(theme: theme),
-          const SizedBox(height: 16),
-          BubbleChartCard(theme: theme),
-          const SizedBox(height: 16),
-          RadarChartCard(theme: theme),
-          const SizedBox(height: 16),
-          GaugeChartCard(theme: theme),
-          const SizedBox(height: 16),
-          SplineChartCard(theme: theme),
-          const SizedBox(height: 16),
-          StepLineChartCard(theme: theme),
+      body: _tabIndex == 0 ? _sampleCharts(theme) : DataTestPage(theme: theme),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _tabIndex,
+        onDestinationSelected: (i) => setState(() => _tabIndex = i),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.auto_awesome),
+            label: 'Samples',
+          ),
+          NavigationDestination(icon: Icon(Icons.science), label: 'Data Test'),
         ],
       ),
+    );
+  }
+
+  Widget _sampleCharts(ChartTheme theme) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        LineChartCard(theme: theme),
+        const SizedBox(height: 16),
+        AreaChartCard(theme: theme),
+        const SizedBox(height: 16),
+        StackedAreaChartCard(theme: theme),
+        const SizedBox(height: 16),
+        BarChartCard(theme: theme),
+        const SizedBox(height: 16),
+        StackedColumnChartCard(theme: theme),
+        const SizedBox(height: 16),
+        PieChartCard(theme: theme),
+        const SizedBox(height: 16),
+        DonutChartCard(theme: theme),
+        const SizedBox(height: 16),
+        PyramidChartCard(theme: theme),
+        const SizedBox(height: 16),
+        FunnelChartCard(theme: theme),
+        const SizedBox(height: 16),
+        RadialChartCard(theme: theme),
+        const SizedBox(height: 16),
+        SparklineChartCard(theme: theme),
+        const SizedBox(height: 16),
+        ScatterChartCard(theme: theme),
+        const SizedBox(height: 16),
+        BubbleChartCard(theme: theme),
+        const SizedBox(height: 16),
+        RadarChartCard(theme: theme),
+        const SizedBox(height: 16),
+        GaugeChartCard(theme: theme),
+        const SizedBox(height: 16),
+        SplineChartCard(theme: theme),
+        const SizedBox(height: 16),
+        StepLineChartCard(theme: theme),
+      ],
     );
   }
 
