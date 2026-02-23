@@ -247,6 +247,69 @@ class _LineChartWidgetState extends State<LineChartWidget>
     }
   }
 
+  void _handleTap(TapDownDetails details, Size chartSize) {
+    // Hide any existing context menu first to prevent blocking
+    ChartContextMenuHelper.hide();
+
+    // Use localPosition directly (relative to SizedBox)
+    // Account for padding
+    const leftPadding = 50.0;
+    const topPadding = 20.0;
+    final chartPosition = Offset(
+      details.localPosition.dx - leftPadding,
+      details.localPosition.dy - topPadding,
+    );
+
+    // Get global position for context menu
+    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+    final globalPosition = renderBox != null
+        ? renderBox.localToGlobal(details.localPosition)
+        : details.localPosition;
+
+    // Calculate chart bounds
+    final bounds = _getAdjustedBounds(chartSize);
+
+    final result = ChartInteractionHelper.findNearestPoint(
+      chartPosition,
+      widget.dataSets,
+      chartSize,
+      bounds['minX']!,
+      bounds['maxX']!,
+      bounds['minY']!,
+      bounds['maxY']!,
+      ChartInteractionConstants.tapRadius,
+    );
+
+    if (result != null && result.isHit) {
+      // Provide haptic feedback
+      HapticFeedback.selectionClick();
+
+      // Set new selection (optimized single setState)
+      setState(() {
+        _selectedPoint = result;
+      });
+
+      // Small delay to ensure overlay is removed before showing new menu
+      Future.microtask(() {
+        widget.onPointTap?.call(
+          result.point!,
+          result.datasetIndex!,
+          result.elementIndex!,
+          globalPosition,
+        );
+      });
+    } else {
+      // Clear selection if tap is outside any point
+      setState(() {
+        _selectedPoint = null;
+      });
+      // Call onChartTap if no point was hit
+      if (widget.onChartTap != null) {
+        widget.onChartTap!(globalPosition);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var effectiveTheme =
@@ -334,71 +397,10 @@ class _LineChartWidgetState extends State<LineChartWidget>
                       behavior: HitTestBehavior
                           .translucent, // Allow taps even when overlay is present
                       onTapDown: widget.onPointTap != null
-                          ? (details) {
-                              // Hide any existing context menu first to prevent blocking
-                              ChartContextMenuHelper.hide();
-
-                              // Use localPosition directly (relative to SizedBox)
-                              // Account for padding
-                              const leftPadding = 50.0;
-                              const topPadding = 20.0;
-                              final chartPosition = Offset(
-                                details.localPosition.dx - leftPadding,
-                                details.localPosition.dy - topPadding,
-                              );
-
-                              // Get global position for context menu
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
-                              final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
-                                  : details.localPosition;
-
-                              // Calculate chart bounds
-                              final bounds = _getAdjustedBounds(chartSize);
-
-                              final result =
-                                  ChartInteractionHelper.findNearestPoint(
-                                chartPosition,
-                                widget.dataSets,
-                                chartSize,
-                                bounds['minX']!,
-                                bounds['maxX']!,
-                                bounds['minY']!,
-                                bounds['maxY']!,
-                                ChartInteractionConstants.tapRadius,
-                              );
-
-                              if (result != null && result.isHit) {
-                                // Provide haptic feedback
-                                HapticFeedback.selectionClick();
-
-                                // Set new selection (optimized single setState)
-                                setState(() {
-                                  _selectedPoint = result;
-                                });
-
-                                // Small delay to ensure overlay is removed before showing new menu
-                                Future.microtask(() {
-                                  widget.onPointTap?.call(
-                                    result.point!,
-                                    result.datasetIndex!,
-                                    result.elementIndex!,
-                                    globalPosition,
-                                  );
-                                });
-                              } else {
-                                // Clear selection if tap is outside any point
-                                setState(() {
-                                  _selectedPoint = null;
-                                });
-                                // Call onChartTap if no point was hit
-                                if (widget.onChartTap != null) {
-                                  widget.onChartTap!(globalPosition);
-                                }
-                              }
-                            }
+                          ? (details) => _handleTap(details, chartSize)
+                          : null,
+                      onSecondaryTapDown: widget.onPointTap != null
+                          ? (details) => _handleTap(details, chartSize)
                           : null,
                       child: SizedBox(
                         width: constraints.maxWidth,

@@ -131,48 +131,52 @@ class _ChartContextMenuState extends State<ChartContextMenu>
   }
 
   Widget _buildWebStyleMenu(BuildContext context, bool isDark) {
+    // Use theme-aware color scheme
+    final colorScheme = WebUIColorScheme.fromTheme(context, accentColor: _primaryColor);
+
     if (widget.useGlassmorphism) {
-      return _buildGlassmorphismMenu(context, isDark);
+      return _buildGlassmorphismMenu(context, colorScheme, isDark);
     } else if (widget.useNeumorphism) {
-      return _buildNeumorphismMenu(context, isDark);
+      return _buildNeumorphismMenu(context, colorScheme, isDark);
     } else {
-      return _buildModernWebMenu(context, isDark);
+      return _buildModernWebMenu(context, colorScheme, isDark);
     }
   }
 
-  Widget _buildGlassmorphismMenu(BuildContext context, bool isDark) {
-    final colorScheme = isDark
-        ? WebUIColorScheme.dark(_primaryColor)
-        : WebUIColorScheme.light(_primaryColor);
+  Widget _buildGlassmorphismMenu(BuildContext context, WebUIColorScheme colorScheme, bool isDark) {
     final gradientColors = _getGlassmorphismGradientColors(isDark);
     final borderColor = _getGlassmorphismBorderColor(isDark);
     final shadows = _getGlassmorphismShadows(isDark);
 
     return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            width: 320,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: gradientColors,
+      child: Semantics(
+        label: 'Chart context menu',
+        container: true,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(
+              width: 320,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: gradientColors,
+                ),
+                border: Border.all(color: borderColor, width: 1.5),
+                boxShadow: shadows,
               ),
-              border: Border.all(color: borderColor, width: 1.5),
-              boxShadow: shadows,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildWebHeader(context, colorScheme),
-                _buildWebContent(context, colorScheme),
-                _buildWebActions(context, colorScheme),
-              ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildWebHeader(context, colorScheme),
+                  _buildWebContent(context, colorScheme),
+                  _buildWebActions(context, colorScheme),
+                ],
+              ),
             ),
           ),
         ),
@@ -220,29 +224,30 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     ];
   }
 
-  Widget _buildNeumorphismMenu(BuildContext context, bool isDark) {
-    final colorScheme = isDark
-        ? WebUIColorScheme.dark(_primaryColor)
-        : WebUIColorScheme.light(_primaryColor);
+  Widget _buildNeumorphismMenu(BuildContext context, WebUIColorScheme colorScheme, bool isDark) {
     final baseColor = _getNeumorphismBaseColor(isDark);
     final shadows = _getNeumorphismShadows(isDark);
 
     return RepaintBoundary(
-      child: Container(
-        width: 320,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: baseColor,
-          boxShadow: shadows,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildWebHeader(context, colorScheme),
-            _buildWebContent(context, colorScheme),
-            _buildWebActions(context, colorScheme),
-          ],
+      child: Semantics(
+        label: 'Chart context menu',
+        container: true,
+        child: Container(
+          width: 320,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: baseColor,
+            boxShadow: shadows,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildWebHeader(context, colorScheme),
+              _buildWebContent(context, colorScheme),
+              _buildWebActions(context, colorScheme),
+            ],
+          ),
         ),
       ),
     );
@@ -274,47 +279,47 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     ];
   }
 
-  Widget _buildModernWebMenu(BuildContext context, bool isDark) {
-    final colorScheme = isDark
-        ? WebUIColorScheme.dark(_primaryColor)
-        : WebUIColorScheme.light(_primaryColor);
-
-    return Container(
-      width: 320,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: colorScheme.surfaceColor,
-        border: Border.all(
-          color: colorScheme.borderColor,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.6)
-                : Colors.black.withValues(alpha: 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
-            spreadRadius: -4,
+  Widget _buildModernWebMenu(BuildContext context, WebUIColorScheme colorScheme, bool isDark) {
+    return Semantics(
+      label: 'Chart context menu',
+      container: true,
+      child: Container(
+        width: 320,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: colorScheme.surfaceColor,
+          border: Border.all(
+            color: colorScheme.borderColor,
           ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.4)
-                : Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildWebHeader(context, colorScheme),
-            _buildWebContent(context, colorScheme),
-            _buildWebActions(context, colorScheme),
+          boxShadow: [
+            BoxShadow(
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.6)
+                  : Colors.black.withValues(alpha: 0.08),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+              spreadRadius: -4,
+            ),
+            BoxShadow(
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.4)
+                  : Colors.black.withValues(alpha: 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildWebHeader(context, colorScheme),
+              _buildWebContent(context, colorScheme),
+              _buildWebActions(context, colorScheme),
+            ],
+          ),
         ),
       ),
     );

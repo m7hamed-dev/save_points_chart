@@ -78,6 +78,49 @@ class _PieChartWidgetState extends State<PieChartWidget>
     _controller.forward();
   }
 
+  void _handleTap(TapDownDetails details, double size) {
+    // Hide any existing context menu first to prevent blocking
+    ChartContextMenuHelper.hide();
+
+    // Use localPosition directly (relative to SizedBox)
+    final result = ChartInteractionHelper.findPieSegment(
+      details.localPosition,
+      widget.data,
+      Size(size, widget.height ?? 250.0),
+      0.0,
+    );
+
+    if (result != null && result.isHit) {
+      // Provide haptic feedback
+      HapticFeedback.selectionClick();
+
+      // Set new selection (optimized single setState)
+      setState(() {
+        _selectedSegment = result;
+      });
+
+      // Get global position for context menu
+      final renderBox = context.findRenderObject() as RenderBox?;
+      final globalPosition = renderBox != null
+          ? renderBox.localToGlobal(details.localPosition)
+          : details.localPosition;
+
+      // Small delay to ensure overlay is removed before showing new menu
+      Future.microtask(() {
+        widget.onSegmentTap?.call(
+          result.segment!,
+          result.elementIndex!,
+          globalPosition,
+        );
+      });
+    } else {
+      // Clear selection if tap is outside any segment
+      setState(() {
+        _selectedSegment = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final effectiveTheme =
@@ -251,49 +294,10 @@ class _PieChartWidgetState extends State<PieChartWidget>
                 behavior: HitTestBehavior
                     .translucent, // Allow taps even when overlay is present
                 onTapDown: widget.onSegmentTap != null
-                    ? (details) {
-                        // Hide any existing context menu first to prevent blocking
-                        ChartContextMenuHelper.hide();
-
-                        // Use localPosition directly (relative to SizedBox)
-                        final result = ChartInteractionHelper.findPieSegment(
-                          details.localPosition,
-                          widget.data,
-                          Size(size, widget.height ?? 250.0),
-                          0.0,
-                        );
-
-                        if (result != null && result.isHit) {
-                          // Provide haptic feedback
-                          HapticFeedback.selectionClick();
-
-                          // Set new selection (optimized single setState)
-                          setState(() {
-                            _selectedSegment = result;
-                          });
-
-                          // Get global position for context menu
-                          final renderBox =
-                              context.findRenderObject() as RenderBox?;
-                          final globalPosition = renderBox != null
-                              ? renderBox.localToGlobal(details.localPosition)
-                              : details.localPosition;
-
-                          // Small delay to ensure overlay is removed before showing new menu
-                          Future.microtask(() {
-                            widget.onSegmentTap?.call(
-                              result.segment!,
-                              result.elementIndex!,
-                              globalPosition,
-                            );
-                          });
-                        } else {
-                          // Clear selection if tap is outside any segment
-                          setState(() {
-                            _selectedSegment = null;
-                          });
-                        }
-                      }
+                    ? (details) => _handleTap(details, size)
+                    : null,
+                onSecondaryTapDown: widget.onSegmentTap != null
+                    ? (details) => _handleTap(details, size)
                     : null,
                 child: SizedBox(
                   width: size,

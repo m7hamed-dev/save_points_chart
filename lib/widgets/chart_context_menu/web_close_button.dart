@@ -21,24 +21,29 @@ class _WebCloseButtonState extends State<WebCloseButton> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: _isHovered
-                ? widget.colorScheme.hoverColor
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Icon(
-            Icons.close_rounded,
-            size: 16,
-            color: widget.colorScheme.textSecondary,
+    return Semantics(
+      button: true,
+      label: 'Close menu',
+      enabled: true,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: _isHovered
+                  ? widget.colorScheme.hoverColor
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(
+              Icons.close_rounded,
+              size: 16,
+              color: widget.colorScheme.textSecondary,
+            ),
           ),
         ),
       ),

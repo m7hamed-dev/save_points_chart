@@ -9,6 +9,10 @@ class ChartContextMenuHelper {
   static OverlayEntry? _currentMenu;
   static ui.ImageFilter? _cachedBlurFilter;
 
+  static const double _kMenuWidth = 320.0;
+  static const double _kMenuHeight = 450.0; // Estimated max height
+  static const double _kPadding = 16.0;
+
   static void show(
     BuildContext context, {
     required ChartDataPoint? point,
@@ -100,19 +104,34 @@ class ChartContextMenuHelper {
     BuildContext context,
     Offset globalPosition,
   ) {
-    final mediaQuery = MediaQuery.of(context);
-    final screenSize = mediaQuery.size;
+    final screenSize = MediaQuery.sizeOf(context);
     final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
 
-    return Offset(
-      globalPosition.dx.isFinite
-          ? globalPosition.dx.clamp(16.0, screenWidth - 316)
-          : 16.0,
-      globalPosition.dy.isFinite
-          ? globalPosition.dy.clamp(16.0, screenHeight - 450)
-          : 16.0,
-    );
+    double dx = globalPosition.dx;
+    double dy = globalPosition.dy;
+
+    // Adjust horizontal position if menu goes off-screen
+    if (dx + _kMenuWidth + _kPadding > screenWidth) {
+      dx = screenWidth - _kMenuWidth - _kPadding;
+    }
+    
+    // Ensure it doesn't go off the left side
+    if (dx < _kPadding) {
+      dx = _kPadding;
+    }
+
+    // Adjust vertical position if menu goes off-screen
+    if (dy + _kMenuHeight + _kPadding > screenHeight) {
+      dy = screenHeight - _kMenuHeight - _kPadding;
+    }
+
+    // Ensure it doesn't go off the top
+    if (dy < _kPadding) {
+      dy = _kPadding;
+    }
+
+    return Offset(dx, dy);
   }
 
   static void _ensureBlurFilter(bool backgroundBlur) {
@@ -123,17 +142,22 @@ class ChartContextMenuHelper {
 
   static Widget _buildBackdrop(bool backgroundBlur) {
     return Positioned.fill(
-      child: GestureDetector(
+      child: Semantics(
+        label: 'Dismiss menu',
+        button: true,
         onTap: hide,
-        behavior: HitTestBehavior.translucent,
-        child: backgroundBlur && _cachedBlurFilter != null
-            ? ClipRect(
-                child: BackdropFilter(
-                  filter: _cachedBlurFilter!,
-                  child: Container(color: Colors.black.withValues(alpha: 0.1)),
-                ),
-              )
-            : Container(color: Colors.transparent),
+        child: GestureDetector(
+          onTap: hide,
+          behavior: HitTestBehavior.translucent,
+          child: backgroundBlur && _cachedBlurFilter != null
+              ? ClipRect(
+                  child: BackdropFilter(
+                    filter: _cachedBlurFilter!,
+                    child: Container(color: Colors.black.withValues(alpha: 0.1)),
+                  ),
+                )
+              : Container(color: Colors.transparent),
+        ),
       ),
     );
   }

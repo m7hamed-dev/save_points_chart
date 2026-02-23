@@ -209,6 +209,72 @@ class _BarChartWidgetState extends State<BarChartWidget>
     }
   }
 
+  void _handleTap(TapDownDetails details, BoxConstraints constraints) {
+    // Hide any existing context menu first to prevent blocking
+    ChartContextMenuHelper.hide();
+
+    // Use localPosition directly (relative to SizedBox)
+    const leftPadding = 50.0;
+    const topPadding = 20.0;
+    final chartPosition = Offset(
+      details.localPosition.dx - leftPadding,
+      details.localPosition.dy - topPadding,
+    );
+
+    // Calculate chart bounds (with caching)
+    if (widget.dataSets.isEmpty) return;
+
+    final bounds = _getOrCalculateBounds();
+
+    final chartHeight = widget.height ?? 240.0;
+    final chartSize = Size(
+      constraints.maxWidth - 70,
+      chartHeight,
+    );
+
+    final result = ChartInteractionHelper.findBar(
+      chartPosition,
+      widget.dataSets,
+      chartSize,
+      bounds['minX']! * 0.95,
+      bounds['maxX']! * 1.05,
+      0.0,
+      bounds['maxY']! * 1.2,
+      widget.barWidth,
+    );
+
+    if (result != null && result.isHit) {
+      // Provide haptic feedback
+      HapticFeedback.selectionClick();
+
+      // Set new selection (optimized single setState)
+      setState(() {
+        _selectedBar = result;
+      });
+
+      // Get global position for context menu
+      final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+      final globalPosition = renderBox != null
+          ? renderBox.localToGlobal(details.localPosition)
+          : details.localPosition;
+
+      // Small delay to ensure overlay is removed before showing new menu
+      Future.microtask(() {
+        widget.onBarTap?.call(
+          result.point!,
+          result.datasetIndex!,
+          result.elementIndex!,
+          globalPosition,
+        );
+      });
+    } else {
+      // Clear selection if tap is outside any bar
+      setState(() {
+        _selectedBar = null;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -296,73 +362,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
                       behavior: HitTestBehavior
                           .translucent, // Allow taps even when overlay is present
                       onTapDown: widget.onBarTap != null
-                          ? (details) {
-                              // Hide any existing context menu first to prevent blocking
-                              ChartContextMenuHelper.hide();
-
-                              // Use localPosition directly (relative to SizedBox)
-                              const leftPadding = 50.0;
-                              const topPadding = 20.0;
-                              final chartPosition = Offset(
-                                details.localPosition.dx - leftPadding,
-                                details.localPosition.dy - topPadding,
-                              );
-
-                              // Calculate chart bounds (with caching)
-                              if (widget.dataSets.isEmpty) return;
-
-                              final bounds = _getOrCalculateBounds();
-
-                              final chartHeight = widget.height ?? 240.0;
-                              final chartSize = Size(
-                                constraints.maxWidth - 70,
-                                chartHeight,
-                              );
-
-                              final result = ChartInteractionHelper.findBar(
-                                chartPosition,
-                                widget.dataSets,
-                                chartSize,
-                                bounds['minX']! * 0.95,
-                                bounds['maxX']! * 1.05,
-                                0.0,
-                                bounds['maxY']! * 1.2,
-                                widget.barWidth,
-                              );
-
-                              if (result != null && result.isHit) {
-                                // Provide haptic feedback
-                                HapticFeedback.selectionClick();
-
-                                // Set new selection (optimized single setState)
-                                setState(() {
-                                  _selectedBar = result;
-                                });
-
-                                // Get global position for context menu
-                                final RenderBox? renderBox =
-                                    context.findRenderObject() as RenderBox?;
-                                final globalPosition = renderBox != null
-                                    ? renderBox
-                                        .localToGlobal(details.localPosition)
-                                    : details.localPosition;
-
-                                // Small delay to ensure overlay is removed before showing new menu
-                                Future.microtask(() {
-                                  widget.onBarTap?.call(
-                                    result.point!,
-                                    result.datasetIndex!,
-                                    result.elementIndex!,
-                                    globalPosition,
-                                  );
-                                });
-                              } else {
-                                // Clear selection if tap is outside any bar
-                                setState(() {
-                                  _selectedBar = null;
-                                });
-                              }
-                            }
+                          ? (details) => _handleTap(details, constraints)
+                          : null,
+                      onSecondaryTapDown: widget.onBarTap != null
+                          ? (details) => _handleTap(details, constraints)
                           : null,
                       child: SizedBox(
                         width: constraints.maxWidth,

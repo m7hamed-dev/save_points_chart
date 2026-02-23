@@ -24,54 +24,59 @@ class _WebActionButtonState extends State<WebActionButton> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.action.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeOut,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: _isHovered
-                ? widget.colorScheme.hoverColor
-                : Colors.transparent,
-            border: widget.isLast
-                ? null
-                : Border(
-                    bottom: BorderSide(color: widget.colorScheme.dividerColor),
-                  ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                widget.action.icon,
-                size: 18,
-                color: widget.colorScheme.textSecondary,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  widget.action.label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: widget.colorScheme.textPrimary,
-                    letterSpacing: -0.1,
+    return Semantics(
+      button: true,
+      label: widget.action.label,
+      enabled: true,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onTap: widget.action.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: _isHovered
+                  ? widget.colorScheme.hoverColor
+                  : Colors.transparent,
+              border: widget.isLast
+                  ? null
+                  : Border(
+                      bottom: BorderSide(color: widget.colorScheme.dividerColor),
+                    ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  widget.action.icon,
+                  size: 18,
+                  color: widget.colorScheme.textSecondary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    widget.action.label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: widget.colorScheme.textPrimary,
+                      letterSpacing: -0.1,
+                    ),
                   ),
                 ),
-              ),
-              AnimatedRotation(
-                duration: const Duration(milliseconds: 150),
-                turns: _isHovered ? 0 : -0.125,
-                child: Icon(
-                  Icons.arrow_forward_rounded,
-                  size: 16,
-                  color: widget.colorScheme.textTertiary,
+                AnimatedRotation(
+                  duration: const Duration(milliseconds: 150),
+                  turns: _isHovered ? 0 : -0.125,
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 16,
+                    color: widget.colorScheme.textTertiary,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
