@@ -47,7 +47,7 @@ class SampleData {
   static List<ChartDataSet> generateBarData() {
     return List.generate(7, (index) {
       return ChartDataSet(
-        color: const Color(0xFF8B5CF6),
+        color: const Color.fromARGB(255, 32, 166, 5),
         dataPoint: ChartDataPoint(
           x: index.toDouble(),
           y: 0 + (index * 9) + (index % 3) * 20,

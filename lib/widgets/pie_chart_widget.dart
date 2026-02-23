@@ -266,7 +266,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
                           });
 
                           // Get global position for context menu
-                          final RenderBox? renderBox =
+                          final renderBox =
                               context.findRenderObject() as RenderBox?;
                           final globalPosition = renderBox != null
                               ? renderBox.localToGlobal(details.localPosition)
