@@ -74,6 +74,9 @@ class PieChartPainter extends CustomPainter {
         continue;
       }
 
+      // Check if this is a full circle (accounting for floating point precision)
+      final isFullCircle = sweepAngle.abs() >= 2 * math.pi - 0.001;
+
       // Animate each segment with stagger
       final segmentProgress = math.max(
         0.0,
@@ -140,38 +143,59 @@ class PieChartPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       Path path;
+      
+      // Handle full circle (2π) specially - arcTo doesn't work well with exactly 2π
+      // When animated sweep angle is very close to 2π, use addOval for reliable rendering
+      // For animation, we still use arcTo until it's very close to full circle
+      final isAnimatedFullCircle = animatedSweepAngle.abs() >= 2 * math.pi - 0.01;
+      
       if (centerSpaceRadius > 0) {
         // Donut chart
-        final outerPath = Path()
-          ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
-          ..arcTo(rect, startAngle, animatedSweepAngle, false)
-          ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
-          ..close();
+        if (isAnimatedFullCircle) {
+          // Full circle donut - use addOval for reliable full circle rendering
+          final outerPath = Path()..addOval(rect);
+          final innerRect = Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
+          final innerPath = Path()..addOval(innerRect);
+          path = Path.combine(PathOperation.difference, outerPath, innerPath);
+        } else {
+          // Partial donut or animating - use arcTo
+          final outerPath = Path()
+            ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
+            ..arcTo(rect, startAngle, animatedSweepAngle, false)
+            ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
+            ..close();
 
-        final innerRect =
-            Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
-        final innerPath = Path()
-          ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
-          ..arcTo(
-            innerRect,
-            startAngle + animatedSweepAngle,
-            -animatedSweepAngle,
-            false,
-          )
-          ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
-          ..close();
+          final innerRect =
+              Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
+          final innerPath = Path()
+            ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
+            ..arcTo(
+              innerRect,
+              startAngle + animatedSweepAngle,
+              -animatedSweepAngle,
+              false,
+            )
+            ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
+            ..close();
 
-        path = Path.combine(
-          PathOperation.difference,
-          outerPath,
-          innerPath,
-        );
+          path = Path.combine(
+            PathOperation.difference,
+            outerPath,
+            innerPath,
+          );
+        }
       } else {
         // Pie chart
-        path = Path()
-          ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
-          ..arcTo(rect, startAngle, animatedSweepAngle, false)
-          ..close();
+        if (isAnimatedFullCircle) {
+          // Full circle pie - use addOval for reliable full circle rendering
+          path = Path()..addOval(rect);
+        } else {
+          // Partial pie or animating - use arcTo
+          path = Path()
+            ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
+            ..arcTo(rect, startAngle, animatedSweepAngle, false)
+            ..close();
+        }
       }
 
       segments.add((
