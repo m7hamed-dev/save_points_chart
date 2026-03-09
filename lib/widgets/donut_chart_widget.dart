@@ -153,13 +153,16 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         final isVertical = widget.legendLayout == Axis.vertical;
         
         // Determine chart size based on constraints
-        final availableWidth = constraints.maxWidth;
+        // Ensure we have a valid width constraint (minimum 100 to prevent negative radius)
+        final availableWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
+            ? constraints.maxWidth
+            : 300.0;
         // If vertical, chart can take full width. If horizontal, it shares space.
         // We also cap the size to ensure it doesn't get too massive.
-        final chartSize = widget.height ?? 
+        final chartSize = (widget.height ?? 
             (isVertical 
                 ? math.min(availableWidth, 300.0) 
-                : math.min(availableWidth * 0.6, 300.0));
+                : math.min(availableWidth * 0.6, 300.0))).clamp(100.0, double.infinity);
 
         final chartSection = _buildChartSection(
           chartSize, 

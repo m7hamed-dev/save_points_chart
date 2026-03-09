@@ -289,21 +289,29 @@ class _PieChartWidgetState extends State<PieChartWidget>
         builder: (context, child) {
           return LayoutBuilder(
             builder: (context, constraints) {
-              final size = math.min(constraints.maxWidth, 250.0).toDouble();
+              // Ensure we have a valid width constraint
+              // If maxWidth is unbounded or zero, use a default size
+              // Minimum size of 100 to prevent negative radius in painter (radius = min(width, height) / 2 - 20)
+              final maxWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
+                  ? constraints.maxWidth
+                  : 250.0;
+              final width = math.min(maxWidth, 250.0).clamp(100.0, 250.0);
+              final height = (widget.height ?? 250.0).clamp(100.0, double.infinity);
+              final chartSize = Size(width, height);
               return GestureDetector(
                 behavior: HitTestBehavior
                     .translucent, // Allow taps even when overlay is present
                 onTapDown: widget.onSegmentTap != null
-                    ? (details) => _handleTap(details, size)
+                    ? (details) => _handleTap(details, chartSize.width)
                     : null,
                 onSecondaryTapDown: widget.onSegmentTap != null
-                    ? (details) => _handleTap(details, size)
+                    ? (details) => _handleTap(details, chartSize.width)
                     : null,
                 child: SizedBox(
-                  width: size,
-                  height: widget.height ?? 250.0,
+                  width: chartSize.width,
+                  height: chartSize.height,
                   child: CustomPaint(
-                    size: Size(size, widget.height ?? 250.0),
+                    size: chartSize,
                     painter: PieChartPainter(
                       data: widget.data,
                       theme: effectiveTheme,
