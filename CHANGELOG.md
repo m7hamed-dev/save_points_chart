@@ -419,6 +419,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Chart widget updates across area, bar, bubble, donut, funnel, gauge, line, pie, pyramid, radar, radial, scatter, sparkline, spline, stacked area, stacked column, step line, and chart container
 
+## [1.8.0] - 2026-03-09
+
+### Added
+- **Dynamic Data Support**: `ChartDataPoint`, `PieData`, `BubbleDataPoint`, and `RadarDataPoint` now accept `dynamic` values (`int`, `double`, `String`) for numeric fields (`value`, `x`, `y`, `size`).
+  - Values are automatically parsed to `double` internally.
+  - Simplifies data handling by allowing direct use of API responses without manual parsing.
+- **Smart Number Formatting**: Introduced `ChartFormatUtils` for intelligent number formatting.
+  - Whole numbers are displayed without decimals (e.g., "10" instead of "10.0").
+  - Fractional values retain their precision based on configuration.
+  - Applied across all chart types for axis labels, tooltips, and legends.
+
+### Improved
+- **Donut Chart UI/UX**: Enhanced `DonutChartWidget` with:
+  - Dynamic center text that updates on segment selection.
+  - Improved animations for segment transitions.
+  - Better responsive layout for legends.
+- **Pie Chart Rendering**: Optimized `PieChartPainter` drawing order.
+  - Shadows and segments are now drawn in separate passes to prevent visual glitches with overlapping elements.
+  - Enhanced visual hierarchy for selected vs. unselected segments.
+
 ## [1.7.8] - 2025-01-29
 
 ### Changed

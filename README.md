@@ -24,6 +24,8 @@ Try it out in your browser: **[Live Demo →](https://save-points-charts.netlify
 ## 🎯 Features
 
 - **17 Chart Types**: Line, Bar, Area, Stacked Area, Pie, Donut, Radial, Sparkline, Scatter, Bubble, Radar, Gauge, Spline, Step Line, Stacked Column, Pyramid, and Funnel charts
+- **Dynamic Data Support**: Accept `int`, `double`, or `String` for numeric values (automatically parsed)
+- **Smart Formatting**: Automatic formatting of numbers (e.g., "10" instead of "10.0")
 - **Zero Dependencies**: No external packages required - uses only Flutter SDK
 - **Modern Design**: Material 3, Neumorphism, and Glassmorphism effects
 - **Full Theme Support**: Automatic light/dark theme adaptation with InheritedWidget
@@ -747,7 +749,18 @@ To add new chart types:
 
 ### Latest Features
 
-**Enhanced Customization (Latest)**
+**Dynamic Data & Smart Formatting (New)**
+- **Dynamic Types**: Chart data points now accept `int`, `double`, or `String` for values. The library automatically parses them to doubles.
+  ```dart
+  // All valid:
+  PieData(value: 50, ...)
+  PieData(value: 50.5, ...)
+  PieData(value: "50.5", ...)
+  ```
+- **Smart Formatting**: Numeric values are now formatted intelligently. Whole numbers are displayed without decimals (e.g., "10" instead of "10.0"), while fractional values retain their precision.
+- **Donut Chart**: Enhanced with better animations, responsive legend layout, and dynamic center text.
+
+**Enhanced Customization**
 - Added `height` property to all chart widgets for customizable sizing
 - Added `header` and `footer` properties to all chart widgets for additional content
 - Enhanced padding and clipping in chart painters for better visualization
