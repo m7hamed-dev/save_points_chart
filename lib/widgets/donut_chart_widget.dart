@@ -99,6 +99,10 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       return;
     }
     _totalValue = widget.data.fold(0.0, (sum, item) => sum + item.value);
+    // Ensure total is finite and valid
+    if (!_totalValue.isFinite || _totalValue < 0) {
+      _totalValue = 0;
+    }
   }
 
   void _handleTap(TapDownDetails details, Size size, BuildContext context) {
@@ -143,7 +147,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         ChartTheme.fromMaterialTheme(Theme.of(context));
 
     // 1. Handle Empty/Loading/Error States
-    if (widget.data.isEmpty || _totalValue == 0) {
+    // Check for empty data or zero/invalid total (same validation as PieChartWidget)
+    if (widget.data.isEmpty || _totalValue == 0 || !_totalValue.isFinite) {
       return _buildEmptyState(effectiveTheme);
     }
 
