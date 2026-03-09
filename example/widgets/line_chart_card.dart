@@ -20,53 +20,53 @@ class LineChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             LineChartWidget(
-              dataSets: const [
+              dataSets: [
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 0, y: 20, label: 'Jan'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 1, y: 35, label: 'Feb'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 2, y: 28, label: 'Mar'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 3, y: 45, label: 'Apr'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 4, y: 50, label: 'May'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 5, y: 42, label: 'Jun'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 0, y: 15, label: 'Jan'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 1, y: 30, label: 'Feb'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 2, y: 25, label: 'Mar'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 3, y: 40, label: 'Apr'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 4, y: 45, label: 'May'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 5, y: 38, label: 'Jun'),
                 ),
               ],

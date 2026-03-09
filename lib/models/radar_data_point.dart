@@ -21,16 +21,22 @@ import 'package:save_points_chart/save_points_chart.dart' show RadarDataSet, Cha
 class RadarDataPoint {
   /// Creates a radar data point.
   ///
-  /// [label] must not be empty. [value] must be non-negative and finite.
+  /// [label] must not be empty. [value] must be a non-negative finite number or numeric string.
   /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [value] is negative or not finite,
   /// or if [label] is empty.
-  const RadarDataPoint({
+  RadarDataPoint({
     required this.label,
-    required this.value,
+    required dynamic value,
     this.showValue = true,
-  });
+  }) : value = _parseValue(value);
+
+  static double _parseValue(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
 
   /// The label for this axis (e.g., "Speed", "Quality").
   ///
@@ -54,7 +60,7 @@ class RadarDataPoint {
   ///
   /// Returns a new [RadarDataPoint] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  RadarDataPoint copyWith({String? label, double? value, bool? showValue}) {
+  RadarDataPoint copyWith({String? label, dynamic value, bool? showValue}) {
     return RadarDataPoint(
       label: label ?? this.label,
       value: value ?? this.value,

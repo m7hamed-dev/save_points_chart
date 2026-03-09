@@ -6,6 +6,7 @@ import 'package:save_points_chart/widgets/chart_context_menu/action_item.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/color_scheme.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/web_action_button.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/web_close_button.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 
 /// Modern web-style context menu for chart elements
 /// Inspired by contemporary web design systems (Vercel, Linear, Stripe)
@@ -62,7 +63,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     _hasPoint = widget.point != null;
     _primaryColor = _computePrimaryColor();
     _formattedValue = _computeFormattedValue();
-    _formattedXValue = _hasPoint ? widget.point!.x.toStringAsFixed(1) : null;
+    _formattedXValue = _hasPoint ? ChartFormatUtils.formatValue(widget.point!.x) : null;
     _label =
         widget.point?.label ??
         widget.segment?.label ??
@@ -101,9 +102,11 @@ class _ChartContextMenuState extends State<ChartContextMenu>
 
   String _computeFormattedValue() {
     if (_hasPoint) {
-      return widget.point!.y.toStringAsFixed(2);
+      return ChartFormatUtils.formatValue(widget.point!.y);
     }
-    return widget.segment?.value.toStringAsFixed(2) ?? '0.00';
+    return widget.segment != null 
+        ? ChartFormatUtils.formatValue(widget.segment!.value)
+        : '0';
   }
 
   @override

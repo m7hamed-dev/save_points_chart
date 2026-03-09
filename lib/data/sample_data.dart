@@ -107,28 +107,28 @@ class SampleData {
 
   static List<ChartDataSet> generateRadialData() {
     return [
-      const ChartDataSet(
-        color: Color(0xFF6366F1),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
         dataPoint: ChartDataPoint(x: 0, y: 80, label: 'Speed'),
       ),
-      const ChartDataSet(
-        color: Color(0xFF6366F1),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
         dataPoint: ChartDataPoint(x: 1, y: 90, label: 'Quality'),
       ),
-      const ChartDataSet(
-        color: Color(0xFF6366F1),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
         dataPoint: ChartDataPoint(x: 2, y: 70, label: 'Design'),
       ),
-      const ChartDataSet(
-        color: Color(0xFF6366F1),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
         dataPoint: ChartDataPoint(x: 3, y: 85, label: 'Support'),
       ),
-      const ChartDataSet(
-        color: Color(0xFF6366F1),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
         dataPoint: ChartDataPoint(x: 4, y: 75, label: 'Features'),
       ),
-      const ChartDataSet(
-        color: Color(0xFF6366F1),
+      ChartDataSet(
+        color: const Color(0xFF6366F1),
         dataPoint: ChartDataPoint(x: 5, y: 95, label: 'Value'),
       ),
     ];
@@ -148,11 +148,11 @@ class SampleData {
 
   static List<ChartDataSet> generateUsersData() {
     final data = [
-      const ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
-      const ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
-      const ChartDataPoint(x: 2, y: 300, label: 'ali'),
-      const ChartDataPoint(x: 3, y: 400, label: 'omar'),
-      const ChartDataPoint(x: 4, y: 500, label: 'khalid'),
+      ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
+      ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
+      ChartDataPoint(x: 2, y: 300, label: 'ali'),
+      ChartDataPoint(x: 3, y: 400, label: 'omar'),
+      ChartDataPoint(x: 4, y: 500, label: 'khalid'),
     ];
     return data.map((point) {
       return ChartDataSet(color: const Color(0xFF6366F1), dataPoint: point);
@@ -214,7 +214,7 @@ class SampleData {
     return [
       RadarDataSet(
         color: const Color(0xFF6366F1),
-        dataPoints: const [
+        dataPoints: [
           RadarDataPoint(label: 'Speed', value: 85),
           RadarDataPoint(label: 'Quality', value: 90),
           RadarDataPoint(label: 'Design', value: 75),
@@ -225,7 +225,7 @@ class SampleData {
       ),
       RadarDataSet(
         color: const Color(0xFF10B981),
-        dataPoints: const [
+        dataPoints: [
           RadarDataPoint(label: 'Speed', value: 70),
           RadarDataPoint(label: 'Quality', value: 85),
           RadarDataPoint(label: 'Design', value: 90),

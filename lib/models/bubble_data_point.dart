@@ -32,18 +32,24 @@ class BubbleDataPoint extends ChartDataPoint {
 
   /// Creates a bubble data point.
   ///
-  /// [x], [y], and [size] are required and must be finite numbers.
+  /// [x], [y], and [size] are required and must be finite numbers or numeric strings.
   /// [label] is optional.
   /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [size] is not positive or not finite.
-  const BubbleDataPoint({
+  BubbleDataPoint({
     required super.x,
     required super.y,
-    required this.size,
+    required dynamic size,
     super.label,
     super.showValue,
-  });
+  }) : size = _parseSize(size);
+
+  static double _parseSize(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
 
   /// Creates a copy of this bubble data point with the given fields replaced.
   ///
@@ -51,9 +57,9 @@ class BubbleDataPoint extends ChartDataPoint {
   /// except for the fields that are explicitly provided.
   @override
   BubbleDataPoint copyWith({
-    double? x,
-    double? y,
-    double? size,
+    dynamic x,
+    dynamic y,
+    dynamic size,
     String? label,
     bool? showValue,
   }) {

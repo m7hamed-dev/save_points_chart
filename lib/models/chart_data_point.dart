@@ -25,17 +25,24 @@ import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet, Bub
 class ChartDataPoint {
   /// Creates a chart data point.
   ///
-  /// [x] and [y] are required and must be finite numbers.
+  /// [x] and [y] are required and must be finite numbers or numeric strings.
   /// [label] is optional and can be used for axis labels or tooltips.
   /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [x] or [y] are not finite.
-  const ChartDataPoint({
-    required this.x,
-    required this.y,
+  ChartDataPoint({
+    required dynamic x,
+    required dynamic y,
     this.label,
     this.showValue = true,
-  });
+  }) : x = _parseValue(x),
+       y = _parseValue(y);
+
+  static double _parseValue(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
 
   /// The x-coordinate (horizontal position) of the data point.
   ///
@@ -66,8 +73,8 @@ class ChartDataPoint {
   /// Returns a new [ChartDataPoint] with the same values as this one,
   /// except for the fields that are explicitly provided.
   ChartDataPoint copyWith({
-    double? x,
-    double? y,
+    dynamic x,
+    dynamic y,
     String? label,
     bool? showValue,
   }) {

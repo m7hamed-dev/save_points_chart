@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 
 /// A custom painter for rendering gauge charts.
 ///
@@ -190,7 +191,7 @@ class GaugeChartPainter extends BaseChartPainter {
     // Draw value text
     if (showLabel && theme.showAxis) {
       final valueText =
-          '${clampedValue.toStringAsFixed(1)}${unit != null ? ' $unit' : ''}';
+          '${ChartFormatUtils.formatValue(clampedValue, fractionDigits: 1)}${unit != null ? ' $unit' : ''}';
       final valueTextStyle = TextStyle(
         color: theme.textColor,
         fontSize: 24,
@@ -249,7 +250,7 @@ class GaugeChartPainter extends BaseChartPainter {
       );
       final minTextPainter = TextPainter(
         text: TextSpan(
-          text: minValue.toStringAsFixed(0),
+          text: ChartFormatUtils.formatValue(minValue),
           style: labelTextStyle,
         ),
         textDirection: TextDirection.ltr,
@@ -271,7 +272,7 @@ class GaugeChartPainter extends BaseChartPainter {
       );
       final maxTextPainter = TextPainter(
         text: TextSpan(
-          text: maxValue.toStringAsFixed(0),
+          text: ChartFormatUtils.formatValue(maxValue),
           style: labelTextStyle,
         ),
         textDirection: TextDirection.ltr,

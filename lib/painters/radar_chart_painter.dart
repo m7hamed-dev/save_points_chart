@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 
 /// A custom painter for rendering radar/spider charts.
 ///
@@ -136,7 +137,7 @@ class RadarChartPainter extends BaseChartPainter {
       );
 
       for (int level = 1; level <= gridLevels; level++) {
-        final value = (maxValue * level / gridLevels).toStringAsFixed(0);
+        final value = ChartFormatUtils.formatValue(maxValue * level / gridLevels);
         final levelRadius = (radius * level) / gridLevels;
         final labelPoint = Offset(center.dx, center.dy - levelRadius);
 

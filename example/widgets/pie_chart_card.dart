@@ -20,11 +20,11 @@ class PieChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             PieChartWidget(
-              data: const [
-                PieData(label: 'Mobile', value: 15, color: Color(0xFF6366F1)),
-                PieData(label: 'Desktop', value: 15, color: Color(0xFF8B5CF6)),
-                PieData(label: 'Tablet', value: 15, color: Color(0xFFEC4899)),
-                PieData(label: 'Other', value: 20, color: Color(0xFF10B981)),
+              data: [
+                PieData(label: 'Mobile', value: 15, color: const Color(0xFF6366F1)),
+                PieData(label: 'Desktop', value: 15, color: const Color(0xFF8B5CF6)),
+                PieData(label: 'Tablet', value: 15, color: const Color(0xFFEC4899)),
+                PieData(label: 'Other', value: 20, color: const Color(0xFF10B981)),
               ],
               config: ChartsConfig(theme: theme),
               title: 'Device Distribution',

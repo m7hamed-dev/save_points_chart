@@ -20,53 +20,53 @@ class StackedAreaChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             StackedAreaChartWidget(
-              dataSets: const [
+              dataSets: [
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 0, y: 40, label: 'Q1'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 1, y: 60, label: 'Q2'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 2, y: 55, label: 'Q3'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                   dataPoint: ChartDataPoint(x: 3, y: 70, label: 'Q4'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 0, y: 35, label: 'Q1'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 1, y: 40, label: 'Q2'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 2, y: 45, label: 'Q3'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                   dataPoint: ChartDataPoint(x: 3, y: 50, label: 'Q4'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFF59E0B),
+                  color: const Color(0xFFF59E0B),
                   dataPoint: ChartDataPoint(x: 0, y: 25, label: 'Q1'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFF59E0B),
+                  color: const Color(0xFFF59E0B),
                   dataPoint: ChartDataPoint(x: 1, y: 35, label: 'Q2'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFF59E0B),
+                  color: const Color(0xFFF59E0B),
                   dataPoint: ChartDataPoint(x: 2, y: 30, label: 'Q3'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFF59E0B),
+                  color: const Color(0xFFF59E0B),
                   dataPoint: ChartDataPoint(x: 3, y: 40, label: 'Q4'),
                 ),
               ],

@@ -34,7 +34,8 @@ class DataTestPage extends StatelessWidget {
   };
 
   static List<Map<String, dynamic>> get _reports {
-    final reports = List<Map<String, dynamic>>.from(_jsonData['data']['reports']);
+    final data = _jsonData['data'] as Map<String, dynamic>;
+    final reports = List<Map<String, dynamic>>.from(data['reports']);
     // Sort by month ascending (oldest to newest)
     reports.sort((a, b) => (a['month'] as String).compareTo(b['month'] as String));
     return reports;

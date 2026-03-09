@@ -20,21 +20,21 @@ class BarChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             BarChartWidget(
-              dataSets: const [
+              dataSets: [
                 ChartDataSet(
-                  color: Color(0xFFEC4899),
+                  color: const Color(0xFFEC4899),
                   dataPoint: ChartDataPoint(x: 0, y: 80, label: 'Q1'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFEC4899),
+                  color: const Color(0xFFEC4899),
                   dataPoint: ChartDataPoint(x: 1, y: 95, label: 'Q2'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFEC4899),
+                  color: const Color(0xFFEC4899),
                   dataPoint: ChartDataPoint(x: 2, y: 70, label: 'Q3'),
                 ),
                 ChartDataSet(
-                  color: Color(0xFFEC4899),
+                  color: const Color(0xFFEC4899),
                   dataPoint: ChartDataPoint(x: 3, y: 110, label: 'Q4'),
                 ),
               ],

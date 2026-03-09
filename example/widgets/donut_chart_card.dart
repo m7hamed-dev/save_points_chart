@@ -20,21 +20,21 @@ class DonutChartCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             DonutChartWidget(
-              data: const [
+              data: [
                 PieData(
                   label: 'Product A',
                   value: 40,
-                  color: Color(0xFF6366F1),
+                  color: const Color(0xFF6366F1),
                 ),
                 PieData(
                   label: 'Product B',
                   value: 30,
-                  color: Color(0xFF10B981),
+                  color: const Color(0xFF10B981),
                 ),
                 PieData(
                   label: 'Product C',
                   value: 30,
-                  color: Color(0xFFEC4899),
+                  color: const Color(0xFFEC4899),
                 ),
               ],
               config: ChartsConfig(theme: theme),

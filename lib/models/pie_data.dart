@@ -21,20 +21,26 @@ import 'package:flutter/material.dart';
 class PieData {
   /// Creates a pie chart segment.
   ///
-  /// [label] must not be empty. [value] must be non-negative and finite.
+  /// [label] must not be empty. [value] must be a number (int, double) or a numeric string.
   /// [color] is required for rendering.
   /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [value] is negative or not finite,
   /// or if [label] is empty.
-  const PieData({
+  PieData({
     required this.label,
-    this.value = 0.0,
+    dynamic value = 0.0,
     required this.color,
     this.showValue = true,
     this.showLabel = true,
     this.circleSize = 18.0,
-  });
+  }) : value = _parseValue(value);
+
+  static double _parseValue(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
 
   /// The label displayed in the legend and tooltips.
   ///
@@ -69,7 +75,7 @@ class PieData {
   /// except for the fields that are explicitly provided.
   PieData copyWith({
     String? label,
-    double? value,
+    dynamic value,
     Color? color,
     bool? showValue,
   }) {

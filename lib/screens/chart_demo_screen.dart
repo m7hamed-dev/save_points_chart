@@ -496,7 +496,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               ChartContextMenuHelper.show(
                 context,
                 point: point,
-                segment: const PieData(label: 'label', color: Colors.red),
+                segment: PieData(label: 'label', color: Colors.red),
                 position: position,
                 datasetIndex: datasetIndex,
                 elementIndex: pointIndex,
@@ -1348,7 +1348,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point: const ChartDataPoint(
+                point: ChartDataPoint(
                   x: 0,
                   y: 75,
                   label: 'Performance Score',
@@ -1368,7 +1368,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point: const ChartDataPoint(
+                point: ChartDataPoint(
                   x: 0,
                   y: 85,
                   label: 'Customer Satisfaction',
@@ -1388,7 +1388,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point: const ChartDataPoint(x: 0, y: 60, label: 'Sales Target'),
+                point: ChartDataPoint(x: 0, y: 60, label: 'Sales Target'),
                 datasetLabel: 'Sales Target',
               );
             },

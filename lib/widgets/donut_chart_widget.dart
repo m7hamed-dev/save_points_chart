@@ -10,6 +10,7 @@ import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 
 /// Modern donut chart with gradient sections and interactive features.
 class DonutChartWidget extends StatefulWidget {
@@ -325,7 +326,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
             ),
             const SizedBox(height: 4),
             Text(
-              value.toStringAsFixed(0),
+              ChartFormatUtils.formatValue(value),
               style: TextStyle(
                 color: theme.textColor,
                 fontSize: 24,

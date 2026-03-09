@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 
 /// Base painter for all chart types with common utilities.
 ///
@@ -440,9 +441,7 @@ abstract class BaseChartPainter extends CustomPainter {
           final value = minX + xRange * (i / xLabelsCount);
           if (!value.isFinite) continue;
 
-          final displayValue = value % 1 == 0
-              ? value.toInt().toString()
-              : value.toStringAsFixed(1);
+          final displayValue = ChartFormatUtils.formatValue(value, fractionDigits: 1);
 
           final textPainter = TextPainter(
             text: TextSpan(text: displayValue, style: textStyle),
@@ -473,9 +472,7 @@ abstract class BaseChartPainter extends CustomPainter {
         final value = minY + yRange * (i / yLabels);
         if (!value.isFinite) continue;
 
-        final displayValue = value % 1 == 0
-            ? value.toInt().toString()
-            : value.toStringAsFixed(1);
+        final displayValue = ChartFormatUtils.formatValue(value, fractionDigits: 1);
 
         final textPainter = TextPainter(
           text: TextSpan(text: displayValue, style: textStyle),
