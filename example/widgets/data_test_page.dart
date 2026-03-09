@@ -16,8 +16,7 @@ class DataTestPage extends StatelessWidget {
       'refrigerators_count': 47,
       'area_active_count': 1,
       'operations_counts': 21,
-      'refrigerators':
-          [], // Truncated for brevity as requested, only reports are used for charts
+      'refrigerators': [], // Truncated for brevity as requested, only reports are used for charts
       'customers': [],
       'maintenance_officers': [],
       'representatives': [],
@@ -35,13 +34,9 @@ class DataTestPage extends StatelessWidget {
   };
 
   static List<Map<String, dynamic>> get _reports {
-    final reports = List<Map<String, dynamic>>.from(
-      _jsonData['data']['reports'],
-    );
+    final reports = List<Map<String, dynamic>>.from(_jsonData['data']['reports']);
     // Sort by month ascending (oldest to newest)
-    reports.sort(
-      (a, b) => (a['month'] as String).compareTo(b['month'] as String),
-    );
+    reports.sort((a, b) => (a['month'] as String).compareTo(b['month'] as String));
     return reports;
   }
 
@@ -49,28 +44,12 @@ class DataTestPage extends StatelessWidget {
     final parts = dateStr.split('-');
     final year = parts[0].substring(2);
     final month = int.parse(parts[1]);
-    const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
+    const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return '${months[month]} $year';
   }
 
-  static List<int> get _operations =>
-      _reports.map((e) => e['operations'] as int).toList();
-  static int get _totalOps =>
-      _reports.fold(0, (sum, item) => sum + (item['operations'] as int));
+  static List<int> get _operations => _reports.map((e) => e['operations'] as int).toList();
+  static int get _totalOps => _reports.fold(0, (sum, item) => sum + (item['operations'] as int));
 
   static const _color = Color(0xFF6366F1);
 
@@ -109,8 +88,7 @@ class DataTestPage extends StatelessWidget {
     }).toList();
   }
 
-  static List<PieData> get _pieDataNonZero =>
-      _pieData.where((e) => e.value > 0).toList();
+  static List<PieData> get _pieDataNonZero => _pieData.where((e) => e.value > 0).toList();
 
   static List<RadarDataSet> get _radarData => [
     RadarDataSet(
@@ -292,13 +270,9 @@ class DataTestPage extends StatelessWidget {
             config: config,
             title: 'Operations Bubble',
             onBubbleTap: (point, datasetIndex, pointIndex, position) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${point.label ?? 'Bubble'} – ${point.y.toStringAsFixed(0)} ops',
-                  ),
-                ),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('${point.label ?? 'Bubble'} – ${point.y.toStringAsFixed(0)} ops')));
             },
           ),
         ),
@@ -320,11 +294,9 @@ class DataTestPage extends StatelessWidget {
             centerLabel: 'Feb',
             unit: '%',
             onChartTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Feb 2026: 12 operations (57.1%)'),
-                ),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Feb 2026: 12 operations (57.1%)')));
             },
           ),
         ),
@@ -344,13 +316,7 @@ class DataTestPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text(label, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               chart,
             ],
@@ -362,25 +328,17 @@ class DataTestPage extends StatelessWidget {
 
   static ChartPointCallback _onPointTap(BuildContext context) {
     return (point, datasetIndex, pointIndex, position) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${point.label ?? 'Point'} – ${point.y.toStringAsFixed(0)} operations',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${point.label ?? 'Point'} – ${point.y.toStringAsFixed(0)} operations')));
     };
   }
 
   static PieSegmentCallback _onSegmentTap(BuildContext context) {
     return (segment, index, position) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${segment.label} – ${segment.value.toStringAsFixed(0)} operations',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${segment.label} – ${segment.value.toStringAsFixed(0)} operations')));
     };
   }
 }

@@ -12,40 +12,25 @@ class DataTestScreen extends StatelessWidget {
   static const Map<String, dynamic> _jsonData = {
     'success': true,
     'data': {
-        'customer_count': 13,
-        'refrigerators_count': 47,
-        'area_active_count': 1,
-        'operations_counts': 21,
-        'refrigerators': [], // Truncated for brevity
-        'customers': [],
-        'maintenance_officers': [],
-        'representatives': [],
-        'operation': [],
-        'reports': [
-            {
-                'month': '2026-02',
-                'operations': 12
-            },
-            {
-                'month': '2026-01',
-                'operations': 0
-            },
-            {
-                'month': '2025-12',
-                'operations': 0
-            },
-            {
-                'month': '2025-11',
-                'operations': 0
-            },
-            {
-                'month': '2025-10',
-                'operations': 9
-            }
-        ],
-        'status': 200
+      'customer_count': 13,
+      'refrigerators_count': 47,
+      'area_active_count': 1,
+      'operations_counts': 21,
+      'refrigerators': [], // Truncated for brevity
+      'customers': [],
+      'maintenance_officers': [],
+      'representatives': [],
+      'operation': [],
+      'reports': [
+        {'month': '2026-02', 'operations': 12},
+        {'month': '2026-01', 'operations': 0},
+        {'month': '2025-12', 'operations': 0},
+        {'month': '2025-11', 'operations': 0},
+        {'month': '2025-10', 'operations': 9},
+      ],
+      'status': 200,
     },
-    'message': 'messages.refrigerator_returned_successfully'
+    'message': 'messages.refrigerator_returned_successfully',
   };
 
   static List<Map<String, dynamic>> get _reports {
@@ -59,10 +44,7 @@ class DataTestScreen extends StatelessWidget {
     final parts = dateStr.split('-');
     final year = parts[0].substring(2);
     final month = int.parse(parts[1]);
-    const months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
+    const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return '${months[month]} $year';
   }
 
@@ -94,7 +76,7 @@ class DataTestScreen extends StatelessWidget {
       const Color(0xFF10B981),
       const Color(0xFFF59E0B),
     ];
-    
+
     return _reports.asMap().entries.map((entry) {
       final index = entry.key;
       final report = entry.value;
@@ -109,33 +91,33 @@ class DataTestScreen extends StatelessWidget {
   static List<PieData> get _pieDataNonZero => _pieData.where((e) => e.value > 0).toList();
 
   static List<RadarDataSet> get _radarData => [
-        RadarDataSet(
-          color: _color,
-          dataPoints: _reports.map((report) {
-            return RadarDataPoint(
-              label: _formatDate(report['month'] as String),
-              value: (report['operations'] as int).toDouble(),
-            );
-          }).toList(),
-        ),
-      ];
+    RadarDataSet(
+      color: _color,
+      dataPoints: _reports.map((report) {
+        return RadarDataPoint(
+          label: _formatDate(report['month'] as String),
+          value: (report['operations'] as int).toDouble(),
+        );
+      }).toList(),
+    ),
+  ];
 
   static List<BubbleDataSet> get _bubbleData => [
-        BubbleDataSet(
-          color: _color,
-          dataPoints: _reports.asMap().entries.map((entry) {
-            final index = entry.key;
-            final report = entry.value;
-            final operations = report['operations'] as int;
-            return BubbleDataPoint(
-              x: index.toDouble(),
-              y: operations.toDouble(),
-              size: (operations + 2).toDouble(),
-              label: _formatDate(report['month'] as String),
-            );
-          }).toList(),
-        ),
-      ];
+    BubbleDataSet(
+      color: _color,
+      dataPoints: _reports.asMap().entries.map((entry) {
+        final index = entry.key;
+        final report = entry.value;
+        final operations = report['operations'] as int;
+        return BubbleDataPoint(
+          x: index.toDouble(),
+          y: operations.toDouble(),
+          size: (operations + 2).toDouble(),
+          label: _formatDate(report['month'] as String),
+        );
+      }).toList(),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -309,11 +291,9 @@ class DataTestScreen extends StatelessWidget {
             unit: '%',
             onChartTap: () {
               // Gauge doesn't use ChartContextMenuHelper as it's not point-based in the same way
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Feb 2026: 12 operations (57.1%)'),
-                ),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Feb 2026: 12 operations (57.1%)')));
             },
           ),
         ),
@@ -333,13 +313,7 @@ class DataTestScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text(label, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               chart,
             ],
@@ -444,11 +418,7 @@ class DataTestScreen extends StatelessWidget {
     };
   }
 
-  void _showDetailsDialog(
-    BuildContext context, {
-    ChartDataPoint? point,
-    PieData? segment,
-  }) {
+  void _showDetailsDialog(BuildContext context, {ChartDataPoint? point, PieData? segment}) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -460,27 +430,19 @@ class DataTestScreen extends StatelessWidget {
             if (point != null) ...[
               Text('Label: ${point.label ?? 'N/A'}'),
               Text('Value: ${point.y.toStringAsFixed(2)}'),
-              if (point is BubbleDataPoint)
-                Text('Size: ${point.size.toStringAsFixed(2)}'),
+              if (point is BubbleDataPoint) Text('Size: ${point.size.toStringAsFixed(2)}'),
             ] else if (segment != null) ...[
               Text('Label: ${segment.label}'),
               Text('Value: ${segment.value.toStringAsFixed(2)}'),
             ],
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
     );
   }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message), duration: const Duration(seconds: 1)));
   }
 }
