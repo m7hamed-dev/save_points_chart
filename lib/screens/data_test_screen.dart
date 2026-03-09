@@ -10,42 +10,42 @@ class DataTestScreen extends StatelessWidget {
   // ── Shared data derived from the JSON ──────────────────────────────────
 
   static const Map<String, dynamic> _jsonData = {
-    "success": true,
-    "data": {
-        "customer_count": 13,
-        "refrigerators_count": 47,
-        "area_active_count": 1,
-        "operations_counts": 21,
-        "refrigerators": [], // Truncated for brevity
-        "customers": [],
-        "maintenance_officers": [],
-        "representatives": [],
-        "operation": [],
-        "reports": [
+    'success': true,
+    'data': {
+        'customer_count': 13,
+        'refrigerators_count': 47,
+        'area_active_count': 1,
+        'operations_counts': 21,
+        'refrigerators': [], // Truncated for brevity
+        'customers': [],
+        'maintenance_officers': [],
+        'representatives': [],
+        'operation': [],
+        'reports': [
             {
-                "month": "2026-02",
-                "operations": 12
+                'month': '2026-02',
+                'operations': 12
             },
             {
-                "month": "2026-01",
-                "operations": 0
+                'month': '2026-01',
+                'operations': 0
             },
             {
-                "month": "2025-12",
-                "operations": 0
+                'month': '2025-12',
+                'operations': 0
             },
             {
-                "month": "2025-11",
-                "operations": 0
+                'month': '2025-11',
+                'operations': 0
             },
             {
-                "month": "2025-10",
-                "operations": 9
+                'month': '2025-10',
+                'operations': 9
             }
         ],
-        "status": 200
+        'status': 200
     },
-    "message": "messages.refrigerator_returned_successfully"
+    'message': 'messages.refrigerator_returned_successfully'
   };
 
   static List<Map<String, dynamic>> get _reports {

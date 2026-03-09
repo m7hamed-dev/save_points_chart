@@ -10,9 +10,8 @@ import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
-import 'package:save_points_chart/widgets/show_empty_or_widget.dart';
 
-/// Modern donut chart with gradient sections
+/// Modern donut chart with gradient sections and interactive features.
 class DonutChartWidget extends StatefulWidget {
   const DonutChartWidget({
     super.key,
@@ -40,9 +39,6 @@ class DonutChartWidget extends StatefulWidget {
   final double centerSpaceRadius;
   final bool showLegend;
   final bool showLabel;
-
-  /// Layout of chart and legend: [Axis.horizontal] = Row (chart left, legend right),
-  /// [.vertical] = Column (chart top, legend below).
   final Axis legendLayout;
   final String? title;
   final String? subtitle;
@@ -62,18 +58,19 @@ class DonutChartWidget extends StatefulWidget {
 
 class _DonutChartWidgetState extends State<DonutChartWidget>
     with SingleTickerProviderStateMixin {
-  ///
   late AnimationController _controller;
   late Animation<double> _animation;
+  
+  // State
   ChartInteractionResult? _selectedSegment;
+  double _totalValue = 0;
 
   @override
   void initState() {
     super.initState();
+    _calculateTotal();
     _controller = AnimationController(
-      duration:
-          widget.config?.animationDuration ??
-          const Duration(milliseconds: 1500),
+      duration: widget.config?.animationDuration ?? const Duration(milliseconds: 1500),
       vsync: this,
     );
     _animation = CurvedAnimation(
@@ -84,245 +81,125 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget =
-        widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
-    final effectiveEmptyNoValuesWidget =
-        widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No values to display',
-        );
+  void didUpdateWidget(DonutChartWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.data != oldWidget.data) {
+      _calculateTotal();
+      if (!_controller.isAnimating) {
+        _controller.reset();
+        _controller.forward();
+      }
+    }
+  }
 
-    // Handle empty data case
+  void _calculateTotal() {
     if (widget.data.isEmpty) {
-      Widget container = ChartContainer(
-        theme: effectiveTheme,
-        title: widget.title,
-        subtitle: widget.subtitle,
-        header: widget.header,
-        footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
-        useNeumorphism: widget.config?.useNeumorphism ?? false,
-        isLoading: widget.isLoading,
-        isError: widget.isError,
-        errorMessage: widget.config?.errorMessage,
-        errorWidget: widget.config?.errorWidget,
-        padding: widget.padding,
-        boxShadow: widget.config?.boxShadow,
-        child: effectiveEmptyWidget,
-      );
-
-      if (widget.margin != null) {
-        container = Padding(padding: widget.margin!, child: container);
-      }
-
-      return container;
+      _totalValue = 0;
+      return;
     }
+    _totalValue = widget.data.fold(0.0, (sum, item) => sum + item.value);
+  }
 
-    final total = widget.data.map((d) => d.value).reduce((a, b) => a + b);
-
-    // Handle all-zero data: painter would draw nothing and legend would show NaN%
-    if (total == 0 || !total.isFinite) {
-      Widget container = ChartContainer(
-        theme: effectiveTheme,
-        title: widget.title,
-        subtitle: widget.subtitle,
-        header: widget.header,
-        footer: widget.footer,
-        useGlassmorphism: widget.config?.useGlassmorphism ?? false,
-        useNeumorphism: widget.config?.useNeumorphism ?? false,
-        isLoading: widget.isLoading,
-        isError: widget.isError,
-        errorMessage: widget.config?.errorMessage,
-        errorWidget: widget.config?.errorWidget,
-        padding: widget.padding,
-        boxShadow: widget.config?.boxShadow,
-        child: effectiveEmptyNoValuesWidget,
-      );
-      if (widget.margin != null) {
-        container = Padding(padding: widget.margin!, child: container);
-      }
-      return container;
-    }
-
-    final Widget chart = RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, child) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final chartSize = widget.height != null
-                  ? math.min(constraints.maxWidth, widget.height!).toDouble()
-                  : math.min(constraints.maxWidth, 280.0).toDouble();
-              final size = Size(chartSize, chartSize);
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTapDown: widget.onSegmentTap != null
-                        ? (details) {
-                            ChartContextMenuHelper.hide();
-                            final result =
-                                ChartInteractionHelper.findPieSegment(
-                                  details.localPosition,
-                                  widget.data,
-                                  size,
-                                  widget.centerSpaceRadius,
-                                );
-                            if (result != null && result.isHit) {
-                              HapticFeedback.selectionClick();
-                              setState(() => _selectedSegment = result);
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
-                              final globalPosition = renderBox != null
-                                  ? renderBox.localToGlobal(
-                                      details.localPosition,
-                                    )
-                                  : details.globalPosition;
-                              Future.microtask(() {
-                                widget.onSegmentTap?.call(
-                                  result.segment!,
-                                  result.elementIndex!,
-                                  globalPosition,
-                                );
-                              });
-                            } else {
-                              setState(() => _selectedSegment = null);
-                            }
-                          }
-                        : null,
-                    child: SizedBox(
-                      width: size.width,
-                      height: size.height,
-                      child: CustomPaint(
-                        size: size,
-                        painter: PieChartPainter(
-                          data: widget.data,
-                          theme: effectiveTheme,
-                          centerSpaceRadius: widget.centerSpaceRadius,
-                          borderWidth: widget.borderWidth,
-                          showLabel: widget.showLabel,
-                          animationProgress: _animation.value,
-                          selectedSegment: _selectedSegment,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: .min,
-                    children: [
-                      Text(
-                        'Total',
-                        style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(
-                            alpha: 0.5,
-                          ),
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        total.toStringAsFixed(0),
-                        style: TextStyle(
-                          color: effectiveTheme.textColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
+  void _handleTap(TapDownDetails details, Size size, BuildContext context) {
+    ChartContextMenuHelper.hide();
+    final result = ChartInteractionHelper.findPieSegment(
+      details.localPosition,
+      widget.data,
+      size,
+      widget.centerSpaceRadius,
     );
 
-    final Widget legend = Column(
-      mainAxisAlignment: .center,
-      crossAxisAlignment: .start,
-      children: widget.data.map((item) {
-        /// item data: label, color, value, percentage
-        final label = item.label;
-        final color = item.color;
-        final value = item.value;
-        final percentage = ((value / total) * 100).toStringAsFixed(1);
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: [
-              Container(
-                width: item.circleSize,
-                height: item.circleSize,
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ShowEmptyOrWidget(
-                  showWidget: item.showLabel,
-                  widget: Text(
-                    label,
-                    style: TextStyle(
-                      color: effectiveTheme.textColor,
-                      fontSize: 12,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              ShowEmptyOrWidget(
-                showWidget: item.showValue,
-                widget: Text(
-                  '$percentage%',
-                  style: TextStyle(
-                    color: effectiveTheme.textColor.withValues(alpha: 0.7),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
+    if (result != null && result.isHit) {
+      HapticFeedback.selectionClick();
+      setState(() => _selectedSegment = result);
+      
+      final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+      final globalPosition = renderBox != null
+          ? renderBox.localToGlobal(details.localPosition)
+          : details.globalPosition;
+          
+      Future.microtask(() {
+        widget.onSegmentTap?.call(
+          result.segment!,
+          result.elementIndex!,
+          globalPosition,
         );
-      }).toList(),
-    );
+      });
+    } else {
+      setState(() => _selectedSegment = null);
+    }
+  }
 
-    final Widget content = widget.legendLayout == .vertical
-        ? Column(
-            mainAxisSize: .min,
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveTheme = widget.config?.theme ?? 
+        ChartTheme.fromMaterialTheme(Theme.of(context));
+
+    // 1. Handle Empty/Loading/Error States
+    if (widget.data.isEmpty || _totalValue == 0) {
+      return _buildEmptyState(effectiveTheme);
+    }
+
+    // 2. Build Content
+    final Widget content = LayoutBuilder(
+      builder: (context, constraints) {
+        final isVertical = widget.legendLayout == Axis.vertical;
+        
+        // Determine chart size based on constraints
+        final availableWidth = constraints.maxWidth;
+        // If vertical, chart can take full width. If horizontal, it shares space.
+        // We also cap the size to ensure it doesn't get too massive.
+        final chartSize = widget.height ?? 
+            (isVertical 
+                ? math.min(availableWidth, 300.0) 
+                : math.min(availableWidth * 0.6, 300.0));
+
+        final chartSection = _buildChartSection(
+          chartSize, 
+          effectiveTheme,
+        );
+        
+        final legendSection = widget.showLegend && effectiveTheme.showLegend
+            ? _buildLegend(effectiveTheme)
+            : const SizedBox.shrink();
+
+        if (isVertical) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              chart,
-              if (widget.showLegend && effectiveTheme.showLegend) ...[
-                const SizedBox(height: 16),
-                Center(child: legend),
-              ],
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(flex: 3, child: chart),
-              if (widget.showLegend && effectiveTheme.showLegend)
-                Expanded(flex: 2, child: legend),
+              chartSection,
+              const SizedBox(height: 24),
+              legendSection,
             ],
           );
+        } else {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Chart takes up space but stays centered
+              Flexible(
+                flex: 3, 
+                child: Center(child: chartSection),
+              ),
+              const SizedBox(width: 16),
+              // Legend takes remaining space
+              Flexible(
+                flex: 2, 
+                child: legendSection,
+              ),
+            ],
+          );
+        }
+      },
+    );
 
+    // 3. Wrap in Container
     Widget container = ChartContainer(
       theme: effectiveTheme,
       title: widget.title,
@@ -347,9 +224,170 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     return container;
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Widget _buildEmptyState(ChartTheme theme) {
+    final message = widget.data.isEmpty 
+        ? (widget.config?.emptyMessage ?? 'No data available')
+        : (widget.config?.emptyMessage ?? 'No values to display');
+        
+    Widget container = ChartContainer(
+      theme: theme,
+      title: widget.title,
+      subtitle: widget.subtitle,
+      header: widget.header,
+      footer: widget.footer,
+      useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+      useNeumorphism: widget.config?.useNeumorphism ?? false,
+      isLoading: widget.isLoading,
+      isError: widget.isError,
+      errorMessage: widget.config?.errorMessage,
+      errorWidget: widget.config?.errorWidget,
+      padding: widget.padding,
+      boxShadow: widget.config?.boxShadow,
+      child: widget.config?.emptyWidget ?? ChartEmptyState(
+        theme: theme,
+        message: message,
+      ),
+    );
+
+    if (widget.margin != null) {
+      container = Padding(padding: widget.margin!, child: container);
+    }
+    return container;
+  }
+
+  Widget _buildChartSection(double size, ChartTheme theme) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Interactive Chart Layer
+          RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTapDown: widget.onSegmentTap != null 
+                      ? (details) => _handleTap(details, Size(size, size), context)
+                      : null,
+                  child: CustomPaint(
+                    size: Size(size, size),
+                    painter: PieChartPainter(
+                      data: widget.data,
+                      theme: theme,
+                      centerSpaceRadius: widget.centerSpaceRadius,
+                      borderWidth: widget.borderWidth,
+                      showLabel: widget.showLabel,
+                      animationProgress: _animation.value,
+                      selectedSegment: _selectedSegment,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Center Info Layer
+          _buildCenterInfo(theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCenterInfo(ChartTheme theme) {
+    // If a segment is selected, show its info, otherwise show Total
+    final isSegmentSelected = _selectedSegment != null && _selectedSegment!.isHit;
+    final label = isSegmentSelected 
+        ? _selectedSegment!.segment!.label 
+        : 'Total';
+    final value = isSegmentSelected 
+        ? _selectedSegment!.segment!.value 
+        : _totalValue;
+
+    return IgnorePointer(
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: Column(
+          key: ValueKey(label), // Triggers animation when label changes
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: theme.textColor.withValues(alpha: 0.6),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value.toStringAsFixed(0),
+              style: TextStyle(
+                color: theme.textColor,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegend(ChartTheme theme) {
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      children: widget.data.map((item) {
+        final percentage = ((item.value / _totalValue) * 100).toStringAsFixed(1);
+        final isSelected = _selectedSegment?.segment == item;
+        
+        return AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: _selectedSegment == null || isSelected ? 1.0 : 0.3,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: item.color,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.textColor.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  item.label,
+                  style: TextStyle(
+                    color: theme.textColor,
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '$percentage%',
+                style: TextStyle(
+                  color: theme.textColor.withValues(alpha: 0.6),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
   }
 }
