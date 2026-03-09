@@ -154,9 +154,20 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         
         // Determine chart size based on constraints
         // Ensure we have a valid width constraint (minimum 100 to prevent negative radius)
-        final availableWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
-            ? constraints.maxWidth
-            : 300.0;
+        // If maxWidth is unbounded (double.infinity), use a reasonable default
+        // If maxWidth is zero or very small, ensure minimum size
+        double availableWidth;
+        if (!constraints.maxWidth.isFinite) {
+          // Unbounded constraints - use default size
+          availableWidth = 300.0;
+        } else if (constraints.maxWidth <= 0) {
+          // Zero or negative - use minimum
+          availableWidth = 100.0;
+        } else {
+          // Valid finite width - use it but ensure minimum
+          availableWidth = math.max(constraints.maxWidth, 100.0);
+        }
+        
         // If vertical, chart can take full width. If horizontal, it shares space.
         // We also cap the size to ensure it doesn't get too massive.
         final chartSize = (widget.height ?? 

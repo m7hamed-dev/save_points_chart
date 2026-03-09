@@ -60,12 +60,19 @@ class PieChartPainter extends CustomPainter {
     for (int index = 0; index < data.length; index++) {
       final item = data[index];
 
-      // Validate item value
+      // Validate item value - skip invalid or negative values
+      // Zero values are allowed (they just won't draw anything visible)
       if (!item.value.isFinite || item.value < 0) {
         continue;
       }
 
       final sweepAngle = (item.value / total) * 2 * math.pi;
+      
+      // Skip segments with zero or near-zero sweep angle to avoid degenerate paths
+      if (sweepAngle.abs() < 0.001) {
+        startAngle += sweepAngle; // Still advance the angle for next segment
+        continue;
+      }
 
       // Animate each segment with stagger
       final segmentProgress = math.max(
