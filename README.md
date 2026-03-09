@@ -288,9 +288,25 @@ LineChartWidget(
 )
 ```
 
+> **Important Note:** Interactive features (visual border highlighting, context menus, haptic feedback) are only enabled when you provide the corresponding callback parameters:
+> - **`onPointTap`** - Enables tap interaction for Line, Area, Scatter, Bubble, Radial, Sparkline, Spline, Step Line, and Gauge charts
+> - **`onBarTap`** - Enables tap interaction for Bar and Stacked Column charts
+> - **`onSegmentTap`** - Enables tap interaction for Pie, Donut, Pyramid, and Funnel charts
+> - **`onBubbleTap`** - Enables tap interaction for Bubble charts
+> - **`onChartTap`** - Enables tap interaction for Gauge charts
+>
+> **When callbacks are not provided (null):**
+> - Charts render normally but are **not interactive**
+> - No visual border highlighting appears on tap
+> - No context menus are shown
+> - No haptic feedback is triggered
+> - Tap gestures are ignored
+>
+> To enable interactive features, simply provide the appropriate callback parameter for your chart type.
+
 ### Interactive Context Menu
 
-All charts support interactive context menus on tap with haptic feedback:
+All charts support interactive context menus on tap with haptic feedback (only when callbacks are provided):
 
 ```dart
 LineChartWidget(
@@ -543,8 +559,8 @@ Or check out the example app in the repository to see all chart types in action.
 ### Line Chart
 - Smooth curves
 - Gradient area fills
-- Interactive tooltips with haptic feedback
-- Mouse hover support with visual feedback
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, haptic feedback, and context menus
+- Mouse hover support with visual feedback (requires `onPointHover` callback)
 - Multiple datasets
 
 ### Bar Chart
@@ -553,20 +569,20 @@ Or check out the example app in the repository to see all chart types in action.
 - Gradient fills
 - Customizable spacing
 - Mouse hover support with elevation effects
-- Haptic feedback on tap
+- **Interactive**: Provide `onBarTap` callback to enable tap interaction, visual border highlighting, haptic feedback, and context menus
 
 ### Area Chart
 - Filled areas with gradients
 - Smooth curves
 - Multiple datasets overlay
-- Interactive point tapping
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, and context menus
 
 ### Stacked Area Chart
 - Cumulative multi-series visualization
 - Stacked layers for trend comparison
 - Multiple datasets required
 - Smooth gradient fills
-- Interactive point tapping
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, and context menus
 
 ### Pie Chart
 - Percentage labels
@@ -574,19 +590,21 @@ Or check out the example app in the repository to see all chart types in action.
 - Legend support
 - Smooth animations
 - **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`.vertical`)
+- **Interactive**: Provide `onSegmentTap` callback to enable tap interaction, visual border highlighting, and context menus
 
 ### Donut Chart
 - Center value display
 - Similar to pie with center space
 - Modern donut design
 - **Row or column layout**: `legendLayout` — chart and legend in a row (default) or column (`.vertical`)
+- **Interactive**: Provide `onSegmentTap` callback to enable tap interaction, visual border highlighting, and context menus
 
 ### Radial Chart
 - Multi-dimensional data
 - Radar/spider chart
 - Performance metrics visualization
-- Mouse hover support with glow effects
-- Haptic feedback on tap
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, haptic feedback, and context menus
+- Mouse hover support with glow effects (requires `onPointHover` callback)
 
 ### Sparkline Chart
 - Compact inline charts
@@ -597,18 +615,16 @@ Or check out the example app in the repository to see all chart types in action.
 - Relationship visualization
 - Correlation analysis
 - Multiple data series support
-- Interactive point tapping
-- Mouse hover support
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, and context menus
+- Mouse hover support (requires `onPointHover` callback)
 
 ### Bubble Chart
 - Three-dimensional data visualization (x, y position + size dimension)
 - Size-based encoding for third variable
 - Multiple data series support with distinct colors
-- Interactive bubble tapping with haptic feedback
-- Mouse hover support with visual feedback
+- **Interactive**: Provide `onBubbleTap` callback to enable tap interaction, visual border highlighting, haptic feedback, and context menus
+- Mouse hover support with visual feedback (requires `onBubbleHover` callback)
 - Customizable bubble size range (minBubbleSize, maxBubbleSize)
-- Context menu support on tap
-- Visual border highlighting on selection
 - Smooth entrance animations
 
 ### Radar Chart
@@ -624,36 +640,36 @@ Or check out the example app in the repository to see all chart types in action.
 - Customizable segments
 - Semi-circular or circular gauge
 - Center label and unit display
-- Interactive chart tapping
+- **Interactive**: Provide `onChartTap` callback to enable tap interaction
 
 ### Spline Chart
 - Smooth bezier curves
 - Gradient area fills
-- Interactive point tapping with border highlighting
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, and context menus
 - Multiple datasets support
 
 ### Step Line Chart
 - Step function visualization
 - Horizontal and vertical segments
-- Interactive point tapping with border highlighting
+- **Interactive**: Provide `onPointTap` callback to enable tap interaction, visual border highlighting, and context menus
 - Area fill support
 
 ### Stacked Column Chart
 - Multiple datasets stacked vertically
-- Interactive bar tapping with border highlighting
+- **Interactive**: Provide `onBarTap` callback to enable tap interaction, visual border highlighting, and context menus
 - Gradient fills per segment
 - Customizable bar width
 
 ### Pyramid Chart
 - Hierarchical data visualization
 - Largest to smallest segments
-- Interactive segment tapping with border highlighting
+- **Interactive**: Provide `onSegmentTap` callback to enable tap interaction, visual border highlighting, and context menus
 - Gradient fills
 
 ### Funnel Chart
 - Sales funnel and conversion tracking
 - Top to bottom narrowing
-- Interactive segment tapping with border highlighting
+- **Interactive**: Provide `onSegmentTap` callback to enable tap interaction, visual border highlighting, and context menus
 - Gradient fills
 
 ## 🎨 Design Effects
