@@ -54,6 +54,9 @@ class PieChartPainter extends CustomPainter {
     // Start from top, with rotation animation
     double startAngle = -math.pi / 2 - (1.0 - animationProgress) * math.pi;
 
+    // Pre-calculate paths and paints to optimize drawing order
+    final List<({Path path, Paint paint, Paint shadowPaint, bool isSelected, double startAngle, double sweepAngle, Offset center})> segments = [];
+
     for (int index = 0; index < data.length; index++) {
       final item = data[index];
 
@@ -129,6 +132,7 @@ class PieChartPainter extends CustomPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0)
         ..style = PaintingStyle.fill;
 
+      Path path;
       if (centerSpaceRadius > 0) {
         // Donut chart
         final outerPath = Path()
@@ -150,156 +154,147 @@ class PieChartPainter extends CustomPainter {
           ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
           ..close();
 
-        final combinedPath = Path.combine(
+        path = Path.combine(
           PathOperation.difference,
           outerPath,
           innerPath,
         );
-
-        // Draw shadow first for depth
-        final shadowOffset = const Offset(2, 2);
-        final shadowPath = Path()
-          ..addPath(combinedPath, shadowOffset);
-        canvas.drawPath(shadowPath, shadowPaint);
-        
-        canvas.drawPath(combinedPath, paint);
-        
-        // Add highlight on top edge
-        final highlightPaint = Paint()
-          ..shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white.withValues(alpha: 0.3),
-              Colors.white.withValues(alpha: 0.0),
-            ],
-          ).createShader(rect)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5;
-        canvas.drawPath(combinedPath, highlightPaint);
-
-        // Add border if selected (white border)
-        if (isSelected) {
-          final borderPaint = Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth + 1; // Slightly thinner border for exploded view
-          canvas.drawPath(combinedPath, borderPaint);
-        }
       } else {
-        // Pie chart - draw shadow first
-        final shadowRect = Rect.fromCircle(
-          center: Offset(effectiveCenter.dx + 2, effectiveCenter.dy + 2),
-          radius: radius,
-        );
-        canvas.drawArc(
-          shadowRect,
-          startAngle,
-          animatedSweepAngle,
-          true,
-          shadowPaint,
-        );
-        
-        // Draw main segment
-        canvas.drawArc(
-          rect,
-          startAngle,
-          animatedSweepAngle,
-          true,
-          paint,
-        );
-        
-        // Add highlight on top edge
-        final highlightPaint = Paint()
-          ..shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white.withValues(alpha: 0.3),
-              Colors.white.withValues(alpha: 0.0),
-            ],
-          ).createShader(rect)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5;
-        canvas.drawArc(
-          rect,
-          startAngle,
-          animatedSweepAngle,
-          true,
-          highlightPaint,
-        );
-
-        // Add border if selected (white border)
-        if (isSelected) {
-          final borderPaint = Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth + 1; // Slightly thinner border for exploded view
-          canvas.drawArc(
-            rect,
-            startAngle,
-            animatedSweepAngle,
-            true,
-            borderPaint,
-          );
-        }
+        // Pie chart
+        path = Path()
+          ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
+          ..arcTo(rect, startAngle, animatedSweepAngle, false)
+          ..close();
       }
 
-      // Draw percentage label - only for larger segments
-      if (showLabel && animatedSweepAngle > 0.3 && segmentProgress > 0.5) {
-        final labelAngle = startAngle + animatedSweepAngle / 2;
-        final labelRadius = centerSpaceRadius > 0
-            ? (radius + centerSpaceRadius) / 2
-            : radius * 0.7;
-        
-        // Adjust label position based on effective center
-        final labelX = effectiveCenter.dx + math.cos(labelAngle) * labelRadius;
-        final labelY = effectiveCenter.dy + math.sin(labelAngle) * labelRadius;
-
-        final percentage = ((item.value / total) * 100).toStringAsFixed(1);
-
-        // Background for better readability
-        final textSpan = TextSpan(
-          text: '$percentage%',
-          style: TextStyle(
-            color: theme.backgroundColor,
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-        );
-        final textPainter = TextPainter(
-          text: textSpan,
-          textDirection: TextDirection.ltr,
-          textAlign: TextAlign.center,
-        );
-        textPainter.layout();
-
-        // Draw text background
-        final bgRect = Rect.fromCenter(
-          center: Offset(labelX, labelY),
-          width: textPainter.width + 8,
-          height: textPainter.height + 4,
-        );
-        final bgPaint = Paint()
-          ..color = item.color.withValues(alpha: 0.2)
-          ..style = PaintingStyle.fill;
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
-          bgPaint,
-        );
-
-        textPainter.paint(
-          canvas,
-          Offset(
-            labelX - textPainter.width / 2,
-            labelY - textPainter.height / 2,
-          ),
-        );
-      }
+      segments.add((
+        path: path,
+        paint: paint,
+        shadowPaint: shadowPaint,
+        isSelected: isSelected,
+        startAngle: startAngle,
+        sweepAngle: animatedSweepAngle,
+        center: effectiveCenter,
+      ));
 
       startAngle += sweepAngle; // Use original angle for positioning
     }
+
+    // Draw shadows first (except selected)
+    for (final segment in segments) {
+      if (!segment.isSelected) {
+        final shadowOffset = const Offset(2, 2);
+        final shadowPath = Path()..addPath(segment.path, shadowOffset);
+        canvas.drawPath(shadowPath, segment.shadowPaint);
+      }
+    }
+
+    // Draw unselected segments
+    for (final segment in segments) {
+      if (!segment.isSelected) {
+        canvas.drawPath(segment.path, segment.paint);
+        _drawHighlight(canvas, segment.path, segment.paint.shader);
+      }
+    }
+
+    // Draw selected segment shadow
+    for (final segment in segments) {
+      if (segment.isSelected) {
+        final shadowOffset = const Offset(4, 4); // Larger shadow for selected
+        final shadowPath = Path()..addPath(segment.path, shadowOffset);
+        canvas.drawPath(shadowPath, segment.shadowPaint);
+      }
+    }
+
+    // Draw selected segment
+    for (final segment in segments) {
+      if (segment.isSelected) {
+        canvas.drawPath(segment.path, segment.paint);
+        _drawHighlight(canvas, segment.path, segment.paint.shader);
+        
+        // Draw border
+        final borderPaint = Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = borderWidth + 1;
+        canvas.drawPath(segment.path, borderPaint);
+      }
+    }
+
+    // Draw labels
+    for (int i = 0; i < segments.length; i++) {
+      final segment = segments[i];
+      final item = data[i];
+      
+      if (showLabel && segment.sweepAngle > 0.3) {
+        _drawLabel(canvas, segment.center, radius, segment.startAngle, segment.sweepAngle, item, total);
+      }
+    }
+  }
+
+  void _drawHighlight(Canvas canvas, Path path, Shader? shader) {
+    final highlightPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.white.withValues(alpha: 0.3),
+          Colors.white.withValues(alpha: 0.0),
+        ],
+      ).createShader(path.getBounds())
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    canvas.drawPath(path, highlightPaint);
+  }
+
+  void _drawLabel(Canvas canvas, Offset center, double radius, double startAngle, double sweepAngle, PieData item, double total) {
+    final labelAngle = startAngle + sweepAngle / 2;
+    final labelRadius = centerSpaceRadius > 0
+        ? (radius + centerSpaceRadius) / 2
+        : radius * 0.7;
+    
+    final labelX = center.dx + math.cos(labelAngle) * labelRadius;
+    final labelY = center.dy + math.sin(labelAngle) * labelRadius;
+
+    final percentage = ((item.value / total) * 100).toStringAsFixed(1);
+
+    final textSpan = TextSpan(
+      text: '$percentage%',
+      style: TextStyle(
+        color: theme.backgroundColor,
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.3,
+      ),
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+    );
+    textPainter.layout();
+
+    final bgRect = Rect.fromCenter(
+      center: Offset(labelX, labelY),
+      width: textPainter.width + 8,
+      height: textPainter.height + 4,
+    );
+    final bgPaint = Paint()
+      ..color = item.color.withValues(alpha: 0.2)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
+      bgPaint,
+    );
+
+    textPainter.paint(
+      canvas,
+      Offset(
+        labelX - textPainter.width / 2,
+        labelY - textPainter.height / 2,
+      ),
+    );
+
   }
 
   @override
