@@ -419,7 +419,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Chart widget updates across area, bar, bubble, donut, funnel, gauge, line, pie, pyramid, radar, radial, scatter, sparkline, spline, stacked area, stacked column, step line, and chart container
 
-## [1.8.0] - 2026-03-09
+## [1.8.1] - 2026-03-09
 
 ### Added
 - **Dynamic Data Support**: `ChartDataPoint`, `PieData`, `BubbleDataPoint`, and `RadarDataPoint` now accept `dynamic` values (`int`, `double`, `String`) for numeric fields (`value`, `x`, `y`, `size`).
