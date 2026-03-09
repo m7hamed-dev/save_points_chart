@@ -43,7 +43,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.7.7
+  save_points_chart: ^1.7.8
 ```
 
 Then run:
@@ -83,7 +83,7 @@ LineChartWidget(
 )
 ```
 
-> The demo showcases all 17 chart types with interactive features, click interactions, border highlighting, animations, and theme switching.  
+> The demo showcases all 17 chart types with interactive features, click interactions, border highlighting, animations, and theme switching.
 > The video is also included in the published package on [pub.dev](https://pub.dev/packages/save_points_chart).
 
 ## 📦 Dependencies
@@ -136,11 +136,11 @@ lib/
 
 [`ChartsConfig`](lib/theme/charts_config.dart) lets you set theme, visual effects, empty/error UI, and shadows in one place. Pass it to any chart via the `config` parameter; config values override the chart’s own parameters when provided. All fields are optional.
 
-- **theme** – ChartTheme for colors and styling  
-- **useGlassmorphism** / **useNeumorphism** – Container effects  
-- **emptyWidget** / **emptyMessage** – Custom empty state when there’s no data  
-- **errorWidget** / **errorMessage** – Custom error state  
-- **boxShadow** – Container shadows  
+- **theme** – ChartTheme for colors and styling
+- **useGlassmorphism** / **useNeumorphism** – Container effects
+- **emptyWidget** / **emptyMessage** – Custom empty state when there’s no data
+- **errorWidget** / **errorMessage** – Custom error state
+- **boxShadow** – Container shadows
 
 Use one config instance across multiple charts for consistent look and behavior. See [Using ChartsConfig](#using-chartsconfig) for a full example and parameter table; `lib/theme/charts_config.dart` for the full API and dartdoc.
 
@@ -238,7 +238,7 @@ class _MaterialAppWithTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = ThemeProvider.of(context);
-    
+
     return MaterialApp(
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
@@ -473,10 +473,10 @@ BubbleChartWidget(
     if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
       return;
     }
-    
+
     final bubblePoint = dataSet.dataPoints[pointIndex];
     print('Tapped: ${bubblePoint.label} - Size: ${bubblePoint.size}');
-    
+
     // Show context menu
     ChartContextMenuHelper.show(
       context,
@@ -525,7 +525,7 @@ All charts support extensive customization:
 
 The `ThemeProvider` supports automatic theme switching between:
 - **Light mode** - Always use light theme
-- **Dark mode** - Always use dark theme  
+- **Dark mode** - Always use dark theme
 - **System mode** - Follows device system settings
 
 The theme automatically updates all charts and widgets that use `ThemeProvider.of(context).chartTheme`.
@@ -720,13 +720,13 @@ onBubbleTap: (point, datasetIndex, pointIndex, position) {
   if (datasetIndex < 0 || datasetIndex >= dataSets.length) {
     return; // Invalid dataset index
   }
-  
+
   // Validate pointIndex
   final dataSet = dataSets[datasetIndex];
   if (pointIndex < 0 || pointIndex >= dataSet.dataPoints.length) {
     return; // Invalid point index
   }
-  
+
   // Now safe to access
   final point = dataSet.dataPoints[pointIndex];
   // ... handle tap
