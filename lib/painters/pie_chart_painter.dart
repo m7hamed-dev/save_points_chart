@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -29,10 +30,7 @@ class PieChartPainter extends CustomPainter {
     if (data.isEmpty) return;
 
     // Validate size
-    if (!size.width.isFinite ||
-        !size.height.isFinite ||
-        size.width <= 0 ||
-        size.height <= 0) {
+    if (!size.width.isFinite || !size.height.isFinite || size.width <= 0 || size.height <= 0) {
       return;
     }
 
@@ -55,7 +53,18 @@ class PieChartPainter extends CustomPainter {
     double startAngle = -math.pi / 2 - (1.0 - animationProgress) * math.pi;
 
     // Pre-calculate paths and paints to optimize drawing order
-    final List<({Path path, Paint paint, Paint shadowPaint, bool isSelected, double startAngle, double sweepAngle, Offset center})> segments = [];
+    final List<
+      ({
+        Path path,
+        Paint paint,
+        Paint shadowPaint,
+        bool isSelected,
+        double startAngle,
+        double sweepAngle,
+        Offset center,
+      })
+    >
+    segments = [];
 
     for (int index = 0; index < data.length; index++) {
       final item = data[index];
@@ -67,39 +76,25 @@ class PieChartPainter extends CustomPainter {
       }
 
       final sweepAngle = (item.value / total) * 2 * math.pi;
-      
+
       // Skip segments with zero or near-zero sweep angle to avoid degenerate paths
       if (sweepAngle.abs() < 0.001) {
         startAngle += sweepAngle; // Still advance the angle for next segment
         continue;
       }
 
-      // Check if this is a full circle (accounting for floating point precision)
-      final isFullCircle = sweepAngle.abs() >= 2 * math.pi - 0.001;
-
       // Animate each segment with stagger
-      final segmentProgress = math.max(
-        0.0,
-        math.min(
-          1.0,
-          (animationProgress - (index / data.length) * 0.5) / 0.5,
-        ),
-      );
+      final segmentProgress = math.max(0.0, math.min(1.0, (animationProgress - (index / data.length) * 0.5) / 0.5));
       final animatedSweepAngle = sweepAngle * segmentProgress;
 
       // Check if this segment is selected
-      final isSelected = selectedSegment != null &&
-          selectedSegment!.isHit &&
-          selectedSegment!.elementIndex == index;
+      final isSelected = selectedSegment != null && selectedSegment!.isHit && selectedSegment!.elementIndex == index;
 
       // Calculate offset for selected segment (explode effect)
       final midAngle = startAngle + sweepAngle / 2;
       final offset = isSelected ? 12.0 : 0.0;
-      
-      final effectiveCenter = Offset(
-        center.dx + math.cos(midAngle) * offset,
-        center.dy + math.sin(midAngle) * offset,
-      );
+
+      final effectiveCenter = Offset(center.dx + math.cos(midAngle) * offset, center.dy + math.sin(midAngle) * offset);
 
       // Draw segment with professional gradient (brighter if selected)
       final rect = Rect.fromCircle(center: effectiveCenter, radius: radius);
@@ -109,15 +104,9 @@ class PieChartPainter extends CustomPainter {
       );
 
       // Enhanced gradient with better depth and highlights
-      final baseColor = isSelected 
-          ? item.color.withValues(alpha: 1.0)
-          : item.color;
-      final secondaryColor = isSelected
-          ? item.color.withValues(alpha: 0.9)
-          : item.color.withValues(alpha: 0.8);
-      final tertiaryColor = isSelected
-          ? item.color.withValues(alpha: 0.85)
-          : item.color.withValues(alpha: 0.7);
+      final baseColor = isSelected ? item.color.withValues(alpha: 1.0) : item.color;
+      final secondaryColor = isSelected ? item.color.withValues(alpha: 0.9) : item.color.withValues(alpha: 0.8);
+      final tertiaryColor = isSelected ? item.color.withValues(alpha: 0.85) : item.color.withValues(alpha: 0.7);
 
       final paint = Paint()
         ..shader = RadialGradient(
@@ -126,16 +115,11 @@ class PieChartPainter extends CustomPainter {
             (gradientCenter.dy - effectiveCenter.dy) / radius,
           ),
           radius: 0.9,
-          colors: [
-            baseColor,
-            secondaryColor,
-            tertiaryColor,
-            item.color.withValues(alpha: 0.75),
-          ],
+          colors: [baseColor, secondaryColor, tertiaryColor, item.color.withValues(alpha: 0.75)],
           stops: const [0.0, 0.3, 0.7, 1.0],
         ).createShader(rect)
         ..style = PaintingStyle.fill;
-        
+
       // Add subtle shadow for depth
       final shadowPaint = Paint()
         ..color = Colors.black.withValues(alpha: 0.2)
@@ -143,12 +127,12 @@ class PieChartPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       Path path;
-      
+
       // Handle full circle (2π) specially - arcTo doesn't work well with exactly 2π
       // When animated sweep angle is very close to 2π, use addOval for reliable rendering
       // For animation, we still use arcTo until it's very close to full circle
       final isAnimatedFullCircle = animatedSweepAngle.abs() >= 2 * math.pi - 0.01;
-      
+
       if (centerSpaceRadius > 0) {
         // Donut chart
         if (isAnimatedFullCircle) {
@@ -165,24 +149,14 @@ class PieChartPainter extends CustomPainter {
             ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
             ..close();
 
-          final innerRect =
-              Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
+          final innerRect = Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
           final innerPath = Path()
             ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
-            ..arcTo(
-              innerRect,
-              startAngle + animatedSweepAngle,
-              -animatedSweepAngle,
-              false,
-            )
+            ..arcTo(innerRect, startAngle + animatedSweepAngle, -animatedSweepAngle, false)
             ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
             ..close();
 
-          path = Path.combine(
-            PathOperation.difference,
-            outerPath,
-            innerPath,
-          );
+          path = Path.combine(PathOperation.difference, outerPath, innerPath);
         }
       } else {
         // Pie chart
@@ -242,7 +216,7 @@ class PieChartPainter extends CustomPainter {
       if (segment.isSelected) {
         canvas.drawPath(segment.path, segment.paint);
         _drawHighlight(canvas, segment.path, segment.paint.shader);
-        
+
         // Draw border
         final borderPaint = Paint()
           ..color = Colors.white
@@ -256,7 +230,7 @@ class PieChartPainter extends CustomPainter {
     for (int i = 0; i < segments.length; i++) {
       final segment = segments[i];
       final item = data[i];
-      
+
       if (showLabel && segment.sweepAngle > 0.3) {
         _drawLabel(canvas, segment.center, radius, segment.startAngle, segment.sweepAngle, item, total);
       }
@@ -268,22 +242,25 @@ class PieChartPainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          Colors.white.withValues(alpha: 0.3),
-          Colors.white.withValues(alpha: 0.0),
-        ],
+        colors: [Colors.white.withValues(alpha: 0.3), Colors.white.withValues(alpha: 0.0)],
       ).createShader(path.getBounds())
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     canvas.drawPath(path, highlightPaint);
   }
 
-  void _drawLabel(Canvas canvas, Offset center, double radius, double startAngle, double sweepAngle, PieData item, double total) {
+  void _drawLabel(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    double startAngle,
+    double sweepAngle,
+    PieData item,
+    double total,
+  ) {
     final labelAngle = startAngle + sweepAngle / 2;
-    final labelRadius = centerSpaceRadius > 0
-        ? (radius + centerSpaceRadius) / 2
-        : radius * 0.7;
-    
+    final labelRadius = centerSpaceRadius > 0 ? (radius + centerSpaceRadius) / 2 : radius * 0.7;
+
     final labelX = center.dx + math.cos(labelAngle) * labelRadius;
     final labelY = center.dy + math.sin(labelAngle) * labelRadius;
 
@@ -291,18 +268,9 @@ class PieChartPainter extends CustomPainter {
 
     final textSpan = TextSpan(
       text: '$percentage%',
-      style: TextStyle(
-        color: theme.backgroundColor,
-        fontSize: 13,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.3,
-      ),
+      style: TextStyle(color: theme.backgroundColor, fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.3),
     );
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.center,
-    );
+    final textPainter = TextPainter(text: textSpan, textDirection: TextDirection.ltr, textAlign: TextAlign.center);
     textPainter.layout();
 
     final bgRect = Rect.fromCenter(
@@ -313,19 +281,9 @@ class PieChartPainter extends CustomPainter {
     final bgPaint = Paint()
       ..color = item.color.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
-      bgPaint,
-    );
+    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const Radius.circular(4)), bgPaint);
 
-    textPainter.paint(
-      canvas,
-      Offset(
-        labelX - textPainter.width / 2,
-        labelY - textPainter.height / 2,
-      ),
-    );
-
+    textPainter.paint(canvas, Offset(labelX - textPainter.width / 2, labelY - textPainter.height / 2));
   }
 
   @override
