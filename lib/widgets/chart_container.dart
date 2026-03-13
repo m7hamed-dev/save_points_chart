@@ -117,7 +117,9 @@ class ChartContainer extends StatelessWidget {
         color: effectiveTheme.backgroundColor,
         borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
         border: Border.all(
-          color: effectiveTheme.gridColor.withValues(alpha: 0.3),
+          color: effectiveTheme.cardBorderColor != const Color(0x00000000)
+              ? effectiveTheme.cardBorderColor
+              : effectiveTheme.gridColor.withValues(alpha: 0.25),
         ),
         boxShadow:
             boxShadow ??

@@ -424,6 +424,20 @@ class LineChartPainter extends BaseChartPainter {
           canvas.drawCircle(point, pointRadius, borderPaint);
         }
       }
+
+      // Draw a minimal crosshair when hovered/selected (dashboard feel).
+      final interaction = hoveredPoint ?? selectedPoint;
+      if (interaction != null && interaction.isHit && interaction.point != null) {
+        final crosshairPos = pointToCanvas(
+          interaction.point!,
+          chartSize,
+          minX - xPadding,
+          maxX + xPadding,
+          minY,
+          maxYAdjusted,
+        );
+        drawCrosshair(canvas, chartSize, position: crosshairPos);
+      }
     }
 
     canvas.restore();

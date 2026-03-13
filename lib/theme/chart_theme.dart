@@ -77,6 +77,7 @@ class LabelRotation {
 /// See also:
 /// - [ThemeData] for Material theme
 class ChartTheme {
+  /// Card/container surface color (inside dashboard card).
   final Color backgroundColor;
   final Color textColor;
   final Color gridColor;
@@ -88,6 +89,29 @@ class ChartTheme {
   final bool showAxis;
   final bool showLegend;
   final bool showTooltip;
+
+  /// Subtle border color for the chart card.
+  final Color cardBorderColor;
+
+  /// Optional tinted overlay used for hover/selection highlights.
+  final Color overlayColor;
+
+  /// Crosshair color (hover line).
+  final Color crosshairColor;
+
+  /// Tooltip surface/background color.
+  final Color tooltipBackgroundColor;
+
+  /// Tooltip border color.
+  final Color tooltipBorderColor;
+
+  /// Tooltip shadow.
+  final List<BoxShadow> tooltipShadow;
+
+  /// Grid appearance controls.
+  final double gridLineWidth;
+  final double gridDashWidth;
+  final double gridDashSpace;
 
   /// Rotation angle for X-axis labels in degrees.
   ///
@@ -129,6 +153,28 @@ class ChartTheme {
     this.showAxis = true,
     this.showLegend = true,
     this.showTooltip = true,
+    this.cardBorderColor = const Color(0x00000000),
+    this.overlayColor = const Color(0x14000000),
+    this.crosshairColor = const Color(0x66000000),
+    this.tooltipBackgroundColor = const Color(0xFF111827),
+    this.tooltipBorderColor = const Color(0x1FFFFFFF),
+    this.tooltipShadow = const [
+      BoxShadow(
+        color: Color(0x1A000000),
+        blurRadius: 18,
+        offset: Offset(0, 8),
+        spreadRadius: -6,
+      ),
+      BoxShadow(
+        color: Color(0x0F000000),
+        blurRadius: 10,
+        offset: Offset(0, 4),
+        spreadRadius: -6,
+      ),
+    ],
+    this.gridLineWidth = 1.0,
+    this.gridDashWidth = 4.0,
+    this.gridDashSpace = 4.0,
     this.xAxisLabelRotation = 0,
     this.yAxisLabelRotation = 0,
     this.axisLabelStyle,
@@ -155,6 +201,25 @@ class ChartTheme {
       textColor: Color(0xFF1F2937), // Gray 900
       gridColor: Color(0xFFE5E7EB), // Gray 200
       axisColor: Color(0xFF9CA3AF), // Gray 400
+      cardBorderColor: Color(0x1A111827), // ~Gray 900 @ 10%
+      overlayColor: Color(0x0F111827),
+      crosshairColor: Color(0x66111827),
+      tooltipBackgroundColor: Color(0xFF0B1220),
+      tooltipBorderColor: Color(0x14111827),
+      tooltipShadow: [
+        BoxShadow(
+          color: Color(0x14000000),
+          blurRadius: 20,
+          offset: Offset(0, 10),
+          spreadRadius: -8,
+        ),
+        BoxShadow(
+          color: Color(0x0A000000),
+          blurRadius: 10,
+          offset: Offset(0, 4),
+          spreadRadius: -8,
+        ),
+      ],
       gradientColors: [
         Color(0xFF6366F1), // Indigo 500
         Color(0xFF8B5CF6), // Violet 500
@@ -166,6 +231,12 @@ class ChartTheme {
         fontSize: 11,
         fontWeight: FontWeight.w500,
         color: Color(0xFF6B7280), // Gray 500
+      ),
+      tooltipStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFFF9FAFB),
+        letterSpacing: -0.1,
       ),
     );
   }
@@ -189,6 +260,25 @@ class ChartTheme {
       textColor: Color(0xFFF9FAFB), // Gray 50
       gridColor: Color(0xFF374151), // Gray 700
       axisColor: Color(0xFF6B7280), // Gray 500
+      cardBorderColor: Color(0x1AFFFFFF),
+      overlayColor: Color(0x14FFFFFF),
+      crosshairColor: Color(0x66FFFFFF),
+      tooltipBackgroundColor: Color(0xFF0B1220),
+      tooltipBorderColor: Color(0x1AFFFFFF),
+      tooltipShadow: [
+        BoxShadow(
+          color: Color(0x66000000),
+          blurRadius: 22,
+          offset: Offset(0, 12),
+          spreadRadius: -10,
+        ),
+        BoxShadow(
+          color: Color(0x33000000),
+          blurRadius: 12,
+          offset: Offset(0, 6),
+          spreadRadius: -10,
+        ),
+      ],
       gradientColors: [
         Color(0xFF818CF8), // Indigo 400
         Color(0xFFA78BFA), // Violet 400
@@ -201,6 +291,12 @@ class ChartTheme {
         fontSize: 11,
         fontWeight: FontWeight.w500,
         color: Color(0xFF9CA3AF), // Gray 400
+      ),
+      tooltipStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFFF9FAFB),
+        letterSpacing: -0.1,
       ),
     );
   }
@@ -255,6 +351,15 @@ class ChartTheme {
     bool? showAxis,
     bool? showLegend,
     bool? showTooltip,
+    Color? cardBorderColor,
+    Color? overlayColor,
+    Color? crosshairColor,
+    Color? tooltipBackgroundColor,
+    Color? tooltipBorderColor,
+    List<BoxShadow>? tooltipShadow,
+    double? gridLineWidth,
+    double? gridDashWidth,
+    double? gridDashSpace,
     int? xAxisLabelRotation,
     int? yAxisLabelRotation,
     TextStyle? axisLabelStyle,
@@ -273,6 +378,16 @@ class ChartTheme {
       showAxis: showAxis ?? this.showAxis,
       showLegend: showLegend ?? this.showLegend,
       showTooltip: showTooltip ?? this.showTooltip,
+      cardBorderColor: cardBorderColor ?? this.cardBorderColor,
+      overlayColor: overlayColor ?? this.overlayColor,
+      crosshairColor: crosshairColor ?? this.crosshairColor,
+      tooltipBackgroundColor:
+          tooltipBackgroundColor ?? this.tooltipBackgroundColor,
+      tooltipBorderColor: tooltipBorderColor ?? this.tooltipBorderColor,
+      tooltipShadow: tooltipShadow ?? this.tooltipShadow,
+      gridLineWidth: gridLineWidth ?? this.gridLineWidth,
+      gridDashWidth: gridDashWidth ?? this.gridDashWidth,
+      gridDashSpace: gridDashSpace ?? this.gridDashSpace,
       xAxisLabelRotation: xAxisLabelRotation ?? this.xAxisLabelRotation,
       yAxisLabelRotation: yAxisLabelRotation ?? this.yAxisLabelRotation,
       axisLabelStyle: axisLabelStyle ?? this.axisLabelStyle,

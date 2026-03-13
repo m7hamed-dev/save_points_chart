@@ -218,7 +218,7 @@ abstract class BaseChartPainter extends CustomPainter {
     // Create paint with enhanced styling (dashed/dotted look)
     final gridPaint = Paint()
       ..color = theme.gridColor.withValues(alpha: 0.5)
-      ..strokeWidth = 1.0
+      ..strokeWidth = theme.gridLineWidth
       ..style = PaintingStyle.stroke;
 
     // Horizontal grid lines only (more professional)
@@ -229,7 +229,14 @@ abstract class BaseChartPainter extends CustomPainter {
     // Draw dashed horizontal lines
     for (int i = 1; i < horizontalLines; i++) {
       final y = lineSpacing * i;
-      _drawDashedLine(canvas, Offset(0, y), Offset(size.width, y), gridPaint);
+      _drawDashedLine(
+        canvas,
+        Offset(0, y),
+        Offset(size.width, y),
+        gridPaint,
+        dashWidth: theme.gridDashWidth,
+        dashSpace: theme.gridDashSpace,
+      );
     }
     
     // Vertical grid lines (very subtle, solid)
@@ -273,6 +280,41 @@ abstract class BaseChartPainter extends CustomPainter {
     }
     
     canvas.drawPath(path, paint);
+  }
+
+  /// Draw a subtle crosshair for hover/selection.
+  ///
+  /// This is intentionally minimal (dashboard-style) so it doesn’t fight the data ink.
+  @protected
+  void drawCrosshair(
+    Canvas canvas,
+    Size chartSize, {
+    required Offset position,
+    bool vertical = true,
+    bool horizontal = false,
+  }) {
+    if (!position.dx.isFinite || !position.dy.isFinite) return;
+    if (!chartSize.width.isFinite ||
+        !chartSize.height.isFinite ||
+        chartSize.width <= 0 ||
+        chartSize.height <= 0) {
+      return;
+    }
+
+    final paint = Paint()
+      ..color = theme.crosshairColor.withValues(alpha: 0.55)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    if (vertical) {
+      final x = position.dx.clamp(0.0, chartSize.width);
+      canvas.drawLine(Offset(x, 0), Offset(x, chartSize.height), paint);
+    }
+    if (horizontal) {
+      final y = position.dy.clamp(0.0, chartSize.height);
+      canvas.drawLine(Offset(0, y), Offset(chartSize.width, y), paint);
+    }
   }
 
   /// Draw axis lines.
