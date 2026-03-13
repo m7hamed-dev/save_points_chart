@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/action_item.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/color_scheme.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/web_action_button.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/web_close_button.dart';
-import 'package:save_points_chart/utils/format_utils.dart';
 
 /// Modern web-style context menu for chart elements
 /// Inspired by contemporary web design systems (Vercel, Linear, Stripe)
@@ -20,6 +21,7 @@ class ChartContextMenu extends StatefulWidget {
     this.datasetLabel,
     required this.position,
     this.theme,
+    this.backgroundColor,
     this.useGlassmorphism = false,
     this.useNeumorphism = false,
     this.onClose,
@@ -35,6 +37,7 @@ class ChartContextMenu extends StatefulWidget {
   final String? datasetLabel;
   final Offset position;
   final ChartTheme? theme;
+  final Color? backgroundColor;
   final bool useGlassmorphism;
   final bool useNeumorphism;
   final VoidCallback? onClose;
@@ -46,8 +49,7 @@ class ChartContextMenu extends StatefulWidget {
   State<ChartContextMenu> createState() => _ChartContextMenuState();
 }
 
-class _ChartContextMenuState extends State<ChartContextMenu>
-    with SingleTickerProviderStateMixin {
+class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerProviderStateMixin {
   late final Color _primaryColor;
   late final String _formattedValue;
   late final String? _formattedXValue;
@@ -64,25 +66,13 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     _primaryColor = _computePrimaryColor();
     _formattedValue = _computeFormattedValue();
     _formattedXValue = _hasPoint ? ChartFormatUtils.formatValue(widget.point!.x) : null;
-    _label =
-        widget.point?.label ??
-        widget.segment?.label ??
-        (_hasPoint ? 'Data Point' : 'Segment');
+    _label = widget.point?.label ?? widget.segment?.label ?? (_hasPoint ? 'Data Point' : 'Segment');
 
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 250), vsync: this);
 
-    _scaleAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    );
+    _scaleAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
 
-    _fadeAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    );
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
 
     _controller.forward();
   }
@@ -104,9 +94,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     if (_hasPoint) {
       return ChartFormatUtils.formatValue(widget.point!.y);
     }
-    return widget.segment != null 
-        ? ChartFormatUtils.formatValue(widget.segment!.value)
-        : '0';
+    return widget.segment != null ? ChartFormatUtils.formatValue(widget.segment!.value) : '0';
   }
 
   @override
@@ -124,9 +112,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
           opacity: _fadeAnimation,
           child: ScaleTransition(
             scale: Tween<double>(begin: 0.92, end: 1.0).animate(_scaleAnimation),
-            child: RepaintBoundary(
-              child: _buildWebStyleMenu(context, isDark),
-            ),
+            child: RepaintBoundary(child: _buildWebStyleMenu(context, isDark)),
           ),
         ),
       ),
@@ -163,11 +149,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
               width: 320,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: gradientColors,
-                ),
+                gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: gradientColors),
                 border: Border.all(color: borderColor, width: 1.5),
                 boxShadow: shadows,
               ),
@@ -202,25 +184,19 @@ class _ChartContextMenuState extends State<ChartContextMenu>
   }
 
   Color _getGlassmorphismBorderColor(bool isDark) {
-    return isDark
-        ? Colors.white.withValues(alpha: 0.25)
-        : Colors.black.withValues(alpha: 0.08);
+    return isDark ? Colors.white.withValues(alpha: 0.25) : Colors.black.withValues(alpha: 0.08);
   }
 
   List<BoxShadow> _getGlassmorphismShadows(bool isDark) {
     return [
       BoxShadow(
-        color: isDark
-            ? Colors.black.withValues(alpha: 0.4)
-            : Colors.black.withValues(alpha: 0.15),
+        color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.black.withValues(alpha: 0.15),
         blurRadius: 30,
         offset: const Offset(0, 12),
         spreadRadius: -5,
       ),
       BoxShadow(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.05)
-            : Colors.white.withValues(alpha: 0.8),
+        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.8),
         blurRadius: 20,
         offset: const Offset(-5, -5),
       ),
@@ -237,11 +213,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
         container: true,
         child: Container(
           width: 320,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: baseColor,
-            boxShadow: shadows,
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: baseColor, boxShadow: shadows),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -261,24 +233,12 @@ class _ChartContextMenuState extends State<ChartContextMenu>
   }
 
   List<BoxShadow> _getNeumorphismShadows(bool isDark) {
-    final lightShadow = isDark
-        ? Colors.white.withValues(alpha: 0.08)
-        : Colors.white.withValues(alpha: 0.95);
-    final darkShadow = isDark
-        ? Colors.black.withValues(alpha: 0.6)
-        : Colors.grey.withValues(alpha: 0.4);
+    final lightShadow = isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.95);
+    final darkShadow = isDark ? Colors.black.withValues(alpha: 0.6) : Colors.grey.withValues(alpha: 0.4);
 
     return [
-      BoxShadow(
-        color: lightShadow,
-        blurRadius: 25,
-        offset: const Offset(-10, -10),
-      ),
-      BoxShadow(
-        color: darkShadow,
-        blurRadius: 25,
-        offset: const Offset(10, 10),
-      ),
+      BoxShadow(color: lightShadow, blurRadius: 25, offset: const Offset(-10, -10)),
+      BoxShadow(color: darkShadow, blurRadius: 25, offset: const Offset(10, 10)),
     ];
   }
 
@@ -286,6 +246,16 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     final textDirection = Directionality.of(context);
     final isRtl = textDirection == TextDirection.rtl;
 
+    /// Background color from theme
+    final themeBackgroundColor = widget.theme?.backgroundColor;
+
+    /// Background color from widget
+    final widgetBackgroundColor = widget.backgroundColor;
+
+    /// Background color from theme or widget or default color
+    final backgroundColor = widgetBackgroundColor ?? themeBackgroundColor ?? const Color(0xFF020617);
+
+    ///
     return Semantics(
       label: 'Chart context menu',
       container: true,
@@ -293,23 +263,17 @@ class _ChartContextMenuState extends State<ChartContextMenu>
         width: 230,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: const Color(0xFF020617),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.06),
-          ),
+          color: backgroundColor,
+          border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
           boxShadow: [
             BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.55)
-                  : Colors.black.withValues(alpha: 0.18),
+              color: isDark ? Colors.black.withValues(alpha: 0.55) : Colors.black.withValues(alpha: 0.18),
               blurRadius: 22,
               offset: const Offset(0, 10),
               spreadRadius: -8,
             ),
             BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.35)
-                  : Colors.black.withValues(alpha: 0.06),
+              color: isDark ? Colors.black.withValues(alpha: 0.35) : Colors.black.withValues(alpha: 0.06),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -319,8 +283,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment:
-                isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment: isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               // Top row: label (e.g. month) and close button.
               Row(
@@ -329,13 +292,12 @@ class _ChartContextMenuState extends State<ChartContextMenu>
                 children: [
                   Expanded(
                     child: Align(
-                      alignment:
-                          isRtl ? Alignment.centerRight : Alignment.centerLeft,
+                      alignment: isRtl ? Alignment.centerRight : Alignment.centerLeft,
                       child: Text(
                         _label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -345,18 +307,14 @@ class _ChartContextMenuState extends State<ChartContextMenu>
                     ),
                   ),
                   const SizedBox(width: 8),
-                  WebCloseButton(
-                    onTap: widget.onClose,
-                    colorScheme: colorScheme,
-                  ),
+                  WebCloseButton(onTap: widget.onClose, colorScheme: colorScheme),
                 ],
               ),
               const SizedBox(height: 8),
 
               // Middle row: main value, aligned opposite to label like the reference screenshot.
               Align(
-                alignment:
-                    isRtl ? Alignment.centerLeft : Alignment.centerRight,
+                alignment: isRtl ? Alignment.centerLeft : Alignment.centerRight,
                 child: Text(
                   _formattedValue,
                   style: const TextStyle(
@@ -373,8 +331,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
               // Legend-style rows similar to the provided design: small colored square + label.
               if (widget.datasetLabel != null || _formattedXValue != null)
                 Column(
-                  crossAxisAlignment:
-                      isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  crossAxisAlignment: isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: [
                     if (widget.datasetLabel != null)
                       _buildLegendRow(
@@ -417,25 +374,15 @@ class _ChartContextMenuState extends State<ChartContextMenu>
         Container(
           width: 10,
           height: 10,
-          margin: EdgeInsetsDirectional.only(
-            end: isRtl ? 0 : 8,
-            start: isRtl ? 8 : 0,
-          ),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
+          margin: EdgeInsetsDirectional.only(end: isRtl ? 0 : 8, start: isRtl ? 8 : 0),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
         ),
         Flexible(
           child: Text(
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: colorScheme.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: colorScheme.textSecondary),
           ),
         ),
       ],
@@ -446,11 +393,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.dividerColor,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: colorScheme.dividerColor)),
       ),
       child: Row(
         children: [
@@ -460,13 +403,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
             decoration: BoxDecoration(
               color: _primaryColor,
               shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: _primaryColor.withValues(alpha: 0.4),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                ),
-              ],
+              boxShadow: [BoxShadow(color: _primaryColor.withValues(alpha: 0.4), blurRadius: 8, spreadRadius: 1)],
             ),
           ),
           const SizedBox(width: 12),
@@ -487,20 +424,13 @@ class _ChartContextMenuState extends State<ChartContextMenu>
                   const SizedBox(height: 2),
                   Text(
                     widget.datasetLabel!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.textTertiary,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    style: TextStyle(fontSize: 12, color: colorScheme.textTertiary, fontWeight: FontWeight.w400),
                   ),
                 ],
               ],
             ),
           ),
-          WebCloseButton(
-            onTap: widget.onClose,
-            colorScheme: colorScheme,
-          ),
+          WebCloseButton(onTap: widget.onClose, colorScheme: colorScheme),
         ],
       ),
     );
@@ -512,12 +442,7 @@ class _ChartContextMenuState extends State<ChartContextMenu>
       child: Row(
         children: [
           Expanded(
-            child: _buildMetricCard(
-              label: 'Value',
-              value: _formattedValue,
-              colorScheme: colorScheme,
-              isAccent: true,
-            ),
+            child: _buildMetricCard(label: 'Value', value: _formattedValue, colorScheme: colorScheme, isAccent: true),
           ),
           if (_formattedXValue != null) ...[
             const SizedBox(width: 12),
@@ -544,15 +469,9 @@ class _ChartContextMenuState extends State<ChartContextMenu>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isAccent
-            ? _primaryColor.withValues(alpha: 0.08)
-            : colorScheme.hoverColor,
+        color: isAccent ? _primaryColor.withValues(alpha: 0.08) : colorScheme.hoverColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isAccent
-              ? _primaryColor.withValues(alpha: 0.2)
-              : colorScheme.borderColor,
-        ),
+        border: Border.all(color: isAccent ? _primaryColor.withValues(alpha: 0.2) : colorScheme.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,62 +501,63 @@ class _ChartContextMenuState extends State<ChartContextMenu>
   }
 
   Widget _buildWebActions(BuildContext context, WebUIColorScheme colorScheme) {
-    final hasActions =
-        widget.onViewDetails != null ||
-        widget.onExport != null ||
-        widget.onShare != null;
+    final hasActions = widget.onViewDetails != null || widget.onExport != null || widget.onShare != null;
 
     if (!hasActions) return const SizedBox.shrink();
 
     final actions = <ActionItem>[];
     if (widget.onViewDetails != null) {
-      actions.add(ActionItem(
-        icon: Icons.info_outline_rounded,
-        label: 'View Details',
-        onTap: () {
-          widget.onClose?.call();
-          widget.onViewDetails?.call();
-        },
-      ));
+      actions.add(
+        ActionItem(
+          icon: Icons.info_outline_rounded,
+          label: 'View Details',
+          onTap: () {
+            widget.onClose?.call();
+            widget.onViewDetails?.call();
+          },
+        ),
+      );
     }
     if (widget.onExport != null) {
-      actions.add(ActionItem(
-        icon: Icons.download_rounded,
-        label: 'Export Data',
-        onTap: () {
-          widget.onClose?.call();
-          widget.onExport?.call();
-        },
-      ));
+      actions.add(
+        ActionItem(
+          icon: Icons.download_rounded,
+          label: 'Export Data',
+          onTap: () {
+            widget.onClose?.call();
+            widget.onExport?.call();
+          },
+        ),
+      );
     }
     if (widget.onShare != null) {
-      actions.add(ActionItem(
-        icon: Icons.share_rounded,
-        label: 'Share',
-        onTap: () {
-          widget.onClose?.call();
-          widget.onShare?.call();
-        },
-      ));
+      actions.add(
+        ActionItem(
+          icon: Icons.share_rounded,
+          label: 'Share',
+          onTap: () {
+            widget.onClose?.call();
+            widget.onShare?.call();
+          },
+        ),
+      );
     }
 
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: colorScheme.dividerColor,
-          ),
-        ),
+        border: Border(top: BorderSide(color: colorScheme.dividerColor)),
       ),
       child: Column(
         children: actions
             .asMap()
             .entries
-            .map((entry) => WebActionButton(
-                  action: entry.value,
-                  colorScheme: colorScheme,
-                  isLast: entry.key == actions.length - 1,
-                ))
+            .map(
+              (entry) => WebActionButton(
+                action: entry.value,
+                colorScheme: colorScheme,
+                isLast: entry.key == actions.length - 1,
+              ),
+            )
             .toList(),
       ),
     );

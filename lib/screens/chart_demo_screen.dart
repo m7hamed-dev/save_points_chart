@@ -683,7 +683,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Device Distribution',
             subtitle: 'User devices breakdown - Tap on segments!',
             onSegmentTap: (segment, segmentIndex, position) {
+              final backgroundColor = SampleData.generatePieData().map((e) => e.color).toList();
               ChartContextMenuHelper.show(
+                backgroundBlur: true,
+                backgroundColor: backgroundColor[segmentIndex],
                 context,
                 point: null,
                 segment: segment,
@@ -711,7 +714,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Device Distribution',
             subtitle: 'User devices breakdown - Tap on segments!',
             onSegmentTap: (segment, segmentIndex, position) {
+              final backgroundColor = SampleData.generatePieData().map((e) => e.color).toList();
               ChartContextMenuHelper.show(
+                backgroundColor: backgroundColor[segmentIndex],
                 context,
                 point: null,
                 segment: segment,

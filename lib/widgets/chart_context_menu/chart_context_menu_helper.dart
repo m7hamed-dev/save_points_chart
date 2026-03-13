@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/widgets/chart_context_menu/chart_context_menu_widget.dart';
@@ -22,6 +23,7 @@ class ChartContextMenuHelper {
     int? elementIndex,
     String? datasetLabel,
     ChartTheme? theme,
+    Color? backgroundColor,
     bool useGlassmorphism = false,
     bool useNeumorphism = false,
     bool backgroundBlur = false,
@@ -38,10 +40,7 @@ class ChartContextMenuHelper {
     final overlay = Overlay.of(context);
     // `position` is expected to be in global coordinates from the chart.
     final globalPosition = _calculateGlobalPosition(position);
-    final adjustedPosition = _calculateAdjustedPosition(
-      context,
-      globalPosition,
-    );
+    final adjustedPosition = _calculateAdjustedPosition(context, globalPosition);
 
     _ensureBlurFilter(backgroundBlur);
 
@@ -58,6 +57,7 @@ class ChartContextMenuHelper {
               datasetLabel: datasetLabel,
               position: adjustedPosition,
               theme: theme,
+              backgroundColor: backgroundColor,
               useGlassmorphism: useGlassmorphism,
               useNeumorphism: useNeumorphism,
               onClose: hide,
@@ -73,11 +73,7 @@ class ChartContextMenuHelper {
     overlay.insert(_currentMenu!);
   }
 
-  static bool _hasActions(
-    VoidCallback? onViewDetails,
-    VoidCallback? onExport,
-    VoidCallback? onShare,
-  ) {
+  static bool _hasActions(VoidCallback? onViewDetails, VoidCallback? onExport, VoidCallback? onShare) {
     return onViewDetails != null || onExport != null || onShare != null;
   }
 
@@ -88,10 +84,7 @@ class ChartContextMenuHelper {
     return position;
   }
 
-  static Offset _calculateAdjustedPosition(
-    BuildContext context,
-    Offset globalPosition,
-  ) {
+  static Offset _calculateAdjustedPosition(BuildContext context, Offset globalPosition) {
     final screenSize = MediaQuery.sizeOf(context);
     final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
