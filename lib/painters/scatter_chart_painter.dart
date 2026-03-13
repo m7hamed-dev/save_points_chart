@@ -94,24 +94,11 @@ class ScatterChartPainter extends BaseChartPainter {
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
 
-    // Draw grid
+    // Draw grid and axes (background)
     drawGrid(canvas, chartSize, minX, maxX, minY, maxY);
-
-    // Draw axes
     drawAxes(canvas, chartSize, minX, maxX, minY, maxY);
 
-    // Draw axis labels
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minX,
-      maxX,
-      minY,
-      maxY,
-      dataSets: dataSets,
-    );
-
-    // Draw scatter points
+    // Draw scatter points with Dribbble-like glow styling
     for (int datasetIndex = 0; datasetIndex < dataSets.length; datasetIndex++) {
       final dataSet = dataSets[datasetIndex];
       final color = dataSet.color;
@@ -146,30 +133,63 @@ class ScatterChartPainter extends BaseChartPainter {
         // Draw point with animation
         final animatedSize = currentSize * animationProgress;
         if (animatedSize > 0 && animatedSize.isFinite) {
-          final paint = Paint()
-            ..color = currentColor
-            ..style = PaintingStyle.fill;
-
-          // Draw outer circle for selected/hovered
+          // Outer glow
           if (isSelected || isHovered) {
             final outerPaint = Paint()
               ..color = currentColor.withValues(alpha: 0.3)
               ..style = PaintingStyle.fill;
-            canvas.drawCircle(canvasPoint, animatedSize * 1.5, outerPaint);
+            canvas.drawCircle(canvasPoint, animatedSize * 1.8, outerPaint);
           }
 
-          // Draw main point
-          canvas.drawCircle(canvasPoint, animatedSize, paint);
+          // Main dot
+          final fillPaint = Paint()
+            ..color = currentColor
+            ..style = PaintingStyle.fill;
+          canvas.drawCircle(canvasPoint, animatedSize, fillPaint);
 
-          // Draw border (white if selected)
+          // Inner highlight
+          final highlightPaint = Paint()
+            ..color = Colors.white.withValues(alpha: 0.85)
+            ..style = PaintingStyle.fill;
+          canvas.drawCircle(canvasPoint, animatedSize * 0.4, highlightPaint);
+
+          // Border (white if selected, card-colored otherwise)
           final borderPaint = Paint()
             ..color = isSelected ? Colors.white : theme.backgroundColor
             ..style = PaintingStyle.stroke
-            ..strokeWidth = isSelected ? 3.0 : 2.0;
+            ..strokeWidth = isSelected ? 2.5 : 1.8;
           canvas.drawCircle(canvasPoint, animatedSize, borderPaint);
         }
     }
 
+    // Optional crosshair on hovered/selected point
+    final interaction = hoveredPoint ?? selectedPoint;
+    if (interaction != null && interaction.isHit && interaction.point != null) {
+      final crosshairPos = pointToCanvas(
+        interaction.point!,
+        chartSize,
+        minX,
+        maxX,
+        minY,
+        maxY,
+      );
+      drawCrosshair(canvas, chartSize, position: crosshairPos);
+    }
+
+    canvas.restore();
+
+    // Axis labels above everything for clarity
+    canvas.save();
+    canvas.translate(chartOffset.dx, chartOffset.dy);
+    drawAxisLabels(
+      canvas,
+      chartSize,
+      minX,
+      maxX,
+      minY,
+      maxY,
+      dataSets: dataSets,
+    );
     canvas.restore();
   }
 

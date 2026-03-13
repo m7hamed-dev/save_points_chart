@@ -283,48 +283,162 @@ class _ChartContextMenuState extends State<ChartContextMenu>
   }
 
   Widget _buildModernWebMenu(BuildContext context, WebUIColorScheme colorScheme, bool isDark) {
+    final textDirection = Directionality.of(context);
+    final isRtl = textDirection == TextDirection.rtl;
+
     return Semantics(
       label: 'Chart context menu',
       container: true,
       child: Container(
-        width: 320,
+        width: 230,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: colorScheme.surfaceColor,
+          borderRadius: BorderRadius.circular(16),
+          color: const Color(0xFF020617),
           border: Border.all(
-            color: colorScheme.borderColor,
+            color: Colors.white.withValues(alpha: 0.06),
           ),
           boxShadow: [
             BoxShadow(
               color: isDark
-                  ? Colors.black.withValues(alpha: 0.6)
-                  : Colors.black.withValues(alpha: 0.08),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-              spreadRadius: -4,
+                  ? Colors.black.withValues(alpha: 0.55)
+                  : Colors.black.withValues(alpha: 0.18),
+              blurRadius: 22,
+              offset: const Offset(0, 10),
+              spreadRadius: -8,
             ),
             BoxShadow(
               color: isDark
-                  ? Colors.black.withValues(alpha: 0.4)
-                  : Colors.black.withValues(alpha: 0.04),
-              blurRadius: 12,
+                  ? Colors.black.withValues(alpha: 0.35)
+                  : Colors.black.withValues(alpha: 0.06),
+              blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment:
+                isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
-              _buildWebHeader(context, colorScheme),
-              _buildWebContent(context, colorScheme),
-              _buildWebActions(context, colorScheme),
+              // Top row: label (e.g. month) and close button.
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                textDirection: textDirection,
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment:
+                          isRtl ? Alignment.centerRight : Alignment.centerLeft,
+                      child: Text(
+                        _label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: -0.1,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  WebCloseButton(
+                    onTap: widget.onClose,
+                    colorScheme: colorScheme,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Middle row: main value, aligned opposite to label like the reference screenshot.
+              Align(
+                alignment:
+                    isRtl ? Alignment.centerLeft : Alignment.centerRight,
+                child: Text(
+                  _formattedValue,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Legend-style rows similar to the provided design: small colored square + label.
+              if (widget.datasetLabel != null || _formattedXValue != null)
+                Column(
+                  crossAxisAlignment:
+                      isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  children: [
+                    if (widget.datasetLabel != null)
+                      _buildLegendRow(
+                        context,
+                        colorScheme,
+                        isRtl: isRtl,
+                        label: widget.datasetLabel!,
+                        color: _primaryColor,
+                      ),
+                    if (_formattedXValue != null) ...[
+                      const SizedBox(height: 4),
+                      _buildLegendRow(
+                        context,
+                        colorScheme,
+                        isRtl: isRtl,
+                        label: _formattedXValue,
+                        color: colorScheme.textTertiary,
+                      ),
+                    ],
+                  ],
+                ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLegendRow(
+    BuildContext context,
+    WebUIColorScheme colorScheme, {
+    required bool isRtl,
+    required String label,
+    required Color color,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          margin: EdgeInsetsDirectional.only(
+            end: isRtl ? 0 : 8,
+            start: isRtl ? 8 : 0,
+          ),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: colorScheme.textSecondary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

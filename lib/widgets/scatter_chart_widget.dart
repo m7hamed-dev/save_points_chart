@@ -9,6 +9,7 @@ import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
+import 'package:save_points_chart/widgets/chart_tooltip_overlay.dart';
 
 /// A modern scatter chart widget for visualizing relationships between variables.
 ///
@@ -96,6 +97,10 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
   Map<String, double>? _cachedBounds;
   List<ChartDataSet>? _cachedDataSets;
 
+  void _hideTooltip() {
+    ChartTooltipOverlay.hide();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -149,7 +154,11 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
     return _cachedBounds!;
   }
 
-  void _handleHover(Offset position, Size chartSize) {
+  void _handleHover(
+    Offset position,
+    Size chartSize,
+    ChartTheme effectiveTheme,
+  ) {
     if (widget.onPointHover == null) return;
 
     final bounds = _calculateBounds();
@@ -180,6 +189,28 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
           result.datasetIndex,
           result.elementIndex,
         );
+
+        if (effectiveTheme.showTooltip) {
+          final RenderBox? renderBox =
+              context.findRenderObject() as RenderBox?;
+          final global = renderBox != null
+              ? renderBox.localToGlobal(position)
+              : position;
+          final ds = (result.datasetIndex != null &&
+                  result.datasetIndex! >= 0 &&
+                  result.datasetIndex! < widget.dataSets.length)
+              ? widget.dataSets[result.datasetIndex!]
+              : null;
+
+          ChartTooltipOverlay.show(
+            context,
+            globalAnchor: global,
+            theme: effectiveTheme,
+            point: result.point!,
+            color: ds?.color,
+            seriesLabel: ds?.dataPoint.label,
+          );
+        }
       }
     } else {
       if (_hoveredPoint != null) {
@@ -188,6 +219,7 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
         });
         widget.onPointHover?.call(null, null, null);
       }
+      _hideTooltip();
     }
   }
 
@@ -263,7 +295,11 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
                   return MouseRegion(
                     onHover: widget.onPointHover != null
                         ? (event) {
-                            _handleHover(event.localPosition, chartSize);
+                            _handleHover(
+                              event.localPosition,
+                              chartSize,
+                              effectiveTheme,
+                            );
                           }
                         : null,
                     onExit: widget.onPointHover != null
@@ -272,6 +308,7 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
                               _hoveredPoint = null;
                             });
                             widget.onPointHover?.call(null, null, null);
+                            _hideTooltip();
                           }
                         : null,
                     child: GestureDetector(
