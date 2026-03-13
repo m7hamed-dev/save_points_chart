@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:save_points_chart/data/sample_data.dart';
+import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/providers/theme_provider.dart';
+import 'package:save_points_chart/screens/data_test_screen.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/widgets/line_chart_widget.dart';
-import 'package:save_points_chart/widgets/bar_chart_widget.dart';
 import 'package:save_points_chart/widgets/area_chart_widget.dart';
-import 'package:save_points_chart/widgets/pie_chart_widget.dart';
-import 'package:save_points_chart/widgets/donut_chart_widget.dart';
-import 'package:save_points_chart/widgets/radial_chart_widget.dart';
-import 'package:save_points_chart/widgets/sparkline_chart_widget.dart';
-import 'package:save_points_chart/widgets/scatter_chart_widget.dart';
+import 'package:save_points_chart/widgets/bar_chart_widget.dart';
 import 'package:save_points_chart/widgets/bubble_chart_widget.dart';
-import 'package:save_points_chart/widgets/radar_chart_widget.dart';
-import 'package:save_points_chart/widgets/gauge_chart_widget.dart';
-import 'package:save_points_chart/widgets/spline_chart_widget.dart';
-import 'package:save_points_chart/widgets/step_line_chart_widget.dart';
-import 'package:save_points_chart/widgets/stacked_column_chart_widget.dart';
-import 'package:save_points_chart/widgets/pyramid_chart_widget.dart';
-import 'package:save_points_chart/widgets/funnel_chart_widget.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
-import 'package:save_points_chart/models/chart_data.dart';
-import 'package:save_points_chart/data/sample_data.dart';
-import 'package:save_points_chart/screens/data_test_screen.dart';
+import 'package:save_points_chart/widgets/donut_chart_widget.dart';
+import 'package:save_points_chart/widgets/funnel_chart_widget.dart';
+import 'package:save_points_chart/widgets/gauge_chart_widget.dart';
+import 'package:save_points_chart/widgets/line_chart_widget.dart';
+import 'package:save_points_chart/widgets/pie_chart_widget.dart';
+import 'package:save_points_chart/widgets/pyramid_chart_widget.dart';
+import 'package:save_points_chart/widgets/radar_chart_widget.dart';
+import 'package:save_points_chart/widgets/radial_chart_widget.dart';
+import 'package:save_points_chart/widgets/scatter_chart_widget.dart';
+import 'package:save_points_chart/widgets/sparkline_chart_widget.dart';
+import 'package:save_points_chart/widgets/spline_chart_widget.dart';
+import 'package:save_points_chart/widgets/stacked_column_chart_widget.dart';
+import 'package:save_points_chart/widgets/step_line_chart_widget.dart';
 
 class ChartDemoScreen extends StatefulWidget {
   const ChartDemoScreen({super.key});
@@ -47,9 +47,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
         title: const Text('Modern Charts'),
         actions: [
           IconButton(
-            icon: Icon(
-              themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-            ),
+            icon: Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
             onPressed: () => themeProvider.toggleTheme(),
             tooltip: 'Toggle Theme',
           ),
@@ -74,11 +72,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 value: 'glassmorphism',
                 child: Row(
                   children: [
-                    Icon(
-                      _useGlassmorphism
-                          ? Icons.check_box
-                          : Icons.check_box_outline_blank,
-                    ),
+                    Icon(_useGlassmorphism ? Icons.check_box : Icons.check_box_outline_blank),
                     const SizedBox(width: 8),
                     const Text('Glassmorphism'),
                   ],
@@ -88,11 +82,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 value: 'neumorphism',
                 child: Row(
                   children: [
-                    Icon(
-                      _useNeumorphism
-                          ? Icons.check_box
-                          : Icons.check_box_outline_blank,
-                    ),
+                    Icon(_useNeumorphism ? Icons.check_box : Icons.check_box_outline_blank),
                     const SizedBox(width: 8),
                     const Text('Neumorphism'),
                   ],
@@ -102,11 +92,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 value: 'default',
                 child: Row(
                   children: [
-                    Icon(
-                      (!_useGlassmorphism && !_useNeumorphism)
-                          ? Icons.check_box
-                          : Icons.check_box_outline_blank,
-                    ),
+                    Icon((!_useGlassmorphism && !_useNeumorphism) ? Icons.check_box : Icons.check_box_outline_blank),
                     const SizedBox(width: 8),
                     const Text('Default'),
                   ],
@@ -123,9 +109,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           theme: chartTheme,
           useGlassmorphism: _useGlassmorphism,
           useNeumorphism: _useNeumorphism,
-          errorMessage: _isError
-              ? 'Unable to load chart data. Please try again.'
-              : null,
+          errorMessage: _isError ? 'Unable to load chart data. Please try again.' : null,
         ),
       ),
     );
@@ -141,11 +125,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               gradient: const LinearGradient(
                 begin: .topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF6366F1),
-                  Color(0xFF8B5CF6),
-                  Color(0xFFEC4899),
-                ],
+                colors: [Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFFEC4899)],
                 stops: [0.0, 0.5, 1.0],
               ),
               boxShadow: [
@@ -166,16 +146,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      width: 1.5,
-                    ),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
                   ),
-                  child: const Icon(
-                    Icons.show_chart,
-                    size: 32,
-                    color: Colors.white,
-                  ),
+                  child: const Icon(Icons.show_chart, size: 32, color: Colors.white),
                 ),
                 const SizedBox(height: 12),
                 const Text(
@@ -185,13 +158,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black26,
-                        offset: Offset(0, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
+                    shadows: [Shadow(color: Colors.black26, offset: Offset(0, 2), blurRadius: 4)],
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -207,70 +174,22 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
               ],
             ),
           ),
-          _buildDrawerItem(
-            icon: Icons.show_chart,
-            title: 'Line Chart',
-            index: 0,
-          ),
+          _buildDrawerItem(icon: Icons.show_chart, title: 'Line Chart', index: 0),
           _buildDrawerItem(icon: Icons.bar_chart, title: 'Bar Chart', index: 1),
-          _buildDrawerItem(
-            icon: Icons.area_chart,
-            title: 'Area Chart',
-            index: 2,
-          ),
+          _buildDrawerItem(icon: Icons.area_chart, title: 'Area Chart', index: 2),
           _buildDrawerItem(icon: Icons.pie_chart, title: 'Pie Chart', index: 3),
-          _buildDrawerItem(
-            icon: Icons.donut_large,
-            title: 'Donut Chart',
-            index: 4,
-          ),
+          _buildDrawerItem(icon: Icons.donut_large, title: 'Donut Chart', index: 4),
           _buildDrawerItem(icon: Icons.radar, title: 'Radial Chart', index: 5),
-          _buildDrawerItem(
-            icon: Icons.trending_up,
-            title: 'Sparkline Chart',
-            index: 6,
-          ),
-          _buildDrawerItem(
-            icon: Icons.scatter_plot,
-            title: 'Scatter Chart',
-            index: 7,
-          ),
-          _buildDrawerItem(
-            icon: Icons.bubble_chart,
-            title: 'Bubble Chart',
-            index: 8,
-          ),
-          _buildDrawerItem(
-            icon: Icons.polyline,
-            title: 'Radar Chart',
-            index: 9,
-          ),
+          _buildDrawerItem(icon: Icons.trending_up, title: 'Sparkline Chart', index: 6),
+          _buildDrawerItem(icon: Icons.scatter_plot, title: 'Scatter Chart', index: 7),
+          _buildDrawerItem(icon: Icons.bubble_chart, title: 'Bubble Chart', index: 8),
+          _buildDrawerItem(icon: Icons.polyline, title: 'Radar Chart', index: 9),
           _buildDrawerItem(icon: Icons.speed, title: 'Gauge Chart', index: 10),
-          _buildDrawerItem(
-            icon: Icons.timeline,
-            title: 'Spline Chart',
-            index: 11,
-          ),
-          _buildDrawerItem(
-            icon: Icons.show_chart,
-            title: 'Step Line Chart',
-            index: 12,
-          ),
-          _buildDrawerItem(
-            icon: Icons.view_column,
-            title: 'Stacked Column',
-            index: 13,
-          ),
-          _buildDrawerItem(
-            icon: Icons.change_history,
-            title: 'Pyramid Chart',
-            index: 14,
-          ),
-          _buildDrawerItem(
-            icon: Icons.filter_alt,
-            title: 'Funnel Chart',
-            index: 15,
-          ),
+          _buildDrawerItem(icon: Icons.timeline, title: 'Spline Chart', index: 11),
+          _buildDrawerItem(icon: Icons.show_chart, title: 'Step Line Chart', index: 12),
+          _buildDrawerItem(icon: Icons.view_column, title: 'Stacked Column', index: 13),
+          _buildDrawerItem(icon: Icons.change_history, title: 'Pyramid Chart', index: 14),
+          _buildDrawerItem(icon: Icons.filter_alt, title: 'Funnel Chart', index: 15),
           const Divider(),
           _buildDrawerItem(icon: Icons.science, title: 'Data Test', index: 16),
         ],
@@ -278,35 +197,25 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String title,
-    required int index,
-  }) {
+  Widget _buildDrawerItem({required IconData icon, required String title, required int index}) {
     final isSelected = _selectedIndex == index;
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: isSelected
-            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.6)
-            : Colors.transparent,
+        color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.6) : Colors.transparent,
       ),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: isSelected
-                ? theme.colorScheme.primary.withValues(alpha: 0.15)
-                : Colors.transparent,
+            color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
-            color: isSelected
-                ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.7),
             size: 22,
           ),
         ),
@@ -315,9 +224,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             fontSize: 15,
-            color: isSelected
-                ? theme.colorScheme.onPrimaryContainer
-                : theme.colorScheme.onSurface,
+            color: isSelected ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSurface,
           ),
         ),
         selected: isSelected,
@@ -407,11 +314,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
                 onExport: () {
                   _showExportSnackBar(context, 'Exporting data point...');
@@ -443,11 +346,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   useGlassmorphism: _useGlassmorphism,
                   useNeumorphism: _useNeumorphism,
                   onViewDetails: () {
-                    _showDetailsDialog(
-                      context,
-                      point: point,
-                      datasetLabel: dataSet.dataPoint.label ?? '',
-                    );
+                    _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                   },
                 );
               }
@@ -484,14 +383,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             config: chartsConfig,
             title: 'Temperature Over Time',
             subtitle: 'Without grid lines',
-            dataSets: SampleData.generateLineData(count: 8, maxY: 40)
-                .map(
-                  (point) => ChartDataSet(
-                    color: const Color(0xFFEC4899),
-                    dataPoint: point,
-                  ),
-                )
-                .toList(),
+            dataSets: SampleData.generateLineData(
+              count: 8,
+              maxY: 40,
+            ).map((point) => ChartDataSet(color: const Color(0xFFEC4899), dataPoint: point)).toList(),
             onPointTap: (point, datasetIndex, pointIndex, position) {
               ChartContextMenuHelper.show(
                 context,
@@ -619,11 +514,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
                 onExport: () {
                   _showExportSnackBar(context, 'Exporting bar data...');
@@ -715,11 +606,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
                 onExport: () {
                   _showExportSnackBar(context, 'Exporting data point...');
@@ -733,12 +620,9 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           const SizedBox(height: 24),
           AreaChartWidget(
             dataSets: [
-              ...SampleData.generateLineData(count: 15).map(
-                (point) => ChartDataSet(
-                  color: const Color(0xFF10B981),
-                  dataPoint: point,
-                ),
-              ),
+              ...SampleData.generateLineData(
+                count: 15,
+              ).map((point) => ChartDataSet(color: const Color(0xFF10B981), dataPoint: point)),
             ],
             config: chartsConfig,
             title: 'Growth Metrics',
@@ -812,16 +696,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(context, segment: segment);
                 },
                 onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Exporting ${segment.label} data...');
                 },
                 onShare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Sharing ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Sharing ${segment.label} data...');
                 },
               );
             },
@@ -846,16 +724,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(context, segment: segment);
                 },
                 onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Exporting ${segment.label} data...');
                 },
                 onShare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Sharing ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Sharing ${segment.label} data...');
                 },
               );
             },
@@ -890,16 +762,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(context, segment: segment);
                 },
                 onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Exporting ${segment.label} data...');
                 },
                 onShare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Sharing ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Sharing ${segment.label} data...');
                 },
               );
             },
@@ -924,16 +790,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(context, segment: segment);
                 },
                 onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Exporting ${segment.label} data...');
                 },
                 onShare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Sharing ${segment.label} data...',
-                  );
+                  _showExportSnackBar(context, 'Sharing ${segment.label} data...');
                 },
               );
             },
@@ -943,11 +803,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             legendLayout: .vertical,
             title: 'Sales Distribution',
             subtitle: 'With custom width and height',
-            data: SampleData.generatePieData(
-              showValue: false,
-              showLabel: false,
-              circleSize: 80.0,
-            ),
+            data: SampleData.generatePieData(showValue: false, showLabel: false, circleSize: 80.0),
           ),
         ],
       ),
@@ -983,17 +839,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
                 onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting radial data point...',
-                  );
+                  _showExportSnackBar(context, 'Exporting radial data point...');
                 },
                 onShare: () {
                   _showExportSnackBar(context, 'Sharing radial data point...');
@@ -1006,10 +855,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildSparklineChart(
-    ChartTheme chartTheme,
-    ChartsConfig chartsConfig,
-  ) {
+  Widget _buildSparklineChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final sparklineDataSets = SampleData.generateSparklineData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1022,8 +868,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Trend Analysis',
             subtitle: 'Compact sparkline visualization - Tap on points!',
             onPointTap: (point, datasetIndex, pointIndex, position) {
-              if (datasetIndex < 0 ||
-                  datasetIndex >= sparklineDataSets.length) {
+              if (datasetIndex < 0 || datasetIndex >= sparklineDataSets.length) {
                 return;
               }
               final dataSet = sparklineDataSets[datasetIndex];
@@ -1039,23 +884,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
                 onExport: () {
-                  _showExportSnackBar(
-                    context,
-                    'Exporting sparkline data point...',
-                  );
+                  _showExportSnackBar(context, 'Exporting sparkline data point...');
                 },
                 onShare: () {
-                  _showExportSnackBar(
-                    context,
-                    'Sharing sparkline data point...',
-                  );
+                  _showExportSnackBar(context, 'Sharing sparkline data point...');
                 },
               );
             },
@@ -1068,11 +903,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   dataSets: List.generate(15, (i) {
                     return ChartDataSet(
                       color: const Color(0xFF10B981),
-                      dataPoint: ChartDataPoint(
-                        x: i.toDouble(),
-                        y: 50 + i * 2,
-                        label: 'Point ${i + 1}',
-                      ),
+                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2, label: 'Point ${i + 1}'),
                     );
                   }),
                   config: chartsConfig,
@@ -1081,16 +912,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
                         color: const Color(0xFF10B981),
-                        dataPoint: ChartDataPoint(
-                          x: i.toDouble(),
-                          y: 50 + i * 2,
-                          label: 'Point ${i + 1}',
-                        ),
+                        dataPoint: ChartDataPoint(x: i.toDouble(), y: 50 + i * 2, label: 'Point ${i + 1}'),
                       );
                     });
-                    final dataSet = datasetIndex < dataSets.length
-                        ? dataSets[datasetIndex]
-                        : dataSets.first;
+                    final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
                     ChartContextMenuHelper.show(
                       context,
                       point: point,
@@ -1103,23 +928,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       useGlassmorphism: _useGlassmorphism,
                       useNeumorphism: _useNeumorphism,
                       onViewDetails: () {
-                        _showDetailsDialog(
-                          context,
-                          point: point,
-                          datasetLabel: dataSet.dataPoint.label ?? '',
-                        );
+                        _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                       },
                       onExport: () {
-                        _showExportSnackBar(
-                          context,
-                          'Exporting positive trend data...',
-                        );
+                        _showExportSnackBar(context, 'Exporting positive trend data...');
                       },
                       onShare: () {
-                        _showExportSnackBar(
-                          context,
-                          'Sharing positive trend data...',
-                        );
+                        _showExportSnackBar(context, 'Sharing positive trend data...');
                       },
                     );
                   },
@@ -1131,10 +946,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   dataSets: List.generate(15, (i) {
                     return ChartDataSet(
                       color: const Color(0xFFEF4444),
-                      dataPoint: ChartDataPoint(
-                        x: i.toDouble(),
-                        y: 100 - i * 2,
-                      ),
+                      dataPoint: ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
                     );
                   }),
                   config: chartsConfig,
@@ -1143,15 +955,10 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                     final dataSets = List.generate(15, (i) {
                       return ChartDataSet(
                         color: const Color(0xFFEF4444),
-                        dataPoint: ChartDataPoint(
-                          x: i.toDouble(),
-                          y: 100 - i * 2,
-                        ),
+                        dataPoint: ChartDataPoint(x: i.toDouble(), y: 100 - i * 2),
                       );
                     });
-                    final dataSet = datasetIndex < dataSets.length
-                        ? dataSets[datasetIndex]
-                        : dataSets.first;
+                    final dataSet = datasetIndex < dataSets.length ? dataSets[datasetIndex] : dataSets.first;
                     ChartContextMenuHelper.show(
                       context,
                       point: point,
@@ -1164,23 +971,13 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                       useGlassmorphism: _useGlassmorphism,
                       useNeumorphism: _useNeumorphism,
                       onViewDetails: () {
-                        _showDetailsDialog(
-                          context,
-                          point: point,
-                          datasetLabel: dataSet.dataPoint.label ?? '',
-                        );
+                        _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                       },
                       onExport: () {
-                        _showExportSnackBar(
-                          context,
-                          'Exporting negative trend data...',
-                        );
+                        _showExportSnackBar(context, 'Exporting negative trend data...');
                       },
                       onShare: () {
-                        _showExportSnackBar(
-                          context,
-                          'Sharing negative trend data...',
-                        );
+                        _showExportSnackBar(context, 'Sharing negative trend data...');
                       },
                     );
                   },
@@ -1222,11 +1019,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
               );
             },
@@ -1273,8 +1066,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   _showDetailsDialog(
                     context,
                     point: point,
-                    datasetLabel:
-                        '${bubblePoint.label ?? ''} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
+                    datasetLabel: '${bubblePoint.label ?? ''} (Size: ${bubblePoint.size.toStringAsFixed(1)})',
                   );
                 },
               );
@@ -1318,11 +1110,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: radarPoint.label,
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: radarPoint.label);
                 },
               );
             },
@@ -1348,11 +1136,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point: ChartDataPoint(
-                  x: 0,
-                  y: 75,
-                  label: 'Performance Score',
-                ),
+                point: ChartDataPoint(x: 0, y: 75, label: 'Performance Score'),
                 datasetLabel: 'Performance Score',
               );
             },
@@ -1368,11 +1152,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             onChartTap: () {
               _showDetailsDialog(
                 context,
-                point: ChartDataPoint(
-                  x: 0,
-                  y: 85,
-                  label: 'Customer Satisfaction',
-                ),
+                point: ChartDataPoint(x: 0, y: 85, label: 'Customer Satisfaction'),
                 datasetLabel: 'Customer Satisfaction',
               );
             },
@@ -1409,8 +1189,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             dataSets: splineDataSets,
             config: chartsConfig,
             title: 'Smooth Spline Chart',
-            subtitle:
-                'Spline curves with smooth bezier interpolation - Tap on points!',
+            subtitle: 'Spline curves with smooth bezier interpolation - Tap on points!',
             onPointTap: (point, datasetIndex, pointIndex, position) {
               if (datasetIndex < 0 || datasetIndex >= splineDataSets.length) {
                 return;
@@ -1428,11 +1207,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
               );
             },
@@ -1471,11 +1246,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
               );
             },
@@ -1485,10 +1256,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     );
   }
 
-  Widget _buildStackedColumnChart(
-    ChartTheme chartTheme,
-    ChartsConfig chartsConfig,
-  ) {
+  Widget _buildStackedColumnChart(ChartTheme chartTheme, ChartsConfig chartsConfig) {
     final stackedBarDataSets = SampleData.generateBarData();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -1501,8 +1269,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
             title: 'Stacked Column Chart',
             subtitle: 'Multiple datasets stacked vertically - Tap on bars!',
             onBarTap: (point, datasetIndex, barIndex, position) {
-              if (datasetIndex < 0 ||
-                  datasetIndex >= stackedBarDataSets.length) {
+              if (datasetIndex < 0 || datasetIndex >= stackedBarDataSets.length) {
                 return;
               }
               final dataSet = stackedBarDataSets[datasetIndex];
@@ -1518,11 +1285,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                 useGlassmorphism: _useGlassmorphism,
                 useNeumorphism: _useNeumorphism,
                 onViewDetails: () {
-                  _showDetailsDialog(
-                    context,
-                    point: point,
-                    datasetLabel: dataSet.dataPoint.label ?? '',
-                  );
+                  _showDetailsDialog(context, point: point, datasetLabel: dataSet.dataPoint.label ?? '');
                 },
               );
             },
@@ -1612,43 +1375,27 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
           crossAxisAlignment: .start,
           children: [
             if (point != null) ...[
-              if (userLabel != null)
-                Text(
-                  'Label: $userLabel',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+              if (userLabel != null) Text('Label: $userLabel', style: const TextStyle(fontWeight: FontWeight.bold)),
               if (datasetLabel != null) Text('Dataset: $datasetLabel'),
               const SizedBox(height: 8),
               Text('X Value: ${point.x.toStringAsFixed(2)}'),
               Text('Y Value: ${point.y.toStringAsFixed(2)}'),
             ] else if (segment != null) ...[
-              Text(
-                'Label: ${segment.label}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text('Label: ${segment.label}', style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Text('Value: ${segment.value.toStringAsFixed(2)}'),
               Text('Color: ${segment.color.toString()}'),
             ],
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
     );
   }
 
   void _showExportSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2), behavior: SnackBarBehavior.floating),
     );
   }
 }
