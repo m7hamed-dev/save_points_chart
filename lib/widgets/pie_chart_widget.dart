@@ -1,11 +1,12 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -58,8 +59,7 @@ class PieChartWidget extends StatefulWidget {
   State<PieChartWidget> createState() => _PieChartWidgetState();
 }
 
-class _PieChartWidgetState extends State<PieChartWidget>
-    with SingleTickerProviderStateMixin {
+class _PieChartWidgetState extends State<PieChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedSegment;
@@ -67,14 +67,8 @@ class _PieChartWidgetState extends State<PieChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -114,17 +108,11 @@ class _PieChartWidgetState extends State<PieChartWidget>
       final normalized = direction / direction.distance;
       final anchorLocal = center + normalized * (radius * 0.7);
 
-      final globalPosition = renderBox != null
-          ? renderBox.localToGlobal(anchorLocal)
-          : anchorLocal;
+      final globalPosition = renderBox != null ? renderBox.localToGlobal(anchorLocal) : anchorLocal;
 
       // Small delay to ensure overlay is removed before showing new menu
       Future.microtask(() {
-        widget.onSegmentTap?.call(
-          result.segment!,
-          result.elementIndex!,
-          globalPosition,
-        );
+        widget.onSegmentTap?.call(result.segment!, result.elementIndex!, globalPosition);
       });
     } else {
       // Clear selection if tap is outside any segment
@@ -136,20 +124,13 @@ class _PieChartWidgetState extends State<PieChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     final effectiveEmptyWidget =
         widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     final effectiveEmptyNoValuesWidget =
         widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No values to display',
-        );
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No values to display');
 
     // Handle empty data case
     if (widget.data.isEmpty) {
@@ -258,10 +239,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
               Container(
                 width: 16,
                 height: 16,
-                decoration: BoxDecoration(
-                  color: item.color,
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: item.color, shape: BoxShape.circle),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -269,10 +247,7 @@ class _PieChartWidgetState extends State<PieChartWidget>
                   showWidget: item.showLabel,
                   widget: Text(
                     item.label,
-                    style: TextStyle(
-                      color: effectiveTheme.textColor,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: effectiveTheme.textColor, fontSize: 12),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -305,18 +280,13 @@ class _PieChartWidgetState extends State<PieChartWidget>
               // Ensure we have a valid width constraint
               // If maxWidth is unbounded or zero, use a default size
               // Minimum size of 100 to prevent negative radius in painter (radius = min(width, height) / 2 - 20)
-              final maxWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
-                  ? constraints.maxWidth
-                  : 250.0;
+              final maxWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0 ? constraints.maxWidth : 250.0;
               final width = math.min(maxWidth, 250.0).clamp(100.0, 250.0);
               final height = (widget.height ?? 250.0).clamp(100.0, double.infinity);
               final chartSize = Size(width, height);
               return GestureDetector(
-                behavior: HitTestBehavior
-                    .translucent, // Allow taps even when overlay is present
-                onTapDown: widget.onSegmentTap != null
-                    ? (details) => _handleTap(details, chartSize.width)
-                    : null,
+                behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                onTapDown: widget.onSegmentTap != null ? (details) => _handleTap(details, chartSize.width) : null,
                 onSecondaryTapDown: widget.onSegmentTap != null
                     ? (details) => _handleTap(details, chartSize.width)
                     : null,
