@@ -99,11 +99,24 @@ class _PieChartWidgetState extends State<PieChartWidget>
         _selectedSegment = result;
       });
 
-      // Get global position for context menu
+      // Compute a stable anchor point near the tapped segment, not the raw tap.
       final renderBox = context.findRenderObject() as RenderBox?;
+      final localTap = details.localPosition;
+      final chartSize = Size(size, widget.height ?? 250.0);
+      final center = Offset(chartSize.width / 2, chartSize.height / 2);
+
+      // Direction from center to tap; fallback to straight up if zero.
+      var direction = localTap - center;
+      if (direction.distance == 0) {
+        direction = const Offset(0, -1);
+      }
+      final radius = chartSize.shortestSide / 2 - 20;
+      final normalized = direction / direction.distance;
+      final anchorLocal = center + normalized * (radius * 0.7);
+
       final globalPosition = renderBox != null
-          ? renderBox.localToGlobal(details.localPosition)
-          : details.localPosition;
+          ? renderBox.localToGlobal(anchorLocal)
+          : anchorLocal;
 
       // Small delay to ensure overlay is removed before showing new menu
       Future.microtask(() {
