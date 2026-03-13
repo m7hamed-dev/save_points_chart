@@ -6,11 +6,7 @@ class WebCloseButton extends StatefulWidget {
   final VoidCallback? onTap;
   final WebUIColorScheme colorScheme;
 
-  const WebCloseButton({
-    super.key,
-    required this.onTap,
-    required this.colorScheme,
-  });
+  const WebCloseButton({super.key, required this.onTap, required this.colorScheme});
 
   @override
   State<WebCloseButton> createState() => _WebCloseButtonState();
@@ -34,16 +30,10 @@ class _WebCloseButtonState extends State<WebCloseButton> {
             duration: const Duration(milliseconds: 150),
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: _isHovered
-                  ? widget.colorScheme.hoverColor
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(6),
+              color: _isHovered ? widget.colorScheme.hoverColor : Colors.transparent,
+              borderRadius: const .all(.circular(6)),
             ),
-            child: Icon(
-              Icons.close_rounded,
-              size: 16,
-              color: widget.colorScheme.textSecondary,
-            ),
+            child: Icon(Icons.close_rounded, size: 16, color: widget.colorScheme.textSecondary),
           ),
         ),
       ),

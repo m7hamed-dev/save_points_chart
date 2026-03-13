@@ -142,13 +142,13 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
         label: 'Chart context menu',
         container: true,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: const .all(.circular(16)),
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
               width: 320,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: const .all(.circular(16)),
                 gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: gradientColors),
                 border: Border.all(color: borderColor, width: 1.5),
                 boxShadow: shadows,
@@ -213,7 +213,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
         container: true,
         child: Container(
           width: 320,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: baseColor, boxShadow: shadows),
+          decoration: BoxDecoration(borderRadius: const .all(.circular(16)), color: baseColor, boxShadow: shadows),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,7 +262,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
       child: Container(
         width: 230,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: const .all(.circular(16)),
           color: backgroundColor,
           border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
           boxShadow: [
@@ -375,7 +375,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
           width: 10,
           height: 10,
           margin: EdgeInsetsDirectional.only(end: isRtl ? 0 : 8, start: isRtl ? 8 : 0),
-          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
+          decoration: BoxDecoration(color: color, borderRadius: const .all(.circular(2))),
         ),
         Flexible(
           child: Text(
@@ -470,7 +470,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isAccent ? _primaryColor.withValues(alpha: 0.08) : colorScheme.hoverColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: const .all(.circular(8)),
         border: Border.all(color: isAccent ? _primaryColor.withValues(alpha: 0.2) : colorScheme.borderColor),
       ),
       child: Column(

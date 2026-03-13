@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
@@ -41,7 +42,7 @@ class ChartTooltipOverlay {
           child: IgnorePointer(
             child: RepaintBoundary(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: const .all(.circular(12)),
                 child: BackdropFilter(
                   filter: _blur!,
                   child: ChartTooltip(
@@ -67,4 +68,3 @@ class ChartTooltipOverlay {
     _entry = null;
   }
 }
-

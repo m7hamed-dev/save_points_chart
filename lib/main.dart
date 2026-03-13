@@ -31,7 +31,7 @@ class _MaterialAppWithThemeState extends State<_MaterialAppWithTheme> {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      cardTheme: CardThemeData(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+      cardTheme: const CardThemeData(elevation: 0, shape: RoundedRectangleBorder(borderRadius: .all(.circular(16)))),
     );
   }
 

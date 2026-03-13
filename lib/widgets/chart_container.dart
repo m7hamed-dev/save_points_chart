@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 
@@ -104,8 +105,7 @@ class ChartContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// Theme
-    final effectiveTheme =
-        theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme = theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
 
     /// Padding
     final effectivePadding = padding ?? const EdgeInsets.all(16.0);
@@ -115,7 +115,7 @@ class ChartContainer extends StatelessWidget {
       padding: effectivePadding,
       decoration: BoxDecoration(
         color: effectiveTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
+        borderRadius: .all(.circular(effectiveTheme.borderRadius)),
         border: Border.all(
           color: effectiveTheme.cardBorderColor != const Color(0x00000000)
               ? effectiveTheme.cardBorderColor
@@ -163,9 +163,7 @@ class ChartContainer extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0.1,
-                          color: effectiveTheme.textColor.withValues(
-                            alpha: 0.65,
-                          ),
+                          color: effectiveTheme.textColor.withValues(alpha: 0.65),
                           height: 1.4,
                         ),
                       ),
@@ -173,11 +171,7 @@ class ChartContainer extends StatelessWidget {
                 ],
               ),
             ),
-          if (header != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: header!,
-            ),
+          if (header != null) Padding(padding: const EdgeInsets.only(bottom: 16.0), child: header!),
           if (isLoading)
             Semantics(
               label: 'Chart is loading',
@@ -188,19 +182,12 @@ class ChartContainer extends StatelessWidget {
                     mainAxisAlignment: .center,
                     children: [
                       CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          effectiveTheme.gradientColors.first,
-                        ),
+                        valueColor: AlwaysStoppedAnimation<Color>(effectiveTheme.gradientColors.first),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'Loading chart data...',
-                        style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(
-                            alpha: 0.7,
-                          ),
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: effectiveTheme.textColor.withValues(alpha: 0.7), fontSize: 14),
                       ),
                     ],
                   ),
@@ -209,8 +196,7 @@ class ChartContainer extends StatelessWidget {
             )
           else if (isError)
             Semantics(
-              label:
-                  'Chart error: ${errorMessage ?? 'Failed to load chart data'}',
+              label: 'Chart error: ${errorMessage ?? 'Failed to load chart data'}',
               child: SizedBox(
                 height: 300,
                 child: Center(
@@ -220,20 +206,11 @@ class ChartContainer extends StatelessWidget {
                         mainAxisAlignment: .center,
                         mainAxisSize: .min,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Colors.red.withValues(alpha: 0.7),
-                          ),
+                          Icon(Icons.error_outline, size: 48, color: Colors.red.withValues(alpha: 0.7)),
                           const SizedBox(height: 16),
                           Text(
                             errorMessage ?? 'Failed to load chart data',
-                            style: TextStyle(
-                              color: effectiveTheme.textColor.withValues(
-                                alpha: 0.7,
-                              ),
-                              fontSize: 14,
-                            ),
+                            style: TextStyle(color: effectiveTheme.textColor.withValues(alpha: 0.7), fontSize: 14),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -243,13 +220,10 @@ class ChartContainer extends StatelessWidget {
             )
           else
             Semantics(
-              label: title != null
-                  ? 'Chart: $title${subtitle != null ? '. $subtitle' : ''}'
-                  : 'Chart visualization',
+              label: title != null ? 'Chart: $title${subtitle != null ? '. $subtitle' : ''}' : 'Chart visualization',
               child: child,
             ),
-          if (footer != null)
-            Padding(padding: const EdgeInsets.only(top: 16.0), child: footer!),
+          if (footer != null) Padding(padding: const EdgeInsets.only(top: 16.0), child: footer!),
         ],
       ),
     );
@@ -257,7 +231,7 @@ class ChartContainer extends StatelessWidget {
     if (useGlassmorphism) {
       container = Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
+          borderRadius: .all(.circular(effectiveTheme.borderRadius)),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -266,64 +240,38 @@ class ChartContainer extends StatelessWidget {
               effectiveTheme.backgroundColor.withValues(alpha: 0.65),
             ],
           ),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.25),
-            width: 1.5,
-          ),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.25), width: 1.5),
           boxShadow:
               boxShadow ??
               [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 24,
-                  spreadRadius: -2,
-                ),
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(-2, -2),
-                ),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 24, spreadRadius: -2),
+                BoxShadow(color: Colors.white.withValues(alpha: 0.1), blurRadius: 8, offset: const Offset(-2, -2)),
               ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: container,
-          ),
+          borderRadius: .all(.circular(effectiveTheme.borderRadius)),
+          child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), child: container),
         ),
       );
     }
 
     if (useNeumorphism) {
       final isDark = effectiveTheme.backgroundColor.computeLuminance() < 0.5;
-      final shadowColor = isDark
-          ? Colors.black.withValues(alpha: 0.6)
-          : Colors.grey.shade400;
-      final highlightColor = isDark
-          ? Colors.white.withValues(alpha: 0.08)
-          : Colors.white.withValues(alpha: 0.9);
+      final shadowColor = isDark ? Colors.black.withValues(alpha: 0.6) : Colors.grey.shade400;
+      final highlightColor = isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.9);
 
       container = Container(
         padding: effectivePadding,
         decoration: BoxDecoration(
           color: effectiveTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(effectiveTheme.borderRadius),
+          borderRadius: .all(.circular(effectiveTheme.borderRadius)),
           boxShadow:
               boxShadow ??
               [
                 // Dark shadow (bottom right)
-                BoxShadow(
-                  color: shadowColor,
-                  blurRadius: 24,
-                  offset: const Offset(8, 8),
-                ),
+                BoxShadow(color: shadowColor, blurRadius: 24, offset: const Offset(8, 8)),
                 // Light highlight (top left)
-                BoxShadow(
-                  color: highlightColor,
-                  blurRadius: 24,
-                  offset: const Offset(-8, -8),
-                ),
+                BoxShadow(color: highlightColor, blurRadius: 24, offset: const Offset(-8, -8)),
                 // Inner shadow for depth
                 BoxShadow(
                   color: shadowColor.withValues(alpha: 0.3),
@@ -346,33 +294,20 @@ class ChartContainer extends StatelessWidget {
                     if (title != null)
                       Text(
                         title!,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: effectiveTheme.textColor,
-                        ),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: effectiveTheme.textColor),
                       ),
                     if (subtitle != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
                           subtitle!,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: effectiveTheme.textColor.withValues(
-                              alpha: 0.7,
-                            ),
-                          ),
+                          style: TextStyle(fontSize: 14, color: effectiveTheme.textColor.withValues(alpha: 0.7)),
                         ),
                       ),
                   ],
                 ),
               ),
-            if (header != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: header!,
-              ),
+            if (header != null) Padding(padding: const EdgeInsets.only(bottom: 16.0), child: header!),
             if (isLoading)
               SizedBox(
                 height: 300,
@@ -381,19 +316,12 @@ class ChartContainer extends StatelessWidget {
                     mainAxisAlignment: .center,
                     children: [
                       CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          effectiveTheme.gradientColors.first,
-                        ),
+                        valueColor: AlwaysStoppedAnimation<Color>(effectiveTheme.gradientColors.first),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'Loading chart data...',
-                        style: TextStyle(
-                          color: effectiveTheme.textColor.withValues(
-                            alpha: 0.7,
-                          ),
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: effectiveTheme.textColor.withValues(alpha: 0.7), fontSize: 14),
                       ),
                     ],
                   ),
@@ -409,20 +337,11 @@ class ChartContainer extends StatelessWidget {
                         mainAxisAlignment: .center,
                         mainAxisSize: .min,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Colors.red.withValues(alpha: 0.7),
-                          ),
+                          Icon(Icons.error_outline, size: 48, color: Colors.red.withValues(alpha: 0.7)),
                           const SizedBox(height: 16),
                           Text(
                             errorMessage ?? 'Failed to load chart data',
-                            style: TextStyle(
-                              color: effectiveTheme.textColor.withValues(
-                                alpha: 0.7,
-                              ),
-                              fontSize: 14,
-                            ),
+                            style: TextStyle(color: effectiveTheme.textColor.withValues(alpha: 0.7), fontSize: 14),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -431,11 +350,7 @@ class ChartContainer extends StatelessWidget {
               )
             else
               child,
-            if (footer != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: footer!,
-              ),
+            if (footer != null) Padding(padding: const EdgeInsets.only(top: 16.0), child: footer!),
           ],
         ),
       );

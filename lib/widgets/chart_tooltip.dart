@@ -19,31 +19,23 @@ class ChartTooltip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = theme.tooltipStyle ??
-        const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-          letterSpacing: -0.1,
-        );
+    final titleStyle =
+        theme.tooltipStyle ??
+        const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white, letterSpacing: -0.1);
     final subtitleStyle = titleStyle.copyWith(
       fontSize: 11,
       fontWeight: FontWeight.w500,
       color: titleStyle.color?.withValues(alpha: 0.75),
       letterSpacing: 0,
     );
-    final valueStyle = titleStyle.copyWith(
-      fontSize: 14,
-      fontWeight: FontWeight.w700,
-      letterSpacing: -0.2,
-    );
+    final valueStyle = titleStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: -0.2);
 
     return Container(
       constraints: const BoxConstraints(minWidth: 140, maxWidth: 240),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: theme.tooltipBackgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: const .all(.circular(12)),
         border: Border.all(color: theme.tooltipBorderColor),
         boxShadow: theme.tooltipShadow,
       ),
@@ -63,32 +55,15 @@ class ChartTooltip extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: color!.withValues(alpha: 0.35),
-                          blurRadius: 10,
-                          spreadRadius: 1,
-                        ),
-                      ],
+                      boxShadow: [BoxShadow(color: color!.withValues(alpha: 0.35), blurRadius: 10, spreadRadius: 1)],
                     ),
                   ),
-                Expanded(
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+                Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis)),
               ],
             ),
             if (subtitle != null) ...[
               const SizedBox(height: 3),
-              Text(
-                subtitle!,
-                style: subtitleStyle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(subtitle!, style: subtitleStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
             ],
             const SizedBox(height: 8),
             Text(value, style: valueStyle),
@@ -98,4 +73,3 @@ class ChartTooltip extends StatelessWidget {
     );
   }
 }
-

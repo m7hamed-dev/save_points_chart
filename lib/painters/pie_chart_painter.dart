@@ -281,7 +281,7 @@ class PieChartPainter extends CustomPainter {
     final bgPaint = Paint()
       ..color = item.color.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
-    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const Radius.circular(4)), bgPaint);
+    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const .circular(4)), bgPaint);
 
     textPainter.paint(canvas, Offset(labelX - textPainter.width / 2, labelY - textPainter.height / 2));
   }

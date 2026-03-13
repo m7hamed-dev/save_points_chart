@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -106,11 +107,8 @@ class BarChartPainter extends BaseChartPainter {
     final rightPadding = theme.padding.right;
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
-    
-    final chartSize = Size(
-      size.width - leftPadding - rightPadding,
-      size.height - topPadding - bottomPadding,
-    );
+
+    final chartSize = Size(size.width - leftPadding - rightPadding, size.height - topPadding - bottomPadding);
     final chartOffset = Offset(leftPadding, topPadding);
 
     // Calculate bounds (optimized single pass)
@@ -160,7 +158,7 @@ class BarChartPainter extends BaseChartPainter {
         }
         effectiveSortedXValues = effectiveGroupedByX.keys.toList()..sort();
       }
-      
+
       final maxGroups = effectiveSortedXValues.length;
 
       if (effectiveGroupedByX.length > 1) {
@@ -168,9 +166,7 @@ class BarChartPainter extends BaseChartPainter {
         final groupSpacing = chartSize.width / (maxGroups + 1);
         final barSpacing = barWidth * 0.2;
 
-        for (int groupIndex = 0;
-            groupIndex < effectiveSortedXValues.length;
-            groupIndex++) {
+        for (int groupIndex = 0; groupIndex < effectiveSortedXValues.length; groupIndex++) {
           final xValue = effectiveSortedXValues[groupIndex];
           final groupDataSets = effectiveGroupedByX[xValue]!;
           double currentX = groupSpacing * (groupIndex + 1);
@@ -188,18 +184,17 @@ class BarChartPainter extends BaseChartPainter {
 
             // Stagger animation for grouped bars
             final barIndex = groupIndex / maxGroups;
-            final barProgress = math.max(
-              0.0,
-              math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
-            );
+            final barProgress = math.max(0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7));
 
             // Check if this bar is selected or hovered
             final datasetIndex = dataSets.indexOf(dataSet);
-            final isSelected = selectedBar != null &&
+            final isSelected =
+                selectedBar != null &&
                 selectedBar!.isHit &&
                 selectedBar!.datasetIndex == datasetIndex &&
                 selectedBar!.elementIndex == 0;
-            final isHovered = hoveredBar != null &&
+            final isHovered =
+                hoveredBar != null &&
                 hoveredBar!.isHit &&
                 hoveredBar!.datasetIndex == datasetIndex &&
                 hoveredBar!.elementIndex == 0;
@@ -220,13 +215,11 @@ class BarChartPainter extends BaseChartPainter {
         }
       } else {
         // Fallback to single bars if only one group
-        _drawSingleBars(
-            canvas, chartSize, minXAdjusted, maxXAdjusted, maxYAdjusted);
+        _drawSingleBars(canvas, chartSize, minXAdjusted, maxXAdjusted, maxYAdjusted);
       }
     } else {
       // Single bars with animation
-      _drawSingleBars(
-          canvas, chartSize, minXAdjusted, maxXAdjusted, maxYAdjusted);
+      _drawSingleBars(canvas, chartSize, minXAdjusted, maxXAdjusted, maxYAdjusted);
     }
 
     canvas.restore();
@@ -234,61 +227,35 @@ class BarChartPainter extends BaseChartPainter {
     // Draw axis labels
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minXAdjusted,
-      maxXAdjusted,
-      minY,
-      maxYAdjusted,
-      dataSets: dataSets,
-    );
+    drawAxisLabels(canvas, chartSize, minXAdjusted, maxXAdjusted, minY, maxYAdjusted, dataSets: dataSets);
     canvas.restore();
   }
 
-  void _drawSingleBars(
-    Canvas canvas,
-    Size chartSize,
-    double minXAdjusted,
-    double maxXAdjusted,
-    double maxYAdjusted,
-  ) {
+  void _drawSingleBars(Canvas canvas, Size chartSize, double minXAdjusted, double maxXAdjusted, double maxYAdjusted) {
     final totalBars = dataSets.length;
     for (int i = 0; i < dataSets.length; i++) {
       final dataSet = dataSets[i];
       final point = dataSet.dataPoint;
 
       // Validate point data to prevent NaN
-      if (!point.x.isFinite ||
-          !point.y.isFinite ||
-          point.y < 0 ||
-          maxYAdjusted <= 0) {
+      if (!point.x.isFinite || !point.y.isFinite || point.y < 0 || maxYAdjusted <= 0) {
         continue;
       }
 
       final xRange = maxXAdjusted - minXAdjusted;
-      final x = xRange > 0
-          ? ((point.x - minXAdjusted) / xRange) * chartSize.width
-          : chartSize.width / 2;
+      final x = xRange > 0 ? ((point.x - minXAdjusted) / xRange) * chartSize.width : chartSize.width / 2;
       final barHeight = (point.y / maxYAdjusted) * chartSize.height;
       final barY = chartSize.height - barHeight;
 
       // Stagger animation for each bar
       final barIndex = i / totalBars;
-      final barProgress = math.max(
-        0.0,
-        math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7),
-      );
+      final barProgress = math.max(0.0, math.min(1.0, (animationProgress - barIndex * 0.3) / 0.7));
 
       // Check if this bar is selected or hovered
-      final isSelected = selectedBar != null &&
-          selectedBar!.isHit &&
-          selectedBar!.datasetIndex == i &&
-          selectedBar!.elementIndex == 0;
-      final isHovered = hoveredBar != null &&
-          hoveredBar!.isHit &&
-          hoveredBar!.datasetIndex == i &&
-          hoveredBar!.elementIndex == 0;
+      final isSelected =
+          selectedBar != null && selectedBar!.isHit && selectedBar!.datasetIndex == i && selectedBar!.elementIndex == 0;
+      final isHovered =
+          hoveredBar != null && hoveredBar!.isHit && hoveredBar!.datasetIndex == i && hoveredBar!.elementIndex == 0;
 
       _drawRoundedBar(
         canvas,
@@ -335,7 +302,7 @@ class BarChartPainter extends BaseChartPainter {
     final effectiveBorderRadius = barRounded ? borderRadius : 0.0;
     final rect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight),
-      Radius.circular(effectiveBorderRadius),
+      .circular(effectiveBorderRadius),
     );
 
     // Enhanced gradient with better visual depth
@@ -343,12 +310,7 @@ class BarChartPainter extends BaseChartPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          color.withValues(alpha: 1.0),
-          color,
-          color.withValues(alpha: 0.85),
-          color.withValues(alpha: 0.75),
-        ],
+        colors: [color.withValues(alpha: 1.0), color, color.withValues(alpha: 0.85), color.withValues(alpha: 0.75)],
         stops: const [0.0, 0.3, 0.7, 1.0],
       ).createShader(rect.outerRect)
       ..style = PaintingStyle.fill;
@@ -360,17 +322,17 @@ class BarChartPainter extends BaseChartPainter {
       ..style = PaintingStyle.fill;
     final shadowRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx + 1, adjustedY + 1, width, adjustedHeight),
-      Radius.circular(effectiveBorderRadius),
+      .circular(effectiveBorderRadius),
     );
     canvas.drawRRect(shadowRect, shadowPaint);
-    
+
     // Draw main bar
     canvas.drawRRect(rect, paint);
 
     // Enhanced highlight on top with better gradient
     final highlightRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(position.dx, adjustedY, width, adjustedHeight * 0.25),
-      Radius.circular(effectiveBorderRadius),
+      .circular(effectiveBorderRadius),
     );
     final highlightAlpha = isSelected ? 0.5 : (isHovered ? 0.35 : 0.25);
     final highlightPaint = Paint()
