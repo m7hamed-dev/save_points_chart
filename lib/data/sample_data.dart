@@ -126,10 +126,10 @@ class SampleData {
   static List<ChartDataSet> generateUsersData() {
     final data = [
       ChartDataPoint(x: 0, y: 100, label: 'mohamed'),
-      ChartDataPoint(x: 1, y: 200, label: 'ahmed'),
-      ChartDataPoint(x: 2, y: 300, label: 'ali'),
-      ChartDataPoint(x: 3, y: 400, label: 'omar'),
-      ChartDataPoint(x: 4, y: 500, label: 'khalid'),
+      ChartDataPoint(x: 2, y: 123, label: 'ali'),
+      ChartDataPoint(x: 1, y: 170, label: 'ahmed'),
+      ChartDataPoint(x: 3, y: 120, label: 'omar'),
+      ChartDataPoint(x: 4, y: 90, label: 'khalid'),
     ];
     return data.map((point) {
       return ChartDataSet(color: const Color(0xFF6366F1), dataPoint: point);
