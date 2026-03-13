@@ -96,16 +96,17 @@ class ChartContextMenuHelper {
     final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
 
-    // Start by centering the menu horizontally on the tap/x position
-    // and placing it slightly above the tap (like the reference UI).
-    double dx = globalPosition.dx - _kMenuWidth / 2;
+    // Start anchored directly above the provided point (no horizontal recenter),
+    // then adjust only if we would go out of bounds. This keeps the tooltip
+    // visually attached to the tapped chart element (pie slice, bar, point, etc.).
+    double dx = globalPosition.dx;
     double dy = globalPosition.dy - _kMenuHeight - 8;
 
     // Clamp within screen bounds with a small padding.
     if (dx + _kMenuWidth + _kPadding > screenWidth) {
       dx = screenWidth - _kMenuWidth - _kPadding;
     }
-    if (dx < _kPadding) {
+    if (dx - _kPadding < 0) {
       dx = _kPadding;
     }
     if (dy < _kPadding) {
