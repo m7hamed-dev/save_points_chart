@@ -48,10 +48,7 @@ class ChartDataSet {
   /// Returns a new [ChartDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
   ChartDataSet copyWith({ChartDataPoint? dataPoint, Color? color}) {
-    return ChartDataSet(
-      dataPoint: dataPoint ?? this.dataPoint,
-      color: color ?? this.color,
-    );
+    return ChartDataSet(dataPoint: dataPoint ?? this.dataPoint, color: color ?? this.color);
   }
 
   @override
@@ -60,10 +57,7 @@ class ChartDataSet {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ChartDataSet &&
-          runtimeType == other.runtimeType &&
-          dataPoint == other.dataPoint &&
-          color == other.color;
+      other is ChartDataSet && runtimeType == other.runtimeType && dataPoint == other.dataPoint && color == other.color;
 
   @override
   int get hashCode => Object.hash(dataPoint, color);
@@ -85,12 +79,7 @@ class ChartDataSet {
 /// Use this to display an empty state instead of the chart when there is
 /// no meaningful data.
 class ChartEmptyScope extends StatelessWidget {
-  const ChartEmptyScope({
-    super.key,
-    required this.dataSets,
-    required this.child,
-    this.emptyWidget,
-  });
+  const ChartEmptyScope({super.key, required this.dataSets, required this.child, this.emptyWidget});
 
   /// The data sets to check. If empty or all points are (0, 0), [emptyWidget]
   /// is shown.

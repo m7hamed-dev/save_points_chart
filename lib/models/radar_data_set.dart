@@ -32,10 +32,7 @@ class RadarDataSet {
   ///
   /// Throws an [AssertionError] if [dataPoints] is empty.
   RadarDataSet({required this.color, required this.dataPoints})
-      : assert(
-          dataPoints.isNotEmpty,
-          'RadarDataSet dataPoints must not be empty',
-        );
+    : assert(dataPoints.isNotEmpty, 'RadarDataSet dataPoints must not be empty');
 
   /// The color used to render the polygon and points in this data set.
   ///
@@ -55,10 +52,7 @@ class RadarDataSet {
   /// Returns a new [RadarDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
   RadarDataSet copyWith({Color? color, List<RadarDataPoint>? dataPoints}) {
-    return RadarDataSet(
-      color: color ?? this.color,
-      dataPoints: dataPoints ?? this.dataPoints,
-    );
+    return RadarDataSet(color: color ?? this.color, dataPoints: dataPoints ?? this.dataPoints);
   }
 
   @override

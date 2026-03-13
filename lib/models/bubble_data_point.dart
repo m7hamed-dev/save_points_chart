@@ -37,13 +37,8 @@ class BubbleDataPoint extends ChartDataPoint {
   /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [size] is not positive or not finite.
-  BubbleDataPoint({
-    required super.x,
-    required super.y,
-    required dynamic size,
-    super.label,
-    super.showValue,
-  }) : size = _parseSize(size);
+  BubbleDataPoint({required super.x, required super.y, required dynamic size, super.label, super.showValue})
+    : size = _parseSize(size);
 
   static double _parseSize(dynamic value) {
     if (value is num) return value.toDouble();
@@ -56,13 +51,7 @@ class BubbleDataPoint extends ChartDataPoint {
   /// Returns a new [BubbleDataPoint] with the same values as this one,
   /// except for the fields that are explicitly provided.
   @override
-  BubbleDataPoint copyWith({
-    dynamic x,
-    dynamic y,
-    dynamic size,
-    String? label,
-    bool? showValue,
-  }) {
+  BubbleDataPoint copyWith({dynamic x, dynamic y, dynamic size, String? label, bool? showValue}) {
     return BubbleDataPoint(
       x: x ?? this.x,
       y: y ?? this.y,
@@ -73,16 +62,12 @@ class BubbleDataPoint extends ChartDataPoint {
   }
 
   @override
-  String toString() =>
-      'BubbleDataPoint(x: $x, y: $y, size: $size, label: ${label ?? "null"})';
+  String toString() => 'BubbleDataPoint(x: $x, y: $y, size: $size, label: ${label ?? "null"})';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      super == other &&
-          other is BubbleDataPoint &&
-          runtimeType == other.runtimeType &&
-          size == other.size;
+      super == other && other is BubbleDataPoint && runtimeType == other.runtimeType && size == other.size;
 
   @override
   int get hashCode => Object.hash(super.hashCode, size);

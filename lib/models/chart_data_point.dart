@@ -30,13 +30,9 @@ class ChartDataPoint {
   /// [showValue] defaults to true to display the value on the chart.
   ///
   /// Throws an [AssertionError] if [x] or [y] are not finite.
-  ChartDataPoint({
-    required dynamic x,
-    required dynamic y,
-    this.label,
-    this.showValue = true,
-  }) : x = _parseValue(x),
-       y = _parseValue(y);
+  ChartDataPoint({required dynamic x, required dynamic y, this.label, this.showValue = true})
+    : x = _parseValue(x),
+      y = _parseValue(y);
 
   static double _parseValue(dynamic value) {
     if (value is num) return value.toDouble();
@@ -72,12 +68,7 @@ class ChartDataPoint {
   ///
   /// Returns a new [ChartDataPoint] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  ChartDataPoint copyWith({
-    dynamic x,
-    dynamic y,
-    String? label,
-    bool? showValue,
-  }) {
+  ChartDataPoint copyWith({dynamic x, dynamic y, String? label, bool? showValue}) {
     return ChartDataPoint(
       x: x ?? this.x,
       y: y ?? this.y,
@@ -87,8 +78,7 @@ class ChartDataPoint {
   }
 
   @override
-  String toString() =>
-      'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"}, showValue: $showValue)';
+  String toString() => 'ChartDataPoint(x: $x, y: $y, label: ${label ?? "null"}, showValue: $showValue)';
 
   @override
   bool operator ==(Object other) =>

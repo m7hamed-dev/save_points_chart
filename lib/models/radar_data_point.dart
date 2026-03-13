@@ -26,11 +26,7 @@ class RadarDataPoint {
   ///
   /// Throws an [AssertionError] if [value] is negative or not finite,
   /// or if [label] is empty.
-  RadarDataPoint({
-    required this.label,
-    required dynamic value,
-    this.showValue = true,
-  }) : value = _parseValue(value);
+  RadarDataPoint({required this.label, required dynamic value, this.showValue = true}) : value = _parseValue(value);
 
   static double _parseValue(dynamic value) {
     if (value is num) return value.toDouble();
@@ -69,8 +65,7 @@ class RadarDataPoint {
   }
 
   @override
-  String toString() =>
-      'RadarDataPoint(label: $label, value: $value, showValue: $showValue)';
+  String toString() => 'RadarDataPoint(label: $label, value: $value, showValue: $showValue)';
 
   @override
   bool operator ==(Object other) =>

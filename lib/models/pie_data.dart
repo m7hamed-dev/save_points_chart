@@ -73,12 +73,7 @@ class PieData {
   ///
   /// Returns a new [PieData] with the same values as this one,
   /// except for the fields that are explicitly provided.
-  PieData copyWith({
-    String? label,
-    dynamic value,
-    Color? color,
-    bool? showValue,
-  }) {
+  PieData copyWith({String? label, dynamic value, Color? color, bool? showValue}) {
     return PieData(
       label: label ?? this.label,
       value: value ?? this.value,
@@ -88,8 +83,7 @@ class PieData {
   }
 
   @override
-  String toString() =>
-      'PieData(label: $label, value: $value, color: $color, showValue: $showValue)';
+  String toString() => 'PieData(label: $label, value: $value, color: $color, showValue: $showValue)';
 
   @override
   bool operator ==(Object other) =>

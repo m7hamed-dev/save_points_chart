@@ -82,13 +82,7 @@ class ChartInteractionConstants {
 /// - `ChartPointHoverCallback` for hover events (desktop/web only)
 /// - `onBubbleTap` for bubble chart-specific tap handling
 /// - `ChartInteractionConstants` for interaction configuration
-typedef ChartPointCallback =
-    void Function(
-      ChartDataPoint point,
-      int datasetIndex,
-      int pointIndex,
-      Offset position,
-    );
+typedef ChartPointCallback = void Function(ChartDataPoint point, int datasetIndex, int pointIndex, Offset position);
 
 /// Callback for pie chart segment tap interactions.
 ///
@@ -118,8 +112,7 @@ typedef ChartPointCallback =
 ///
 /// See also:
 /// - [PieSegmentHoverCallback] for hover events (desktop/web only)
-typedef PieSegmentCallback =
-    void Function(PieData segment, int segmentIndex, Offset position);
+typedef PieSegmentCallback = void Function(PieData segment, int segmentIndex, Offset position);
 
 /// Callback for bar chart tap interactions.
 ///
@@ -148,13 +141,7 @@ typedef PieSegmentCallback =
 ///
 /// See also:
 /// - [BarHoverCallback] for hover events (desktop/web only)
-typedef BarCallback =
-    void Function(
-      ChartDataPoint point,
-      int datasetIndex,
-      int barIndex,
-      Offset position,
-    );
+typedef BarCallback = void Function(ChartDataPoint point, int datasetIndex, int barIndex, Offset position);
 
 /// Callback for mouse hover events on chart points.
 ///
@@ -196,8 +183,7 @@ typedef BarCallback =
 /// - `ChartPointCallback` for tap events (all platforms)
 /// - `onBubbleHover` for bubble chart-specific hover handling
 /// - `ChartInteractionConstants` for interaction configuration
-typedef ChartPointHoverCallback =
-    void Function(ChartDataPoint? point, int? datasetIndex, int? pointIndex);
+typedef ChartPointHoverCallback = void Function(ChartDataPoint? point, int? datasetIndex, int? pointIndex);
 
 /// Callback for mouse hover events on pie chart segments.
 ///
@@ -230,8 +216,7 @@ typedef ChartPointHoverCallback =
 ///
 /// See also:
 /// - [PieSegmentCallback] for tap events (all platforms)
-typedef PieSegmentHoverCallback =
-    void Function(PieData? segment, int? segmentIndex);
+typedef PieSegmentHoverCallback = void Function(PieData? segment, int? segmentIndex);
 
 /// Callback for mouse hover events on bars.
 ///
@@ -263,8 +248,7 @@ typedef PieSegmentHoverCallback =
 ///
 /// See also:
 /// - [BarCallback] for tap events (all platforms)
-typedef BarHoverCallback =
-    void Function(ChartDataPoint? point, int? datasetIndex, int? barIndex);
+typedef BarHoverCallback = void Function(ChartDataPoint? point, int? datasetIndex, int? barIndex);
 
 /// Callback for bubble chart tap interactions.
 ///
@@ -397,28 +381,11 @@ class ChartInteractionResult {
   ///
   /// [isHit] defaults to false. Set to true when an element is found.
   /// Either [point] or [segment] should be provided (not both).
-  const ChartInteractionResult({
-    this.point,
-    this.segment,
-    this.datasetIndex,
-    this.elementIndex,
-    this.isHit = false,
-  }) : assert(
-         point == null || segment == null,
-         'Cannot have both point and segment',
-       ),
-       assert(
-         !isHit || (point != null || segment != null),
-         'isHit true requires point or segment',
-       ),
-       assert(
-         !isHit || datasetIndex != null,
-         'isHit true requires datasetIndex',
-       ),
-       assert(
-         !isHit || elementIndex != null,
-         'isHit true requires elementIndex',
-       );
+  const ChartInteractionResult({this.point, this.segment, this.datasetIndex, this.elementIndex, this.isHit = false})
+    : assert(point == null || segment == null, 'Cannot have both point and segment'),
+      assert(!isHit || (point != null || segment != null), 'isHit true requires point or segment'),
+      assert(!isHit || datasetIndex != null, 'isHit true requires datasetIndex'),
+      assert(!isHit || elementIndex != null, 'isHit true requires elementIndex');
 
   /// The data point that was interacted with, if applicable.
   ///
@@ -502,6 +469,5 @@ class ChartInteractionResult {
           isHit == other.isHit;
 
   @override
-  int get hashCode =>
-      Object.hash(point, segment, datasetIndex, elementIndex, isHit);
+  int get hashCode => Object.hash(point, segment, datasetIndex, elementIndex, isHit);
 }

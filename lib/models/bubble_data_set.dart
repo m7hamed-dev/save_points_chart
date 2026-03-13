@@ -43,20 +43,14 @@ class BubbleDataSet {
   ///
   /// Throws an [AssertionError] if [dataPoints] is empty.
   BubbleDataSet({required this.color, required this.dataPoints})
-      : assert(
-          dataPoints.isNotEmpty,
-          'BubbleDataSet dataPoints must not be empty',
-        );
+    : assert(dataPoints.isNotEmpty, 'BubbleDataSet dataPoints must not be empty');
 
   /// Creates a copy of this bubble data set with the given fields replaced.
   ///
   /// Returns a new [BubbleDataSet] with the same values as this one,
   /// except for the fields that are explicitly provided.
   BubbleDataSet copyWith({Color? color, List<BubbleDataPoint>? dataPoints}) {
-    return BubbleDataSet(
-      color: color ?? this.color,
-      dataPoints: dataPoints ?? this.dataPoints,
-    );
+    return BubbleDataSet(color: color ?? this.color, dataPoints: dataPoints ?? this.dataPoints);
   }
 
   @override

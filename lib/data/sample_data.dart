@@ -3,11 +3,7 @@ import 'package:save_points_chart/models/chart_data.dart';
 
 /// Sample data generators for demonstration
 class SampleData {
-  static List<ChartDataPoint> generateLineData({
-    int count = 5,
-    double minY = 0,
-    double maxY = 100,
-  }) {
+  static List<ChartDataPoint> generateLineData({int count = 5, double minY = 0, double maxY = 100}) {
     return List.generate(count, (index) {
       return ChartDataPoint(
         x: index.toDouble(),
@@ -22,11 +18,7 @@ class SampleData {
     final List<ChartDataSet> sales = List.generate(5, (index) {
       return ChartDataSet(
         color: const Color(0xFF6366F1),
-        dataPoint: ChartDataPoint(
-          x: index.toDouble(),
-          y: 20 + (index * 9) + (index % 3) * 10,
-          label: 'M${index + 1}',
-        ),
+        dataPoint: ChartDataPoint(x: index.toDouble(), y: 20 + (index * 9) + (index % 3) * 10, label: 'M${index + 1}'),
       );
     });
 
@@ -34,11 +26,7 @@ class SampleData {
     final List<ChartDataSet> revenue = List.generate(5, (index) {
       return ChartDataSet(
         color: const Color(0xFF10B981),
-        dataPoint: ChartDataPoint(
-          x: index.toDouble(),
-          y: 30 + (index * 3) + (index % 2) * 15,
-          label: 'M${index + 1}',
-        ),
+        dataPoint: ChartDataPoint(x: index.toDouble(), y: 30 + (index * 3) + (index % 2) * 15, label: 'M${index + 1}'),
       );
     });
     return [...sales, ...revenue];
@@ -48,20 +36,12 @@ class SampleData {
     return List.generate(7, (index) {
       return ChartDataSet(
         color: const Color.fromARGB(255, 32, 166, 5),
-        dataPoint: ChartDataPoint(
-          x: index.toDouble(),
-          y: 0 + (index * 9) + (index % 3) * 20,
-          label: 'Q${index + 1}',
-        ),
+        dataPoint: ChartDataPoint(x: index.toDouble(), y: 0 + (index * 9) + (index % 3) * 20, label: 'Q${index + 1}'),
       );
     });
   }
 
-  static List<PieData> generatePieData({
-    bool showValue = true,
-    bool showLabel = true,
-    double circleSize = 18.0,
-  }) {
+  static List<PieData> generatePieData({bool showValue = true, bool showLabel = true, double circleSize = 18.0}) {
     // final data = [
     //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
     //   PieData(label: 'Day 5', value: 0, color: Color(0xFF6366F1)),
@@ -138,10 +118,7 @@ class SampleData {
     return List.generate(20, (index) {
       return ChartDataSet(
         color: const Color(0xFF10B981),
-        dataPoint: ChartDataPoint(
-          x: index.toDouble(),
-          y: 50 + (index % 5) * 10 + (index % 3 == 0 ? 15 : -5),
-        ),
+        dataPoint: ChartDataPoint(x: index.toDouble(), y: 50 + (index % 5) * 10 + (index % 3 == 0 ? 15 : -5)),
       );
     });
   }
