@@ -151,7 +151,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget> with SingleTickerPr
 
         // Determine chart size based on constraints
         // Ensure we have a valid width constraint (minimum 100 to prevent negative radius)
-        // If maxWidth is unbounded (double.infinity), use a reasonable default
+        // If maxWidth is unbounded (.infinity), use a reasonable default
         // If maxWidth is zero or very small, ensure minimum size
         double availableWidth;
         if (!constraints.maxWidth.isFinite) {
@@ -345,7 +345,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget> with SingleTickerPr
                 decoration: BoxDecoration(
                   color: item.color,
                   shape: BoxShape.circle,
-                  border: Border.all(color: theme.textColor.withValues(alpha: 0.1)),
+                  border: .all(color: theme.textColor.withValues(alpha: 0.1)),
                 ),
               ),
               const SizedBox(width: 8),

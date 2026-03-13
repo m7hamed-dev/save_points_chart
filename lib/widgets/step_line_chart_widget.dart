@@ -125,7 +125,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget> with SingleTi
       return _cachedBounds!;
     }
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
 

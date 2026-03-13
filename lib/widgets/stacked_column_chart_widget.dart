@@ -192,7 +192,7 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget> wit
 
                             if (widget.dataSets.isEmpty) return;
 
-                            double minX = double.infinity;
+                            double minX = .infinity;
                             double maxX = double.negativeInfinity;
                             double maxY = double.negativeInfinity;
 

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -36,15 +37,12 @@ class StackedAreaChartPainter extends BaseChartPainter {
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
 
-    final chartSize = Size(
-      size.width - leftPadding - rightPadding,
-      size.height - topPadding - bottomPadding,
-    );
+    final chartSize = Size(size.width - leftPadding - rightPadding, size.height - topPadding - bottomPadding);
     final chartOffset = Offset(leftPadding, topPadding);
 
     if (dataSets.isEmpty) return;
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
 
@@ -56,10 +54,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
       if (point.y > maxY) maxY = point.y;
     }
 
-    if (!minX.isFinite ||
-        !maxX.isFinite ||
-        !maxY.isFinite ||
-        minX == double.infinity) {
+    if (!minX.isFinite || !maxX.isFinite || !maxY.isFinite || minX == .infinity) {
       return;
     }
 
@@ -68,10 +63,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
     final xRange = maxX - minX;
     final xPadding = (xRange > 0 && xRange.isFinite) ? xRange * 0.05 : 0.0;
 
-    if (chartSize.width <= 0 ||
-        chartSize.height <= 0 ||
-        !chartSize.width.isFinite ||
-        !chartSize.height.isFinite) {
+    if (chartSize.width <= 0 || chartSize.height <= 0 || !chartSize.width.isFinite || !chartSize.height.isFinite) {
       return;
     }
 
@@ -162,14 +154,8 @@ class StackedAreaChartPainter extends BaseChartPainter {
       // But for area fill, we need to be careful.
       // Easiest is to clip the path or just draw subset.
 
-      final visibleTopPoints = topPoints.sublist(
-        0,
-        math.min(animatedPoints, topPoints.length),
-      );
-      final visibleBottomPoints = bottomPoints.sublist(
-        0,
-        math.min(animatedPoints, bottomPoints.length),
-      );
+      final visibleTopPoints = topPoints.sublist(0, math.min(animatedPoints, topPoints.length));
+      final visibleBottomPoints = bottomPoints.sublist(0, math.min(animatedPoints, bottomPoints.length));
 
       if (visibleTopPoints.isEmpty) continue;
 
@@ -246,22 +232,15 @@ class StackedAreaChartPainter extends BaseChartPainter {
         // Note: xValues are doubles, equality check might be tricky, use epsilon
         final xVal = sortedX[j];
         for (int d = 0; d < dataSets.length; d++) {
-          if (dataSets[d].color == color &&
-              (dataSets[d].dataPoint.x - xVal).abs() < 0.0001) {
+          if (dataSets[d].color == color && (dataSets[d].dataPoint.x - xVal).abs() < 0.0001) {
             datasetIndex = d;
             break;
           }
         }
 
-        final isSelected =
-            selectedPoint != null &&
-            selectedPoint!.isHit &&
-            selectedPoint!.datasetIndex == datasetIndex;
+        final isSelected = selectedPoint != null && selectedPoint!.isHit && selectedPoint!.datasetIndex == datasetIndex;
 
-        final isHovered =
-            hoveredPoint != null &&
-            hoveredPoint!.isHit &&
-            hoveredPoint!.datasetIndex == datasetIndex;
+        final isHovered = hoveredPoint != null && hoveredPoint!.isHit && hoveredPoint!.datasetIndex == datasetIndex;
 
         final radius = isSelected ? 6.0 : (isHovered ? 5.0 : 4.0);
 
@@ -283,15 +262,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
     // Axis labels on top of translated canvas
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minX - xPadding,
-      maxX + xPadding,
-      minY,
-      maxYAdjusted,
-      dataSets: dataSets,
-    );
+    drawAxisLabels(canvas, chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted, dataSets: dataSets);
     canvas.restore();
   }
 

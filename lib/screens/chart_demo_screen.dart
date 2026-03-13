@@ -146,7 +146,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+                    border: .all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
                   ),
                   child: const Icon(Icons.show_chart, size: 32, color: Colors.white),
                 ),
@@ -201,7 +201,7 @@ class _ChartDemoScreenState extends State<ChartDemoScreen> {
     final isSelected = _selectedIndex == index;
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      margin: const .symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.6) : Colors.transparent,

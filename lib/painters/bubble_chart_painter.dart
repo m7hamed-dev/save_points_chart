@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/models/chart_interaction.dart';
 import 'package:save_points_chart/painters/base_chart_painter.dart';
 
 /// A custom painter for rendering bubble charts.
@@ -50,20 +50,17 @@ class BubbleChartPainter extends BaseChartPainter {
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
 
-    final chartSize = Size(
-      size.width - leftPadding - rightPadding,
-      size.height - topPadding - bottomPadding,
-    );
+    final chartSize = Size(size.width - leftPadding - rightPadding, size.height - topPadding - bottomPadding);
     final chartOffset = Offset(leftPadding, topPadding);
 
     if (bubbleDataSets.isEmpty) return;
 
     // Calculate bounds
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
-    double minY = double.infinity;
+    double minY = .infinity;
     double maxY = double.negativeInfinity;
-    double minSize = double.infinity;
+    double minSize = .infinity;
     double maxSize = double.negativeInfinity;
 
     for (final dataSet in bubbleDataSets) {
@@ -87,9 +84,7 @@ class BubbleChartPainter extends BaseChartPainter {
 
     // Calculate size range
     final sizeRange = maxSize - minSize;
-    final sizeScale = sizeRange > 0
-        ? (maxBubbleSize - minBubbleSize) / sizeRange
-        : 1.0;
+    final sizeScale = sizeRange > 0 ? (maxBubbleSize - minBubbleSize) / sizeRange : 1.0;
 
     // Save canvas state
     canvas.save();
@@ -102,15 +97,7 @@ class BubbleChartPainter extends BaseChartPainter {
     drawAxes(canvas, chartSize, minX, maxX, minY, maxY);
 
     // Draw axis labels
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minX,
-      maxX,
-      minY,
-      maxY,
-      dataSets: dataSets,
-    );
+    drawAxisLabels(canvas, chartSize, minX, maxX, minY, maxY, dataSets: dataSets);
 
     // Calculate total points for staggering
     int totalPoints = 0;
@@ -120,19 +107,11 @@ class BubbleChartPainter extends BaseChartPainter {
     int globalPointIndex = 0;
 
     // Draw bubbles
-    for (
-      int datasetIndex = 0;
-      datasetIndex < bubbleDataSets.length;
-      datasetIndex++
-    ) {
+    for (int datasetIndex = 0; datasetIndex < bubbleDataSets.length; datasetIndex++) {
       final dataSet = bubbleDataSets[datasetIndex];
       final color = dataSet.color;
 
-      for (
-        int pointIndex = 0;
-        pointIndex < dataSet.dataPoints.length;
-        pointIndex++
-      ) {
+      for (int pointIndex = 0; pointIndex < dataSet.dataPoints.length; pointIndex++) {
         final point = dataSet.dataPoints[pointIndex];
 
         // Validate point data to prevent NaN
@@ -141,14 +120,7 @@ class BubbleChartPainter extends BaseChartPainter {
           continue;
         }
 
-        final canvasPoint = pointToCanvas(
-          ChartDataPoint(x: point.x, y: point.y),
-          chartSize,
-          minX,
-          maxX,
-          minY,
-          maxY,
-        );
+        final canvasPoint = pointToCanvas(ChartDataPoint(x: point.x, y: point.y), chartSize, minX, maxX, minY, maxY);
 
         // Validate canvas point
         if (!canvasPoint.dx.isFinite || !canvasPoint.dy.isFinite) {
@@ -157,12 +129,8 @@ class BubbleChartPainter extends BaseChartPainter {
         }
 
         // Check if this bubble is selected or hovered
-        final isSelected =
-            selectedBubble?.datasetIndex == datasetIndex &&
-            selectedBubble?.elementIndex == pointIndex;
-        final isHovered =
-            hoveredBubble?.datasetIndex == datasetIndex &&
-            hoveredBubble?.elementIndex == pointIndex;
+        final isSelected = selectedBubble?.datasetIndex == datasetIndex && selectedBubble?.elementIndex == pointIndex;
+        final isHovered = hoveredBubble?.datasetIndex == datasetIndex && hoveredBubble?.elementIndex == pointIndex;
 
         // Calculate bubble size with staggered animation
         final normalizedSize = sizeRange > 0
@@ -171,18 +139,10 @@ class BubbleChartPainter extends BaseChartPainter {
 
         final bubbleProgress = math.max(
           0.0,
-          math.min(
-            1.0,
-            (animationProgress -
-                    (globalPointIndex / (totalPoints > 0 ? totalPoints : 1)) *
-                        0.5) /
-                0.5,
-          ),
+          math.min(1.0, (animationProgress - (globalPointIndex / (totalPoints > 0 ? totalPoints : 1)) * 0.5) / 0.5),
         );
 
-        final currentSize =
-            (isSelected || isHovered ? normalizedSize * 1.2 : normalizedSize) *
-            bubbleProgress;
+        final currentSize = (isSelected || isHovered ? normalizedSize * 1.2 : normalizedSize) * bubbleProgress;
 
         globalPointIndex++;
 
@@ -191,9 +151,7 @@ class BubbleChartPainter extends BaseChartPainter {
           continue;
         }
 
-        final currentColor = isSelected || isHovered
-            ? color.withValues(alpha: 0.9)
-            : color.withValues(alpha: 0.7);
+        final currentColor = isSelected || isHovered ? color.withValues(alpha: 0.9) : color.withValues(alpha: 0.7);
 
         // Draw bubble with gradient
         if (currentSize > 0) {
@@ -206,13 +164,9 @@ class BubbleChartPainter extends BaseChartPainter {
           }
 
           // Main bubble with gradient
-          final gradient = RadialGradient(
-            colors: [currentColor, currentColor.withValues(alpha: 0.5)],
-          );
+          final gradient = RadialGradient(colors: [currentColor, currentColor.withValues(alpha: 0.5)]);
           final bubblePaint = Paint()
-            ..shader = gradient.createShader(
-              Rect.fromCircle(center: canvasPoint, radius: currentSize),
-            )
+            ..shader = gradient.createShader(Rect.fromCircle(center: canvasPoint, radius: currentSize))
             ..style = PaintingStyle.fill;
 
           canvas.drawCircle(canvasPoint, currentSize, bubblePaint);

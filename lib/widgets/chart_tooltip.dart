@@ -32,11 +32,11 @@ class ChartTooltip extends StatelessWidget {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 140, maxWidth: 240),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const .symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: theme.tooltipBackgroundColor,
         borderRadius: const .all(.circular(12)),
-        border: Border.all(color: theme.tooltipBorderColor),
+        border: .all(color: theme.tooltipBorderColor),
         boxShadow: theme.tooltipShadow,
       ),
       child: DefaultTextStyle(

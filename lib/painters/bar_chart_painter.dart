@@ -114,7 +114,7 @@ class BarChartPainter extends BaseChartPainter {
     // Calculate bounds (optimized single pass)
     if (dataSets.isEmpty) return;
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
 
@@ -126,7 +126,7 @@ class BarChartPainter extends BaseChartPainter {
       if (point.y > maxY) maxY = point.y;
     }
 
-    if (minX == double.infinity) return; // No valid data
+    if (minX == .infinity) return; // No valid data
 
     final minXAdjusted = minX * 0.95;
     final maxXAdjusted = maxX * 1.05;

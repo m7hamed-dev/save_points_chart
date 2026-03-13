@@ -36,17 +36,14 @@ class LineChartPainter extends BaseChartPainter {
     final rightPadding = theme.padding.right;
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
-    
-    final chartSize = Size(
-      size.width - leftPadding - rightPadding,
-      size.height - topPadding - bottomPadding,
-    );
+
+    final chartSize = Size(size.width - leftPadding - rightPadding, size.height - topPadding - bottomPadding);
     final chartOffset = Offset(leftPadding, topPadding);
 
     // Calculate bounds (optimized single pass)
     if (dataSets.isEmpty) return;
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
 
@@ -58,10 +55,7 @@ class LineChartPainter extends BaseChartPainter {
       if (point.y > maxY) maxY = point.y;
     }
 
-    if (minX == double.infinity ||
-        !minX.isFinite ||
-        !maxX.isFinite ||
-        !maxY.isFinite) {
+    if (minX == .infinity || !minX.isFinite || !maxX.isFinite || !maxY.isFinite) {
       return; // No valid data
     }
 
@@ -77,25 +71,24 @@ class LineChartPainter extends BaseChartPainter {
     final xRange = maxX - minX;
     final maxPointRadius = 10.0; // Maximum radius including glow
     final xPaddingInPixels = maxPointRadius;
-    
+
     // Convert pixel padding to data units
     // If chartSize.width is available, convert pixels to data range
     final xPadding = (xRange > 0 && xRange.isFinite && chartSize.width > 0)
         ? (xPaddingInPixels / chartSize.width) * xRange
-        : (xRange > 0 && xRange.isFinite) ? xRange * 0.08 : 0.0; // Fallback to 8% if width not available
+        : (xRange > 0 && xRange.isFinite)
+        ? xRange * 0.08
+        : 0.0; // Fallback to 8% if width not available
 
     // Validate chart size
-    if (!chartSize.width.isFinite ||
-        !chartSize.height.isFinite ||
-        chartSize.width <= 0 ||
-        chartSize.height <= 0) {
+    if (!chartSize.width.isFinite || !chartSize.height.isFinite || chartSize.width <= 0 || chartSize.height <= 0) {
       return;
     }
 
     // Save canvas state
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    
+
     // Clip to chart bounds to prevent lines/areas from extending outside
     canvas.clipRect(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height));
 
@@ -118,7 +111,7 @@ class LineChartPainter extends BaseChartPainter {
     for (final entry in colorGroups.entries) {
       final color = entry.key;
       final pointsList = entry.value;
-      
+
       if (pointsList.isEmpty) continue;
 
       // Sort points by x coordinate for proper line drawing
@@ -127,14 +120,7 @@ class LineChartPainter extends BaseChartPainter {
       // Convert points to canvas coordinates with padding
       final points = pointsList
           .map((point) {
-            return pointToCanvas(
-              point,
-              chartSize,
-              minX - xPadding,
-              maxX + xPadding,
-              minY,
-              maxYAdjusted,
-            );
+            return pointToCanvas(point, chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted);
           })
           .where((offset) => offset.dx.isFinite && offset.dy.isFinite)
           .toList();
@@ -167,13 +153,9 @@ class LineChartPainter extends BaseChartPainter {
             // Interpolate the last point if animation is in progress
             Offset targetPoint = currentPoint;
             if (i == animatedPoints - 1 && animationProgress < 1.0) {
-              final partialProgress =
-                  (animationProgress * totalPoints) - (i - 1);
-              final lerpedPoint =
-                  Offset.lerp(prevPoint, currentPoint, partialProgress);
-              if (lerpedPoint != null &&
-                  lerpedPoint.dx.isFinite &&
-                  lerpedPoint.dy.isFinite) {
+              final partialProgress = (animationProgress * totalPoints) - (i - 1);
+              final lerpedPoint = Offset.lerp(prevPoint, currentPoint, partialProgress);
+              if (lerpedPoint != null && lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite) {
                 targetPoint = lerpedPoint;
               }
             }
@@ -181,14 +163,8 @@ class LineChartPainter extends BaseChartPainter {
             final dx = targetPoint.dx - prevPoint.dx;
             if (!dx.isFinite) continue;
 
-            final controlPoint1 = Offset(
-              prevPoint.dx + dx * curveSmoothness,
-              prevPoint.dy,
-            );
-            final controlPoint2 = Offset(
-              targetPoint.dx - dx * curveSmoothness,
-              targetPoint.dy,
-            );
+            final controlPoint1 = Offset(prevPoint.dx + dx * curveSmoothness, prevPoint.dy);
+            final controlPoint2 = Offset(targetPoint.dx - dx * curveSmoothness, targetPoint.dy);
 
             // Validate control points before using
             if (!controlPoint1.dx.isFinite ||
@@ -222,9 +198,7 @@ class LineChartPainter extends BaseChartPainter {
               points[math.min(animatedPoints, points.length - 1)],
               animationProgress,
             );
-            lastPoint = (lerpedPoint != null &&
-                    lerpedPoint.dx.isFinite &&
-                    lerpedPoint.dy.isFinite)
+            lastPoint = (lerpedPoint != null && lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite)
                 ? lerpedPoint
                 : points.last;
           }
@@ -251,7 +225,7 @@ class LineChartPainter extends BaseChartPainter {
           ..style = PaintingStyle.fill;
 
         canvas.drawPath(areaPath, areaPaint);
-        
+
         // Add subtle border highlight for depth
         final borderPaint = Paint()
           ..color = color.withValues(alpha: 0.3 * animationProgress)
@@ -263,9 +237,7 @@ class LineChartPainter extends BaseChartPainter {
 
       // Draw line with smooth bezier curves and animation
       final linePath = Path();
-      if (points.isNotEmpty &&
-          points.first.dx.isFinite &&
-          points.first.dy.isFinite) {
+      if (points.isNotEmpty && points.first.dx.isFinite && points.first.dy.isFinite) {
         linePath.moveTo(points.first.dx, points.first.dy);
       }
 
@@ -292,24 +264,15 @@ class LineChartPainter extends BaseChartPainter {
         Offset targetPoint = currentPoint;
         if (i == animatedPoints - 1 && animationProgress < 1.0) {
           final partialProgress = (animationProgress * totalPoints) - (i - 1);
-          final lerpedPoint =
-              Offset.lerp(prevPoint, currentPoint, partialProgress);
-          if (lerpedPoint != null &&
-              lerpedPoint.dx.isFinite &&
-              lerpedPoint.dy.isFinite) {
+          final lerpedPoint = Offset.lerp(prevPoint, currentPoint, partialProgress);
+          if (lerpedPoint != null && lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite) {
             targetPoint = lerpedPoint;
           }
         }
 
         // Better bezier control points for smoother curves
-        final controlPoint1 = Offset(
-          prevPoint.dx + dx * curveSmoothness,
-          prevPoint.dy,
-        );
-        final controlPoint2 = Offset(
-          targetPoint.dx - dx * curveSmoothness,
-          targetPoint.dy,
-        );
+        final controlPoint1 = Offset(prevPoint.dx + dx * curveSmoothness, prevPoint.dy);
+        final controlPoint2 = Offset(targetPoint.dx - dx * curveSmoothness, targetPoint.dy);
 
         // Validate control points before using
         if (!controlPoint1.dx.isFinite ||
@@ -334,11 +297,7 @@ class LineChartPainter extends BaseChartPainter {
       // Enhanced line styling with better glow and gradient
       final linePaint = Paint()
         ..shader = LinearGradient(
-          colors: [
-            color,
-            color.withValues(alpha: 0.9),
-            color,
-          ],
+          colors: [color, color.withValues(alpha: 0.9), color],
           stops: const [0.0, 0.5, 1.0],
         ).createShader(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height))
         ..strokeWidth = lineWidth
@@ -383,12 +342,14 @@ class LineChartPainter extends BaseChartPainter {
           }
 
           // Check if this point is selected or hovered
-          final isSelected = selectedPoint != null &&
+          final isSelected =
+              selectedPoint != null &&
               selectedPoint!.isHit &&
               selectedPoint!.datasetIndex == datasetIndex &&
               selectedPoint!.elementIndex == 0;
 
-          final isHovered = hoveredPoint != null &&
+          final isHovered =
+              hoveredPoint != null &&
               hoveredPoint!.isHit &&
               hoveredPoint!.datasetIndex == datasetIndex &&
               hoveredPoint!.elementIndex == 0;
@@ -397,8 +358,7 @@ class LineChartPainter extends BaseChartPainter {
           final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);
           final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
           final glowPaint = Paint()
-            ..color =
-                color.withValues(alpha: glowOpacity * pointOpacity)
+            ..color = color.withValues(alpha: glowOpacity * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, glowRadius, glowPaint);
 
@@ -445,15 +405,7 @@ class LineChartPainter extends BaseChartPainter {
     // Draw axis labels with proper bounds
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minX - xPadding,
-      maxX + xPadding,
-      minY,
-      maxYAdjusted,
-      dataSets: dataSets,
-    );
+    drawAxisLabels(canvas, chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted, dataSets: dataSets);
     canvas.restore();
   }
 

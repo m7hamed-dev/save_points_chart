@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -34,16 +35,13 @@ class SplineChartPainter extends BaseChartPainter {
     final rightPadding = theme.padding.right;
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
-    
-    final chartSize = Size(
-      size.width - leftPadding - rightPadding,
-      size.height - topPadding - bottomPadding,
-    );
+
+    final chartSize = Size(size.width - leftPadding - rightPadding, size.height - topPadding - bottomPadding);
     final chartOffset = Offset(leftPadding, topPadding);
 
     if (dataSets.isEmpty) return;
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
 
@@ -54,10 +52,7 @@ class SplineChartPainter extends BaseChartPainter {
       if (point.y > maxY) maxY = point.y;
     }
 
-    if (minX == double.infinity ||
-        !minX.isFinite ||
-        !maxX.isFinite ||
-        !maxY.isFinite) {
+    if (minX == .infinity || !minX.isFinite || !maxX.isFinite || !maxY.isFinite) {
       return;
     }
 
@@ -70,23 +65,22 @@ class SplineChartPainter extends BaseChartPainter {
     final xRange = maxX - minX;
     final maxPointRadius = 10.0; // Maximum radius including glow
     final xPaddingInPixels = maxPointRadius;
-    
+
     // Convert pixel padding to data units
     // If chartSize.width is available, convert pixels to data range
     final xPadding = (xRange > 0 && xRange.isFinite && chartSize.width > 0)
         ? (xPaddingInPixels / chartSize.width) * xRange
-        : (xRange > 0 && xRange.isFinite) ? xRange * 0.08 : 0.0; // Fallback to 8% if width not available
+        : (xRange > 0 && xRange.isFinite)
+        ? xRange * 0.08
+        : 0.0; // Fallback to 8% if width not available
 
-    if (!chartSize.width.isFinite ||
-        !chartSize.height.isFinite ||
-        chartSize.width <= 0 ||
-        chartSize.height <= 0) {
+    if (!chartSize.width.isFinite || !chartSize.height.isFinite || chartSize.width <= 0 || chartSize.height <= 0) {
       return;
     }
 
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    
+
     // Clip to chart bounds to prevent lines/areas from extending outside
     canvas.clipRect(Rect.fromLTWH(0, 0, chartSize.width, chartSize.height));
 
@@ -106,7 +100,7 @@ class SplineChartPainter extends BaseChartPainter {
     for (final entry in colorGroups.entries) {
       final color = entry.key;
       final pointsList = entry.value;
-      
+
       if (pointsList.isEmpty) continue;
 
       // Sort points by x coordinate for proper line drawing
@@ -114,14 +108,7 @@ class SplineChartPainter extends BaseChartPainter {
 
       final points = pointsList
           .map((point) {
-            return pointToCanvas(
-              point,
-              chartSize,
-              minX - xPadding,
-              maxX + xPadding,
-              minY,
-              maxYAdjusted,
-            );
+            return pointToCanvas(point, chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted);
           })
           .where((offset) => offset.dx.isFinite && offset.dy.isFinite)
           .toList();
@@ -148,13 +135,9 @@ class SplineChartPainter extends BaseChartPainter {
 
             Offset targetPoint = currentPoint;
             if (i == animatedPoints - 1 && animationProgress < 1.0) {
-              final partialProgress =
-                  (animationProgress * totalPoints) - (i - 1);
-              final lerpedPoint =
-                  Offset.lerp(prevPoint, currentPoint, partialProgress);
-              if (lerpedPoint != null &&
-                  lerpedPoint.dx.isFinite &&
-                  lerpedPoint.dy.isFinite) {
+              final partialProgress = (animationProgress * totalPoints) - (i - 1);
+              final lerpedPoint = Offset.lerp(prevPoint, currentPoint, partialProgress);
+              if (lerpedPoint != null && lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite) {
                 targetPoint = lerpedPoint;
               }
             }
@@ -163,14 +146,8 @@ class SplineChartPainter extends BaseChartPainter {
             if (!dx.isFinite) continue;
 
             // Higher smoothness for spline (0.5 vs 0.35 for regular line)
-            final controlPoint1 = Offset(
-              prevPoint.dx + dx * 0.5,
-              prevPoint.dy,
-            );
-            final controlPoint2 = Offset(
-              targetPoint.dx - dx * 0.5,
-              targetPoint.dy,
-            );
+            final controlPoint1 = Offset(prevPoint.dx + dx * 0.5, prevPoint.dy);
+            final controlPoint2 = Offset(targetPoint.dx - dx * 0.5, targetPoint.dy);
 
             if (!controlPoint1.dx.isFinite ||
                 !controlPoint1.dy.isFinite ||
@@ -202,9 +179,7 @@ class SplineChartPainter extends BaseChartPainter {
               points[math.min(animatedPoints, points.length - 1)],
               animationProgress,
             );
-            lastPoint = (lerpedPoint != null &&
-                    lerpedPoint.dx.isFinite &&
-                    lerpedPoint.dy.isFinite)
+            lastPoint = (lerpedPoint != null && lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite)
                 ? lerpedPoint
                 : points.last;
           }
@@ -233,9 +208,7 @@ class SplineChartPainter extends BaseChartPainter {
 
       // Draw smooth spline line
       final linePath = Path();
-      if (points.isNotEmpty &&
-          points.first.dx.isFinite &&
-          points.first.dy.isFinite) {
+      if (points.isNotEmpty && points.first.dx.isFinite && points.first.dy.isFinite) {
         linePath.moveTo(points.first.dx, points.first.dy);
       }
 
@@ -259,24 +232,15 @@ class SplineChartPainter extends BaseChartPainter {
         Offset targetPoint = currentPoint;
         if (i == animatedPoints - 1 && animationProgress < 1.0) {
           final partialProgress = (animationProgress * totalPoints) - (i - 1);
-          final lerpedPoint =
-              Offset.lerp(prevPoint, currentPoint, partialProgress);
-          if (lerpedPoint != null &&
-              lerpedPoint.dx.isFinite &&
-              lerpedPoint.dy.isFinite) {
+          final lerpedPoint = Offset.lerp(prevPoint, currentPoint, partialProgress);
+          if (lerpedPoint != null && lerpedPoint.dx.isFinite && lerpedPoint.dy.isFinite) {
             targetPoint = lerpedPoint;
           }
         }
 
         // Higher smoothness for spline
-        final controlPoint1 = Offset(
-          prevPoint.dx + dx * 0.5,
-          prevPoint.dy,
-        );
-        final controlPoint2 = Offset(
-          targetPoint.dx - dx * 0.5,
-          targetPoint.dy,
-        );
+        final controlPoint1 = Offset(prevPoint.dx + dx * 0.5, prevPoint.dy);
+        final controlPoint2 = Offset(targetPoint.dx - dx * 0.5, targetPoint.dy);
 
         if (!controlPoint1.dx.isFinite ||
             !controlPoint1.dy.isFinite ||
@@ -330,12 +294,14 @@ class SplineChartPainter extends BaseChartPainter {
 
           // Find the dataset index for this color group
           final datasetIndex = dataSets.indexWhere((ds) => ds.color == color);
-          final isSelected = selectedPoint != null &&
+          final isSelected =
+              selectedPoint != null &&
               selectedPoint!.isHit &&
               selectedPoint!.datasetIndex == datasetIndex &&
               selectedPoint!.elementIndex == i;
 
-          final isHovered = hoveredPoint != null &&
+          final isHovered =
+              hoveredPoint != null &&
               hoveredPoint!.isHit &&
               hoveredPoint!.datasetIndex == datasetIndex &&
               hoveredPoint!.elementIndex == i;
@@ -343,8 +309,7 @@ class SplineChartPainter extends BaseChartPainter {
           final glowRadius = isSelected ? 10.0 : (isHovered ? 8.0 : 6.0);
           final glowOpacity = isSelected ? 0.4 : (isHovered ? 0.3 : 0.2);
           final glowPaint = Paint()
-            ..color =
-                color.withValues(alpha: glowOpacity * pointOpacity)
+            ..color = color.withValues(alpha: glowOpacity * pointOpacity)
             ..style = PaintingStyle.fill;
           canvas.drawCircle(point, glowRadius, glowPaint);
 
@@ -373,15 +338,7 @@ class SplineChartPainter extends BaseChartPainter {
 
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minX - xPadding,
-      maxX + xPadding,
-      minY,
-      maxYAdjusted,
-      dataSets: dataSets,
-    );
+    drawAxisLabels(canvas, chartSize, minX - xPadding, maxX + xPadding, minY, maxYAdjusted, dataSets: dataSets);
     canvas.restore();
   }
 

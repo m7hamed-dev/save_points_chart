@@ -119,9 +119,9 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget> with SingleTick
       return _cachedBounds!;
     }
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
-    double minY = double.infinity;
+    double minY = .infinity;
     double maxY = double.negativeInfinity;
 
     for (final dataSet in widget.dataSets) {

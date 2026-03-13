@@ -233,7 +233,7 @@ class _PieChartWidgetState extends State<PieChartWidget> with SingleTickerProvid
       crossAxisAlignment: .start,
       children: widget.data.map((item) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          padding: const .symmetric(vertical: 4.0),
           child: Row(
             children: [
               Container(

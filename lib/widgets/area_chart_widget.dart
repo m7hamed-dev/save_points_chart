@@ -299,7 +299,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget> with SingleTickerProv
                                 _cachedDataSets == widget.dataSets) {
                               bounds = _cachedBounds!;
                             } else {
-                              double minX = double.infinity;
+                              double minX = .infinity;
                               double maxX = double.negativeInfinity;
                               double maxY = double.negativeInfinity;
 

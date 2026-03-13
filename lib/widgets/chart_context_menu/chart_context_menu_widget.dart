@@ -150,7 +150,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
               decoration: BoxDecoration(
                 borderRadius: const .all(.circular(16)),
                 gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: gradientColors),
-                border: Border.all(color: borderColor, width: 1.5),
+                border: .all(color: borderColor, width: 1.5),
                 boxShadow: shadows,
               ),
               child: Column(
@@ -264,7 +264,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
         decoration: BoxDecoration(
           borderRadius: const .all(.circular(16)),
           color: backgroundColor,
-          border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+          border: .all(color: Colors.white.withValues(alpha: 0.06)),
           boxShadow: [
             BoxShadow(
               color: isDark ? Colors.black.withValues(alpha: 0.55) : Colors.black.withValues(alpha: 0.18),
@@ -280,7 +280,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const .symmetric(horizontal: 14, vertical: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -471,7 +471,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
       decoration: BoxDecoration(
         color: isAccent ? _primaryColor.withValues(alpha: 0.08) : colorScheme.hoverColor,
         borderRadius: const .all(.circular(8)),
-        border: Border.all(color: isAccent ? _primaryColor.withValues(alpha: 0.2) : colorScheme.borderColor),
+        border: .all(color: isAccent ? _primaryColor.withValues(alpha: 0.2) : colorScheme.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

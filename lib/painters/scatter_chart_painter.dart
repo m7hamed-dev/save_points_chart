@@ -42,27 +42,21 @@ class ScatterChartPainter extends BaseChartPainter {
     final rightPadding = theme.padding.right;
     final topPadding = theme.padding.top;
     final bottomPadding = theme.padding.bottom;
-    
-    final chartSize = Size(
-      size.width - leftPadding - rightPadding,
-      size.height - topPadding - bottomPadding,
-    );
+
+    final chartSize = Size(size.width - leftPadding - rightPadding, size.height - topPadding - bottomPadding);
     final chartOffset = Offset(leftPadding, topPadding);
 
     if (dataSets.isEmpty) return;
 
     // Validate chart size
-    if (!chartSize.width.isFinite ||
-        !chartSize.height.isFinite ||
-        chartSize.width <= 0 ||
-        chartSize.height <= 0) {
+    if (!chartSize.width.isFinite || !chartSize.height.isFinite || chartSize.width <= 0 || chartSize.height <= 0) {
       return;
     }
 
     // Calculate bounds
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
-    double minY = double.infinity;
+    double minY = .infinity;
     double maxY = double.negativeInfinity;
 
     for (final dataSet in dataSets) {
@@ -74,11 +68,7 @@ class ScatterChartPainter extends BaseChartPainter {
     }
 
     // Validate bounds
-    if (!minX.isFinite ||
-        !maxX.isFinite ||
-        !minY.isFinite ||
-        !maxY.isFinite ||
-        minX == double.infinity) {
+    if (!minX.isFinite || !maxX.isFinite || !minY.isFinite || !maxY.isFinite || minX == .infinity) {
       return;
     }
 
@@ -104,75 +94,62 @@ class ScatterChartPainter extends BaseChartPainter {
       final color = dataSet.color;
       final point = dataSet.dataPoint;
 
-        // Validate point data
-        if (!point.x.isFinite || !point.y.isFinite) {
-          continue;
-        }
+      // Validate point data
+      if (!point.x.isFinite || !point.y.isFinite) {
+        continue;
+      }
 
-        final canvasPoint =
-            pointToCanvas(point, chartSize, minX, maxX, minY, maxY);
+      final canvasPoint = pointToCanvas(point, chartSize, minX, maxX, minY, maxY);
 
-        // Validate canvas point
-        if (!canvasPoint.dx.isFinite || !canvasPoint.dy.isFinite) {
-          continue;
-        }
+      // Validate canvas point
+      if (!canvasPoint.dx.isFinite || !canvasPoint.dy.isFinite) {
+        continue;
+      }
 
-        // Check if this point is selected or hovered
-        final isSelected = selectedPoint?.datasetIndex == datasetIndex &&
-            selectedPoint?.elementIndex == 0;
-        final isHovered = hoveredPoint?.datasetIndex == datasetIndex &&
-            hoveredPoint?.elementIndex == 0;
+      // Check if this point is selected or hovered
+      final isSelected = selectedPoint?.datasetIndex == datasetIndex && selectedPoint?.elementIndex == 0;
+      final isHovered = hoveredPoint?.datasetIndex == datasetIndex && hoveredPoint?.elementIndex == 0;
 
-        // Determine point size and color based on state
-        final currentSize =
-            isSelected || isHovered ? pointSize * 1.5 : pointSize;
-        final currentColor = isSelected || isHovered
-            ? color.withValues(alpha: 1.0)
-            : color.withValues(alpha: 0.8);
+      // Determine point size and color based on state
+      final currentSize = isSelected || isHovered ? pointSize * 1.5 : pointSize;
+      final currentColor = isSelected || isHovered ? color.withValues(alpha: 1.0) : color.withValues(alpha: 0.8);
 
-        // Draw point with animation
-        final animatedSize = currentSize * animationProgress;
-        if (animatedSize > 0 && animatedSize.isFinite) {
-          // Outer glow
-          if (isSelected || isHovered) {
-            final outerPaint = Paint()
-              ..color = currentColor.withValues(alpha: 0.3)
-              ..style = PaintingStyle.fill;
-            canvas.drawCircle(canvasPoint, animatedSize * 1.8, outerPaint);
-          }
-
-          // Main dot
-          final fillPaint = Paint()
-            ..color = currentColor
+      // Draw point with animation
+      final animatedSize = currentSize * animationProgress;
+      if (animatedSize > 0 && animatedSize.isFinite) {
+        // Outer glow
+        if (isSelected || isHovered) {
+          final outerPaint = Paint()
+            ..color = currentColor.withValues(alpha: 0.3)
             ..style = PaintingStyle.fill;
-          canvas.drawCircle(canvasPoint, animatedSize, fillPaint);
-
-          // Inner highlight
-          final highlightPaint = Paint()
-            ..color = Colors.white.withValues(alpha: 0.85)
-            ..style = PaintingStyle.fill;
-          canvas.drawCircle(canvasPoint, animatedSize * 0.4, highlightPaint);
-
-          // Border (white if selected, card-colored otherwise)
-          final borderPaint = Paint()
-            ..color = isSelected ? Colors.white : theme.backgroundColor
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = isSelected ? 2.5 : 1.8;
-          canvas.drawCircle(canvasPoint, animatedSize, borderPaint);
+          canvas.drawCircle(canvasPoint, animatedSize * 1.8, outerPaint);
         }
+
+        // Main dot
+        final fillPaint = Paint()
+          ..color = currentColor
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(canvasPoint, animatedSize, fillPaint);
+
+        // Inner highlight
+        final highlightPaint = Paint()
+          ..color = Colors.white.withValues(alpha: 0.85)
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(canvasPoint, animatedSize * 0.4, highlightPaint);
+
+        // Border (white if selected, card-colored otherwise)
+        final borderPaint = Paint()
+          ..color = isSelected ? Colors.white : theme.backgroundColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = isSelected ? 2.5 : 1.8;
+        canvas.drawCircle(canvasPoint, animatedSize, borderPaint);
+      }
     }
 
     // Optional crosshair on hovered/selected point
     final interaction = hoveredPoint ?? selectedPoint;
     if (interaction != null && interaction.isHit && interaction.point != null) {
-      final crosshairPos = pointToCanvas(
-        interaction.point!,
-        chartSize,
-        minX,
-        maxX,
-        minY,
-        maxY,
-      );
+      final crosshairPos = pointToCanvas(interaction.point!, chartSize, minX, maxX, minY, maxY);
       drawCrosshair(canvas, chartSize, position: crosshairPos);
     }
 
@@ -181,15 +158,7 @@ class ScatterChartPainter extends BaseChartPainter {
     // Axis labels above everything for clarity
     canvas.save();
     canvas.translate(chartOffset.dx, chartOffset.dy);
-    drawAxisLabels(
-      canvas,
-      chartSize,
-      minX,
-      maxX,
-      minY,
-      maxY,
-      dataSets: dataSets,
-    );
+    drawAxisLabels(canvas, chartSize, minX, maxX, minY, maxY, dataSets: dataSets);
     canvas.restore();
   }
 

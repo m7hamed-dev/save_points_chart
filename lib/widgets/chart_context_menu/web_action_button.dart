@@ -8,12 +8,7 @@ class WebActionButton extends StatefulWidget {
   final WebUIColorScheme colorScheme;
   final bool isLast;
 
-  const WebActionButton({
-    super.key,
-    required this.action,
-    required this.colorScheme,
-    required this.isLast,
-  });
+  const WebActionButton({super.key, required this.action, required this.colorScheme, required this.isLast});
 
   @override
   State<WebActionButton> createState() => _WebActionButtonState();
@@ -36,24 +31,14 @@ class _WebActionButtonState extends State<WebActionButton> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             curve: Curves.easeOut,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const .symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: _isHovered
-                  ? widget.colorScheme.hoverColor
-                  : Colors.transparent,
-              border: widget.isLast
-                  ? null
-                  : Border(
-                      bottom: BorderSide(color: widget.colorScheme.dividerColor),
-                    ),
+              color: _isHovered ? widget.colorScheme.hoverColor : Colors.transparent,
+              border: widget.isLast ? null : Border(bottom: BorderSide(color: widget.colorScheme.dividerColor)),
             ),
             child: Row(
               children: [
-                Icon(
-                  widget.action.icon,
-                  size: 18,
-                  color: widget.colorScheme.textSecondary,
-                ),
+                Icon(widget.action.icon, size: 18, color: widget.colorScheme.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -69,11 +54,7 @@ class _WebActionButtonState extends State<WebActionButton> {
                 AnimatedRotation(
                   duration: const Duration(milliseconds: 150),
                   turns: _isHovered ? 0 : -0.125,
-                  child: Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 16,
-                    color: widget.colorScheme.textTertiary,
-                  ),
+                  child: Icon(Icons.arrow_forward_rounded, size: 16, color: widget.colorScheme.textTertiary),
                 ),
               ],
             ),

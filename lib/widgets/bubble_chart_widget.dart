@@ -175,9 +175,9 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget> with SingleTicker
       return _cachedBounds!;
     }
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
-    double minY = double.infinity;
+    double minY = .infinity;
     double maxY = double.negativeInfinity;
 
     for (final dataSet in widget.dataSets) {

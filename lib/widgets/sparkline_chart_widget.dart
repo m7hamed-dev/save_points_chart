@@ -149,7 +149,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget> with Single
                   if (_cachedBounds != null) {
                     bounds = _cachedBounds!;
                   } else {
-                    double minX = double.infinity;
+                    double minX = .infinity;
                     double maxX = double.negativeInfinity;
                     double maxY = double.negativeInfinity;
 

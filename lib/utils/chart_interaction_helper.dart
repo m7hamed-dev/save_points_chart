@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -49,10 +50,7 @@ class ChartInteractionHelper {
 
   /// Validates that a size is finite and positive.
   static bool _isValidSize(Size size) {
-    return size.width.isFinite &&
-        size.height.isFinite &&
-        size.width > 0 &&
-        size.height > 0;
+    return size.width.isFinite && size.height.isFinite && size.width > 0 && size.height > 0;
   }
 
   /// Validates that a position is finite.
@@ -61,12 +59,7 @@ class ChartInteractionHelper {
   }
 
   /// Validates that bounds are finite and form a valid range.
-  static bool _isValidBounds(
-    double minX,
-    double maxX,
-    double minY,
-    double maxY,
-  ) {
+  static bool _isValidBounds(double minX, double maxX, double minY, double maxY) {
     if (!minX.isFinite || !maxX.isFinite || !minY.isFinite || !maxY.isFinite) {
       return false;
     }
@@ -105,8 +98,7 @@ class ChartInteractionHelper {
     if (xRange == 0 || yRange == 0) return null;
 
     final canvasX = ((point.x - minX) / xRange) * chartSize.width;
-    final canvasY =
-        chartSize.height - ((point.y - minY) / yRange) * chartSize.height;
+    final canvasY = chartSize.height - ((point.y - minY) / yRange) * chartSize.height;
 
     if (!canvasX.isFinite || !canvasY.isFinite) return null;
     return Offset(canvasX, canvasY);
@@ -127,11 +119,7 @@ class ChartInteractionHelper {
   ///
   /// Uses Manhattan distance for faster rejection before calculating
   /// Euclidean distance.
-  static bool _isWithinQuickBounds(
-    Offset tapPosition,
-    Offset point,
-    double radius,
-  ) {
+  static bool _isWithinQuickBounds(Offset tapPosition, Offset point, double radius) {
     final dx = (tapPosition.dx - point.dx).abs();
     final dy = (tapPosition.dy - point.dy).abs();
     return dx <= radius && dy <= radius;
@@ -204,7 +192,7 @@ class ChartInteractionHelper {
 
     // Pre-calculate squared radius to avoid repeated multiplication
     final tapRadiusSquared = tapRadius * tapRadius;
-    double minDistanceSquared = double.infinity;
+    double minDistanceSquared = .infinity;
     ChartInteractionResult? nearestResult;
 
     for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
@@ -212,14 +200,7 @@ class ChartInteractionHelper {
       final point = dataSet.dataPoint;
 
       // Convert to canvas coordinates using helper
-      final canvasPoint = _toCanvasCoordinates(
-        point,
-        chartSize,
-        minX,
-        maxX,
-        minY,
-        maxY,
-      );
+      final canvasPoint = _toCanvasCoordinates(point, chartSize, minX, maxX, minY, maxY);
       if (canvasPoint == null) continue;
 
       // Quick bounds check before distance calculation
@@ -232,15 +213,9 @@ class ChartInteractionHelper {
       if (distanceSquared == null) continue;
 
       // Update nearest result if closer
-      if (distanceSquared < tapRadiusSquared &&
-          distanceSquared < minDistanceSquared) {
+      if (distanceSquared < tapRadiusSquared && distanceSquared < minDistanceSquared) {
         minDistanceSquared = distanceSquared;
-        nearestResult = ChartInteractionResult(
-          point: point,
-          datasetIndex: dsIndex,
-          elementIndex: 0,
-          isHit: true,
-        );
+        nearestResult = ChartInteractionResult(point: point, datasetIndex: dsIndex, elementIndex: 0, isHit: true);
       }
     }
 
@@ -301,8 +276,7 @@ class ChartInteractionHelper {
       if (!canvasX.isFinite) continue;
 
       // Early exit if tap is clearly to the left or right of bar
-      if (tapPosition.dx < canvasX - halfBarWidth ||
-          tapPosition.dx > canvasX + halfBarWidth) {
+      if (tapPosition.dx < canvasX - halfBarWidth || tapPosition.dx > canvasX + halfBarWidth) {
         continue;
       }
 
@@ -315,12 +289,7 @@ class ChartInteractionHelper {
 
       // Check if tap is within bar vertical bounds
       if (tapPosition.dy >= barY && tapPosition.dy <= chartHeight) {
-        return ChartInteractionResult(
-          point: point,
-          datasetIndex: dsIndex,
-          elementIndex: 0,
-          isHit: true,
-        );
+        return ChartInteractionResult(point: point, datasetIndex: dsIndex, elementIndex: 0, isHit: true);
       }
     }
 
@@ -365,8 +334,7 @@ class ChartInteractionHelper {
     final centerSpaceRadiusSquared = centerSpaceRadius * centerSpaceRadius;
     final radiusSquared = radius * radius;
 
-    if (distanceSquared < centerSpaceRadiusSquared ||
-        distanceSquared > radiusSquared) {
+    if (distanceSquared < centerSpaceRadiusSquared || distanceSquared > radiusSquared) {
       return null;
     }
 
@@ -401,10 +369,8 @@ class ChartInteractionHelper {
 
       // Check if tap angle is within segment
       final isInSegment = normalizedEnd > normalizedStart
-          ? normalizedAngle >= normalizedStart &&
-              normalizedAngle <= normalizedEnd
-          : normalizedAngle >= normalizedStart ||
-              normalizedAngle <= normalizedEnd;
+          ? normalizedAngle >= normalizedStart && normalizedAngle <= normalizedEnd
+          : normalizedAngle >= normalizedStart || normalizedAngle <= normalizedEnd;
 
       if (isInSegment) {
         return ChartInteractionResult(
@@ -443,15 +409,12 @@ class ChartInteractionHelper {
     if (!_isValidSize(size) || !_isValidPosition(tapPosition)) {
       return null;
     }
-    if (!animationProgress.isFinite ||
-        animationProgress < 0.0 ||
-        animationProgress > 1.0) {
+    if (!animationProgress.isFinite || animationProgress < 0.0 || animationProgress > 1.0) {
       return null;
     }
 
     // Sort data by value (largest to smallest for pyramid)
-    final sortedData = List<PieData>.from(data)
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedData = List<PieData>.from(data)..sort((a, b) => b.value.compareTo(a.value));
 
     final total = sortedData.fold<double>(0.0, (sum, item) => sum + item.value);
     if (!_isValidPositiveValue(total)) return null;
@@ -483,22 +446,12 @@ class ChartInteractionHelper {
       final nextWidth = baseWidth - widthDifference * nextProgress;
 
       // Check if tap is within trapezoid bounds
-      final topLeft =
-          Offset(centerX - currentWidth / 2, _defaultPadding + currentY);
-      final topRight =
-          Offset(centerX + currentWidth / 2, _defaultPadding + currentY);
-      final bottomRight =
-          Offset(centerX + nextWidth / 2, _defaultPadding + nextY);
-      final bottomLeft =
-          Offset(centerX - nextWidth / 2, _defaultPadding + nextY);
+      final topLeft = Offset(centerX - currentWidth / 2, _defaultPadding + currentY);
+      final topRight = Offset(centerX + currentWidth / 2, _defaultPadding + currentY);
+      final bottomRight = Offset(centerX + nextWidth / 2, _defaultPadding + nextY);
+      final bottomLeft = Offset(centerX - nextWidth / 2, _defaultPadding + nextY);
 
-      if (_isPointInTrapezoid(
-        tapPosition,
-        topLeft,
-        topRight,
-        bottomRight,
-        bottomLeft,
-      )) {
+      if (_isPointInTrapezoid(tapPosition, topLeft, topRight, bottomRight, bottomLeft)) {
         // Find original index in unsorted data
         final originalIndex = data.indexOf(segment);
         return ChartInteractionResult(
@@ -537,15 +490,12 @@ class ChartInteractionHelper {
     if (!_isValidSize(size) || !_isValidPosition(tapPosition)) {
       return null;
     }
-    if (!animationProgress.isFinite ||
-        animationProgress < 0.0 ||
-        animationProgress > 1.0) {
+    if (!animationProgress.isFinite || animationProgress < 0.0 || animationProgress > 1.0) {
       return null;
     }
 
     // Sort data by value (largest to smallest for funnel)
-    final sortedData = List<PieData>.from(data)
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedData = List<PieData>.from(data)..sort((a, b) => b.value.compareTo(a.value));
 
     final total = sortedData.fold<double>(0.0, (sum, item) => sum + item.value);
     if (!_isValidPositiveValue(total)) return null;
@@ -577,22 +527,12 @@ class ChartInteractionHelper {
       final nextWidth = topWidth - widthDifference * nextProgress;
 
       // Check if tap is within trapezoid bounds
-      final topLeft =
-          Offset(centerX - currentWidth / 2, _defaultPadding + currentY);
-      final topRight =
-          Offset(centerX + currentWidth / 2, _defaultPadding + currentY);
-      final bottomRight =
-          Offset(centerX + nextWidth / 2, _defaultPadding + nextY);
-      final bottomLeft =
-          Offset(centerX - nextWidth / 2, _defaultPadding + nextY);
+      final topLeft = Offset(centerX - currentWidth / 2, _defaultPadding + currentY);
+      final topRight = Offset(centerX + currentWidth / 2, _defaultPadding + currentY);
+      final bottomRight = Offset(centerX + nextWidth / 2, _defaultPadding + nextY);
+      final bottomLeft = Offset(centerX - nextWidth / 2, _defaultPadding + nextY);
 
-      if (_isPointInTrapezoid(
-        tapPosition,
-        topLeft,
-        topRight,
-        bottomRight,
-        bottomLeft,
-      )) {
+      if (_isPointInTrapezoid(tapPosition, topLeft, topRight, bottomRight, bottomLeft)) {
         // Find original index in unsorted data
         final originalIndex = data.indexOf(segment);
         return ChartInteractionResult(
@@ -627,14 +567,8 @@ class ChartInteractionHelper {
     Offset bottomLeft,
   ) {
     // Quick vertical bounds check
-    final minY = math.min(
-      math.min(topLeft.dy, topRight.dy),
-      math.min(bottomLeft.dy, bottomRight.dy),
-    );
-    final maxY = math.max(
-      math.max(topLeft.dy, topRight.dy),
-      math.max(bottomLeft.dy, bottomRight.dy),
-    );
+    final minY = math.min(math.min(topLeft.dy, topRight.dy), math.min(bottomLeft.dy, bottomRight.dy));
+    final maxY = math.max(math.max(topLeft.dy, topRight.dy), math.max(bottomLeft.dy, bottomRight.dy));
 
     if (point.dy < minY || point.dy > maxY) return false;
 
@@ -646,14 +580,12 @@ class ChartInteractionHelper {
       final rightDy = bottomRight.dy - topRight.dy;
       if (rightDy.abs() < 1e-10) {
         // Both edges vertical
-        return point.dx >= math.min(leftX, topRight.dx) &&
-            point.dx <= math.max(leftX, topRight.dx);
+        return point.dx >= math.min(leftX, topRight.dx) && point.dx <= math.max(leftX, topRight.dx);
       }
       final t2 = (point.dy - topRight.dy) / rightDy;
       if (!t2.isFinite) return false;
       final rightX = topRight.dx + (bottomRight.dx - topRight.dx) * t2;
-      return point.dx >= math.min(leftX, rightX) &&
-          point.dx <= math.max(leftX, rightX);
+      return point.dx >= math.min(leftX, rightX) && point.dx <= math.max(leftX, rightX);
     }
 
     final t = (point.dy - topLeft.dy) / leftDy;
@@ -664,8 +596,7 @@ class ChartInteractionHelper {
     if (rightDy.abs() < 1e-10) {
       // Vertical right edge
       final rightX = topRight.dx;
-      return point.dx >= math.min(leftX, rightX) &&
-          point.dx <= math.max(leftX, rightX);
+      return point.dx >= math.min(leftX, rightX) && point.dx <= math.max(leftX, rightX);
     }
 
     final t2 = (point.dy - topRight.dy) / rightDy;
@@ -673,8 +604,7 @@ class ChartInteractionHelper {
     final rightX = topRight.dx + (bottomRight.dx - topRight.dx) * t2;
 
     // Check if point X is between left and right edges
-    return point.dx >= math.min(leftX, rightX) &&
-        point.dx <= math.max(leftX, rightX);
+    return point.dx >= math.min(leftX, rightX) && point.dx <= math.max(leftX, rightX);
   }
 
   /// Find radar chart point at tap location.
@@ -725,7 +655,7 @@ class ChartInteractionHelper {
     const twoPi = 2 * math.pi;
     final angleStep = twoPi / numAxes;
 
-    double minDistanceSquared = double.infinity;
+    double minDistanceSquared = .infinity;
     ChartInteractionResult? nearestResult;
 
     for (int dsIndex = 0; dsIndex < dataSets.length; dsIndex++) {
@@ -742,10 +672,7 @@ class ChartInteractionHelper {
         final normalizedValue = (value / maxValue) * animationProgress;
         final pointRadius = radius * normalizedValue;
 
-        final point = Offset(
-          center.dx + pointRadius * math.cos(angle),
-          center.dy + pointRadius * math.sin(angle),
-        );
+        final point = Offset(center.dx + pointRadius * math.cos(angle), center.dy + pointRadius * math.sin(angle));
 
         // Quick bounds check before distance calculation
         if (!_isWithinQuickBounds(tapPosition, point, tapRadius)) {
@@ -757,15 +684,10 @@ class ChartInteractionHelper {
         if (distanceSquared == null) continue;
 
         // Update nearest result if closer
-        if (distanceSquared < tapRadiusSquared &&
-            distanceSquared < minDistanceSquared) {
+        if (distanceSquared < tapRadiusSquared && distanceSquared < minDistanceSquared) {
           minDistanceSquared = distanceSquared;
           // Convert RadarDataPoint to ChartDataPoint for compatibility
-          final chartPoint = ChartDataPoint(
-            x: ptIndex.toDouble(),
-            y: radarPoint.value,
-            label: radarPoint.label,
-          );
+          final chartPoint = ChartDataPoint(x: ptIndex.toDouble(), y: radarPoint.value, label: radarPoint.label);
           nearestResult = ChartInteractionResult(
             point: chartPoint,
             datasetIndex: dsIndex,

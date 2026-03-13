@@ -128,7 +128,7 @@ class _BarChartWidgetState extends State<BarChartWidget> with SingleTickerProvid
       return _cachedBounds!;
     }
 
-    double minX = double.infinity;
+    double minX = .infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
 

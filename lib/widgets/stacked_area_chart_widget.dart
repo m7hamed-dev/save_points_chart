@@ -180,7 +180,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget> with Si
                                 _cachedCumulativeData == cumulativeDataSets) {
                               bounds = _cachedBounds!;
                             } else {
-                              double minX = double.infinity;
+                              double minX = .infinity;
                               double maxX = double.negativeInfinity;
                               double maxY = double.negativeInfinity;
 

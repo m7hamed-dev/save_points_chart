@@ -282,7 +282,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget> with SingleTicker
     // Use squared distance to avoid expensive sqrt
     final tapRadius = useHoverRadius ? ChartInteractionConstants.hoverRadius : ChartInteractionConstants.tapRadius;
     final tapRadiusSquared = tapRadius * tapRadius;
-    double minDistanceSquared = double.infinity;
+    double minDistanceSquared = .infinity;
     ChartInteractionResult? nearestResult;
 
     for (int i = 0; i < points.length; i++) {
