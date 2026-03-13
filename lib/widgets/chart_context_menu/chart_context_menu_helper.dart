@@ -96,11 +96,11 @@ class ChartContextMenuHelper {
     final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
 
-    // Start anchored directly above the provided point (no horizontal recenter),
-    // then adjust only if we would go out of bounds. This keeps the tooltip
-    // visually attached to the tapped chart element (pie slice, bar, point, etc.).
+    // Start anchored just BELOW the provided point (same x), then adjust only
+    // if we would go out of bounds. This gives the effect of the chart element
+    // appearing "in front" and the tooltip sitting behind/beneath it.
     double dx = globalPosition.dx;
-    double dy = globalPosition.dy - _kMenuHeight - 8;
+    double dy = globalPosition.dy + 12;
 
     // Clamp within screen bounds with a small padding.
     if (dx + _kMenuWidth + _kPadding > screenWidth) {
@@ -109,10 +109,10 @@ class ChartContextMenuHelper {
     if (dx - _kPadding < 0) {
       dx = _kPadding;
     }
-    if (dy < _kPadding) {
-      dy = globalPosition.dy + 12; // fall back to below the point if not enough space above
-      if (dy + _kMenuHeight + _kPadding > screenHeight) {
-        dy = screenHeight - _kMenuHeight - _kPadding;
+    if (dy + _kMenuHeight + _kPadding > screenHeight) {
+      dy = screenHeight - _kMenuHeight - _kPadding;
+      if (dy < _kPadding) {
+        dy = _kPadding;
       }
     }
 
