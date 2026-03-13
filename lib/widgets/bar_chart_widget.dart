@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/bar_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/bar_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -66,8 +66,7 @@ class BarChartWidget extends StatefulWidget {
   State<BarChartWidget> createState() => _BarChartWidgetState();
 }
 
-class _BarChartWidgetState extends State<BarChartWidget>
-    with SingleTickerProviderStateMixin {
+class _BarChartWidgetState extends State<BarChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedBar;
@@ -76,7 +75,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
   // Cache bounds to avoid recalculation
   Map<String, double>? _cachedBounds;
   List<ChartDataSet>? _cachedDataSets;
-  
+
   // Cache grouped data for painter optimization
   Map<double, List<ChartDataSet>>? _groupedData;
   List<double>? _sortedXValues;
@@ -88,14 +87,8 @@ class _BarChartWidgetState extends State<BarChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
     _updateGroupedData();
   }
@@ -103,8 +96,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
   @override
   void didUpdateWidget(BarChartWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.dataSets != oldWidget.dataSets || 
-        widget.isGrouped != oldWidget.isGrouped) {
+    if (widget.dataSets != oldWidget.dataSets || widget.isGrouped != oldWidget.isGrouped) {
       _updateGroupedData();
       // Clear bounds cache if data changed
       if (widget.dataSets != oldWidget.dataSets) {
@@ -126,15 +118,13 @@ class _BarChartWidgetState extends State<BarChartWidget>
       final x = dataSet.dataPoint.x;
       groupedByX.putIfAbsent(x, () => []).add(dataSet);
     }
-    
+
     _groupedData = groupedByX;
     _sortedXValues = groupedByX.keys.toList()..sort();
   }
 
   Map<String, double> _getOrCalculateBounds() {
-    if (_cachedBounds != null &&
-        _cachedDataSets != null &&
-        _cachedDataSets == widget.dataSets) {
+    if (_cachedBounds != null && _cachedDataSets != null && _cachedDataSets == widget.dataSets) {
       return _cachedBounds!;
     }
 
@@ -149,41 +139,27 @@ class _BarChartWidgetState extends State<BarChartWidget>
       if (point.y > maxY) maxY = point.y;
     }
 
-    final bounds = {
-      'minX': minX,
-      'maxX': maxX,
-      'maxY': maxY,
-    };
-    
+    final bounds = {'minX': minX, 'maxX': maxX, 'maxY': maxY};
+
     _cachedBounds = bounds;
     _cachedDataSets = List.from(widget.dataSets);
     return bounds;
   }
 
   /// Handle mouse hover events
-  void _handleHover(
-    Offset position,
-    BoxConstraints constraints,
-    ChartTheme effectiveTheme,
-  ) {
+  void _handleHover(Offset position, BoxConstraints constraints, ChartTheme effectiveTheme) {
     if (widget.onBarHover == null) return;
 
     const leftPadding = 50.0;
     const topPadding = 20.0;
-    final chartPosition = Offset(
-      position.dx - leftPadding,
-      position.dy - topPadding,
-    );
+    final chartPosition = Offset(position.dx - leftPadding, position.dy - topPadding);
 
     if (widget.dataSets.isEmpty) return;
 
     final bounds = _getOrCalculateBounds();
 
     final chartHeight = widget.height ?? 240.0;
-    final chartSize = Size(
-      constraints.maxWidth - 70,
-      chartHeight,
-    );
+    final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
     final result = ChartInteractionHelper.findBar(
       chartPosition,
@@ -197,25 +173,18 @@ class _BarChartWidgetState extends State<BarChartWidget>
     );
 
     if (result != null && result.isHit) {
-      if (_hoveredBar?.elementIndex != result.elementIndex ||
-          _hoveredBar?.datasetIndex != result.datasetIndex) {
+      if (_hoveredBar?.elementIndex != result.elementIndex || _hoveredBar?.datasetIndex != result.datasetIndex) {
         setState(() {
           _hoveredBar = result;
         });
-        widget.onBarHover?.call(
-          result.point,
-          result.datasetIndex,
-          result.elementIndex,
-        );
+        widget.onBarHover?.call(result.point, result.datasetIndex, result.elementIndex);
 
         // Dashboard-style hover tooltip for bars.
         if (effectiveTheme.showTooltip) {
-          final RenderBox? renderBox =
-              context.findRenderObject() as RenderBox?;
-          final global = renderBox != null
-              ? renderBox.localToGlobal(position)
-              : position;
-          final ds = (result.datasetIndex != null &&
+          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+          final global = renderBox != null ? renderBox.localToGlobal(position) : position;
+          final ds =
+              (result.datasetIndex != null &&
                   result.datasetIndex! >= 0 &&
                   result.datasetIndex! < widget.dataSets.length)
               ? widget.dataSets[result.datasetIndex!]
@@ -248,10 +217,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
     // Use localPosition directly (relative to SizedBox)
     const leftPadding = 50.0;
     const topPadding = 20.0;
-    final chartPosition = Offset(
-      details.localPosition.dx - leftPadding,
-      details.localPosition.dy - topPadding,
-    );
+    final chartPosition = Offset(details.localPosition.dx - leftPadding, details.localPosition.dy - topPadding);
 
     // Calculate chart bounds (with caching)
     if (widget.dataSets.isEmpty) return;
@@ -259,10 +225,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
     final bounds = _getOrCalculateBounds();
 
     final chartHeight = widget.height ?? 240.0;
-    final chartSize = Size(
-      constraints.maxWidth - 70,
-      chartHeight,
-    );
+    final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
     final result = ChartInteractionHelper.findBar(
       chartPosition,
@@ -286,18 +249,11 @@ class _BarChartWidgetState extends State<BarChartWidget>
 
       // Get global position for context menu
       final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-      final globalPosition = renderBox != null
-          ? renderBox.localToGlobal(details.localPosition)
-          : details.localPosition;
+      final globalPosition = renderBox != null ? renderBox.localToGlobal(details.localPosition) : details.localPosition;
 
       // Small delay to ensure overlay is removed before showing new menu
       Future.microtask(() {
-        widget.onBarTap?.call(
-          result.point!,
-          result.datasetIndex!,
-          result.elementIndex!,
-          globalPosition,
-        );
+        widget.onBarTap?.call(result.point!, result.datasetIndex!, result.elementIndex!, globalPosition);
       });
     } else {
       // Clear selection if tap is outside any bar
@@ -316,22 +272,17 @@ class _BarChartWidgetState extends State<BarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -380,11 +331,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                   return MouseRegion(
                     onHover: widget.onBarHover != null
                         ? (event) {
-                            _handleHover(
-                              event.localPosition,
-                              constraints,
-                              effectiveTheme,
-                            );
+                            _handleHover(event.localPosition, constraints, effectiveTheme);
                           }
                         : null,
                     onExit: widget.onBarHover != null
@@ -397,11 +344,8 @@ class _BarChartWidgetState extends State<BarChartWidget>
                           }
                         : null,
                     child: GestureDetector(
-                      behavior: HitTestBehavior
-                          .translucent, // Allow taps even when overlay is present
-                      onTapDown: widget.onBarTap != null
-                          ? (details) => _handleTap(details, constraints)
-                          : null,
+                      behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                      onTapDown: widget.onBarTap != null ? (details) => _handleTap(details, constraints) : null,
                       onSecondaryTapDown: widget.onBarTap != null
                           ? (details) => _handleTap(details, constraints)
                           : null,
@@ -409,8 +353,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                         width: constraints.maxWidth,
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
-                          size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0,),
+                          size: Size(constraints.maxWidth, widget.height ?? 300.0),
                           painter: BarChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,
@@ -440,10 +383,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

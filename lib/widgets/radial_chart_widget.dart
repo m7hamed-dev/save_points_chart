@@ -1,11 +1,12 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:math' as math;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/radial_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/radial_chart_painter.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
@@ -55,8 +56,7 @@ class RadialChartWidget extends StatefulWidget {
   State<RadialChartWidget> createState() => _RadialChartWidgetState();
 }
 
-class _RadialChartWidgetState extends State<RadialChartWidget>
-    with SingleTickerProviderStateMixin {
+class _RadialChartWidgetState extends State<RadialChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -65,14 +65,8 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -84,13 +78,10 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -153,17 +144,13 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
                           }
                         : null,
                     child: GestureDetector(
-                      behavior: HitTestBehavior
-                          .translucent, // Allow taps even when overlay is present
+                      behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                       onTapDown: widget.onPointTap != null
                           ? (details) {
                               // Hide any existing context menu first to prevent blocking
                               ChartContextMenuHelper.hide();
 
-                              final result = _findNearestRadialPoint(
-                                details.localPosition,
-                                chartSize,
-                              );
+                              final result = _findNearestRadialPoint(details.localPosition, chartSize);
 
                               if (result != null && result.isHit) {
                                 // Provide haptic feedback
@@ -180,11 +167,9 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
                                 });
 
                                 // Get global position for context menu
-                                final RenderBox? renderBox =
-                                    context.findRenderObject() as RenderBox?;
+                                final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                                 final globalPosition = renderBox != null
-                                    ? renderBox
-                                        .localToGlobal(details.localPosition)
+                                    ? renderBox.localToGlobal(details.localPosition)
                                     : details.localPosition;
 
                                 // Small delay to ensure overlay is removed before showing new menu
@@ -233,10 +218,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;
@@ -246,22 +228,14 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
   void _handleHover(Offset position, Size chartSize) {
     if (widget.onPointHover == null) return;
 
-    final result = _findNearestRadialPoint(
-      position,
-      chartSize,
-      useHoverRadius: true,
-    );
+    final result = _findNearestRadialPoint(position, chartSize, useHoverRadius: true);
 
     if (result != null && result.isHit) {
       if (_hoveredPoint?.elementIndex != result.elementIndex) {
         setState(() {
           _hoveredPoint = result;
         });
-        widget.onPointHover?.call(
-          result.point,
-          result.datasetIndex,
-          result.elementIndex,
-        );
+        widget.onPointHover?.call(result.point, result.datasetIndex, result.elementIndex);
       }
     } else {
       if (_hoveredPoint != null) {
@@ -273,20 +247,13 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     }
   }
 
-  ChartInteractionResult? _findNearestRadialPoint(
-    Offset tapPosition,
-    Size chartSize, {
-    bool useHoverRadius = false,
-  }) {
+  ChartInteractionResult? _findNearestRadialPoint(Offset tapPosition, Size chartSize, {bool useHoverRadius = false}) {
     if (widget.dataSets.isEmpty) {
       return null;
     }
 
     // Validate inputs
-    if (!chartSize.width.isFinite ||
-        !chartSize.height.isFinite ||
-        chartSize.width <= 0 ||
-        chartSize.height <= 0) {
+    if (!chartSize.width.isFinite || !chartSize.height.isFinite || chartSize.width <= 0 || chartSize.height <= 0) {
       return null;
     }
     if (!tapPosition.dx.isFinite || !tapPosition.dy.isFinite) {
@@ -313,9 +280,7 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
     final angleStep = 2 * math.pi / points.length;
 
     // Use squared distance to avoid expensive sqrt
-    final tapRadius = useHoverRadius
-        ? ChartInteractionConstants.hoverRadius
-        : ChartInteractionConstants.tapRadius;
+    final tapRadius = useHoverRadius ? ChartInteractionConstants.hoverRadius : ChartInteractionConstants.tapRadius;
     final tapRadiusSquared = tapRadius * tapRadius;
     double minDistanceSquared = double.infinity;
     ChartInteractionResult? nearestResult;
@@ -352,15 +317,9 @@ class _RadialChartWidgetState extends State<RadialChartWidget>
       // Validate distance
       if (!distanceSquared.isFinite) continue;
 
-      if (distanceSquared < tapRadiusSquared &&
-          distanceSquared < minDistanceSquared) {
+      if (distanceSquared < tapRadiusSquared && distanceSquared < minDistanceSquared) {
         minDistanceSquared = distanceSquared;
-        nearestResult = ChartInteractionResult(
-          point: points[i],
-          datasetIndex: 0,
-          elementIndex: i,
-          isHit: true,
-        );
+        nearestResult = ChartInteractionResult(point: points[i], datasetIndex: 0, elementIndex: i, isHit: true);
       }
     }
 

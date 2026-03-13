@@ -25,22 +25,12 @@ class ChartEmptyState extends StatelessWidget {
   /// Message to display. Defaults to 'No data available'.
   final String message;
 
-  const ChartEmptyState({
-    super.key,
-    required this.theme,
-    this.message = 'No data available',
-  });
+  const ChartEmptyState({super.key, required this.theme, this.message = 'No data available'});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        message,
-        style: TextStyle(
-          color: theme.textColor.withValues(alpha: 0.5),
-          fontSize: 14,
-        ),
-      ),
+      child: Text(message, style: TextStyle(color: theme.textColor.withValues(alpha: 0.5), fontSize: 14)),
     );
   }
 }

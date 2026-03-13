@@ -76,8 +76,7 @@ class StackedAreaChartWidget extends StatefulWidget {
   State<StackedAreaChartWidget> createState() => _StackedAreaChartWidgetState();
 }
 
-class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
-    with SingleTickerProviderStateMixin {
+class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -89,14 +88,8 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -108,22 +101,17 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -203,24 +191,15 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
                                 if (point.y > maxY) maxY = point.y;
                               }
 
-                              bounds = {
-                                'minX': minX,
-                                'maxX': maxX,
-                                'maxY': maxY,
-                              };
+                              bounds = {'minX': minX, 'maxX': maxX, 'maxY': maxY};
                               _cachedBounds = bounds;
-                              _cachedCumulativeData =
-                                  List.from(cumulativeDataSets);
+                              _cachedCumulativeData = List.from(cumulativeDataSets);
                             }
 
                             final chartHeight = widget.height ?? 240.0;
-                            final chartSize = Size(
-                              constraints.maxWidth - 70,
-                              chartHeight,
-                            );
+                            final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
-                            final result =
-                                ChartInteractionHelper.findNearestPoint(
+                            final result = ChartInteractionHelper.findNearestPoint(
                               chartPosition,
                               cumulativeDataSets,
                               chartSize,
@@ -237,11 +216,9 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
                                 _selectedPoint = result;
                               });
 
-                              final renderBox =
-                                  context.findRenderObject() as RenderBox?;
+                              final renderBox = context.findRenderObject() as RenderBox?;
                               final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
+                                  ? renderBox.localToGlobal(details.localPosition)
                                   : details.localPosition;
 
                               Future.microtask(() {
@@ -263,8 +240,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size:
-                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: StackedAreaChartPainter(
                           theme: effectiveTheme,
                           dataSets: cumulativeDataSets,
@@ -287,10 +263,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;
@@ -348,11 +321,7 @@ class _StackedAreaChartWidgetState extends State<StackedAreaChartWidget>
         cumulative.add(
           ChartDataSet(
             color: originalDataSet.color,
-            dataPoint: ChartDataPoint(
-              x: entry.key,
-              y: entry.value,
-              label: originalDataSet.dataPoint.label,
-            ),
+            dataPoint: ChartDataPoint(x: entry.key, y: entry.value, label: originalDataSet.dataPoint.label),
           ),
         );
       }

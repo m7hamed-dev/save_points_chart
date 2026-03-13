@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/scatter_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/scatter_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -87,8 +87,7 @@ class ScatterChartWidget extends StatefulWidget {
   State<ScatterChartWidget> createState() => _ScatterChartWidgetState();
 }
 
-class _ScatterChartWidgetState extends State<ScatterChartWidget>
-    with SingleTickerProviderStateMixin {
+class _ScatterChartWidgetState extends State<ScatterChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -104,14 +103,8 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -122,9 +115,7 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
   }
 
   Map<String, double> _calculateBounds() {
-    if (_cachedBounds != null &&
-        _cachedDataSets != null &&
-        _cachedDataSets == widget.dataSets) {
+    if (_cachedBounds != null && _cachedDataSets != null && _cachedDataSets == widget.dataSets) {
       return _cachedBounds!;
     }
 
@@ -154,18 +145,11 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
     return _cachedBounds!;
   }
 
-  void _handleHover(
-    Offset position,
-    Size chartSize,
-    ChartTheme effectiveTheme,
-  ) {
+  void _handleHover(Offset position, Size chartSize, ChartTheme effectiveTheme) {
     if (widget.onPointHover == null) return;
 
     final bounds = _calculateBounds();
-    final chartPosition = Offset(
-      position.dx - 50.0,
-      position.dy - 20.0,
-    );
+    final chartPosition = Offset(position.dx - 50.0, position.dy - 20.0);
 
     final result = ChartInteractionHelper.findNearestPoint(
       chartPosition,
@@ -179,24 +163,17 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
     );
 
     if (result != null && result.isHit) {
-      if (_hoveredPoint?.elementIndex != result.elementIndex ||
-          _hoveredPoint?.datasetIndex != result.datasetIndex) {
+      if (_hoveredPoint?.elementIndex != result.elementIndex || _hoveredPoint?.datasetIndex != result.datasetIndex) {
         setState(() {
           _hoveredPoint = result;
         });
-        widget.onPointHover?.call(
-          result.point,
-          result.datasetIndex,
-          result.elementIndex,
-        );
+        widget.onPointHover?.call(result.point, result.datasetIndex, result.elementIndex);
 
         if (effectiveTheme.showTooltip) {
-          final RenderBox? renderBox =
-              context.findRenderObject() as RenderBox?;
-          final global = renderBox != null
-              ? renderBox.localToGlobal(position)
-              : position;
-          final ds = (result.datasetIndex != null &&
+          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+          final global = renderBox != null ? renderBox.localToGlobal(position) : position;
+          final ds =
+              (result.datasetIndex != null &&
                   result.datasetIndex! >= 0 &&
                   result.datasetIndex! < widget.dataSets.length)
               ? widget.dataSets[result.datasetIndex!]
@@ -225,22 +202,17 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -287,19 +259,12 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
               return LayoutBuilder(
                 builder: (context, constraints) {
                   final chartHeight = widget.height ?? 240.0;
-                  final chartSize = Size(
-                    constraints.maxWidth - 70,
-                    chartHeight,
-                  );
+                  final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
                   return MouseRegion(
                     onHover: widget.onPointHover != null
                         ? (event) {
-                            _handleHover(
-                              event.localPosition,
-                              chartSize,
-                              effectiveTheme,
-                            );
+                            _handleHover(event.localPosition, chartSize, effectiveTheme);
                           }
                         : null,
                     onExit: widget.onPointHover != null
@@ -324,17 +289,14 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
                                 details.localPosition.dy - topPadding,
                               );
 
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
+                              final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                               final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
+                                  ? renderBox.localToGlobal(details.localPosition)
                                   : details.localPosition;
 
                               final bounds = _calculateBounds();
 
-                              final result =
-                                  ChartInteractionHelper.findNearestPoint(
+                              final result = ChartInteractionHelper.findNearestPoint(
                                 chartPosition,
                                 widget.dataSets,
                                 chartSize,
@@ -369,8 +331,7 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
                         width: constraints.maxWidth,
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
-                          size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0,),
+                          size: Size(constraints.maxWidth, widget.height ?? 300.0),
                           painter: ScatterChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,
@@ -395,10 +356,7 @@ class _ScatterChartWidgetState extends State<ScatterChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

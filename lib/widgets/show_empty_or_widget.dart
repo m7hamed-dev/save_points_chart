@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ShowEmptyOrWidget extends StatelessWidget {
-  const ShowEmptyOrWidget({
-    super.key,
-    required this.showWidget,
-    required this.widget,
-  });
+  const ShowEmptyOrWidget({super.key, required this.showWidget, required this.widget});
   final bool showWidget;
   final Widget widget;
 

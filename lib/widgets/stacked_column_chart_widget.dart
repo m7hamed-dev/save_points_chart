@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/stacked_column_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/stacked_column_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -97,12 +97,10 @@ class StackedColumnChartWidget extends StatefulWidget {
   }) : assert(barWidth > 0, 'Bar width must be positive');
 
   @override
-  State<StackedColumnChartWidget> createState() =>
-      _StackedColumnChartWidgetState();
+  State<StackedColumnChartWidget> createState() => _StackedColumnChartWidgetState();
 }
 
-class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
-    with SingleTickerProviderStateMixin {
+class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedBar;
@@ -110,14 +108,8 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -129,22 +121,17 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -220,18 +207,14 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
                             final Map<double, double> totalsByX = {};
                             for (final dataSet in widget.dataSets) {
                               final point = dataSet.dataPoint;
-                              totalsByX[point.x] =
-                                  (totalsByX[point.x] ?? 0) + point.y;
+                              totalsByX[point.x] = (totalsByX[point.x] ?? 0) + point.y;
                               if (totalsByX[point.x]! > maxY) {
                                 maxY = totalsByX[point.x]!;
                               }
                             }
 
                             final chartHeight = widget.height ?? 240.0;
-                            final chartSize = Size(
-                              constraints.maxWidth - 70,
-                              chartHeight,
-                            );
+                            final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
                             final result = ChartInteractionHelper.findBar(
                               chartPosition,
@@ -251,11 +234,9 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
                                 _selectedBar = result;
                               });
 
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
+                              final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                               final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
+                                  ? renderBox.localToGlobal(details.localPosition)
                                   : details.localPosition;
 
                               Future.microtask(() {
@@ -277,8 +258,7 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size:
-                            Size(constraints.maxWidth, widget.height ?? 300.0),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: StackedColumnChartPainter(
                           theme: effectiveTheme,
                           dataSets: widget.dataSets,
@@ -302,10 +282,7 @@ class _StackedColumnChartWidgetState extends State<StackedColumnChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

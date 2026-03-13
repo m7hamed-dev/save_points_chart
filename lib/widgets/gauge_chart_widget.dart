@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
+import 'package:save_points_chart/painters/gauge_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/gauge_chart_painter.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
@@ -89,29 +89,22 @@ class GaugeChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
-  })  : assert(maxValue > minValue, 'Max value must be greater than min value'),
-        assert(segments > 0, 'Segments must be positive');
+  }) : assert(maxValue > minValue, 'Max value must be greater than min value'),
+       assert(segments > 0, 'Segments must be positive');
 
   @override
   State<GaugeChartWidget> createState() => _GaugeChartWidgetState();
 }
 
-class _GaugeChartWidgetState extends State<GaugeChartWidget>
-    with SingleTickerProviderStateMixin {
+class _GaugeChartWidgetState extends State<GaugeChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -123,13 +116,10 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (!widget.value.isFinite) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -179,8 +169,7 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
                           ChartContextMenuHelper.hide();
                           HapticFeedback.selectionClick();
 
-                          final RenderBox? renderBox =
-                              context.findRenderObject() as RenderBox?;
+                          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                           final globalPosition = renderBox != null
                               ? renderBox.localToGlobal(details.localPosition)
                               : details.localPosition;
@@ -202,10 +191,8 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
                             elementIndex: 0,
                             datasetLabel: widget.title ?? 'Gauge',
                             theme: effectiveTheme,
-                            useGlassmorphism:
-                                widget.config?.useGlassmorphism ?? false,
-                            useNeumorphism:
-                                widget.config?.useNeumorphism ?? false,
+                            useGlassmorphism: widget.config?.useGlassmorphism ?? false,
+                            useNeumorphism: widget.config?.useNeumorphism ?? false,
                             onViewDetails: () {
                               widget.onChartTap?.call();
                             },
@@ -243,10 +230,7 @@ class _GaugeChartWidgetState extends State<GaugeChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

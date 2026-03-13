@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -194,8 +194,7 @@ class AreaChartWidget extends StatefulWidget {
   State<AreaChartWidget> createState() => _AreaChartWidgetState();
 }
 
-class _AreaChartWidgetState extends State<AreaChartWidget>
-    with SingleTickerProviderStateMixin {
+class _AreaChartWidgetState extends State<AreaChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -207,14 +206,8 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -226,23 +219,17 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
     final effectiveEmptyWidget =
         widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -289,8 +276,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
               return LayoutBuilder(
                 builder: (context, constraints) {
                   return GestureDetector(
-                    behavior: HitTestBehavior
-                        .translucent, // Allow taps even when overlay is present
+                    behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                     onTapDown: widget.onPointTap != null
                         ? (details) {
                             // Hide any existing context menu first to prevent blocking
@@ -324,39 +310,30 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                                 if (point.y > maxY) maxY = point.y;
                               }
 
-                              bounds = {
-                                'minX': minX,
-                                'maxX': maxX,
-                                'maxY': maxY,
-                              };
+                              bounds = {'minX': minX, 'maxX': maxX, 'maxY': maxY};
                               _cachedBounds = bounds;
                               _cachedDataSets = List.from(widget.dataSets);
                             }
 
                             final chartHeight = widget.height ?? 240.0;
-                            final chartSize = Size(
-                              constraints.maxWidth - 70,
-                              chartHeight,
-                            );
+                            final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
                             // Get global position for context menu and callbacks
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
 
-                            final result =
-                                ChartInteractionHelper.findNearestPoint(
-                                  chartPosition,
-                                  widget.dataSets,
-                                  chartSize,
-                                  bounds['minX']!,
-                                  bounds['maxX']!,
-                                  0.0,
-                                  bounds['maxY']! * 1.15,
-                                  ChartInteractionConstants.tapRadius,
-                                );
+                            final result = ChartInteractionHelper.findNearestPoint(
+                              chartPosition,
+                              widget.dataSets,
+                              chartSize,
+                              bounds['minX']!,
+                              bounds['maxX']!,
+                              0.0,
+                              bounds['maxY']! * 1.15,
+                              ChartInteractionConstants.tapRadius,
+                            );
 
                             if (result != null && result.isHit) {
                               // Provide haptic feedback
@@ -392,10 +369,7 @@ class _AreaChartWidgetState extends State<AreaChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(
-                          constraints.maxWidth,
-                          widget.height ?? 300.0,
-                        ),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: LineChartPainter(
                           theme: effectiveTheme,
                           dataSets: widget.dataSets,

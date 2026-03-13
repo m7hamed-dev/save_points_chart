@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -55,8 +55,7 @@ class SparklineChartWidget extends StatefulWidget {
   State<SparklineChartWidget> createState() => _SparklineChartWidgetState();
 }
 
-class _SparklineChartWidgetState extends State<SparklineChartWidget>
-    with SingleTickerProviderStateMixin {
+class _SparklineChartWidgetState extends State<SparklineChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -67,14 +66,8 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -86,13 +79,10 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -125,10 +115,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
 
     // Create modified datasets with the determined color
     final modifiedDataSets = widget.dataSets.map((ds) {
-      return ChartDataSet(
-        color: lineColor,
-        dataPoint: ds.dataPoint,
-      );
+      return ChartDataSet(color: lineColor, dataPoint: ds.dataPoint);
     }).toList();
 
     Widget container = ChartContainer(
@@ -173,24 +160,18 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                       if (point.y > maxY) maxY = point.y;
                     }
 
-                    bounds = {
-                      'minX': minX,
-                      'maxX': maxX,
-                      'maxY': maxY,
-                    };
+                    bounds = {'minX': minX, 'maxX': maxX, 'maxY': maxY};
                     _cachedBounds = bounds;
                   }
 
                   return GestureDetector(
-                    behavior: HitTestBehavior
-                        .translucent, // Allow taps even when overlay is present
+                    behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
                     onTapDown: widget.onPointTap != null
                         ? (details) {
                             // Hide any existing context menu first to prevent blocking
                             ChartContextMenuHelper.hide();
 
-                            final result =
-                                ChartInteractionHelper.findNearestPoint(
+                            final result = ChartInteractionHelper.findNearestPoint(
                               details.localPosition,
                               modifiedDataSets,
                               chartSize,
@@ -211,11 +192,9 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                               });
 
                               // Get global position for context menu
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
+                              final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                               final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
+                                  ? renderBox.localToGlobal(details.localPosition)
                                   : details.localPosition;
 
                               // Small delay to ensure overlay is removed before showing new menu
@@ -241,10 +220,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
                       child: CustomPaint(
                         size: chartSize,
                         painter: LineChartPainter(
-                          theme: effectiveTheme.copyWith(
-                            showGrid: false,
-                            showAxis: false,
-                          ),
+                          theme: effectiveTheme.copyWith(showGrid: false, showAxis: false),
                           dataSets: modifiedDataSets,
                           lineWidth: widget.lineWidth,
                           showArea: widget.showArea,
@@ -267,10 +243,7 @@ class _SparklineChartWidgetState extends State<SparklineChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

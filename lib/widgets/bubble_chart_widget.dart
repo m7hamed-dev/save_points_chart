@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/bubble_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/bubble_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -147,8 +147,7 @@ class BubbleChartWidget extends StatefulWidget {
   State<BubbleChartWidget> createState() => _BubbleChartWidgetState();
 }
 
-class _BubbleChartWidgetState extends State<BubbleChartWidget>
-    with SingleTickerProviderStateMixin {
+class _BubbleChartWidgetState extends State<BubbleChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedBubble;
@@ -160,14 +159,8 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -178,9 +171,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
   }
 
   Map<String, double> _calculateBounds() {
-    if (_cachedBounds != null &&
-        _cachedDataSets != null &&
-        _cachedDataSets == widget.dataSets) {
+    if (_cachedBounds != null && _cachedDataSets != null && _cachedDataSets == widget.dataSets) {
       return _cachedBounds!;
     }
 
@@ -226,11 +217,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
         regularDataSets.add(
           ChartDataSet(
             color: bubbleDataSet.color,
-            dataPoint: ChartDataPoint(
-              x: point.x,
-              y: point.y,
-              label: point.label,
-            ),
+            dataPoint: ChartDataPoint(x: point.x, y: point.y, label: point.label),
           ),
         );
       }
@@ -248,16 +235,11 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
     );
 
     if (result != null && result.isHit) {
-      if (_hoveredBubble?.elementIndex != result.elementIndex ||
-          _hoveredBubble?.datasetIndex != result.datasetIndex) {
+      if (_hoveredBubble?.elementIndex != result.elementIndex || _hoveredBubble?.datasetIndex != result.datasetIndex) {
         setState(() {
           _hoveredBubble = result;
         });
-        widget.onBubbleHover?.call(
-          result.point,
-          result.datasetIndex,
-          result.elementIndex,
-        );
+        widget.onBubbleHover?.call(result.point, result.datasetIndex, result.elementIndex);
       }
     } else {
       if (_hoveredBubble != null) {
@@ -271,26 +253,18 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
     final effectiveEmptyWidget =
         widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
-    final hasData =
-        widget.dataSets.isNotEmpty &&
-        widget.dataSets.every((ds) => ds.dataPoints.isNotEmpty);
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
+    final hasData = widget.dataSets.isNotEmpty && widget.dataSets.every((ds) => ds.dataPoints.isNotEmpty);
     if (!hasData) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -363,8 +337,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                               details.localPosition.dy - topPadding,
                             );
 
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
@@ -379,27 +352,22 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                                 regularDataSets.add(
                                   ChartDataSet(
                                     color: bubbleDataSet.color,
-                                    dataPoint: ChartDataPoint(
-                                      x: point.x,
-                                      y: point.y,
-                                      label: point.label,
-                                    ),
+                                    dataPoint: ChartDataPoint(x: point.x, y: point.y, label: point.label),
                                   ),
                                 );
                               }
                             }
 
-                            final result =
-                                ChartInteractionHelper.findNearestPoint(
-                                  chartPosition,
-                                  regularDataSets,
-                                  chartSize,
-                                  bounds['minX']!,
-                                  bounds['maxX']!,
-                                  bounds['minY']!,
-                                  bounds['maxY']!,
-                                  ChartInteractionConstants.tapRadius * 3,
-                                );
+                            final result = ChartInteractionHelper.findNearestPoint(
+                              chartPosition,
+                              regularDataSets,
+                              chartSize,
+                              bounds['minX']!,
+                              bounds['maxX']!,
+                              bounds['minY']!,
+                              bounds['maxY']!,
+                              ChartInteractionConstants.tapRadius * 3,
+                            );
 
                             if (result != null && result.isHit) {
                               HapticFeedback.selectionClick();
@@ -429,10 +397,7 @@ class _BubbleChartWidgetState extends State<BubbleChartWidget>
                       width: constraints.maxWidth,
                       height: widget.height ?? 300.0,
                       child: CustomPaint(
-                        size: Size(
-                          constraints.maxWidth,
-                          widget.height ?? 300.0,
-                        ),
+                        size: Size(constraints.maxWidth, widget.height ?? 300.0),
                         painter: BubbleChartPainter(
                           theme: effectiveTheme,
                           bubbleDataSets: widget.dataSets,

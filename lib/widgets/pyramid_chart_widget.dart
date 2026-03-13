@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/pyramid_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/pyramid_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -73,8 +73,7 @@ class PyramidChartWidget extends StatefulWidget {
   State<PyramidChartWidget> createState() => _PyramidChartWidgetState();
 }
 
-class _PyramidChartWidgetState extends State<PyramidChartWidget>
-    with SingleTickerProviderStateMixin {
+class _PyramidChartWidgetState extends State<PyramidChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedSegment;
@@ -82,14 +81,8 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -101,18 +94,13 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
-    final effectiveEmptyNoValuesWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No values to display',
-        );
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
+    final effectiveEmptyNoValuesWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No values to display');
     if (widget.data.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -184,8 +172,7 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
                       ? (details) {
                           ChartContextMenuHelper.hide();
 
-                          final result =
-                              ChartInteractionHelper.findPyramidSegment(
+                          final result = ChartInteractionHelper.findPyramidSegment(
                             details.localPosition,
                             widget.data,
                             Size(constraints.maxWidth, widget.height ?? 300.0),
@@ -199,18 +186,13 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
                               _selectedSegment = result;
                             });
 
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
 
                             Future.microtask(() {
-                              widget.onSegmentTap?.call(
-                                result.segment!,
-                                result.elementIndex!,
-                                globalPosition,
-                              );
+                              widget.onSegmentTap?.call(result.segment!, result.elementIndex!, globalPosition);
                             });
                           } else {
                             setState(() {
@@ -241,10 +223,7 @@ class _PyramidChartWidgetState extends State<PyramidChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

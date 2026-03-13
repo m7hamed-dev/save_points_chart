@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/step_line_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/step_line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -97,8 +97,7 @@ class StepLineChartWidget extends StatefulWidget {
   State<StepLineChartWidget> createState() => _StepLineChartWidgetState();
 }
 
-class _StepLineChartWidgetState extends State<StepLineChartWidget>
-    with SingleTickerProviderStateMixin {
+class _StepLineChartWidgetState extends State<StepLineChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -110,14 +109,8 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -128,9 +121,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
   }
 
   Map<String, double> _calculateBounds() {
-    if (_cachedBounds != null &&
-        _cachedDataSets != null &&
-        _cachedDataSets == widget.dataSets) {
+    if (_cachedBounds != null && _cachedDataSets != null && _cachedDataSets == widget.dataSets) {
       return _cachedBounds!;
     }
 
@@ -145,11 +136,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
       if (point.y > maxY) maxY = point.y;
     }
 
-    _cachedBounds = {
-      'minX': minX,
-      'maxX': maxX,
-      'maxY': maxY,
-    };
+    _cachedBounds = {'minX': minX, 'maxX': maxX, 'maxY': maxY};
     _cachedDataSets = List.from(widget.dataSets);
 
     return _cachedBounds!;
@@ -159,10 +146,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
     if (widget.onPointHover == null) return;
 
     final bounds = _calculateBounds();
-    final chartPosition = Offset(
-      position.dx - 50.0,
-      position.dy - 20.0,
-    );
+    final chartPosition = Offset(position.dx - 50.0, position.dy - 20.0);
 
     final result = ChartInteractionHelper.findNearestPoint(
       chartPosition,
@@ -176,16 +160,11 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
     );
 
     if (result != null && result.isHit) {
-      if (_hoveredPoint?.elementIndex != result.elementIndex ||
-          _hoveredPoint?.datasetIndex != result.datasetIndex) {
+      if (_hoveredPoint?.elementIndex != result.elementIndex || _hoveredPoint?.datasetIndex != result.datasetIndex) {
         setState(() {
           _hoveredPoint = result;
         });
-        widget.onPointHover?.call(
-          result.point,
-          result.datasetIndex,
-          result.elementIndex,
-        );
+        widget.onPointHover?.call(result.point, result.datasetIndex, result.elementIndex);
       }
     } else {
       if (_hoveredPoint != null) {
@@ -199,22 +178,17 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -261,10 +235,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
               return LayoutBuilder(
                 builder: (context, constraints) {
                   final chartHeight = widget.height ?? 240.0;
-                  final chartSize = Size(
-                    constraints.maxWidth - 70,
-                    chartHeight,
-                  );
+                  final chartSize = Size(constraints.maxWidth - 70, chartHeight);
 
                   return MouseRegion(
                     onHover: widget.onPointHover != null
@@ -293,17 +264,14 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
                                 details.localPosition.dy - topPadding,
                               );
 
-                              final RenderBox? renderBox =
-                                  context.findRenderObject() as RenderBox?;
+                              final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                               final globalPosition = renderBox != null
-                                  ? renderBox
-                                      .localToGlobal(details.localPosition)
+                                  ? renderBox.localToGlobal(details.localPosition)
                                   : details.localPosition;
 
                               final bounds = _calculateBounds();
 
-                              final result =
-                                  ChartInteractionHelper.findNearestPoint(
+                              final result = ChartInteractionHelper.findNearestPoint(
                                 chartPosition,
                                 widget.dataSets,
                                 chartSize,
@@ -340,8 +308,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
                         width: constraints.maxWidth,
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
-                          size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0,),
+                          size: Size(constraints.maxWidth, widget.height ?? 300.0),
                           painter: StepLineChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,
@@ -368,10 +335,7 @@ class _StepLineChartWidgetState extends State<StepLineChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

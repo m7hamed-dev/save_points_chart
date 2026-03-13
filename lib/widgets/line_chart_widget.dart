@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:save_points_chart/save_points_chart.dart'
-    show BarChartWidget, AreaChartWidget;
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/line_chart_painter.dart';
+import 'package:save_points_chart/save_points_chart.dart' show BarChartWidget, AreaChartWidget;
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/line_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -108,18 +107,14 @@ class LineChartWidget extends StatefulWidget {
     this.config,
     this.xAxisLabelRotation,
     this.yAxisLabelRotation,
-  })  : assert(lineWidth > 0, 'Line width must be positive'),
-        assert(
-          !isLoading || !isError,
-          'Cannot be both loading and in error state',
-        );
+  }) : assert(lineWidth > 0, 'Line width must be positive'),
+       assert(!isLoading || !isError, 'Cannot be both loading and in error state');
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
 }
 
-class _LineChartWidgetState extends State<LineChartWidget>
-    with SingleTickerProviderStateMixin {
+class _LineChartWidgetState extends State<LineChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -136,14 +131,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -156,9 +145,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
   /// Calculate chart bounds from data sets (with caching)
   Map<String, double> _calculateBounds() {
     // Return cached bounds if data hasn't changed
-    if (_cachedBounds != null &&
-        _cachedDataSets != null &&
-        _cachedDataSets == widget.dataSets) {
+    if (_cachedBounds != null && _cachedDataSets != null && _cachedDataSets == widget.dataSets) {
       return _cachedBounds!;
     }
 
@@ -173,11 +160,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
       if (point.y > maxY) maxY = point.y;
     }
 
-    _cachedBounds = {
-      'minX': minX,
-      'maxX': maxX,
-      'maxY': maxY,
-    };
+    _cachedBounds = {'minX': minX, 'maxX': maxX, 'maxY': maxY};
     _cachedDataSets = List.from(widget.dataSets);
 
     return _cachedBounds!;
@@ -196,17 +179,12 @@ class _LineChartWidgetState extends State<LineChartWidget>
     final xPadding = (xRange > 0 && xRange.isFinite && chartSize.width > 0)
         ? (xPaddingInPixels / chartSize.width) * xRange
         : (xRange > 0 && xRange.isFinite)
-            ? xRange * 0.08
-            : 0.0;
+        ? xRange * 0.08
+        : 0.0;
 
     final maxYAdjusted = maxY > 0 ? maxY * 1.2 : 1.0;
 
-    return {
-      'minX': minX - xPadding,
-      'maxX': maxX + xPadding,
-      'minY': 0.0,
-      'maxY': maxYAdjusted,
-    };
+    return {'minX': minX - xPadding, 'maxX': maxX + xPadding, 'minY': 0.0, 'maxY': maxYAdjusted};
   }
 
   /// Handle mouse hover events
@@ -231,24 +209,18 @@ class _LineChartWidgetState extends State<LineChartWidget>
     );
 
     if (result != null && result.isHit) {
-      if (_hoveredPoint?.elementIndex != result.elementIndex ||
-          _hoveredPoint?.datasetIndex != result.datasetIndex) {
+      if (_hoveredPoint?.elementIndex != result.elementIndex || _hoveredPoint?.datasetIndex != result.datasetIndex) {
         setState(() {
           _hoveredPoint = result;
         });
-        widget.onPointHover?.call(
-          result.point,
-          result.datasetIndex,
-          result.elementIndex,
-        );
+        widget.onPointHover?.call(result.point, result.datasetIndex, result.elementIndex);
 
         // Default tooltip (dashboard-style) on desktop/web hover.
         if (effectiveTheme.showTooltip) {
           final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-          final global = renderBox != null
-              ? renderBox.localToGlobal(position)
-              : position;
-          final ds = (result.datasetIndex != null &&
+          final global = renderBox != null ? renderBox.localToGlobal(position) : position;
+          final ds =
+              (result.datasetIndex != null &&
                   result.datasetIndex! >= 0 &&
                   result.datasetIndex! < widget.dataSets.length)
               ? widget.dataSets[result.datasetIndex!]
@@ -282,16 +254,11 @@ class _LineChartWidgetState extends State<LineChartWidget>
     // Account for padding
     const leftPadding = 50.0;
     const topPadding = 20.0;
-    final chartPosition = Offset(
-      details.localPosition.dx - leftPadding,
-      details.localPosition.dy - topPadding,
-    );
+    final chartPosition = Offset(details.localPosition.dx - leftPadding, details.localPosition.dy - topPadding);
 
     // Get global position for context menu
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    final globalPosition = renderBox != null
-        ? renderBox.localToGlobal(details.localPosition)
-        : details.localPosition;
+    final globalPosition = renderBox != null ? renderBox.localToGlobal(details.localPosition) : details.localPosition;
 
     // Calculate chart bounds
     final bounds = _getAdjustedBounds(chartSize);
@@ -318,12 +285,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
       // Small delay to ensure overlay is removed before showing new menu
       Future.microtask(() {
-        widget.onPointTap?.call(
-          result.point!,
-          result.datasetIndex!,
-          result.elementIndex!,
-          globalPosition,
-        );
+        widget.onPointTap?.call(result.point!, result.datasetIndex!, result.elementIndex!, globalPosition);
       });
     } else {
       // Clear selection if tap is outside any point
@@ -339,22 +301,17 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    var effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    var effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
     if (widget.xAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          xAxisLabelRotation: widget.xAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(xAxisLabelRotation: widget.xAxisLabelRotation);
     }
     if (widget.yAxisLabelRotation != null) {
-      effectiveTheme = effectiveTheme.copyWith(
-          yAxisLabelRotation: widget.yAxisLabelRotation);
+      effectiveTheme = effectiveTheme.copyWith(yAxisLabelRotation: widget.yAxisLabelRotation);
     }
 
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -409,11 +366,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                   return MouseRegion(
                     onHover: widget.onPointHover != null
                         ? (event) {
-                            _handleHover(
-                              event.localPosition,
-                              chartSize,
-                              effectiveTheme,
-                            );
+                            _handleHover(event.localPosition, chartSize, effectiveTheme);
                           }
                         : null,
                     onExit: widget.onPointHover != null
@@ -426,11 +379,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
                           }
                         : null,
                     child: GestureDetector(
-                      behavior: HitTestBehavior
-                          .translucent, // Allow taps even when overlay is present
-                      onTapDown: widget.onPointTap != null
-                          ? (details) => _handleTap(details, chartSize)
-                          : null,
+                      behavior: HitTestBehavior.translucent, // Allow taps even when overlay is present
+                      onTapDown: widget.onPointTap != null ? (details) => _handleTap(details, chartSize) : null,
                       onSecondaryTapDown: widget.onPointTap != null
                           ? (details) => _handleTap(details, chartSize)
                           : null,
@@ -438,8 +388,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
                         width: constraints.maxWidth,
                         height: widget.height ?? 300.0,
                         child: CustomPaint(
-                          size: Size(
-                              constraints.maxWidth, widget.height ?? 300.0,),
+                          size: Size(constraints.maxWidth, widget.height ?? 300.0),
                           painter: LineChartPainter(
                             theme: effectiveTheme,
                             dataSets: widget.dataSets,
@@ -466,10 +415,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;

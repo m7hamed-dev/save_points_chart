@@ -1,16 +1,17 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/pie_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
+import 'package:save_points_chart/utils/format_utils.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
-import 'package:save_points_chart/utils/format_utils.dart';
 
 /// Modern donut chart with gradient sections and interactive features.
 class DonutChartWidget extends StatefulWidget {
@@ -57,11 +58,10 @@ class DonutChartWidget extends StatefulWidget {
   State<DonutChartWidget> createState() => _DonutChartWidgetState();
 }
 
-class _DonutChartWidgetState extends State<DonutChartWidget>
-    with SingleTickerProviderStateMixin {
+class _DonutChartWidgetState extends State<DonutChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  
+
   // State
   ChartInteractionResult? _selectedSegment;
   double _totalValue = 0;
@@ -74,10 +74,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       duration: widget.config?.animationDuration ?? const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -117,18 +114,14 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     if (result != null && result.isHit) {
       HapticFeedback.selectionClick();
       setState(() => _selectedSegment = result);
-      
+
       final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
       final globalPosition = renderBox != null
           ? renderBox.localToGlobal(details.localPosition)
           : details.globalPosition;
-          
+
       Future.microtask(() {
-        widget.onSegmentTap?.call(
-          result.segment!,
-          result.elementIndex!,
-          globalPosition,
-        );
+        widget.onSegmentTap?.call(result.segment!, result.elementIndex!, globalPosition);
       });
     } else {
       setState(() => _selectedSegment = null);
@@ -143,8 +136,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme = widget.config?.theme ?? 
-        ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
 
     // 1. Handle Empty/Loading/Error States
     // Check for empty data or zero/invalid total (same validation as PieChartWidget)
@@ -156,7 +148,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
     final Widget content = LayoutBuilder(
       builder: (context, constraints) {
         final isVertical = widget.legendLayout == Axis.vertical;
-        
+
         // Determine chart size based on constraints
         // Ensure we have a valid width constraint (minimum 100 to prevent negative radius)
         // If maxWidth is unbounded (double.infinity), use a reasonable default
@@ -172,19 +164,15 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
           // Valid finite width - use it but ensure minimum
           availableWidth = math.max(constraints.maxWidth, 100.0);
         }
-        
+
         // If vertical, chart can take full width. If horizontal, it shares space.
         // We also cap the size to ensure it doesn't get too massive.
-        final chartSize = (widget.height ?? 
-            (isVertical 
-                ? math.min(availableWidth, 300.0) 
-                : math.min(availableWidth * 0.6, 300.0))).clamp(100.0, double.infinity);
+        final chartSize =
+            (widget.height ?? (isVertical ? math.min(availableWidth, 300.0) : math.min(availableWidth * 0.6, 300.0)))
+                .clamp(100.0, double.infinity);
 
-        final chartSection = _buildChartSection(
-          chartSize, 
-          effectiveTheme,
-        );
-        
+        final chartSection = _buildChartSection(chartSize, effectiveTheme);
+
         final legendSection = widget.showLegend && effectiveTheme.showLegend
             ? _buildLegend(effectiveTheme)
             : const SizedBox.shrink();
@@ -192,27 +180,17 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
         if (isVertical) {
           return Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              chartSection,
-              const SizedBox(height: 24),
-              legendSection,
-            ],
+            children: [chartSection, const SizedBox(height: 24), legendSection],
           );
         } else {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Chart takes up space but stays centered
-              Flexible(
-                flex: 3, 
-                child: Center(child: chartSection),
-              ),
+              Flexible(flex: 3, child: Center(child: chartSection)),
               const SizedBox(width: 16),
               // Legend takes remaining space
-              Flexible(
-                flex: 2, 
-                child: legendSection,
-              ),
+              Flexible(flex: 2, child: legendSection),
             ],
           );
         }
@@ -245,10 +223,10 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   }
 
   Widget _buildEmptyState(ChartTheme theme) {
-    final message = widget.data.isEmpty 
+    final message = widget.data.isEmpty
         ? (widget.config?.emptyMessage ?? 'No data available')
         : (widget.config?.emptyMessage ?? 'No values to display');
-        
+
     Widget container = ChartContainer(
       theme: theme,
       title: widget.title,
@@ -263,10 +241,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       errorWidget: widget.config?.errorWidget,
       padding: widget.padding,
       boxShadow: widget.config?.boxShadow,
-      child: widget.config?.emptyWidget ?? ChartEmptyState(
-        theme: theme,
-        message: message,
-      ),
+      child: widget.config?.emptyWidget ?? ChartEmptyState(theme: theme, message: message),
     );
 
     if (widget.margin != null) {
@@ -289,7 +264,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
               builder: (context, child) {
                 return GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTapDown: widget.onSegmentTap != null 
+                  onTapDown: widget.onSegmentTap != null
                       ? (details) => _handleTap(details, Size(size, size), context)
                       : null,
                   child: CustomPaint(
@@ -318,12 +293,8 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
   Widget _buildCenterInfo(ChartTheme theme) {
     // If a segment is selected, show its info, otherwise show Total
     final isSegmentSelected = _selectedSegment != null && _selectedSegment!.isHit;
-    final label = isSegmentSelected 
-        ? _selectedSegment!.segment!.label 
-        : 'Total';
-    final value = isSegmentSelected 
-        ? _selectedSegment!.segment!.value 
-        : _totalValue;
+    final label = isSegmentSelected ? _selectedSegment!.segment!.label : 'Total';
+    final value = isSegmentSelected ? _selectedSegment!.segment!.value : _totalValue;
 
     return IgnorePointer(
       child: AnimatedSwitcher(
@@ -346,12 +317,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
             const SizedBox(height: 4),
             Text(
               ChartFormatUtils.formatValue(value),
-              style: TextStyle(
-                color: theme.textColor,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: -0.5,
-              ),
+              style: TextStyle(color: theme.textColor, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: -0.5),
             ),
           ],
         ),
@@ -366,7 +332,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
       children: widget.data.map((item) {
         final percentage = ((item.value / _totalValue) * 100).toStringAsFixed(1);
         final isSelected = _selectedSegment?.segment == item;
-        
+
         return AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: _selectedSegment == null || isSelected ? 1.0 : 0.3,
@@ -379,9 +345,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget>
                 decoration: BoxDecoration(
                   color: item.color,
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: theme.textColor.withValues(alpha: 0.1),
-                  ),
+                  border: Border.all(color: theme.textColor.withValues(alpha: 0.1)),
                 ),
               ),
               const SizedBox(width: 8),

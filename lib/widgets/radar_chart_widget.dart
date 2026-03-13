@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
+import 'package:save_points_chart/painters/radar_chart_painter.dart';
 import 'package:save_points_chart/theme/chart_theme.dart';
 import 'package:save_points_chart/theme/charts_config.dart';
-import 'package:save_points_chart/painters/radar_chart_painter.dart';
 import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
@@ -75,15 +75,14 @@ class RadarChartWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.config,
-  })  : assert(maxValue > 0, 'Max value must be positive'),
-        assert(gridLevels > 0, 'Grid levels must be positive');
+  }) : assert(maxValue > 0, 'Max value must be positive'),
+       assert(gridLevels > 0, 'Grid levels must be positive');
 
   @override
   State<RadarChartWidget> createState() => _RadarChartWidgetState();
 }
 
-class _RadarChartWidgetState extends State<RadarChartWidget>
-    with SingleTickerProviderStateMixin {
+class _RadarChartWidgetState extends State<RadarChartWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   ChartInteractionResult? _selectedPoint;
@@ -91,14 +90,8 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutQuart,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart);
     _controller.forward();
   }
 
@@ -110,13 +103,10 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTheme =
-        widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
-    final effectiveEmptyWidget = widget.config?.emptyWidget ??
-        ChartEmptyState(
-          theme: effectiveTheme,
-          message: widget.config?.emptyMessage ?? 'No data available',
-        );
+    final effectiveTheme = widget.config?.theme ?? ChartTheme.fromMaterialTheme(Theme.of(context));
+    final effectiveEmptyWidget =
+        widget.config?.emptyWidget ??
+        ChartEmptyState(theme: effectiveTheme, message: widget.config?.emptyMessage ?? 'No data available');
     if (widget.dataSets.isEmpty) {
       Widget container = ChartContainer(
         theme: effectiveTheme,
@@ -180,8 +170,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
                               _selectedPoint = result;
                             });
 
-                            final RenderBox? renderBox =
-                                context.findRenderObject() as RenderBox?;
+                            final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
                             final globalPosition = renderBox != null
                                 ? renderBox.localToGlobal(details.localPosition)
                                 : details.localPosition;
@@ -228,10 +217,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget>
     );
 
     if (widget.margin != null) {
-      container = Padding(
-        padding: widget.margin!,
-        child: container,
-      );
+      container = Padding(padding: widget.margin!, child: container);
     }
 
     return container;
