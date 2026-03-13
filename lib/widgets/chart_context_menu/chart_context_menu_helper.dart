@@ -9,9 +9,9 @@ class ChartContextMenuHelper {
   static OverlayEntry? _currentMenu;
   static ui.ImageFilter? _cachedBlurFilter;
 
-  static const double _kMenuWidth = 320.0;
-  static const double _kMenuHeight = 450.0; // Estimated max height
-  static const double _kPadding = 16.0;
+  static const double _kMenuWidth = 230.0;
+  static const double _kMenuHeight = 140.0;
+  static const double _kPadding = 12.0;
 
   static void show(
     BuildContext context, {
@@ -36,7 +36,8 @@ class ChartContextMenuHelper {
     hide();
 
     final overlay = Overlay.of(context);
-    final globalPosition = _calculateGlobalPosition(context, position);
+    // `position` is expected to be in global coordinates from the chart.
+    final globalPosition = _calculateGlobalPosition(position);
     final adjustedPosition = _calculateAdjustedPosition(
       context,
       globalPosition,
@@ -80,24 +81,11 @@ class ChartContextMenuHelper {
     return onViewDetails != null || onExport != null || onShare != null;
   }
 
-  static Offset _calculateGlobalPosition(
-    BuildContext context,
-    Offset position,
-  ) {
-    final renderBox = context.findRenderObject() as RenderBox?;
-
-    try {
-      final globalPosition = renderBox != null
-          ? renderBox.localToGlobal(position)
-          : position;
-
-      if (!globalPosition.dx.isFinite || !globalPosition.dy.isFinite) {
-        return position;
-      }
-      return globalPosition;
-    } catch (e) {
-      return position;
+  static Offset _calculateGlobalPosition(Offset position) {
+    if (!position.dx.isFinite || !position.dy.isFinite) {
+      return const Offset(0, 0);
     }
+    return position;
   }
 
   static Offset _calculateAdjustedPosition(
@@ -108,27 +96,23 @@ class ChartContextMenuHelper {
     final screenWidth = screenSize.width.isFinite ? screenSize.width : 800.0;
     final screenHeight = screenSize.height.isFinite ? screenSize.height : 600.0;
 
-    double dx = globalPosition.dx;
-    double dy = globalPosition.dy;
+    // Start by centering the menu horizontally on the tap/x position
+    // and placing it slightly above the tap (like the reference UI).
+    double dx = globalPosition.dx - _kMenuWidth / 2;
+    double dy = globalPosition.dy - _kMenuHeight - 8;
 
-    // Adjust horizontal position if menu goes off-screen
+    // Clamp within screen bounds with a small padding.
     if (dx + _kMenuWidth + _kPadding > screenWidth) {
       dx = screenWidth - _kMenuWidth - _kPadding;
     }
-    
-    // Ensure it doesn't go off the left side
     if (dx < _kPadding) {
       dx = _kPadding;
     }
-
-    // Adjust vertical position if menu goes off-screen
-    if (dy + _kMenuHeight + _kPadding > screenHeight) {
-      dy = screenHeight - _kMenuHeight - _kPadding;
-    }
-
-    // Ensure it doesn't go off the top
     if (dy < _kPadding) {
-      dy = _kPadding;
+      dy = globalPosition.dy + 12; // fall back to below the point if not enough space above
+      if (dy + _kMenuHeight + _kPadding > screenHeight) {
+        dy = screenHeight - _kMenuHeight - _kPadding;
+      }
     }
 
     return Offset(dx, dy);
