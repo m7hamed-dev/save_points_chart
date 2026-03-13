@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/chart_data.dart';
 import 'package:save_points_chart/models/chart_interaction.dart';
@@ -43,10 +44,7 @@ class RadarChartPainter extends BaseChartPainter {
     if (radarDataSets.isEmpty) return;
 
     // Validate size
-    if (!size.width.isFinite ||
-        !size.height.isFinite ||
-        size.width <= 0 ||
-        size.height <= 0) {
+    if (!size.width.isFinite || !size.height.isFinite || size.width <= 0 || size.height <= 0) {
       return;
     }
 
@@ -88,10 +86,7 @@ class RadarChartPainter extends BaseChartPainter {
 
       for (int i = 0; i < numAxes; i++) {
         final angle = (2 * math.pi * i / numAxes) - (math.pi / 2);
-        final endPoint = Offset(
-          center.dx + radius * math.cos(angle),
-          center.dy + radius * math.sin(angle),
-        );
+        final endPoint = Offset(center.dx + radius * math.cos(angle), center.dy + radius * math.sin(angle));
         canvas.drawLine(center, endPoint, axisPaint);
       }
     }
@@ -120,10 +115,7 @@ class RadarChartPainter extends BaseChartPainter {
         textPainter.layout();
 
         // Center the text
-        final textOffset = Offset(
-          labelPoint.dx - textPainter.width / 2,
-          labelPoint.dy - textPainter.height / 2,
-        );
+        final textOffset = Offset(labelPoint.dx - textPainter.width / 2, labelPoint.dy - textPainter.height / 2);
         textPainter.paint(canvas, textOffset);
       }
     }
@@ -147,10 +139,7 @@ class RadarChartPainter extends BaseChartPainter {
         );
         textPainter.layout();
 
-        final textOffset = Offset(
-          labelPoint.dx - textPainter.width - 5,
-          labelPoint.dy - textPainter.height / 2,
-        );
+        final textOffset = Offset(labelPoint.dx - textPainter.width - 5, labelPoint.dy - textPainter.height / 2);
         textPainter.paint(canvas, textOffset);
       }
     }
@@ -182,10 +171,7 @@ class RadarChartPainter extends BaseChartPainter {
           continue;
         }
 
-        final point = Offset(
-          center.dx + pointRadius * math.cos(angle),
-          center.dy + pointRadius * math.sin(angle),
-        );
+        final point = Offset(center.dx + pointRadius * math.cos(angle), center.dy + pointRadius * math.sin(angle));
 
         // Validate point coordinates
         if (!point.dx.isFinite || !point.dy.isFinite) {
@@ -236,7 +222,8 @@ class RadarChartPainter extends BaseChartPainter {
         ..style = PaintingStyle.fill;
       for (int i = 0; i < points.length; i++) {
         final point = points[i];
-        final isSelected = selectedPoint != null &&
+        final isSelected =
+            selectedPoint != null &&
             selectedPoint!.isHit &&
             selectedPoint!.datasetIndex == dsIndex &&
             selectedPoint!.elementIndex == i;

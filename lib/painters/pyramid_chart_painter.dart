@@ -21,16 +21,12 @@ class PyramidChartPainter extends CustomPainter {
     if (data.isEmpty) return;
 
     // Validate size
-    if (!size.width.isFinite ||
-        !size.height.isFinite ||
-        size.width <= 0 ||
-        size.height <= 0) {
+    if (!size.width.isFinite || !size.height.isFinite || size.width <= 0 || size.height <= 0) {
       return;
     }
 
     // Sort data by value (largest to smallest for pyramid)
-    final sortedData = List<PieData>.from(data)
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedData = List<PieData>.from(data)..sort((a, b) => b.value.compareTo(a.value));
 
     final total = sortedData.fold<double>(0, (sum, item) => sum + item.value);
 
@@ -45,10 +41,7 @@ class PyramidChartPainter extends CustomPainter {
     final centerX = size.width / 2;
 
     // Validate dimensions
-    if (!chartWidth.isFinite ||
-        !chartHeight.isFinite ||
-        chartWidth <= 0 ||
-        chartHeight <= 0) {
+    if (!chartWidth.isFinite || !chartHeight.isFinite || chartWidth <= 0 || chartHeight <= 0) {
       return;
     }
 
@@ -67,9 +60,7 @@ class PyramidChartPainter extends CustomPainter {
       final segmentHeight = chartHeight * percentage * animationProgress;
 
       // Validate calculated dimensions
-      if (!percentage.isFinite ||
-          !segmentHeight.isFinite ||
-          segmentHeight <= 0) {
+      if (!percentage.isFinite || !segmentHeight.isFinite || segmentHeight <= 0) {
         continue;
       }
 
@@ -78,9 +69,8 @@ class PyramidChartPainter extends CustomPainter {
       final segmentIndex = originalIndex >= 0 ? originalIndex : i;
 
       // Check if this segment is selected
-      final isSelected = selectedSegment != null &&
-          selectedSegment!.isHit &&
-          selectedSegment!.elementIndex == segmentIndex;
+      final isSelected =
+          selectedSegment != null && selectedSegment!.isHit && selectedSegment!.elementIndex == segmentIndex;
 
       // Calculate width at this level (pyramid tapers)
       final baseWidth = chartWidth;
@@ -106,10 +96,7 @@ class PyramidChartPainter extends CustomPainter {
       final gradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          segment.color,
-          segment.color.withValues(alpha: 0.7),
-        ],
+        colors: [segment.color, segment.color.withValues(alpha: 0.7)],
       );
 
       final paint = Paint()
@@ -128,38 +115,24 @@ class PyramidChartPainter extends CustomPainter {
 
       // Border - thicker and more visible for selected
       final borderPaint = Paint()
-        ..color =
-            isSelected ? Colors.white : segment.color.withValues(alpha: 0.5)
+        ..color = isSelected ? Colors.white : segment.color.withValues(alpha: 0.5)
         ..style = PaintingStyle.stroke
         ..strokeWidth = isSelected ? 4.0 : 2.0;
       canvas.drawPath(path, borderPaint);
 
       // Label
       final labelY = padding + currentY + segmentHeight / 2;
-      final textStyle = TextStyle(
-        color: theme.textColor,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-      );
+      final textStyle = TextStyle(color: theme.textColor, fontSize: 12, fontWeight: FontWeight.w600);
 
       final textPainter = TextPainter(
-        text: TextSpan(
-          text: '${segment.label}\n${(percentage * 100).toStringAsFixed(1)}%',
-          style: textStyle,
-        ),
+        text: TextSpan(text: '${segment.label}\n${(percentage * 100).toStringAsFixed(1)}%', style: textStyle),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
 
       if (textPainter.width < nextWidth * 0.9) {
-        textPainter.paint(
-          canvas,
-          Offset(
-            centerX - textPainter.width / 2,
-            labelY - textPainter.height / 2,
-          ),
-        );
+        textPainter.paint(canvas, Offset(centerX - textPainter.width / 2, labelY - textPainter.height / 2));
       }
 
       cumulativeHeight += segmentHeight;
