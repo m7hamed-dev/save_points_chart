@@ -9,6 +9,7 @@ import 'package:save_points_chart/utils/chart_interaction_helper.dart';
 import 'package:save_points_chart/widgets/chart_container.dart';
 import 'package:save_points_chart/widgets/chart_context_menu.dart';
 import 'package:save_points_chart/widgets/chart_empty_state.dart';
+import 'package:save_points_chart/widgets/chart_tooltip_overlay.dart';
 
 /// Modern bar chart with gradient fills and rounded corners
 class BarChartWidget extends StatefulWidget {
@@ -79,6 +80,10 @@ class _BarChartWidgetState extends State<BarChartWidget>
   // Cache grouped data for painter optimization
   Map<double, List<ChartDataSet>>? _groupedData;
   List<double>? _sortedXValues;
+
+  void _hideTooltip() {
+    ChartTooltipOverlay.hide();
+  }
 
   @override
   void initState() {
@@ -156,7 +161,11 @@ class _BarChartWidgetState extends State<BarChartWidget>
   }
 
   /// Handle mouse hover events
-  void _handleHover(Offset position, BoxConstraints constraints) {
+  void _handleHover(
+    Offset position,
+    BoxConstraints constraints,
+    ChartTheme effectiveTheme,
+  ) {
     if (widget.onBarHover == null) return;
 
     const leftPadding = 50.0;
@@ -198,6 +207,28 @@ class _BarChartWidgetState extends State<BarChartWidget>
           result.datasetIndex,
           result.elementIndex,
         );
+
+        // Dashboard-style hover tooltip for bars.
+        if (effectiveTheme.showTooltip) {
+          final RenderBox? renderBox =
+              context.findRenderObject() as RenderBox?;
+          final global = renderBox != null
+              ? renderBox.localToGlobal(position)
+              : position;
+          final ds = (result.datasetIndex != null &&
+                  result.datasetIndex! >= 0 &&
+                  result.datasetIndex! < widget.dataSets.length)
+              ? widget.dataSets[result.datasetIndex!]
+              : null;
+          ChartTooltipOverlay.show(
+            context,
+            globalAnchor: global,
+            theme: effectiveTheme,
+            point: result.point!,
+            color: ds?.color,
+            seriesLabel: ds?.dataPoint.label,
+          );
+        }
       }
     } else {
       if (_hoveredBar != null) {
@@ -206,6 +237,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
         });
         widget.onBarHover?.call(null, null, null);
       }
+      _hideTooltip();
     }
   }
 
@@ -272,6 +304,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
       setState(() {
         _selectedBar = null;
       });
+      _hideTooltip();
     }
   }
 
@@ -347,7 +380,11 @@ class _BarChartWidgetState extends State<BarChartWidget>
                   return MouseRegion(
                     onHover: widget.onBarHover != null
                         ? (event) {
-                            _handleHover(event.localPosition, constraints);
+                            _handleHover(
+                              event.localPosition,
+                              constraints,
+                              effectiveTheme,
+                            );
                           }
                         : null,
                     onExit: widget.onBarHover != null
@@ -356,6 +393,7 @@ class _BarChartWidgetState extends State<BarChartWidget>
                               _hoveredBar = null;
                             });
                             widget.onBarHover?.call(null, null, null);
+                            _hideTooltip();
                           }
                         : null,
                     child: GestureDetector(
