@@ -3,14 +3,14 @@ description: Modern Flutter charting library with 17 chart types, Material 3 des
 version: 1.8.2
 homepage: https://www.linkedin.com/in/mohamed-elsyed-967a7b215/
 repository: https://github.com/m7hamed-dev/save_points_chart
-issue_tracker: https://github.com/m7hamed-dev/save_points_chart
+issue_tracker: https://github.com/m7hamed-dev/save_points_chart/issues
 
 # Author information is automatically displayed on pub.dev from your publisher account
-# Publisher: m7hamed-dev
-# GitHub: https://github.com/m7hamed-dev
+Publisher: m7hamed-dev
+GitHub: https://github.com/m7hamed-dev
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.11.4
 
 dependencies:
   flutter:
