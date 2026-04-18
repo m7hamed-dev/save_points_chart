@@ -259,8 +259,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
     // with the ambient Material theme. This keeps the label and value readable
     // when the menu is placed over a light surface (for example when
     // `ChartTheme.light()` is used while the rest of the app is also light).
-    final onBackgroundIsDark =
-        ThemeData.estimateBrightnessForColor(backgroundColor) == Brightness.dark;
+    final onBackgroundIsDark = ThemeData.estimateBrightnessForColor(backgroundColor) == Brightness.dark;
     final labelColor = onBackgroundIsDark ? Colors.white : const Color(0xFF111827);
     final valueColor = labelColor;
     final borderColor = onBackgroundIsDark
@@ -329,12 +328,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
                 alignment: isRtl ? Alignment.centerLeft : Alignment.centerRight,
                 child: Text(
                   _formattedValue,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: valueColor,
-                    letterSpacing: -0.3,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: valueColor, letterSpacing: -0.3),
                 ),
               ),
 
