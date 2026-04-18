@@ -1,6 +1,3 @@
-import 'package:save_points_chart/models/chart_data.dart' show ChartDataSet, BubbleDataPoint;
-import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet, BubbleDataPoint;
-
 /// Represents a single data point in a chart.
 ///
 /// Each point has an x-coordinate (horizontal position) and y-coordinate
@@ -20,8 +17,8 @@ import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet, Bub
 /// ```
 ///
 /// See also:
-/// - [ChartDataSet] for collections of data points
-/// - [BubbleDataPoint] for bubble charts with size information
+/// - `ChartDataSet` for collections of data points
+/// - `BubbleDataPoint` for bubble charts with size information
 class ChartDataPoint {
   /// Creates a chart data point.
   ///
@@ -31,13 +28,25 @@ class ChartDataPoint {
   ///
   /// Throws an [AssertionError] if [x] or [y] are not finite.
   ChartDataPoint({required dynamic x, required dynamic y, this.label, this.showValue = true})
-    : x = _parseValue(x),
-      y = _parseValue(y);
+    : x = _parseValue(x, 'x'),
+      y = _parseValue(y, 'y'),
+      assert(_parseValue(x, 'x').isFinite, 'ChartDataPoint.x must be a finite number'),
+      assert(_parseValue(y, 'y').isFinite, 'ChartDataPoint.y must be a finite number');
 
-  static double _parseValue(dynamic value) {
+  /// Parses a numeric value from either a [num] or a numeric [String].
+  ///
+  /// Throws [ArgumentError] if the value cannot be interpreted as a number.
+  static double _parseValue(dynamic value, String name) {
     if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      if (parsed != null) return parsed;
+    }
+    throw ArgumentError.value(
+      value,
+      name,
+      'ChartDataPoint.$name must be a num or numeric String',
+    );
   }
 
   /// The x-coordinate (horizontal position) of the data point.

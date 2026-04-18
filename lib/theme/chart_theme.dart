@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Common label rotation angles in degrees for convenience.
@@ -395,4 +396,64 @@ class ChartTheme {
       padding: padding ?? this.padding,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ChartTheme &&
+        other.backgroundColor == backgroundColor &&
+        other.textColor == textColor &&
+        other.gridColor == gridColor &&
+        other.axisColor == axisColor &&
+        listEquals(other.gradientColors, gradientColors) &&
+        other.shadowElevation == shadowElevation &&
+        other.borderRadius == borderRadius &&
+        other.showGrid == showGrid &&
+        other.showAxis == showAxis &&
+        other.showLegend == showLegend &&
+        other.showTooltip == showTooltip &&
+        other.cardBorderColor == cardBorderColor &&
+        other.overlayColor == overlayColor &&
+        other.crosshairColor == crosshairColor &&
+        other.tooltipBackgroundColor == tooltipBackgroundColor &&
+        other.tooltipBorderColor == tooltipBorderColor &&
+        listEquals(other.tooltipShadow, tooltipShadow) &&
+        other.gridLineWidth == gridLineWidth &&
+        other.gridDashWidth == gridDashWidth &&
+        other.gridDashSpace == gridDashSpace &&
+        other.xAxisLabelRotation == xAxisLabelRotation &&
+        other.yAxisLabelRotation == yAxisLabelRotation &&
+        other.axisLabelStyle == axisLabelStyle &&
+        other.tooltipStyle == tooltipStyle &&
+        other.padding == padding;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    backgroundColor,
+    textColor,
+    gridColor,
+    axisColor,
+    Object.hashAll(gradientColors),
+    shadowElevation,
+    borderRadius,
+    showGrid,
+    showAxis,
+    showLegend,
+    showTooltip,
+    cardBorderColor,
+    overlayColor,
+    crosshairColor,
+    tooltipBackgroundColor,
+    tooltipBorderColor,
+    Object.hashAll(tooltipShadow),
+    gridLineWidth,
+    gridDashWidth,
+    gridDashSpace,
+    xAxisLabelRotation,
+    yAxisLabelRotation,
+    axisLabelStyle,
+    tooltipStyle,
+    padding,
+  ]);
 }

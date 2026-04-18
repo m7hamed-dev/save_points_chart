@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:save_points_chart/models/chart_data.dart' show ChartDataSet;
-import 'package:save_points_chart/models/chart_data_set.dart' show ChartDataSet;
 import 'package:save_points_chart/models/radar_data_point.dart';
-import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet;
 
 /// Represents a collection of radar/spider chart data points.
 ///
@@ -23,7 +20,7 @@ import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet;
 ///
 /// See also:
 /// - [RadarDataPoint] for individual radar points
-/// - [ChartDataSet] for standard two-dimensional data sets
+/// - `ChartDataSet` for standard two-dimensional data sets
 class RadarDataSet {
   /// Creates a radar data set.
   ///

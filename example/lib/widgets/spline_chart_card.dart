@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/save_points_chart.dart';
-import 'package:save_points_chart/data/sample_data.dart';
+import 'package:save_points_chart_example/sample_data.dart';
 
 class SplineChartCard extends StatelessWidget {
   const SplineChartCard({super.key, required this.theme});

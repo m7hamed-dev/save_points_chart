@@ -62,6 +62,9 @@ export 'widgets/funnel_chart_widget.dart';
 export 'widgets/chart_container.dart';
 export 'widgets/chart_context_menu.dart';
 export 'widgets/chart_empty_state.dart';
+export 'widgets/chart_legend.dart';
+export 'widgets/chart_legend_scope.dart';
+export 'widgets/chart_pan_zoom_scope.dart';
 
 // Providers
 export 'providers/theme_provider.dart';

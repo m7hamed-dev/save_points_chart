@@ -34,12 +34,21 @@ class PieData {
     this.showValue = true,
     this.showLabel = true,
     this.circleSize = 18.0,
-  }) : value = _parseValue(value);
+  }) : value = _parseValue(value),
+       assert(label != '', 'PieData.label must not be empty'),
+       assert(_parseValue(value) >= 0, 'PieData.value must be non-negative'),
+       assert(_parseValue(value).isFinite, 'PieData.value must be finite');
 
+  /// Parses a value from either a [num] or a numeric [String].
+  ///
+  /// Throws [ArgumentError] if the value cannot be interpreted as a number.
   static double _parseValue(dynamic value) {
     if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      if (parsed != null) return parsed;
+    }
+    throw ArgumentError.value(value, 'value', 'PieData.value must be a num or numeric String');
   }
 
   /// The label displayed in the legend and tooltips.

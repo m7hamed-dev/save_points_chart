@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/models/bubble_data_point.dart';
-import 'package:save_points_chart/models/chart_data.dart' show ChartDataSet;
-import 'package:save_points_chart/models/chart_data_set.dart' show ChartDataSet;
-import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet;
 
 /// Represents a collection of bubble data points.
 ///
-/// Similar to [ChartDataSet] but specifically for bubble charts.
+/// Similar to `ChartDataSet` but specifically for bubble charts.
 /// Contains multiple bubble points that share a color.
 ///
 /// ## Example
@@ -21,7 +18,7 @@ import 'package:save_points_chart/save_points_chart.dart' show ChartDataSet;
 /// ```
 ///
 /// See also:
-/// - [ChartDataSet] for standard two-dimensional data sets
+/// - `ChartDataSet` for standard two-dimensional data sets
 /// - [BubbleDataPoint] for individual bubble points
 class BubbleDataSet {
   /// The color used to render the bubbles in this data set.

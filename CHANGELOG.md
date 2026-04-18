@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-04-17
+
+### Added
+- **Interactive legend with tap-to-toggle visibility.** New `ChartLegend` widget renders a tappable, themeable legend for any chart, with hidden items shown dimmed and struck-through. Includes accessibility semantics (`toggled` state for screen readers).
+- **`ChartVisibilityController`** — a `ChangeNotifier` that tracks which series are hidden. Supports `toggle`, `hide`, `show`, `solo`, `showAll`, and `filter(dataSets)` for integration with any chart.
+- **`ChartLegendScope`** — a stateful wrapper that composes a legend with any chart widget via a builder pattern, so you don't need per-widget integration. Configurable legend position (top/bottom/left/right) and optional external controller.
+- **Pan & pinch zoom** via a new `ChartPanZoomScope` widget. Wrap any chart to get free/horizontal/vertical panning plus pinch zoom, with configurable min/max scale, boundary margin, and constrained mode. Works with every chart type without touching painter code.
+- Optional floating zoom-in / zoom-out / reset-view controls with haptic feedback. An external `TransformationController` can be passed in for programmatic control.
+- **Comprehensive test suite** (88 tests, all passing): model validation, `ChartTheme` equality, per-widget smoke tests for all 17 chart types, loading/error state coverage, and full tests for the new legend + pan/zoom scopes.
+- Line chart in the Showcase demo now composes both `ChartLegendScope` and `ChartPanZoomScope` to demonstrate the end-to-end pattern.
+
+### Exported
+- `ChartLegend`, `ChartLegendItem`, `LegendPosition`
+- `ChartLegendScope`, `ChartVisibilityController`
+- `ChartPanZoomScope`
+
+## [1.8.3] - 2026-04-17
+
+### Changed
+- **Package hygiene:** moved the demo app (`main.dart`, `screens/`, `data/sample_data.dart`) out of `lib/` and into `example/lib/`. The published package no longer ships the runnable demo, reducing install size.
+- Restructured `example/` to the standard `example/lib/` layout required by pub.dev.
+- `pubspec.yaml`: removed non-standard top-level `Publisher:` / `GitHub:` keys; added `topics`, `documentation` URL, and a minimum Flutter SDK constraint.
+
+### Added
+- `ChartTheme` now implements value equality (`==` / `hashCode`), enabling painters to short-circuit `shouldRepaint` and avoid redundant repaints on parent rebuilds.
+- Demo "Showcase" destination in the example app showing the interactive, responsive chart demo (drawer on narrow screens, side rail on wide screens).
+
+### Fixed
+- `ChartDataPoint`, `BubbleDataPoint`, `RadarDataPoint`, `PieData`: silent `0.0` fallback on unparseable values replaced with `ArgumentError`; added the `assert`s that documentation already promised (finite/non-negative/non-empty).
+- Removed redundant and self-referential `show` imports across all model files (`bubble_data_point`, `bubble_data_set`, `chart_data_point`, `chart_data_set`, `radar_data_point`, `radar_data_set`).
+
+### Internal
+- `chart_demo_screen.dart` refactored from ~1400 lines of duplicated tap handlers to ~1050 lines with a declarative `_ChartTab` registry and shared `_showPointMenu` / `_showSegmentMenu` helpers.
+- Replaced the `useGlassmorphism` / `useNeumorphism` boolean pair with a single `_StyleMode` enum.
+- Fixed duplicate data-generation calls inside tap callbacks that regenerated sample data on every interaction.
+
 ## [1.0.0] - 2025-11-25
 
 ### Added

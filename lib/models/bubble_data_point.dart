@@ -1,7 +1,4 @@
-import 'package:save_points_chart/models/bubble_data_set.dart' show BubbleDataSet;
-import 'package:save_points_chart/models/chart_data.dart' show BubbleDataSet;
 import 'package:save_points_chart/models/chart_data_point.dart';
-import 'package:save_points_chart/save_points_chart.dart' show BubbleDataSet;
 
 /// Represents a bubble data point with size information.
 ///
@@ -21,7 +18,7 @@ import 'package:save_points_chart/save_points_chart.dart' show BubbleDataSet;
 ///
 /// See also:
 /// - [ChartDataPoint] for standard two-dimensional points
-/// - [BubbleDataSet] for collections of bubble data points (import from models)
+/// - `BubbleDataSet` for collections of bubble data points
 class BubbleDataPoint extends ChartDataPoint {
   /// The size of the bubble (third dimension).
   ///
@@ -38,12 +35,20 @@ class BubbleDataPoint extends ChartDataPoint {
   ///
   /// Throws an [AssertionError] if [size] is not positive or not finite.
   BubbleDataPoint({required super.x, required super.y, required dynamic size, super.label, super.showValue})
-    : size = _parseSize(size);
+    : size = _parseSize(size),
+      assert(_parseSize(size) > 0, 'BubbleDataPoint.size must be positive'),
+      assert(_parseSize(size).isFinite, 'BubbleDataPoint.size must be finite');
 
+  /// Parses a size value from either a [num] or a numeric [String].
+  ///
+  /// Throws [ArgumentError] if the value cannot be interpreted as a number.
   static double _parseSize(dynamic value) {
     if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      if (parsed != null) return parsed;
+    }
+    throw ArgumentError.value(value, 'size', 'BubbleDataPoint.size must be a num or numeric String');
   }
 
   /// Creates a copy of this bubble data point with the given fields replaced.

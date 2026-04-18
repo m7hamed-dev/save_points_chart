@@ -1,6 +1,3 @@
-import 'package:save_points_chart/models/chart_data.dart' show RadarDataSet, ChartDataPoint;
-import 'package:save_points_chart/save_points_chart.dart' show RadarDataSet, ChartDataPoint;
-
 /// Represents a radar/spider chart data point.
 ///
 /// Each point has a label (axis name) and a value (distance from center).
@@ -16,8 +13,8 @@ import 'package:save_points_chart/save_points_chart.dart' show RadarDataSet, Cha
 /// ```
 ///
 /// See also:
-/// - [RadarDataSet] for collections of radar data points
-/// - [ChartDataPoint] for standard two-dimensional points
+/// - `RadarDataSet` for collections of radar data points
+/// - `ChartDataPoint` for standard two-dimensional points
 class RadarDataPoint {
   /// Creates a radar data point.
   ///
@@ -26,12 +23,22 @@ class RadarDataPoint {
   ///
   /// Throws an [AssertionError] if [value] is negative or not finite,
   /// or if [label] is empty.
-  RadarDataPoint({required this.label, required dynamic value, this.showValue = true}) : value = _parseValue(value);
+  RadarDataPoint({required this.label, required dynamic value, this.showValue = true})
+    : value = _parseValue(value),
+      assert(label != '', 'RadarDataPoint.label must not be empty'),
+      assert(_parseValue(value) >= 0, 'RadarDataPoint.value must be non-negative'),
+      assert(_parseValue(value).isFinite, 'RadarDataPoint.value must be finite');
 
+  /// Parses a value from either a [num] or a numeric [String].
+  ///
+  /// Throws [ArgumentError] if the value cannot be interpreted as a number.
   static double _parseValue(dynamic value) {
     if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      if (parsed != null) return parsed;
+    }
+    throw ArgumentError.value(value, 'value', 'RadarDataPoint.value must be a num or numeric String');
   }
 
   /// The label for this axis (e.g., "Speed", "Quality").

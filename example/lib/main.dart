@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:save_points_chart/save_points_chart.dart';
-import 'widgets/area_chart_card.dart';
-import 'widgets/bar_chart_card.dart';
-import 'widgets/bubble_chart_card.dart';
-import 'widgets/data_test_page.dart';
-import 'widgets/donut_chart_card.dart';
-import 'widgets/funnel_chart_card.dart';
-import 'widgets/gauge_chart_card.dart';
-import 'widgets/line_chart_card.dart';
-import 'widgets/pie_chart_card.dart';
-import 'widgets/pyramid_chart_card.dart';
-import 'widgets/radar_chart_card.dart';
-import 'widgets/radial_chart_card.dart';
-import 'widgets/scatter_chart_card.dart';
-import 'widgets/sparkline_chart_card.dart';
-import 'widgets/spline_chart_card.dart';
-import 'widgets/stacked_area_chart_card.dart';
-import 'widgets/stacked_column_chart_card.dart';
-import 'widgets/step_line_chart_card.dart';
+import 'package:save_points_chart_example/chart_demo_screen.dart';
+import 'package:save_points_chart_example/widgets/area_chart_card.dart';
+import 'package:save_points_chart_example/widgets/bar_chart_card.dart';
+import 'package:save_points_chart_example/widgets/bubble_chart_card.dart';
+import 'package:save_points_chart_example/widgets/data_test_page.dart';
+import 'package:save_points_chart_example/widgets/donut_chart_card.dart';
+import 'package:save_points_chart_example/widgets/funnel_chart_card.dart';
+import 'package:save_points_chart_example/widgets/gauge_chart_card.dart';
+import 'package:save_points_chart_example/widgets/line_chart_card.dart';
+import 'package:save_points_chart_example/widgets/pie_chart_card.dart';
+import 'package:save_points_chart_example/widgets/pyramid_chart_card.dart';
+import 'package:save_points_chart_example/widgets/radar_chart_card.dart';
+import 'package:save_points_chart_example/widgets/radial_chart_card.dart';
+import 'package:save_points_chart_example/widgets/scatter_chart_card.dart';
+import 'package:save_points_chart_example/widgets/sparkline_chart_card.dart';
+import 'package:save_points_chart_example/widgets/spline_chart_card.dart';
+import 'package:save_points_chart_example/widgets/stacked_area_chart_card.dart';
+import 'package:save_points_chart_example/widgets/stacked_column_chart_card.dart';
+import 'package:save_points_chart_example/widgets/step_line_chart_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,13 +29,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const ThemeProvider(child: _AppRoot());
+  }
+}
+
+class _AppRoot extends StatelessWidget {
+  const _AppRoot();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context);
     return MaterialApp(
       title: 'Save Points Chart Example',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
         useMaterial3: true,
       ),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      themeMode: themeProvider.themeMode,
       home: const ChartExamplePage(),
     );
   }
@@ -48,34 +61,109 @@ class ChartExamplePage extends StatefulWidget {
 }
 
 class _ChartExamplePageState extends State<ChartExamplePage> {
-  bool _isDarkMode = false;
   int _tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final theme = _isDarkMode ? ChartTheme.dark() : ChartTheme.light();
+    final themeProvider = ThemeProvider.of(context);
+    final chartTheme = themeProvider.chartTheme;
+
+    // The rich "Showcase" tab has its own Scaffold and navigation;
+    // render it directly without our shell.
+    if (_tabIndex == 2) {
+      return Stack(
+        children: [
+          const ChartDemoScreen(),
+          Positioned(
+            right: 8,
+            bottom: 80,
+            child: _TabSwitcher(
+              selected: _tabIndex,
+              onChanged: (i) => setState(() => _tabIndex = i),
+            ),
+          ),
+        ],
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Save Points Chart Examples'),
-        actions: [_iconChangeTheme()],
+        actions: [
+          IconButton(
+            icon: Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: themeProvider.toggleTheme,
+            tooltip: 'Toggle Theme',
+          ),
+        ],
       ),
-      body: _tabIndex == 0 ? _sampleCharts(theme) : DataTestPage(theme: theme),
+      body: switch (_tabIndex) {
+        1 => DataTestPage(theme: chartTheme),
+        _ => _SampleChartsList(theme: chartTheme),
+      },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tabIndex,
         onDestinationSelected: (i) => setState(() => _tabIndex = i),
         destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.auto_awesome),
-            label: 'Samples',
-          ),
+          NavigationDestination(icon: Icon(Icons.auto_awesome), label: 'Samples'),
           NavigationDestination(icon: Icon(Icons.science), label: 'Data Test'),
+          NavigationDestination(icon: Icon(Icons.dashboard_customize), label: 'Showcase'),
         ],
       ),
     );
   }
+}
 
-  Widget _sampleCharts(ChartTheme theme) {
+/// Mini navigation control shown over the Showcase screen so users can return.
+class _TabSwitcher extends StatelessWidget {
+  const _TabSwitcher({required this.selected, required this.onChanged});
+
+  final int selected;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 4,
+      color: Theme.of(context).colorScheme.surface,
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              tooltip: 'Back to Samples',
+              icon: const Icon(Icons.auto_awesome),
+              isSelected: selected == 0,
+              onPressed: () => onChanged(0),
+            ),
+            IconButton(
+              tooltip: 'Data Test',
+              icon: const Icon(Icons.science),
+              isSelected: selected == 1,
+              onPressed: () => onChanged(1),
+            ),
+            IconButton(
+              tooltip: 'Showcase',
+              icon: const Icon(Icons.dashboard_customize),
+              isSelected: selected == 2,
+              onPressed: () => onChanged(2),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SampleChartsList extends StatelessWidget {
+  const _SampleChartsList({required this.theme});
+
+  final ChartTheme theme;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -113,17 +201,6 @@ class _ChartExamplePageState extends State<ChartExamplePage> {
         const SizedBox(height: 16),
         StepLineChartCard(theme: theme),
       ],
-    );
-  }
-
-  IconButton _iconChangeTheme() {
-    return IconButton(
-      icon: Icon(_isDarkMode ? Icons.light_mode : Icons.dark_mode),
-      onPressed: () {
-        setState(() {
-          _isDarkMode = !_isDarkMode;
-        });
-      },
     );
   }
 }
