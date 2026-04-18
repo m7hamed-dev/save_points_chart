@@ -42,6 +42,16 @@ class PieChartPainter extends CustomPainter {
       return;
     }
 
+    // Clamp the inner hole so the ring is always at least [minRingThickness]
+    // pixels wide. Without this, a caller that hard-codes a
+    // [centerSpaceRadius] (e.g. 70.0) on a small chart ends up with a hole
+    // that equals or exceeds the outer radius, which makes every segment
+    // path degenerate to empty and the ring disappears completely.
+    const minRingThickness = 12.0;
+    final double effectiveCenterSpaceRadius = centerSpaceRadius > 0
+        ? centerSpaceRadius.clamp(0.0, math.max(0.0, radius - minRingThickness)).toDouble()
+        : 0.0;
+
     final total = data.map((d) => d.value).reduce((a, b) => a + b);
 
     // Validate total
@@ -133,12 +143,12 @@ class PieChartPainter extends CustomPainter {
       // For animation, we still use arcTo until it's very close to full circle
       final isAnimatedFullCircle = animatedSweepAngle.abs() >= 2 * math.pi - 0.01;
 
-      if (centerSpaceRadius > 0) {
+      if (effectiveCenterSpaceRadius > 0) {
         // Donut chart
         if (isAnimatedFullCircle) {
           // Full circle donut - use addOval for reliable full circle rendering
           final outerPath = Path()..addOval(rect);
-          final innerRect = Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
+          final innerRect = Rect.fromCircle(center: effectiveCenter, radius: effectiveCenterSpaceRadius);
           final innerPath = Path()..addOval(innerRect);
           path = Path.combine(PathOperation.difference, outerPath, innerPath);
         } else {
@@ -149,7 +159,7 @@ class PieChartPainter extends CustomPainter {
             ..lineTo(effectiveCenter.dx, effectiveCenter.dy)
             ..close();
 
-          final innerRect = Rect.fromCircle(center: effectiveCenter, radius: centerSpaceRadius);
+          final innerRect = Rect.fromCircle(center: effectiveCenter, radius: effectiveCenterSpaceRadius);
           final innerPath = Path()
             ..moveTo(effectiveCenter.dx, effectiveCenter.dy)
             ..arcTo(innerRect, startAngle + animatedSweepAngle, -animatedSweepAngle, false)
@@ -232,7 +242,16 @@ class PieChartPainter extends CustomPainter {
       final item = data[i];
 
       if (showLabel && segment.sweepAngle > 0.3) {
-        _drawLabel(canvas, segment.center, radius, segment.startAngle, segment.sweepAngle, item, total);
+        _drawLabel(
+          canvas,
+          segment.center,
+          radius,
+          effectiveCenterSpaceRadius,
+          segment.startAngle,
+          segment.sweepAngle,
+          item,
+          total,
+        );
       }
     }
   }
@@ -253,35 +272,45 @@ class PieChartPainter extends CustomPainter {
     Canvas canvas,
     Offset center,
     double radius,
+    double centerSpace,
     double startAngle,
     double sweepAngle,
     PieData item,
     double total,
   ) {
     final labelAngle = startAngle + sweepAngle / 2;
-    final labelRadius = centerSpaceRadius > 0 ? (radius + centerSpaceRadius) / 2 : radius * 0.7;
+    final labelRadius = centerSpace > 0 ? (radius + centerSpace) / 2 : radius * 0.7;
 
     final labelX = center.dx + math.cos(labelAngle) * labelRadius;
     final labelY = center.dy + math.sin(labelAngle) * labelRadius;
 
     final percentage = ((item.value / total) * 100).toStringAsFixed(1);
 
+    // Pill background is the segment color itself (nearly opaque) so it reads
+    // clearly on any card/theme background. Text color is chosen to contrast
+    // with that pill, not with the theme — this is what makes labels legible
+    // in both light and dark modes.
+    final pillColor = item.color.withValues(alpha: 0.92);
+    final textColor = ThemeData.estimateBrightnessForColor(pillColor) == Brightness.dark
+        ? Colors.white
+        : const Color(0xFF111827);
+
     final textSpan = TextSpan(
       text: '$percentage%',
-      style: TextStyle(color: theme.backgroundColor, fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.3),
+      style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.3),
     );
     final textPainter = TextPainter(text: textSpan, textDirection: TextDirection.ltr, textAlign: TextAlign.center);
     textPainter.layout();
 
     final bgRect = Rect.fromCenter(
       center: Offset(labelX, labelY),
-      width: textPainter.width + 8,
-      height: textPainter.height + 4,
+      width: textPainter.width + 10,
+      height: textPainter.height + 6,
     );
     final bgPaint = Paint()
-      ..color = item.color.withValues(alpha: 0.2)
+      ..color = pillColor
       ..style = PaintingStyle.fill;
-    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const .circular(4)), bgPaint);
+    canvas.drawRRect(RRect.fromRectAndRadius(bgRect, const .circular(6)), bgPaint);
 
     textPainter.paint(canvas, Offset(labelX - textPainter.width / 2, labelY - textPainter.height / 2));
   }

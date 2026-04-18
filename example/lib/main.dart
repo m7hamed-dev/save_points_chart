@@ -77,10 +77,7 @@ class _ChartExamplePageState extends State<ChartExamplePage> {
           Positioned(
             right: 8,
             bottom: 80,
-            child: _TabSwitcher(
-              selected: _tabIndex,
-              onChanged: (i) => setState(() => _tabIndex = i),
-            ),
+            child: _TabSwitcher(selected: _tabIndex, onChanged: (i) => setState(() => _tabIndex = i)),
           ),
         ],
       );
