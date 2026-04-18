@@ -255,6 +255,18 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
     /// Background color from theme or widget or default color
     final backgroundColor = widgetBackgroundColor ?? themeBackgroundColor ?? const Color(0xFF020617);
 
+    // Pick foreground colors that contrast with the actual background, not
+    // with the ambient Material theme. This keeps the label and value readable
+    // when the menu is placed over a light surface (for example when
+    // `ChartTheme.light()` is used while the rest of the app is also light).
+    final onBackgroundIsDark =
+        ThemeData.estimateBrightnessForColor(backgroundColor) == Brightness.dark;
+    final labelColor = onBackgroundIsDark ? Colors.white : const Color(0xFF111827);
+    final valueColor = labelColor;
+    final borderColor = onBackgroundIsDark
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.black.withValues(alpha: 0.08);
+
     ///
     return Semantics(
       label: 'Chart context menu',
@@ -264,7 +276,7 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
         decoration: BoxDecoration(
           borderRadius: const .all(.circular(16)),
           color: backgroundColor,
-          border: .all(color: Colors.white.withValues(alpha: 0.06)),
+          border: .all(color: borderColor),
           boxShadow: [
             BoxShadow(
               color: isDark ? Colors.black.withValues(alpha: 0.55) : Colors.black.withValues(alpha: 0.18),
@@ -297,10 +309,10 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
                         _label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: labelColor,
                           letterSpacing: -0.1,
                         ),
                       ),
@@ -317,10 +329,10 @@ class _ChartContextMenuState extends State<ChartContextMenu> with SingleTickerPr
                 alignment: isRtl ? Alignment.centerLeft : Alignment.centerRight,
                 child: Text(
                   _formattedValue,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: valueColor,
                     letterSpacing: -0.3,
                   ),
                 ),
