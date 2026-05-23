@@ -23,7 +23,7 @@ Add to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.9.0
+  save_points_chart: ^1.9.1
 ```
 
 Import the public API:

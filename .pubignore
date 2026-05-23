@@ -38,6 +38,9 @@ doc/
 # Screenshots - include video.gif for package display
 # screenshots/
 
+# Test / coverage artifacts
+coverage/
+
 # Miscellaneous
 *.log
 .DS_Store

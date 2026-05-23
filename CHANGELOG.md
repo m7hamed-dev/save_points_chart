@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.9.0] - 2026-04-17
+## [1.9.1] - 2026-04-17
 
 ### Added
 - **Interactive legend with tap-to-toggle visibility.** New `ChartLegend` widget renders a tappable, themeable legend for any chart, with hidden items shown dimmed and struck-through. Includes accessibility semantics (`toggled` state for screen readers).
