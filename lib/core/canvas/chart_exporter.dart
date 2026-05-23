@@ -41,6 +41,34 @@ class PngChartExporter extends ChartExporter {
   }
 }
 
+/// Maps typographic Unicode to ASCII for PDF built-in fonts (Helvetica).
+String pdfAsciiText(String text) {
+  const replacements = <String, String>{
+    '\u2013': '-', // en dash
+    '\u2014': '-', // em dash
+    '\u2212': '-', // minus sign
+    '\u2022': '*', // bullet
+    '\u2018': "'",
+    '\u2019': "'",
+    '\u201C': '"',
+    '\u201D': '"',
+    '\u2026': '...',
+  };
+  var result = text;
+  replacements.forEach((from, to) {
+    result = result.replaceAll(from, to);
+  });
+  final buffer = StringBuffer();
+  for (final codeUnit in result.codeUnits) {
+    if (codeUnit <= 0xFF) {
+      buffer.writeCharCode(codeUnit);
+    } else {
+      buffer.write('?');
+    }
+  }
+  return buffer.toString();
+}
+
 /// Embeds a chart PNG snapshot in a PDF page (optional title / subtitle header).
 class PdfChartExporter extends ChartExporter {
   const PdfChartExporter();
@@ -61,8 +89,11 @@ class PdfChartExporter extends ChartExporter {
     PdfPageFormat pageFormat = PdfPageFormat.a4,
   }) async {
     final pngBytes = await toPng(boundary, pixelRatio: pixelRatio);
+    final safeTitle = title != null ? pdfAsciiText(title) : null;
+    final safeSubtitle = subtitle != null ? pdfAsciiText(subtitle) : null;
+
     final doc = pw.Document(
-      title: title ?? 'Chart',
+      title: safeTitle ?? 'Chart',
       creator: 'save_points_chart',
     );
 
@@ -74,26 +105,26 @@ class PdfChartExporter extends ChartExporter {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              if (title != null && title.isNotEmpty)
+              if (safeTitle != null && safeTitle.isNotEmpty)
                 pw.Text(
-                  title,
+                  safeTitle,
                   style: pw.TextStyle(
                     fontSize: 18,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
-              if (subtitle != null && subtitle.isNotEmpty) ...[
+              if (safeSubtitle != null && safeSubtitle.isNotEmpty) ...[
                 pw.SizedBox(height: 4),
                 pw.Text(
-                  subtitle,
+                  safeSubtitle,
                   style: const pw.TextStyle(
                     fontSize: 12,
                     color: PdfColors.grey700,
                   ),
                 ),
               ],
-              if ((title != null && title.isNotEmpty) ||
-                  (subtitle != null && subtitle.isNotEmpty))
+              if ((safeTitle != null && safeTitle.isNotEmpty) ||
+                  (safeSubtitle != null && safeSubtitle.isNotEmpty))
                 pw.SizedBox(height: 16),
               pw.Expanded(
                 child: pw.Center(
