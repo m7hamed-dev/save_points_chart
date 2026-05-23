@@ -25,7 +25,7 @@ class GaugeChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChartWidget(
-      config: config,
+      config: config.copyWith(showGrid: false, showAxis: false),
       controller: controller,
       theme: theme,
       enableZoomPan: false,

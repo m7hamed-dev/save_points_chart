@@ -17,13 +17,13 @@ class ChartTemplate {
 
     final resolvedTheme = theme ?? config.theme ?? dashboardTheme();
     final series = _enhanceSeries(config.series, resolvedTheme);
-    final pieLike = _isPieLike(config);
+    final nonCartesian = _isNonCartesian(config);
 
     return config.copyWith(
       theme: resolvedTheme,
       series: series,
-      showGrid: pieLike ? false : config.showGrid,
-      showAxis: pieLike ? false : config.showAxis,
+      showGrid: nonCartesian ? false : config.showGrid,
+      showAxis: nonCartesian ? false : config.showAxis,
       showBorder: true,
       showLegend: config.showLegend || _shouldShowLegend(config),
       barBorderRadius: config.barBorderRadius < 4 ? 6 : config.barBorderRadius,
@@ -36,6 +36,15 @@ class ChartTemplate {
     return points.length >= 2 &&
         points.every((p) => p.label != null && p.label!.isNotEmpty);
   }
+
+  /// Single-metric charts (gauge) — no cartesian axes or grid.
+  static bool _isGaugeLike(ChartConfig config) {
+    if (config.series.length != 1) return false;
+    return config.series.first.points.length == 1;
+  }
+
+  static bool _isNonCartesian(ChartConfig config) =>
+      _isPieLike(config) || _isGaugeLike(config);
 
   static List<ChartSeries> _enhanceSeries(
     List<ChartSeries> series,

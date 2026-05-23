@@ -12,12 +12,16 @@ class GaugeChartRenderer extends ChartRenderer {
     this.max = 100,
     this.startAngle = math.pi,
     this.sweepAngle = math.pi,
+    this.showGrid = true,
+    this.showAxis = true,
   });
 
   final double min;
   final double max;
   final double startAngle;
   final double sweepAngle;
+  final bool showGrid;
+  final bool showAxis;
 
   @override
   void draw(Canvas canvas, Size size, ChartContext context) {
@@ -30,10 +34,13 @@ class GaugeChartRenderer extends ChartRenderer {
     final t =
         ((value - min) / (max - min)).clamp(0.0, 1.0) * context.animationValue;
 
-    final center = Offset(context.bounds.center.dx, context.bounds.bottom - 8);
-    final radius = math.min(context.bounds.width, context.bounds.height) * 0.45;
+    final radius = math.min(context.bounds.width, context.bounds.height) * 0.42;
+    final center = Offset(
+      context.bounds.center.dx,
+      context.bounds.center.dy + context.bounds.height * 0.22,
+    );
 
-    if (context.config.showGrid) {
+    if (showGrid) {
       final gridPaint = context.paintCache.get(
         key: 'gauge-grid',
         color: context.theme.gridColor,
@@ -79,7 +86,7 @@ class GaugeChartRenderer extends ChartRenderer {
       valuePaint,
     );
 
-    if (context.config.showAxis) {
+    if (showAxis) {
       _drawMinMaxLabels(canvas, context, center, radius);
     }
 
@@ -135,8 +142,11 @@ class GaugeChartRenderer extends ChartRenderer {
 
   @override
   List<HitRegion> hitRegions(ChartContext context) {
-    final center = Offset(context.bounds.center.dx, context.bounds.bottom - 8);
-    final radius = math.min(context.bounds.width, context.bounds.height) * 0.45;
+    final radius = math.min(context.bounds.width, context.bounds.height) * 0.42;
+    final center = Offset(
+      context.bounds.center.dx,
+      context.bounds.center.dy + context.bounds.height * 0.22,
+    );
     final series = context.config.series.isNotEmpty
         ? context.config.series.first
         : null;

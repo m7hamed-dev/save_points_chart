@@ -19,7 +19,9 @@ class AxisEngine {
       strokeWidth: context.theme.gridStrokeWidth,
     );
     final bounds = context.bounds;
-    final viewport = context.viewport;
+    if (context.viewport.width <= 0 || context.viewport.height <= 0) {
+      return;
+    }
 
     for (var i = 0; i <= tickCount; i++) {
       final t = i / tickCount;
@@ -29,9 +31,6 @@ class AxisEngine {
       final y = bounds.bottom - bounds.height * t;
       canvas.drawLine(Offset(bounds.left, y), Offset(bounds.right, y), paint);
     }
-
-    // Suppress unused variable warning for viewport (used in labels)
-    assert(viewport.width > 0);
   }
 
   static void drawAxes(
@@ -46,6 +45,9 @@ class AxisEngine {
     );
     final bounds = context.bounds;
     final viewport = context.viewport;
+    if (viewport.width <= 0 || viewport.height <= 0) {
+      return;
+    }
     final textStyle = context.theme.axisTextStyle;
 
     canvas.drawLine(

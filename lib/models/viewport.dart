@@ -41,8 +41,23 @@ class ChartViewport {
       return const ChartViewport(minX: 0, maxX: 1, minY: 0, maxY: 1);
     }
 
-    final xPad = (maxX - minX) * padding;
-    final yPad = (maxY - minY) * padding;
+    var xSpan = maxX - minX;
+    var ySpan = maxY - minY;
+    if (xSpan <= 0) {
+      final center = minX;
+      xSpan = 1;
+      minX = center - xSpan / 2;
+      maxX = center + xSpan / 2;
+    }
+    if (ySpan <= 0 || !ySpan.isFinite) {
+      final center = minY.isFinite ? minY : 0.0;
+      ySpan = center.abs() > 1e-9 ? center.abs() : 1;
+      minY = center - ySpan / 2;
+      maxY = center + ySpan / 2;
+    }
+
+    final xPad = xSpan * padding;
+    final yPad = ySpan * padding;
     return ChartViewport(
       minX: minX - xPad,
       maxX: maxX + xPad,
