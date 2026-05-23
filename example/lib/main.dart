@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:save_points_chart/charts/waterfall_chart/waterfall_chart_renderer.dart';
-import 'package:save_points_chart/extensions/chart_extensions.dart';
-import 'package:save_points_chart/models/chart_config.dart';
-import 'package:save_points_chart/models/chart_point.dart';
-import 'package:save_points_chart/models/chart_series.dart';
-import 'package:save_points_chart/widgets/area_chart.dart';
-import 'package:save_points_chart/widgets/pie_chart.dart';
+import 'package:save_points_chart/save_points_charts.dart';
 
 void main() => runApp(const ChartsDemoApp());
 
