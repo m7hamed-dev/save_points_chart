@@ -262,29 +262,57 @@ Pie, gauge, heatmap, and similar charts disable zoom/crosshair where it does not
 
 ## Export (PNG / PDF)
 
-Attach a `ChartWidgetController` and optionally wrap with `ChartCard` for toolbar buttons:
+Charts render inside a `RepaintBoundary`, so any chart can be snapshotted to a PNG image or an A4 PDF report. There are three layers of API.
+
+### 1. `ChartWidgetController` (recommended)
+
+Hold a controller, pass it to a chart widget, then export. The controller waits for the next frame before snapshotting so the canvas is current:
 
 ```dart
 final controller = ChartWidgetController();
 
+LineChart(config: config, controller: controller);
+
+final pngBytes = await controller.exportPng();                       // pixelRatio: 3
+final pdfBytes = await controller.exportPdf(title: 'Q2', subtitle: 'Revenue');
+final fromCfg  = await controller.exportPdfFromConfig(config);       // reuses config.title / subtitle
+```
+
+| Method | Optional params | Returns |
+|--------|-----------------|---------|
+| `exportPng` | `pixelRatio` (3) | `Uint8List` PNG |
+| `exportPdf` | `title`, `subtitle`, `pixelRatio` (3), `pageFormat` (A4) | `Uint8List` PDF |
+| `exportPdfFromConfig` | `config`, `pixelRatio`, `pageFormat` | `Uint8List` PDF |
+
+### 2. `ChartCard` (built-in toolbar)
+
+Wrap a chart in `ChartCard` to get ready-made export buttons; it drives the same controller and reports results via `onExported`:
+
+```dart
 ChartCard(
   config: config,
   controller: controller,
   child: LineChart(config: config, controller: controller),
 );
-
-// Programmatic export
-final pngBytes = await controller.exportPng();              // pixelRatio: 3 by default
-final pdfBytes = await controller.exportPdfFromConfig(config);
 ```
 
-Low-level API without a controller:
+### 3. `ChartExport` (low-level statics)
+
+When you manage your own `RepaintBoundary` `GlobalKey`:
 
 ```dart
-final bytes = await ChartExport.toPng(globalKey);
+final pngBytes = await ChartExport.toPng(boundaryKey, pixelRatio: 3);
+final pdfBytes = await ChartExport.toPdf(boundaryKey, title: '…', pageFormat: PdfPageFormat.a4);
 ```
 
-Charts render inside a `RepaintBoundary`; exports capture the canvas (the tooltip overlay is excluded).
+### How it works & things to know
+
+- **PNG** is `RepaintBoundary.toImage(pixelRatio)` encoded as PNG — raise `pixelRatio` for sharper, larger output (default `3`).
+- **PDF** embeds that same PNG snapshot in a `pdf` page (A4 by default) with an optional bold title and grey subtitle header — it is a raster image of the chart, not vector.
+- **Tooltips and overlays are excluded** — only the chart canvas inside the `RepaintBoundary` is captured.
+- **The chart must be mounted** — exporting an unmounted (or non-`RepaintBoundary`) key throws a `StateError`.
+- **PDF text is ASCII-folded** for the built-in Helvetica font: smart quotes, en/em dashes, bullets, and ellipsis are converted to ASCII; other non-Latin-1 characters become `?`. Keep that in mind for Unicode titles/subtitles.
+- `pdf` is the only runtime dependency, pulled in solely for this PDF path.
 
 ## Custom charts
 
