@@ -24,7 +24,7 @@ class ChartsDemoPage extends StatefulWidget {
 }
 
 class _ChartsDemoPageState extends State<ChartsDemoPage> {
-  var _showAllCharts = false;
+  var _showAllCharts = true;
   var _chartIndex = 0;
 
   static const _allChartTitles = [
