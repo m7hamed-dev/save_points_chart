@@ -9,14 +9,18 @@ import 'package:save_points_chart/models/legend_position.dart';
 class ChartChrome {
   const ChartChrome._();
 
-  static const double _titleLineHeight = 22;
+  static const double _titleLineHeight = 24;
   static const double _subtitleLineHeight = 18;
+
+  /// Breathing room between the header text and the plot area, so the title
+  /// and subtitle read as a distinct block instead of colliding with the chart.
+  static const double _headerBottomGap = 14;
   static const double _legendHeight = 36;
   static const double _swatchWidth = 14;
   static const double _swatchHeight = 10;
   static const double _legendGap = 20;
 
-  /// Top margin for title + subtitle block.
+  /// Top margin for title + subtitle block, including a gap before the plot.
   static double headerReservedHeight(ChartConfig config) {
     var height = 0.0;
     if (_hasText(config.title)) {
@@ -24,6 +28,9 @@ class ChartChrome {
     }
     if (_hasText(config.subtitle)) {
       height += _subtitleLineHeight;
+    }
+    if (height > 0) {
+      height += _headerBottomGap;
     }
     return height;
   }

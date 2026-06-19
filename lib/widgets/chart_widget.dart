@@ -8,7 +8,6 @@ import 'package:save_points_chart/core/painters/chart_painter.dart';
 import 'package:save_points_chart/core/theme/chart_template.dart';
 import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/core/tooltip/tooltip_controller.dart';
-import 'package:save_points_chart/core/tooltip/tooltip_overlay.dart';
 import 'package:save_points_chart/models/chart_config.dart';
 
 /// Base chart widget — thin UI shell over [ChartEngine].
@@ -154,12 +153,13 @@ class _ChartWidgetState extends State<ChartWidget>
                   ),
                 ),
               ),
-              if (widget.enableTooltip)
-                TooltipOverlay(
-                  controller: _tooltip,
-                  theme: _engine.theme,
-                  chartSize: size,
-                ),
+
+              // if (widget.enableTooltip)
+              //   TooltipOverlay(
+              //     controller: _tooltip,
+              //     theme: _engine.theme,
+              //     chartSize: size,
+              //   ),
             ],
           ),
         );
