@@ -23,6 +23,10 @@ class ChartChrome {
   /// Vertical band below the plot reserved for x-axis tick labels.
   static const double _axisLabelBand = 20;
 
+  /// Horizontal band left of the plot reserved for y-axis tick labels.
+  /// Wider than the x band because numeric labels grow sideways (e.g. "1000").
+  static const double _yAxisLabelBand = 32;
+
   /// Extra band reserved for an x- or y-axis title.
   static const double _axisTitleBand = 22;
 
@@ -56,14 +60,17 @@ class ChartChrome {
     return config.legendPosition == LegendPosition.bottom ? _legendHeight : 0;
   }
 
+  /// Width reserved for a side-positioned legend: swatch + gap + label text.
+  static const double _sideLegendWidth = 88;
+
   static double legendReservedLeft(ChartConfig config) {
     if (!config.showLegend) return 0;
-    return config.legendPosition == LegendPosition.left ? 80 : 0;
+    return config.legendPosition == LegendPosition.left ? _sideLegendWidth : 0;
   }
 
   static double legendReservedRight(ChartConfig config) {
     if (!config.showLegend) return 0;
-    return config.legendPosition == LegendPosition.right ? 80 : 0;
+    return config.legendPosition == LegendPosition.right ? _sideLegendWidth : 0;
   }
 
   /// Space below the plot for x-axis tick labels plus the optional x-axis
@@ -79,9 +86,18 @@ class ChartChrome {
     return height;
   }
 
-  /// Space left of the plot for the optional rotated y-axis title.
-  static double axisLeftReserved(ChartConfig config) =>
-      _hasText(config.yAxisTitle) ? _axisTitleBand : 0;
+  /// Space left of the plot for y-axis tick labels plus the optional rotated
+  /// y-axis title, so neither clips the left edge nor overlaps the plot.
+  static double axisLeftReserved(ChartConfig config) {
+    var width = 0.0;
+    if (config.showAxis) {
+      width += _yAxisLabelBand;
+    }
+    if (_hasText(config.yAxisTitle)) {
+      width += _axisTitleBand;
+    }
+    return width;
+  }
 
   static void drawBorder(Canvas canvas, Size size, ChartContext context) {
     if (!context.config.showBorder) return;

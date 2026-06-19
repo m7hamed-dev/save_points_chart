@@ -118,10 +118,15 @@ class AxisEngine {
     }
 
     if (yTitle != null && yTitle.isNotEmpty) {
+      // Sit beyond the tick-label band (32px) when axes are shown, otherwise
+      // hug the plot edge with a small gap.
+      final titleX = context.config.showAxis
+          ? bounds.left - 44
+          : bounds.left - 8;
       _drawRotatedLabel(
         canvas,
         yTitle,
-        Offset(bounds.left - 8, bounds.top + bounds.height / 2),
+        Offset(titleX, bounds.top + bounds.height / 2),
         style,
         maxWidth: bounds.height,
       );
