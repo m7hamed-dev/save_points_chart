@@ -104,7 +104,6 @@ class ChartTheme {
       tooltipTextStyle: TextStyle(color: Color(0xFF212121), fontSize: 12),
       crosshairColor: Color(0xFF9E9E9E),
       selectionColor: Color(0x3364B5F6),
-      borderColor: Color(0x33FFFFFF),
       seriesColors: [
         Color(0xFF64B5F6),
         Color(0xFFEF5350),
@@ -141,11 +140,7 @@ class ChartTheme {
       tooltipTextStyle: TextStyle(color: Color(0xFF212121), fontSize: 12),
       crosshairColor: Color(0xFF9E9E9E),
       selectionColor: Color(0x3364B5F6),
-      borderColor: Color(0x33FFFFFF),
-      sliceBorderColor: Color(0xFFFFFFFF),
-      sliceBorderWidth: 2,
       ringMarkers: true,
-      markerCenterColor: Colors.white,
       seriesColors: [
         Color(0xFF2196F3),
         Color(0xFF4CAF50),

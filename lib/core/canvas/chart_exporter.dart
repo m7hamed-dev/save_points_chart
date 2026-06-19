@@ -127,12 +127,7 @@ class PdfChartExporter extends ChartExporter {
                   (safeSubtitle != null && safeSubtitle.isNotEmpty))
                 pw.SizedBox(height: 16),
               pw.Expanded(
-                child: pw.Center(
-                  child: pw.Image(
-                    pw.MemoryImage(pngBytes),
-                    fit: pw.BoxFit.contain,
-                  ),
-                ),
+                child: pw.Center(child: pw.Image(pw.MemoryImage(pngBytes))),
               ),
             ],
           );
