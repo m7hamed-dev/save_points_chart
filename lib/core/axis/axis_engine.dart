@@ -68,7 +68,7 @@ class AxisEngine {
       _drawLabel(
         canvas,
         _formatValue(dataX),
-        Offset(canvasX, bounds.bottom + 4),
+        Offset(canvasX, bounds.bottom + 6),
         textStyle,
         align: TextAlign.center,
       );
@@ -102,10 +102,15 @@ class AxisEngine {
     );
 
     if (xTitle != null && xTitle.isNotEmpty) {
+      // Sit below the tick-label band when axes are shown, otherwise hug the
+      // plot edge with a small gap.
+      final titleY = context.config.showAxis
+          ? bounds.bottom + 26
+          : bounds.bottom + 6;
       _drawLabel(
         canvas,
         xTitle,
-        Offset(bounds.left + bounds.width / 2, bounds.bottom + 22),
+        Offset(bounds.left + bounds.width / 2, titleY),
         style,
         align: TextAlign.center,
         maxWidth: bounds.width,

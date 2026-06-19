@@ -87,22 +87,21 @@ class ChartEngine {
 
   EdgeInsets _plotMargins() {
     final base = theme.padding;
-    final top = base.top + ChartChrome.headerReservedHeight(config);
-    final bottom = base.bottom + ChartChrome.legendReservedHeight(config);
-    final left = base.left + ChartChrome.legendReservedLeft(config);
+    final top =
+        base.top +
+        ChartChrome.headerReservedHeight(config) +
+        ChartChrome.legendReservedTop(config);
+    final bottom =
+        base.bottom +
+        ChartChrome.legendReservedBottom(config) +
+        ChartChrome.axisBottomReserved(config);
+    final left =
+        base.left +
+        ChartChrome.legendReservedLeft(config) +
+        ChartChrome.axisLeftReserved(config);
     final right = base.right + ChartChrome.legendReservedRight(config);
 
-    final xTitle = config.xAxisTitle;
-    final yTitle = config.yAxisTitle;
-    var bottomWithAxis = bottom;
-    var leftWithAxis = left;
-    if (xTitle != null && xTitle.isNotEmpty) {
-      bottomWithAxis += 20;
-    }
-    if (yTitle != null && yTitle.isNotEmpty) {
-      leftWithAxis += 20;
-    }
-    return EdgeInsets.fromLTRB(leftWithAxis, top, right, bottomWithAxis);
+    return EdgeInsets.fromLTRB(left, top, right, bottom);
   }
 
   ChartViewport _resolveViewport() {

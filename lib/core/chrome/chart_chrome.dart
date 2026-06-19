@@ -20,6 +20,15 @@ class ChartChrome {
   static const double _swatchHeight = 10;
   static const double _legendGap = 20;
 
+  /// Vertical band below the plot reserved for x-axis tick labels.
+  static const double _axisLabelBand = 20;
+
+  /// Extra band reserved for an x- or y-axis title.
+  static const double _axisTitleBand = 22;
+
+  /// Gap between the bottom axis chrome and a bottom-positioned legend.
+  static const double _legendAxisGap = 8;
+
   /// Top margin for title + subtitle block, including a gap before the plot.
   static double headerReservedHeight(ChartConfig config) {
     var height = 0.0;
@@ -37,12 +46,14 @@ class ChartChrome {
 
   static bool _hasText(String? value) => value != null && value.isNotEmpty;
 
-  static double legendReservedHeight(ChartConfig config) {
+  static double legendReservedTop(ChartConfig config) {
     if (!config.showLegend) return 0;
-    return switch (config.legendPosition) {
-      LegendPosition.bottom || LegendPosition.top => _legendHeight,
-      LegendPosition.left || LegendPosition.right => 0,
-    };
+    return config.legendPosition == LegendPosition.top ? _legendHeight : 0;
+  }
+
+  static double legendReservedBottom(ChartConfig config) {
+    if (!config.showLegend) return 0;
+    return config.legendPosition == LegendPosition.bottom ? _legendHeight : 0;
   }
 
   static double legendReservedLeft(ChartConfig config) {
@@ -54,6 +65,23 @@ class ChartChrome {
     if (!config.showLegend) return 0;
     return config.legendPosition == LegendPosition.right ? 80 : 0;
   }
+
+  /// Space below the plot for x-axis tick labels plus the optional x-axis
+  /// title, so neither crowds the plot nor clips the bottom edge.
+  static double axisBottomReserved(ChartConfig config) {
+    var height = 0.0;
+    if (config.showAxis) {
+      height += _axisLabelBand;
+    }
+    if (_hasText(config.xAxisTitle)) {
+      height += _axisTitleBand;
+    }
+    return height;
+  }
+
+  /// Space left of the plot for the optional rotated y-axis title.
+  static double axisLeftReserved(ChartConfig config) =>
+      _hasText(config.yAxisTitle) ? _axisTitleBand : 0;
 
   static void drawBorder(Canvas canvas, Size size, ChartContext context) {
     if (!context.config.showBorder) return;
@@ -158,7 +186,10 @@ class ChartChrome {
           context,
           items,
           style,
-          y: context.bounds.bottom + 10,
+          y:
+              context.bounds.bottom +
+              axisBottomReserved(context.config) +
+              _legendAxisGap,
         );
       case LegendPosition.top:
         _drawLegendHorizontal(
