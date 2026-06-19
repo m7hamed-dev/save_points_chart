@@ -10,7 +10,6 @@ import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/core/tooltip/tooltip_controller.dart';
 import 'package:save_points_chart/core/tooltip/tooltip_overlay.dart';
 import 'package:save_points_chart/models/chart_config.dart';
-import 'package:save_points_chart/widgets/chart_widget_controller.dart';
 
 /// Base chart widget — thin UI shell over [ChartEngine].
 class ChartWidget extends StatefulWidget {
@@ -19,7 +18,6 @@ class ChartWidget extends StatefulWidget {
     required this.config,
     required this.renderers,
     this.theme,
-    this.controller,
     this.enableTooltip = true,
     this.enableZoomPan = true,
     this.enableCrosshair = true,
@@ -29,7 +27,6 @@ class ChartWidget extends StatefulWidget {
   final ChartConfig config;
   final List<ChartRenderer> renderers;
   final ChartTheme? theme;
-  final ChartWidgetController? controller;
   final bool enableTooltip;
   final bool enableZoomPan;
   final bool enableCrosshair;
@@ -54,7 +51,6 @@ class _ChartWidgetState extends State<ChartWidget>
   @override
   void initState() {
     super.initState();
-    widget.controller?.registerPrepareExport(_prepareForExport);
     _initEngine();
     if (widget.config.animate) {
       _animController = ChartAnimationController(vsync: this)
@@ -70,12 +66,6 @@ class _ChartWidgetState extends State<ChartWidget>
 
   ChartTheme get _resolvedTheme =>
       widget.theme ?? _resolvedConfig.theme ?? ChartTemplate.dashboardTheme();
-
-  void _prepareForExport() {
-    if (_animController != null) {
-      setState(() => _animValue = 1.0);
-    }
-  }
 
   void _initEngine() {
     _engine = ChartEngine(
@@ -97,10 +87,6 @@ class _ChartWidgetState extends State<ChartWidget>
   @override
   void didUpdateWidget(ChartWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller != widget.controller) {
-      oldWidget.controller?.unregisterPrepareExport();
-      widget.controller?.registerPrepareExport(_prepareForExport);
-    }
     if (oldWidget.config != widget.config ||
         oldWidget.renderers != widget.renderers) {
       _initEngine();
@@ -112,7 +98,6 @@ class _ChartWidgetState extends State<ChartWidget>
 
   @override
   void dispose() {
-    widget.controller?.unregisterPrepareExport();
     _animController?.dispose();
     _tooltip.dispose();
     super.dispose();
@@ -137,7 +122,6 @@ class _ChartWidgetState extends State<ChartWidget>
             clipBehavior: Clip.none,
             children: [
               RepaintBoundary(
-                key: widget.controller?.repaintBoundaryKey,
                 child: MouseRegion(
                   onHover: (e) => _handleHover(e.localPosition, size),
                   onExit: (_) => setState(() {

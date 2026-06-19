@@ -277,21 +277,9 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
           Expanded(
             child: Row(
               children: [
-                Expanded(
-                  child: _ExportableChartPanel(
-                    config: _barOverviewConfig,
-                    builder: (c) =>
-                        BarChart(config: _barOverviewConfig, controller: c),
-                  ),
-                ),
+                Expanded(child: BarChart(config: _barOverviewConfig)),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: _ExportableChartPanel(
-                    config: _lineTrendConfig,
-                    builder: (c) =>
-                        LineChart(config: _lineTrendConfig, controller: c),
-                  ),
-                ),
+                Expanded(child: LineChart(config: _lineTrendConfig)),
               ],
             ),
           ),
@@ -299,21 +287,9 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
           Expanded(
             child: Row(
               children: [
-                Expanded(
-                  child: _ExportableChartPanel(
-                    config: _pieDeviceConfig,
-                    builder: (c) =>
-                        PieChart(config: _pieDeviceConfig, controller: c),
-                  ),
-                ),
+                Expanded(child: PieChart(config: _pieDeviceConfig)),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: _ExportableChartPanel(
-                    config: _areaVolumeConfig,
-                    builder: (c) =>
-                        AreaChart(config: _areaVolumeConfig, controller: c),
-                  ),
-                ),
+                Expanded(child: AreaChart(config: _areaVolumeConfig)),
               ],
             ),
           ),
@@ -339,10 +315,9 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: _ExportableChartPanel(
+            child: KeyedSubtree(
               key: ValueKey(_chartIndex),
-              config: _configForIndex(_chartIndex),
-              builder: (c) => _buildChartByIndex(_chartIndex, c),
+              child: _buildChartByIndex(_chartIndex),
             ),
           ),
         ),
@@ -350,69 +325,22 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
     );
   }
 
-  ChartConfig _configForIndex(int index) => switch (index) {
-    0 => _lineTrendConfig,
-    1 => _barOverviewConfig,
-    2 || 3 => _pieDeviceConfig,
-    4 => _areaVolumeConfig,
-    5 => _scatterConfig,
-    6 => _radarConfig,
-    7 => _gaugeConfig,
-    8 => _lineTrendConfig,
-    9 => _stackedConfig,
-    10 => _waterfallConfig,
-    11 => _funnelConfig,
-    12 => _bubbleConfig,
-    _ => _lineTrendConfig,
-  };
-
-  Widget _buildChartByIndex(int index, ChartWidgetController controller) {
+  Widget _buildChartByIndex(int index) {
     return switch (index) {
-      0 => LineChart(config: _lineTrendConfig, controller: controller),
-      1 => BarChart(config: _barOverviewConfig, controller: controller),
-      2 => PieChart(config: _pieDeviceConfig, controller: controller),
-      3 => PieChart(
-        config: _pieDeviceConfig,
-        controller: controller,
-        isDonut: true,
-      ),
-      4 => AreaChart(config: _areaVolumeConfig, controller: controller),
-      5 => ScatterChart(config: _scatterConfig, controller: controller),
-      6 => RadarChart(config: _radarConfig, controller: controller),
-      7 => GaugeChart(config: _gaugeConfig, controller: controller),
-      8 => SparklineChart(config: _lineTrendConfig, controller: controller),
-      9 => StackedAreaChart(config: _stackedConfig, controller: controller),
-      10 => WaterfallChart(config: _waterfallConfig, controller: controller),
-      11 => FunnelChart(config: _funnelConfig, controller: controller),
-      12 => BubbleChart(config: _bubbleConfig, controller: controller),
-      _ => LineChart(config: _lineTrendConfig, controller: controller),
+      0 => LineChart(config: _lineTrendConfig),
+      1 => BarChart(config: _barOverviewConfig),
+      2 => PieChart(config: _pieDeviceConfig),
+      3 => PieChart(config: _pieDeviceConfig, isDonut: true),
+      4 => AreaChart(config: _areaVolumeConfig),
+      5 => ScatterChart(config: _scatterConfig),
+      6 => RadarChart(config: _radarConfig),
+      7 => GaugeChart(config: _gaugeConfig),
+      8 => SparklineChart(config: _lineTrendConfig),
+      9 => StackedAreaChart(config: _stackedConfig),
+      10 => WaterfallChart(config: _waterfallConfig),
+      11 => FunnelChart(config: _funnelConfig),
+      12 => BubbleChart(config: _bubbleConfig),
+      _ => LineChart(config: _lineTrendConfig),
     };
-  }
-}
-
-class _ExportableChartPanel extends StatefulWidget {
-  const _ExportableChartPanel({
-    super.key,
-    required this.config,
-    required this.builder,
-  });
-
-  final ChartConfig config;
-  final Widget Function(ChartWidgetController controller) builder;
-
-  @override
-  State<_ExportableChartPanel> createState() => _ExportableChartPanelState();
-}
-
-class _ExportableChartPanelState extends State<_ExportableChartPanel> {
-  final _controller = ChartWidgetController();
-
-  @override
-  Widget build(BuildContext context) {
-    return ChartCard(
-      config: widget.config,
-      controller: _controller,
-      child: widget.builder(_controller),
-    );
   }
 }

@@ -4,14 +4,12 @@ import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/models/chart_config.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 import 'package:save_points_chart/widgets/chart_widget.dart';
-import 'package:save_points_chart/widgets/chart_widget_controller.dart';
 
 /// Waterfall chart widget.
 class WaterfallChart extends StatelessWidget {
   const WaterfallChart({
     super.key,
     required this.config,
-    this.controller,
     this.theme,
     this.valueMode = WaterfallValueMode.delta,
     this.barWidthFactor = 0.55,
@@ -19,7 +17,6 @@ class WaterfallChart extends StatelessWidget {
   });
 
   final ChartConfig config;
-  final ChartWidgetController? controller;
   final ChartTheme? theme;
   final WaterfallValueMode valueMode;
   final double barWidthFactor;
@@ -37,7 +34,6 @@ class WaterfallChart extends StatelessWidget {
     );
     return ChartWidget(
       config: resolved,
-      controller: controller,
       theme: theme,
       renderers: [
         WaterfallChartRenderer(

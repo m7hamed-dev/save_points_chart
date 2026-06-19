@@ -3,14 +3,12 @@ import 'package:save_points_chart/charts/funnel_chart/funnel_chart_renderer.dart
 import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/models/chart_config.dart';
 import 'package:save_points_chart/widgets/chart_widget.dart';
-import 'package:save_points_chart/widgets/chart_widget_controller.dart';
 
 /// Funnel chart widget.
 class FunnelChart extends StatelessWidget {
   const FunnelChart({
     super.key,
     required this.config,
-    this.controller,
     this.theme,
     this.gap = 4,
     this.labelStages = true,
@@ -18,7 +16,6 @@ class FunnelChart extends StatelessWidget {
   });
 
   final ChartConfig config;
-  final ChartWidgetController? controller;
   final ChartTheme? theme;
   final double gap;
   final bool labelStages;
@@ -28,7 +25,6 @@ class FunnelChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChartWidget(
       config: config,
-      controller: controller,
       theme: theme,
       renderers: [
         FunnelChartRenderer(

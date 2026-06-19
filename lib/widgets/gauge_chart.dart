@@ -3,21 +3,18 @@ import 'package:save_points_chart/charts/gauge_chart/gauge_chart_renderer.dart';
 import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/models/chart_config.dart';
 import 'package:save_points_chart/widgets/chart_widget.dart';
-import 'package:save_points_chart/widgets/chart_widget_controller.dart';
 
 /// Gauge chart widget.
 class GaugeChart extends StatelessWidget {
   const GaugeChart({
     super.key,
     required this.config,
-    this.controller,
     this.min = 0,
     this.max = 100,
     this.theme,
   });
 
   final ChartConfig config;
-  final ChartWidgetController? controller;
   final double min;
   final double max;
   final ChartTheme? theme;
@@ -26,7 +23,6 @@ class GaugeChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChartWidget(
       config: config.copyWith(showGrid: false, showAxis: false),
-      controller: controller,
       theme: theme,
       enableZoomPan: false,
       enableCrosshair: false,
