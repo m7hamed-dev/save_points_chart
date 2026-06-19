@@ -27,6 +27,7 @@ class BarChartRenderer extends ChartRenderer {
     if (series.isEmpty) return;
 
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
     final categories = _categories(series);
     final barCount = series.length;
     final groupWidth = context.bounds.width / math.max(categories.length, 1);
@@ -60,7 +61,7 @@ class BarChartRenderer extends ChartRenderer {
         final selected =
             context.selectedHit?.seriesId == ser.id &&
             context.selectedHit?.pointIndex == c;
-        final paint = SeriesPaint.barGradient(
+        final paint = art.barFill(
           rect,
           color,
           opacity: selected ? 0.78 : ser.style.opacity,

@@ -5,6 +5,7 @@ import 'package:save_points_chart/core/axis/axis_engine.dart';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/utils/series_paint.dart';
+import 'package:save_points_chart/models/chart_style.dart';
 
 /// Semi-circular gauge chart renderer.
 class GaugeChartRenderer extends ChartRenderer {
@@ -63,6 +64,7 @@ class GaugeChartRenderer extends ChartRenderer {
 
     final arcRect = Rect.fromCircle(center: center, radius: radius);
     final color = context.theme.seriesColor(0);
+    final art = SeriesPaint(context.config.style);
 
     final trackPaint = context.paintCache.get(
       key: 'gauge-track',
@@ -72,28 +74,38 @@ class GaugeChartRenderer extends ChartRenderer {
     canvas.drawArc(arcRect, startAngle, sweepAngle, false, trackPaint);
 
     if (t > 0) {
-      // Glow underlay.
+      // Glow underlay (skipped in flat style).
       canvas.drawArc(
         arcRect,
         startAngle,
         sweepAngle * t,
         false,
-        SeriesPaint.glow(color, strokeWidth: 18, blur: 7),
+        art.glow(color, strokeWidth: 18, blur: 7),
       );
-      // Gradient value arc (color → brighter accent) with rounded ends.
       final valuePaint = Paint()
-        ..shader = Gradient.sweep(
-          center,
-          [color, SeriesPaint.accent(color)],
-          null,
-          TileMode.clamp,
-          startAngle,
-          startAngle + sweepAngle,
-        )
         ..strokeWidth = 14
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..isAntiAlias = true;
+      switch (context.config.style) {
+        case ChartStyle.gradient:
+          // Sweep from color → brighter accent.
+          valuePaint.shader = Gradient.sweep(
+            center,
+            [color, SeriesPaint.accent(color)],
+            null,
+            TileMode.clamp,
+            startAngle,
+            startAngle + sweepAngle,
+          );
+        case ChartStyle.flat:
+          valuePaint.color = color;
+        case ChartStyle.glass:
+          valuePaint.color = SeriesPaint.lighten(
+            color,
+            0.08,
+          ).withValues(alpha: 0.7);
+      }
       canvas.drawArc(arcRect, startAngle, sweepAngle * t, false, valuePaint);
     }
 

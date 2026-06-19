@@ -24,6 +24,7 @@ class BubbleChartRenderer extends ChartRenderer {
   @override
   void draw(Canvas canvas, Size size, ChartContext context) {
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
     final sizeRange = _globalSizeRange(context.config.series);
 
     for (var s = 0; s < context.config.series.length; s++) {
@@ -39,10 +40,10 @@ class BubbleChartRenderer extends ChartRenderer {
         canvas.drawCircle(
           offset,
           radius,
-          SeriesPaint.radialFill(
+          art.blobFill(
             rect,
             color,
-            opacity: series.style.opacity.clamp(0.0, 1.0) * 0.9,
+            opacity: (series.style.opacity * 0.9).clamp(0.0, 1.0),
           ),
         );
 

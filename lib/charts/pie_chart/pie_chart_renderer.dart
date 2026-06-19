@@ -31,6 +31,7 @@ class PieChartRenderer extends ChartRenderer {
     if (series == null || series.points.isEmpty) return;
 
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
     final total = series.points.fold<double>(0, (s, p) => s + p.y.abs());
     if (total == 0) return;
 
@@ -69,7 +70,7 @@ class PieChartRenderer extends ChartRenderer {
       }
 
       final rect = Rect.fromCircle(center: sliceCenter, radius: radius);
-      final paint = SeriesPaint.radialFill(rect, color);
+      final paint = art.blobFill(rect, color);
 
       if (isDonut) {
         final path = Path()

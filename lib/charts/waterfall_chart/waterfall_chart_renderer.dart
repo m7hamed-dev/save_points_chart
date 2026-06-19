@@ -44,6 +44,7 @@ class WaterfallChartRenderer extends ChartRenderer {
     final anim = context.animationValue;
     final color = series.style.color ?? context.theme.seriesColor(0);
     final negColor = context.theme.seriesColor(1);
+    final art = SeriesPaint(context.config.style);
 
     final categoryCount = segments.length;
     final slotWidth = context.bounds.width / categoryCount;
@@ -72,11 +73,7 @@ class WaterfallChartRenderer extends ChartRenderer {
         right,
         y1 < y2 ? y2 : y1,
       );
-      final paint = SeriesPaint.barGradient(
-        barRect,
-        barColor,
-        opacity: barOpacity,
-      );
+      final paint = art.barFill(barRect, barColor, opacity: barOpacity);
       final baseY = context.transformer.dataToCanvasY(context.viewport.minY);
       drawVerticalBar(
         canvas,

@@ -45,8 +45,18 @@ class ChartsDemoPage extends StatefulWidget {
 class _ChartsDemoPageState extends State<ChartsDemoPage> {
   var _showAllCharts = true;
   var _chartIndex = 0;
+  var _style = ChartStyle.gradient;
 
   bool get _isDark => widget.isDark;
+
+  /// Applies the currently selected render style to any config.
+  ChartConfig _styled(ChartConfig config) => config.copyWith(style: _style);
+
+  static const _styleLabels = {
+    ChartStyle.gradient: 'Gradient',
+    ChartStyle.flat: 'Flat',
+    ChartStyle.glass: 'Glass',
+  };
 
   // Chart palette follows the app theme.
   ChartTheme get _chartTheme =>
@@ -296,6 +306,30 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
         backgroundColor: _bg,
         foregroundColor: _onSurface,
         actions: [
+          PopupMenuButton<ChartStyle>(
+            tooltip: 'Render style',
+            icon: const Icon(Icons.palette_outlined),
+            initialValue: _style,
+            onSelected: (s) => setState(() => _style = s),
+            itemBuilder: (context) => [
+              for (final s in ChartStyle.values)
+                PopupMenuItem(
+                  value: s,
+                  child: Row(
+                    children: [
+                      Icon(
+                        _style == s
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(_styleLabels[s]!),
+                    ],
+                  ),
+                ),
+            ],
+          ),
           IconButton(
             tooltip: _isDark ? 'Switch to light' : 'Switch to dark',
             onPressed: widget.onToggleTheme,
@@ -404,14 +438,14 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
               children: [
                 Expanded(
                   child: BarChart(
-                    config: _barOverviewConfig,
+                    config: _styled(_barOverviewConfig),
                     theme: _chartTheme,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: LineChart(
-                    config: _lineTrendConfig,
+                    config: _styled(_lineTrendConfig),
                     theme: _chartTheme,
                   ),
                 ),
@@ -423,12 +457,15 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: PieChart(config: _pieDeviceConfig, theme: _chartTheme),
+                  child: PieChart(
+                    config: _styled(_pieDeviceConfig),
+                    theme: _chartTheme,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: AreaChart(
-                    config: _areaVolumeConfig,
+                    config: _styled(_areaVolumeConfig),
                     theme: _chartTheme,
                   ),
                 ),
@@ -453,20 +490,24 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
   Widget _buildChartByIndex(int index) {
     final theme = _chartTheme;
     return switch (index) {
-      0 => LineChart(config: _lineTrendConfig, theme: theme),
-      1 => BarChart(config: _barOverviewConfig, theme: theme),
-      2 => PieChart(config: _pieDeviceConfig, theme: theme),
-      3 => PieChart(config: _pieDeviceConfig, isDonut: true, theme: theme),
-      4 => AreaChart(config: _areaVolumeConfig, theme: theme),
-      5 => ScatterChart(config: _scatterConfig, theme: theme),
-      6 => RadarChart(config: _radarConfig, theme: theme),
-      7 => GaugeChart(config: _gaugeConfig, theme: theme),
-      8 => SparklineChart(config: _lineTrendConfig, theme: theme),
-      9 => StackedAreaChart(config: _stackedConfig, theme: theme),
-      10 => WaterfallChart(config: _waterfallConfig, theme: theme),
-      11 => FunnelChart(config: _funnelConfig, theme: theme),
-      12 => BubbleChart(config: _bubbleConfig, theme: theme),
-      _ => LineChart(config: _lineTrendConfig, theme: theme),
+      0 => LineChart(config: _styled(_lineTrendConfig), theme: theme),
+      1 => BarChart(config: _styled(_barOverviewConfig), theme: theme),
+      2 => PieChart(config: _styled(_pieDeviceConfig), theme: theme),
+      3 => PieChart(
+        config: _styled(_pieDeviceConfig),
+        isDonut: true,
+        theme: theme,
+      ),
+      4 => AreaChart(config: _styled(_areaVolumeConfig), theme: theme),
+      5 => ScatterChart(config: _styled(_scatterConfig), theme: theme),
+      6 => RadarChart(config: _styled(_radarConfig), theme: theme),
+      7 => GaugeChart(config: _styled(_gaugeConfig), theme: theme),
+      8 => SparklineChart(config: _styled(_lineTrendConfig), theme: theme),
+      9 => StackedAreaChart(config: _styled(_stackedConfig), theme: theme),
+      10 => WaterfallChart(config: _styled(_waterfallConfig), theme: theme),
+      11 => FunnelChart(config: _styled(_funnelConfig), theme: theme),
+      12 => BubbleChart(config: _styled(_bubbleConfig), theme: theme),
+      _ => LineChart(config: _styled(_lineTrendConfig), theme: theme),
     };
   }
 }

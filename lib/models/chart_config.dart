@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/models/chart_series.dart';
+import 'package:save_points_chart/models/chart_style.dart';
 import 'package:save_points_chart/models/chart_template_style.dart';
 import 'package:save_points_chart/models/legend_position.dart';
 import 'package:save_points_chart/models/viewport.dart';
@@ -13,6 +14,7 @@ class ChartConfig {
     this.viewport,
     this.theme,
     this.template = ChartTemplateStyle.dashboard,
+    this.style = ChartStyle.gradient,
     this.showGrid = true,
     this.showAxis = true,
     this.xAxisTitle,
@@ -33,6 +35,7 @@ class ChartConfig {
   final ChartViewport? viewport;
   final ChartTheme? theme;
   final ChartTemplateStyle template;
+  final ChartStyle style;
   final bool showGrid;
   final bool showAxis;
   final String? xAxisTitle;
@@ -53,6 +56,7 @@ class ChartConfig {
     ChartViewport? viewport,
     ChartTheme? theme,
     ChartTemplateStyle? template,
+    ChartStyle? style,
     bool? showGrid,
     bool? showAxis,
     String? xAxisTitle,
@@ -73,6 +77,7 @@ class ChartConfig {
       viewport: viewport ?? this.viewport,
       theme: theme ?? this.theme,
       template: template ?? this.template,
+      style: style ?? this.style,
       showGrid: showGrid ?? this.showGrid,
       showAxis: showAxis ?? this.showAxis,
       xAxisTitle: xAxisTitle ?? this.xAxisTitle,

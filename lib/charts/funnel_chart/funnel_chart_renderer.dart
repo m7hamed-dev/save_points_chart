@@ -34,6 +34,7 @@ class FunnelChartRenderer extends ChartRenderer {
     if (maxValue == 0) return;
 
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
     final bounds = context.bounds;
     final stageHeight =
         (bounds.height - gap * (stages.length - 1)) / stages.length;
@@ -77,7 +78,7 @@ class FunnelChartRenderer extends ChartRenderer {
       final color = series.style.color ?? context.theme.seriesColor(i);
       canvas.drawPath(
         path,
-        SeriesPaint.barGradient(
+        art.barFill(
           Rect.fromLTRB(centerX - widthTop / 2, top, centerX + widthTop / 2, bottom),
           color,
           opacity: 0.92,

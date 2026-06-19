@@ -21,6 +21,7 @@ class StackedAreaChartRenderer extends ChartRenderer {
 
     final bezier = BezierPathBuilder(tension: context.config.curveTension);
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
     final seriesCount = context.config.series.length;
 
     for (var s = seriesCount - 1; s >= 0; s--) {
@@ -54,17 +55,16 @@ class StackedAreaChartRenderer extends ChartRenderer {
 
       canvas.drawPath(
         areaPath,
-        SeriesPaint.verticalFill(
+        art.bandFill(
           context.bounds.rect,
           series.style.fillColor ?? color,
-          topAlpha: (0.85 * series.style.opacity).clamp(0.0, 1.0),
-          bottomAlpha: (0.45 * series.style.opacity).clamp(0.0, 1.0),
+          opacity: series.style.opacity,
         ),
       );
 
       canvas.drawPath(
         topPath,
-        SeriesPaint.strokeGradient(
+        art.stroke(
           context.bounds.rect,
           color,
           strokeWidth: series.style.strokeWidth,

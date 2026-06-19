@@ -25,6 +25,7 @@ class RadarChartRenderer extends ChartRenderer {
     final radius =
         math.min(context.bounds.width, context.bounds.height) / 2 * 0.8;
     final angleStep = 2 * math.pi / pointCount;
+    final art = SeriesPaint(context.config.style);
 
     if (context.config.showGrid) {
       _drawWeb(canvas, context, center, radius, pointCount, angleStep);
@@ -49,23 +50,13 @@ class RadarChartRenderer extends ChartRenderer {
       }
       path.close();
 
+      final radarRect = Rect.fromCircle(center: center, radius: radius);
+      canvas.drawPath(path, art.blobFill(radarRect, color, opacity: 0.28));
+      // Soft glow (skipped in flat style) then a style-aware outline.
+      canvas.drawPath(path, art.glow(color, strokeWidth: 4, blur: 4));
       canvas.drawPath(
         path,
-        SeriesPaint.radialFill(
-          Rect.fromCircle(center: center, radius: radius),
-          color,
-          opacity: 0.28,
-        ),
-      );
-      // Soft glow then a crisp gradient outline.
-      canvas.drawPath(path, SeriesPaint.glow(color, strokeWidth: 4, blur: 4));
-      canvas.drawPath(
-        path,
-        SeriesPaint.strokeGradient(
-          Rect.fromCircle(center: center, radius: radius),
-          color,
-          strokeWidth: ser.style.strokeWidth,
-        ),
+        art.stroke(radarRect, color, strokeWidth: ser.style.strokeWidth),
       );
     }
 

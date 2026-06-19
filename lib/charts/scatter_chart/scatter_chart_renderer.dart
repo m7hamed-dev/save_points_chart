@@ -13,11 +13,12 @@ class ScatterChartRenderer extends ChartRenderer {
   @override
   void draw(Canvas canvas, Size size, ChartContext context) {
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
 
     for (var s = 0; s < context.config.series.length; s++) {
       final series = context.config.series[s];
       final color = series.style.color ?? context.theme.seriesColor(s);
-      final glow = SeriesPaint.glow(color, strokeWidth: 0, blur: 4)
+      final glow = art.glow(color, strokeWidth: 0, blur: 4)
         ..style = PaintingStyle.fill;
 
       for (final point in series.points) {
@@ -25,12 +26,12 @@ class ScatterChartRenderer extends ChartRenderer {
             context.viewport.minY + (point.y - context.viewport.minY) * anim;
         final offset = context.transformer.dataToCanvas(point.x, y);
         final rect = Rect.fromCircle(center: offset, radius: pointRadius);
-        // Soft glow then a radial-highlight point for depth.
+        // Soft glow (skipped in flat style) then a style-aware point fill.
         canvas.drawCircle(offset, pointRadius + 2, glow);
         canvas.drawCircle(
           offset,
           pointRadius,
-          SeriesPaint.radialFill(rect, color, opacity: series.style.opacity),
+          art.blobFill(rect, color, opacity: series.style.opacity),
         );
       }
     }

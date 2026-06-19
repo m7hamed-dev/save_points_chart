@@ -24,6 +24,7 @@ class LineChartRenderer extends ChartRenderer {
   void draw(Canvas canvas, Size size, ChartContext context) {
     final bezier = BezierPathBuilder(tension: context.config.curveTension);
     final anim = context.animationValue;
+    final art = SeriesPaint(context.config.style);
 
     for (var s = 0; s < context.config.series.length; s++) {
       final series = context.config.series[s];
@@ -55,28 +56,24 @@ class LineChartRenderer extends ChartRenderer {
 
         canvas.drawPath(
           fillPath,
-          SeriesPaint.verticalFill(
+          art.areaFill(
             context.bounds.rect,
             series.style.fillColor ?? color,
-            topAlpha: 0.32,
+            opacity: series.style.opacity,
           ),
         );
       }
 
-      // Soft glow beneath the stroke for depth.
+      // Soft glow beneath the stroke for depth (no-op in flat style).
       canvas.drawPath(
         path,
-        SeriesPaint.glow(
-          color,
-          strokeWidth: series.style.strokeWidth + 4,
-          blur: 5,
-        ),
+        art.glow(color, strokeWidth: series.style.strokeWidth + 4, blur: 5),
       );
 
-      // Gradient stroke (color → brighter accent).
+      // Style-aware stroke (gradient / flat / glass).
       canvas.drawPath(
         path,
-        SeriesPaint.strokeGradient(
+        art.stroke(
           context.bounds.rect,
           color,
           strokeWidth: series.style.strokeWidth,

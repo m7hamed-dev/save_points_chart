@@ -34,6 +34,7 @@ export 'core/painters/chart_painter.dart';
 export 'core/scaling/zoom_pan_controller.dart';
 export 'core/theme/chart_template.dart';
 export 'core/theme/chart_theme.dart';
+export 'models/chart_style.dart';
 export 'models/chart_template_style.dart';
 export 'models/legend_position.dart';
 export 'core/tooltip/tooltip_controller.dart';
