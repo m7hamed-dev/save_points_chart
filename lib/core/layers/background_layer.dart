@@ -13,7 +13,10 @@ class BackgroundLayer extends ChartLayer {
 
   @override
   void paint(Canvas canvas, Size size, ChartContext context) {
-    final paint = context.paintCache.fill('bg', context.theme.backgroundColor);
+    final gradient = context.theme.backgroundGradient;
+    final paint = gradient != null
+        ? (Paint()..shader = gradient.createShader(Offset.zero & size))
+        : context.paintCache.fill('bg', context.theme.backgroundColor);
     if (context.config.showBorder) {
       final rrect = RRect.fromRectAndRadius(
         Offset.zero & size,

@@ -26,9 +26,14 @@ class ChartTheme {
     this.gridStrokeWidth = 1.0,
     this.axisStrokeWidth = 1.0,
     this.padding = const EdgeInsets.all(16),
+    this.backgroundGradient,
   });
 
   final Color backgroundColor;
+
+  /// Optional gradient painted behind the plot for depth. Falls back to the
+  /// flat [backgroundColor] when null.
+  final Gradient? backgroundGradient;
   final Color gridColor;
   final Color axisColor;
   final TextStyle axisTextStyle;
@@ -96,10 +101,15 @@ class ChartTheme {
 
   factory ChartTheme.dark() {
     return const ChartTheme(
-      backgroundColor: Color(0xFF1E1E1E),
-      gridColor: Color(0xFF424242),
-      axisColor: Color(0xFF757575),
-      axisTextStyle: TextStyle(color: Color(0xFFBDBDBD), fontSize: 11),
+      backgroundColor: Color(0xFF121826),
+      backgroundGradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFF1B2438), Color(0xFF0D1220)],
+      ),
+      gridColor: Color(0xFF273349),
+      axisColor: Color(0xFF3C4A66),
+      axisTextStyle: TextStyle(color: Color(0xFF9FB0CC), fontSize: 11),
       titleTextStyle: TextStyle(
         color: Colors.white,
         fontSize: 16,
