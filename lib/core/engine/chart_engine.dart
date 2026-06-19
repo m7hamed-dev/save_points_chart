@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart' show EdgeInsets;
+import 'package:save_points_chart/core/chrome/chart_chrome.dart';
 import 'package:save_points_chart/core/coordinates/chart_bounds.dart';
 import 'package:save_points_chart/core/coordinates/coordinate_transformer.dart';
 import 'package:save_points_chart/core/engine/chart_context.dart';
@@ -7,17 +9,15 @@ import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/engine/render_pipeline.dart';
 import 'package:save_points_chart/core/interactions/hit_test_result.dart';
 import 'package:save_points_chart/core/layers/axis_layer.dart';
-import 'package:save_points_chart/core/chrome/chart_chrome.dart';
 import 'package:save_points_chart/core/layers/background_layer.dart';
-import 'package:save_points_chart/core/layers/chrome_layer.dart';
 import 'package:save_points_chart/core/layers/chart_layer.dart';
+import 'package:save_points_chart/core/layers/chrome_layer.dart';
 import 'package:save_points_chart/core/layers/grid_layer.dart';
 import 'package:save_points_chart/core/layers/interaction_layer.dart';
 import 'package:save_points_chart/core/layers/layer_stack.dart';
 import 'package:save_points_chart/core/layers/overlay_layer.dart';
 import 'package:save_points_chart/core/layers/series_layer.dart';
 import 'package:save_points_chart/core/scaling/zoom_pan_controller.dart';
-import 'package:flutter/material.dart' show EdgeInsets;
 import 'package:save_points_chart/core/theme/chart_theme.dart';
 import 'package:save_points_chart/core/utils/paint_cache.dart';
 import 'package:save_points_chart/models/chart_config.dart';
