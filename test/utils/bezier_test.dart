@@ -56,4 +56,38 @@ void main() {
     final path = builder.buildMonotonePath(const [Offset(0, 0), Offset(1, 1)]);
     expect(path.computeMetrics().isNotEmpty, isTrue);
   });
+
+  test('reversed points trace the same curve (stacked-area alignment)', () {
+    final forward = const [
+      Offset(0, 30),
+      Offset(1, 10),
+      Offset(2, 25),
+      Offset(3, 5),
+      Offset(4, 20),
+    ];
+    final reversed = forward.reversed.toList();
+
+    // Sample both, normalising the reversed path's samples back to ascending x.
+    Set<String> sampleKeys(Path path) {
+      final keys = <String>{};
+      for (final m in path.computeMetrics()) {
+        for (var i = 0; i <= 100; i++) {
+          final p = m.getTangentForOffset(m.length * i / 100)?.position;
+          if (p != null) {
+            keys.add('${p.dx.toStringAsFixed(1)}:${p.dy.toStringAsFixed(1)}');
+          }
+        }
+      }
+      return keys;
+    }
+
+    final fwd = sampleKeys(builder.buildMonotonePath(forward));
+    final rev = sampleKeys(builder.buildMonotonePath(reversed));
+
+    // The two curves must cover the same set of points (within rounding):
+    // a high overlap proves the bottom edge of one band matches the top of the
+    // next, so stacked bands tile without seams.
+    final overlap = fwd.intersection(rev).length / fwd.length;
+    expect(overlap, greaterThan(0.95));
+  });
 }

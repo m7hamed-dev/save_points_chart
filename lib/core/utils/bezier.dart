@@ -45,8 +45,10 @@ class BezierPathBuilder {
   /// and stays within the value range between points — so a smoothed line
   /// remains a faithful reading of the data.
   ///
-  /// Assumes points are ordered by ascending x (true for line/area/sparkline
-  /// series). Falls back to the cardinal spline for non-monotonic x.
+  /// Works for x ordered strictly ascending *or* descending; because the
+  /// interpolant is reversal-symmetric, feeding it a reversed point list yields
+  /// the exact mirror curve — which keeps stacked-area band boundaries aligned.
+  /// Falls back to the cardinal spline when x is not strictly monotonic.
   Path buildMonotonePath(List<Offset> points, {bool close = false}) {
     final n = points.length;
     if (n < 3) {
@@ -60,13 +62,21 @@ class BezierPathBuilder {
       return path;
     }
 
-    // Secant slopes between consecutive points.
+    // x-deltas between consecutive points.
     final dx = List<double>.filled(n - 1, 0);
-    final slope = List<double>.filled(n - 1, 0);
     for (var i = 0; i < n - 1; i++) {
       dx[i] = points[i + 1].dx - points[i].dx;
-      // Non-increasing x → not a function of x; defer to the cardinal spline.
-      if (dx[i] <= 0) return buildSmoothPath(points, close: close);
+    }
+    // Require strictly monotonic x (all deltas the same, non-zero sign);
+    // otherwise x isn't a function of position — defer to the cardinal spline.
+    final sign = dx[0].sign;
+    if (sign == 0 || dx.any((d) => d.sign != sign)) {
+      return buildSmoothPath(points, close: close);
+    }
+
+    // Secant slopes between consecutive points.
+    final slope = List<double>.filled(n - 1, 0);
+    for (var i = 0; i < n - 1; i++) {
       slope[i] = (points[i + 1].dy - points[i].dy) / dx[i];
     }
 
