@@ -3,21 +3,40 @@ import 'package:save_points_chart/save_points_charts.dart';
 
 void main() => runApp(const ChartsDemoApp());
 
-class ChartsDemoApp extends StatelessWidget {
+class ChartsDemoApp extends StatefulWidget {
   const ChartsDemoApp({super.key});
+
+  @override
+  State<ChartsDemoApp> createState() => _ChartsDemoAppState();
+}
+
+class _ChartsDemoAppState extends State<ChartsDemoApp> {
+  var _isDark = true;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'save_points_chart Demo',
-      theme: ThemeData.dark(useMaterial3: true),
-      home: const ChartsDemoPage(),
+      theme: ThemeData.light(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
+      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
+      home: ChartsDemoPage(
+        isDark: _isDark,
+        onToggleTheme: () => setState(() => _isDark = !_isDark),
+      ),
     );
   }
 }
 
 class ChartsDemoPage extends StatefulWidget {
-  const ChartsDemoPage({super.key});
+  const ChartsDemoPage({
+    super.key,
+    required this.isDark,
+    required this.onToggleTheme,
+  });
+
+  final bool isDark;
+  final VoidCallback onToggleTheme;
 
   @override
   State<ChartsDemoPage> createState() => _ChartsDemoPageState();
@@ -26,6 +45,20 @@ class ChartsDemoPage extends StatefulWidget {
 class _ChartsDemoPageState extends State<ChartsDemoPage> {
   var _showAllCharts = true;
   var _chartIndex = 0;
+
+  bool get _isDark => widget.isDark;
+
+  // Chart palette follows the app theme.
+  ChartTheme get _chartTheme =>
+      _isDark ? ChartTheme.dark() : ChartTheme.light();
+
+  // App chrome colors.
+  Color get _bg => _isDark ? const Color(0xFF060D1F) : const Color(0xFFF4F6FB);
+  Color get _surface => _isDark ? const Color(0xFF0B1430) : Colors.white;
+  Color get _onSurface =>
+      _isDark ? Colors.white : const Color(0xFF1A1A1A);
+  Color get _onSurfaceMuted =>
+      _isDark ? Colors.white70 : const Color(0xFF5B6472);
 
   static const _allChartTitles = [
     'Line',
@@ -253,14 +286,21 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF060D1F),
+      backgroundColor: _bg,
       drawer: _buildDrawer(context),
       appBar: AppBar(
         title: Text(
           _showAllCharts ? _allChartTitles[_chartIndex] : 'save_points_chart',
+          style: TextStyle(color: _onSurface),
         ),
-        backgroundColor: const Color(0xFF060D1F),
+        backgroundColor: _bg,
+        foregroundColor: _onSurface,
         actions: [
+          IconButton(
+            tooltip: _isDark ? 'Switch to light' : 'Switch to dark',
+            onPressed: widget.onToggleTheme,
+            icon: Icon(_isDark ? Icons.light_mode : Icons.dark_mode),
+          ),
           TextButton.icon(
             onPressed: () => setState(() => _showAllCharts = !_showAllCharts),
             icon: Icon(_showAllCharts ? Icons.dashboard : Icons.view_list),
@@ -273,22 +313,23 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
   }
 
   Widget _buildDrawer(BuildContext context) {
+    final accent = _chartTheme.seriesColor(0);
     return Drawer(
-      backgroundColor: const Color(0xFF0B1430),
+      backgroundColor: _surface,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
               child: Row(
                 children: [
-                  Icon(Icons.insert_chart_outlined, color: Colors.white),
-                  SizedBox(width: 12),
+                  Icon(Icons.insert_chart_outlined, color: _onSurface),
+                  const SizedBox(width: 12),
                   Text(
                     'All charts',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: _onSurface,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
@@ -296,7 +337,7 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Colors.white24),
+            Divider(height: 1, color: _onSurfaceMuted.withValues(alpha: 0.3)),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(vertical: 8),
@@ -305,17 +346,15 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
                   final selected = _showAllCharts && i == _chartIndex;
                   return ListTile(
                     selected: selected,
-                    selectedTileColor: Colors.white10,
+                    selectedTileColor: accent.withValues(alpha: 0.12),
                     leading: Icon(
                       _chartIcon(i),
-                      color: selected
-                          ? Colors.lightBlueAccent
-                          : Colors.white70,
+                      color: selected ? accent : _onSurfaceMuted,
                     ),
                     title: Text(
                       _allChartTitles[i],
                       style: TextStyle(
-                        color: selected ? Colors.white : Colors.white70,
+                        color: selected ? _onSurface : _onSurfaceMuted,
                         fontWeight: selected
                             ? FontWeight.w600
                             : FontWeight.w400,
@@ -363,9 +402,19 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
           Expanded(
             child: Row(
               children: [
-                Expanded(child: BarChart(config: _barOverviewConfig)),
+                Expanded(
+                  child: BarChart(
+                    config: _barOverviewConfig,
+                    theme: _chartTheme,
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: LineChart(config: _lineTrendConfig)),
+                Expanded(
+                  child: LineChart(
+                    config: _lineTrendConfig,
+                    theme: _chartTheme,
+                  ),
+                ),
               ],
             ),
           ),
@@ -373,9 +422,16 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
           Expanded(
             child: Row(
               children: [
-                Expanded(child: PieChart(config: _pieDeviceConfig)),
+                Expanded(
+                  child: PieChart(config: _pieDeviceConfig, theme: _chartTheme),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: AreaChart(config: _areaVolumeConfig)),
+                Expanded(
+                  child: AreaChart(
+                    config: _areaVolumeConfig,
+                    theme: _chartTheme,
+                  ),
+                ),
               ],
             ),
           ),
@@ -395,21 +451,22 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
   }
 
   Widget _buildChartByIndex(int index) {
+    final theme = _chartTheme;
     return switch (index) {
-      0 => LineChart(config: _lineTrendConfig),
-      1 => BarChart(config: _barOverviewConfig),
-      2 => PieChart(config: _pieDeviceConfig),
-      3 => PieChart(config: _pieDeviceConfig, isDonut: true),
-      4 => AreaChart(config: _areaVolumeConfig),
-      5 => ScatterChart(config: _scatterConfig),
-      6 => RadarChart(config: _radarConfig),
-      7 => GaugeChart(config: _gaugeConfig),
-      8 => SparklineChart(config: _lineTrendConfig),
-      9 => StackedAreaChart(config: _stackedConfig),
-      10 => WaterfallChart(config: _waterfallConfig),
-      11 => FunnelChart(config: _funnelConfig),
-      12 => BubbleChart(config: _bubbleConfig),
-      _ => LineChart(config: _lineTrendConfig),
+      0 => LineChart(config: _lineTrendConfig, theme: theme),
+      1 => BarChart(config: _barOverviewConfig, theme: theme),
+      2 => PieChart(config: _pieDeviceConfig, theme: theme),
+      3 => PieChart(config: _pieDeviceConfig, isDonut: true, theme: theme),
+      4 => AreaChart(config: _areaVolumeConfig, theme: theme),
+      5 => ScatterChart(config: _scatterConfig, theme: theme),
+      6 => RadarChart(config: _radarConfig, theme: theme),
+      7 => GaugeChart(config: _gaugeConfig, theme: theme),
+      8 => SparklineChart(config: _lineTrendConfig, theme: theme),
+      9 => StackedAreaChart(config: _stackedConfig, theme: theme),
+      10 => WaterfallChart(config: _waterfallConfig, theme: theme),
+      11 => FunnelChart(config: _funnelConfig, theme: theme),
+      12 => BubbleChart(config: _bubbleConfig, theme: theme),
+      _ => LineChart(config: _lineTrendConfig, theme: theme),
     };
   }
 }
