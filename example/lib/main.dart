@@ -254,8 +254,11 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF060D1F),
+      drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('save_points_chart'),
+        title: Text(
+          _showAllCharts ? _allChartTitles[_chartIndex] : 'save_points_chart',
+        ),
         backgroundColor: const Color(0xFF060D1F),
         actions: [
           TextButton.icon(
@@ -268,6 +271,89 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
       body: _showAllCharts ? _buildAllCharts() : _buildDashboard(),
     );
   }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: const Color(0xFF0B1430),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
+              child: Row(
+                children: [
+                  Icon(Icons.insert_chart_outlined, color: Colors.white),
+                  SizedBox(width: 12),
+                  Text(
+                    'All charts',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1, color: Colors.white24),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: _allChartTitles.length,
+                itemBuilder: (context, i) {
+                  final selected = _showAllCharts && i == _chartIndex;
+                  return ListTile(
+                    selected: selected,
+                    selectedTileColor: Colors.white10,
+                    leading: Icon(
+                      _chartIcon(i),
+                      color: selected
+                          ? Colors.lightBlueAccent
+                          : Colors.white70,
+                    ),
+                    title: Text(
+                      _allChartTitles[i],
+                      style: TextStyle(
+                        color: selected ? Colors.white : Colors.white70,
+                        fontWeight: selected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _chartIndex = i;
+                        _showAllCharts = true;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _chartIcon(int index) => switch (index) {
+    0 => Icons.show_chart, // Line
+    1 => Icons.bar_chart, // Bar
+    2 => Icons.pie_chart, // Pie
+    3 => Icons.donut_large, // Donut
+    4 => Icons.area_chart, // Area
+    5 => Icons.scatter_plot, // Scatter
+    6 => Icons.radar, // Radar
+    7 => Icons.speed, // Gauge
+    8 => Icons.timeline, // Sparkline
+    9 => Icons.stacked_line_chart, // Stacked
+    10 => Icons.waterfall_chart, // Waterfall
+    11 => Icons.filter_alt_outlined, // Funnel
+    12 => Icons.bubble_chart, // Bubble
+    _ => Icons.insert_chart_outlined,
+  };
 
   Widget _buildDashboard() {
     return Padding(
@@ -299,29 +385,12 @@ class _ChartsDemoPageState extends State<ChartsDemoPage> {
   }
 
   Widget _buildAllCharts() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: SegmentedButton<int>(
-            segments: List.generate(
-              _allChartTitles.length,
-              (i) => ButtonSegment(value: i, label: Text(_allChartTitles[i])),
-            ),
-            selected: {_chartIndex},
-            onSelectionChanged: (s) => setState(() => _chartIndex = s.first),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: KeyedSubtree(
-              key: ValueKey(_chartIndex),
-              child: _buildChartByIndex(_chartIndex),
-            ),
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: KeyedSubtree(
+        key: ValueKey(_chartIndex),
+        child: _buildChartByIndex(_chartIndex),
+      ),
     );
   }
 
