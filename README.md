@@ -1,6 +1,6 @@
 # save_points_chart
 
-A modern Flutter charting library with canvas-based rendering, Material 3–friendly themes, smooth animations, and a single lightweight dependency (`pdf`, used only for PDF export — everything else is pure Flutter SDK).
+A modern Flutter charting library with canvas-based rendering, Material 3–friendly themes, smooth animations, and zero third-party runtime dependencies (Flutter SDK only).
 
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
 [![pub points](https://img.shields.io/pub/points/save_points_chart.svg)](https://pub.dev/packages/save_points_chart/score)
@@ -18,7 +18,6 @@ A modern Flutter charting library with canvas-based rendering, Material 3–frie
 - [Waterfall metadata](#waterfall-metadata)
 - [Theming](#theming)
 - [Interactions](#interactions)
-- [Export (PNG / PDF)](#export-png--pdf)
 - [Custom charts](#custom-charts)
 - [Architecture](#architecture)
 - [Example app](#example-app)
@@ -32,10 +31,9 @@ A modern Flutter charting library with canvas-based rendering, Material 3–frie
 - **Theming** — `ChartTheme.light()`, `ChartTheme.dark()`, `ChartTheme.dashboard()`, or fully custom colors
 - **Templates** — `ChartTemplateStyle.dashboard` (title, legend, grid) or `plain` (minimal chrome)
 - **Animations** — configurable duration and curve tension for smooth line/area transitions
-- **Export** — snapshot charts as PNG; optional PDF reports via `ChartWidgetController` / `ChartCard`
 - **Accessibility** — `semanticLabel` on `ChartConfig` for screen readers
 - **Extensible engine** — layer stack, render pipeline, and `ChartRenderer` plugins for custom charts
-- **Lightweight** — pure-Flutter rendering; the only runtime dependency is `pdf`, pulled in for report export
+- **Zero dependencies** — pure-Flutter canvas rendering, no third-party runtime packages
 
 ## Requirements
 
@@ -50,7 +48,7 @@ Add to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  save_points_chart: ^1.9.1
+  save_points_chart: ^2.0.0
 ```
 
 Or from the command line:
@@ -135,7 +133,7 @@ The same `ChartConfig` drops into any chart widget — swap `LineChart` for `Bar
 | `CandlestickChart` | OHLC-style financial bars | — |
 | `TimelineChart` | Event timeline | — |
 
-Every widget accepts a `controller` (`ChartWidgetController`) for export and an optional `theme` override.
+Every widget accepts an optional `theme` override that takes precedence over the one on `ChartConfig`.
 
 ## Data model
 
@@ -260,60 +258,6 @@ ChartConfig(
 
 Pie, gauge, heatmap, and similar charts disable zoom/crosshair where it does not apply.
 
-## Export (PNG / PDF)
-
-Charts render inside a `RepaintBoundary`, so any chart can be snapshotted to a PNG image or an A4 PDF report. There are three layers of API.
-
-### 1. `ChartWidgetController` (recommended)
-
-Hold a controller, pass it to a chart widget, then export. The controller waits for the next frame before snapshotting so the canvas is current:
-
-```dart
-final controller = ChartWidgetController();
-
-LineChart(config: config, controller: controller);
-
-final pngBytes = await controller.exportPng();                       // pixelRatio: 3
-final pdfBytes = await controller.exportPdf(title: 'Q2', subtitle: 'Revenue');
-final fromCfg  = await controller.exportPdfFromConfig(config);       // reuses config.title / subtitle
-```
-
-| Method | Optional params | Returns |
-|--------|-----------------|---------|
-| `exportPng` | `pixelRatio` (3) | `Uint8List` PNG |
-| `exportPdf` | `title`, `subtitle`, `pixelRatio` (3), `pageFormat` (A4) | `Uint8List` PDF |
-| `exportPdfFromConfig` | `config`, `pixelRatio`, `pageFormat` | `Uint8List` PDF |
-
-### 2. `ChartCard` (built-in toolbar)
-
-Wrap a chart in `ChartCard` to get ready-made export buttons; it drives the same controller and reports results via `onExported`:
-
-```dart
-ChartCard(
-  config: config,
-  controller: controller,
-  child: LineChart(config: config, controller: controller),
-);
-```
-
-### 3. `ChartExport` (low-level statics)
-
-When you manage your own `RepaintBoundary` `GlobalKey`:
-
-```dart
-final pngBytes = await ChartExport.toPng(boundaryKey, pixelRatio: 3);
-final pdfBytes = await ChartExport.toPdf(boundaryKey, title: '…', pageFormat: PdfPageFormat.a4);
-```
-
-### How it works & things to know
-
-- **PNG** is `RepaintBoundary.toImage(pixelRatio)` encoded as PNG — raise `pixelRatio` for sharper, larger output (default `3`).
-- **PDF** embeds that same PNG snapshot in a `pdf` page (A4 by default) with an optional bold title and grey subtitle header — it is a raster image of the chart, not vector.
-- **Tooltips and overlays are excluded** — only the chart canvas inside the `RepaintBoundary` is captured.
-- **The chart must be mounted** — exporting an unmounted (or non-`RepaintBoundary`) key throws a `StateError`.
-- **PDF text is ASCII-folded** for the built-in Helvetica font: smart quotes, en/em dashes, bullets, and ellipsis are converted to ASCII; other non-Latin-1 characters become `?`. Keep that in mind for Unicode titles/subtitles.
-- `pdf` is the only runtime dependency, pulled in solely for this PDF path.
-
 ## Custom charts
 
 Build on the engine layer exported from `save_points_charts.dart`:
@@ -340,7 +284,7 @@ cd example
 flutter run
 ```
 
-The demo includes a dashboard layout and an "All charts" gallery with export buttons.
+The demo includes a dashboard layout and an "All charts" gallery.
 
 ## Links
 
