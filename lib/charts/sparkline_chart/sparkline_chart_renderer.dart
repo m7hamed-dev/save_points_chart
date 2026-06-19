@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/utils/bezier.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 
 /// Compact line chart without axes — ideal for inline KPIs.
@@ -52,31 +53,38 @@ class SparklineChartRenderer extends ChartRenderer {
 
         canvas.drawPath(
           fillPath,
-          context.paintCache.fill(
-            'sparkline-fill-$s',
-            (series.style.fillColor ?? color).withValues(alpha: 0.15),
+          SeriesPaint.verticalFill(
+            context.bounds.rect,
+            series.style.fillColor ?? color,
+            topAlpha: 0.28,
           ),
         );
       }
 
       canvas.drawPath(
         path,
-        context.paintCache.get(
-          key: 'sparkline-$s',
-          color: color.withValues(alpha: series.style.opacity),
+        SeriesPaint.strokeGradient(
+          context.bounds.rect,
+          color,
           strokeWidth: series.style.strokeWidth > 0
               ? series.style.strokeWidth
               : strokeWidth,
+          opacity: series.style.opacity,
         ),
       );
 
       if (showEndDot && points.isNotEmpty) {
         final last = points.last;
+        final dot = context.transformer.dataToCanvas(last.x, last.y);
+        final r = series.style.markerRadius > 0 ? series.style.markerRadius : 3.0;
         canvas.drawCircle(
-          context.transformer.dataToCanvas(last.x, last.y),
-          series.style.markerRadius > 0 ? series.style.markerRadius : 3,
-          context.paintCache.fill('sparkline-dot-$s', color),
+          dot,
+          r + 2,
+          Paint()
+            ..color = color.withValues(alpha: 0.3)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
         );
+        canvas.drawCircle(dot, r, context.paintCache.fill('sparkline-dot-$s', color));
       }
     }
   }

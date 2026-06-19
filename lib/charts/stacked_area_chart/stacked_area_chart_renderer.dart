@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/utils/bezier.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 import 'package:save_points_chart/models/chart_series.dart';
 import 'package:save_points_chart/models/viewport.dart';
@@ -53,19 +54,19 @@ class StackedAreaChartRenderer extends ChartRenderer {
 
       canvas.drawPath(
         areaPath,
-        context.paintCache.fill(
-          'stacked-area-$s',
-          (series.style.fillColor ?? color).withValues(
-            alpha: series.style.opacity,
-          ),
+        SeriesPaint.verticalFill(
+          context.bounds.rect,
+          series.style.fillColor ?? color,
+          topAlpha: (0.85 * series.style.opacity).clamp(0.0, 1.0),
+          bottomAlpha: (0.45 * series.style.opacity).clamp(0.0, 1.0),
         ),
       );
 
       canvas.drawPath(
         topPath,
-        context.paintCache.get(
-          key: 'stacked-area-stroke-$s',
-          color: color,
+        SeriesPaint.strokeGradient(
+          context.bounds.rect,
+          color,
           strokeWidth: series.style.strokeWidth,
         ),
       );

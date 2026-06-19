@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/utils/bezier.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 import 'package:save_points_chart/models/chart_series.dart';
 
@@ -54,19 +55,32 @@ class LineChartRenderer extends ChartRenderer {
 
         canvas.drawPath(
           fillPath,
-          context.paintCache.fill(
-            'line-fill-$s',
-            (series.style.fillColor ?? color).withValues(alpha: 0.2),
+          SeriesPaint.verticalFill(
+            context.bounds.rect,
+            series.style.fillColor ?? color,
+            topAlpha: 0.32,
           ),
         );
       }
 
+      // Soft glow beneath the stroke for depth.
       canvas.drawPath(
         path,
-        context.paintCache.get(
-          key: 'line-$s',
-          color: color.withValues(alpha: series.style.opacity),
+        SeriesPaint.glow(
+          color,
+          strokeWidth: series.style.strokeWidth + 4,
+          blur: 5,
+        ),
+      );
+
+      // Gradient stroke (color → brighter accent).
+      canvas.drawPath(
+        path,
+        SeriesPaint.strokeGradient(
+          context.bounds.rect,
+          color,
           strokeWidth: series.style.strokeWidth,
+          opacity: series.style.opacity,
         ),
       );
 
@@ -144,10 +158,19 @@ class LineChartRenderer extends ChartRenderer {
     final idx = hovered.pointIndex;
     if (idx < 0 || idx >= points.length) return;
     final pt = context.transformer.dataToCanvas(points[idx].x, points[idx].y);
+    final r = series.style.markerRadius;
+    // Soft blurred halo.
+    final halo = Paint()
+      ..color = color.withValues(alpha: 0.28)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
+      ..isAntiAlias = true;
+    canvas.drawCircle(pt, r + 7, halo);
+    // Outer color ring + light center for a crisp focus point.
+    canvas.drawCircle(pt, r + 3, context.paintCache.fill('hover', color));
     canvas.drawCircle(
       pt,
-      series.style.markerRadius + 3,
-      context.paintCache.fill('hover', color),
+      r,
+      context.paintCache.fill('hover-center', context.theme.markerCenterColor),
     );
   }
 

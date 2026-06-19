@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/axis/axis_engine.dart';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_series.dart';
 
 /// Canvas-based radar / spider chart renderer.
@@ -50,13 +51,19 @@ class RadarChartRenderer extends ChartRenderer {
 
       canvas.drawPath(
         path,
-        context.paintCache.fill('radar-fill-$s', color.withValues(alpha: 0.2)),
+        SeriesPaint.radialFill(
+          Rect.fromCircle(center: center, radius: radius),
+          color,
+          opacity: 0.28,
+        ),
       );
+      // Soft glow then a crisp gradient outline.
+      canvas.drawPath(path, SeriesPaint.glow(color, strokeWidth: 4, blur: 4));
       canvas.drawPath(
         path,
-        context.paintCache.get(
-          key: 'radar-$s',
-          color: color,
+        SeriesPaint.strokeGradient(
+          Rect.fromCircle(center: center, radius: radius),
+          color,
           strokeWidth: ser.style.strokeWidth,
         ),
       );

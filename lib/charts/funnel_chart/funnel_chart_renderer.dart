@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/axis/axis_engine.dart';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 
 /// Canvas-based funnel chart — stage width proportional to value.
@@ -76,7 +77,11 @@ class FunnelChartRenderer extends ChartRenderer {
       final color = series.style.color ?? context.theme.seriesColor(i);
       canvas.drawPath(
         path,
-        context.paintCache.fill('funnel-$i', color.withValues(alpha: 0.9)),
+        SeriesPaint.barGradient(
+          Rect.fromLTRB(centerX - widthTop / 2, top, centerX + widthTop / 2, bottom),
+          color,
+          opacity: 0.92,
+        ),
       );
 
       if (context.hoveredHit?.pointIndex == indexByPoint[point]) {

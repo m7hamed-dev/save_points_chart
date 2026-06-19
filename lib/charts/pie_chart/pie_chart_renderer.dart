@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' show Colors, FontWeight;
 import 'package:save_points_chart/core/axis/axis_engine.dart';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 import 'package:save_points_chart/models/chart_series.dart';
 
@@ -67,8 +68,8 @@ class PieChartRenderer extends ChartRenderer {
             );
       }
 
-      final paint = context.paintCache.fill('pie-$i', color);
       final rect = Rect.fromCircle(center: sliceCenter, radius: radius);
+      final paint = SeriesPaint.radialFill(rect, color);
 
       if (isDonut) {
         final path = Path()

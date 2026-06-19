@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/utils/rounded_bar.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_series.dart';
 
 enum BarChartOrientation { vertical, horizontal }
@@ -59,9 +60,10 @@ class BarChartRenderer extends ChartRenderer {
         final selected =
             context.selectedHit?.seriesId == ser.id &&
             context.selectedHit?.pointIndex == c;
-        final paint = context.paintCache.fill(
-          'bar-$s-$c',
-          selected ? color.withValues(alpha: 0.7) : color,
+        final paint = SeriesPaint.barGradient(
+          rect,
+          color,
+          opacity: selected ? 0.78 : ser.style.opacity,
         );
         final baseY = context.transformer.dataToCanvasY(context.viewport.minY);
         drawVerticalBar(

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
 import 'package:save_points_chart/core/utils/rounded_bar.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 import 'package:save_points_chart/models/viewport.dart';
 
@@ -42,15 +43,7 @@ class WaterfallChartRenderer extends ChartRenderer {
 
     final anim = context.animationValue;
     final color = series.style.color ?? context.theme.seriesColor(0);
-    final positivePaint = context.paintCache.fill('wf-pos', color);
-    final negativePaint = context.paintCache.fill(
-      'wf-neg',
-      context.theme.seriesColor(1).withValues(alpha: 0.85),
-    );
-    final totalPaint = context.paintCache.fill(
-      'wf-total',
-      color.withValues(alpha: 0.55),
-    );
+    final negColor = context.theme.seriesColor(1);
 
     final categoryCount = segments.length;
     final slotWidth = context.bounds.width / categoryCount;
@@ -67,10 +60,10 @@ class WaterfallChartRenderer extends ChartRenderer {
       final y1 = context.transformer.dataToCanvasY(startY);
       final y2 = context.transformer.dataToCanvasY(endY);
 
-      final paint = switch (seg.kind) {
-        _WaterfallKind.total || _WaterfallKind.subtotal => totalPaint,
-        _WaterfallKind.positive => positivePaint,
-        _WaterfallKind.negative => negativePaint,
+      final (barColor, barOpacity) = switch (seg.kind) {
+        _WaterfallKind.total || _WaterfallKind.subtotal => (color, 0.6),
+        _WaterfallKind.positive => (color, 1.0),
+        _WaterfallKind.negative => (negColor, 0.9),
       };
 
       final barRect = Rect.fromLTRB(
@@ -78,6 +71,11 @@ class WaterfallChartRenderer extends ChartRenderer {
         y1 < y2 ? y1 : y2,
         right,
         y1 < y2 ? y2 : y1,
+      );
+      final paint = SeriesPaint.barGradient(
+        barRect,
+        barColor,
+        opacity: barOpacity,
       );
       final baseY = context.transformer.dataToCanvasY(context.viewport.minY);
       drawVerticalBar(

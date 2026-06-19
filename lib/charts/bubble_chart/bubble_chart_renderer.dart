@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 import 'package:save_points_chart/models/chart_point.dart';
 import 'package:save_points_chart/models/chart_series.dart';
 
@@ -34,11 +35,16 @@ class BubbleChartRenderer extends ChartRenderer {
             context.viewport.minY + (point.y - context.viewport.minY) * anim;
         final offset = context.transformer.dataToCanvas(point.x, y);
         final radius = _radiusFor(point, sizeRange);
-        final paint = context.paintCache.fill(
-          'bubble-$s-${point.x}-${point.y}',
-          color.withValues(alpha: series.style.opacity),
+        final rect = Rect.fromCircle(center: offset, radius: radius);
+        canvas.drawCircle(
+          offset,
+          radius,
+          SeriesPaint.radialFill(
+            rect,
+            color,
+            opacity: series.style.opacity.clamp(0.0, 1.0) * 0.9,
+          ),
         );
-        canvas.drawCircle(offset, radius, paint);
 
         if (series.style.strokeWidth > 0) {
           canvas.drawCircle(
@@ -46,7 +52,7 @@ class BubbleChartRenderer extends ChartRenderer {
             radius,
             context.paintCache.get(
               key: 'bubble-stroke-$s',
-              color: color.withValues(alpha: 0.4),
+              color: SeriesPaint.lighten(color, 0.1).withValues(alpha: 0.5),
               strokeWidth: series.style.strokeWidth,
             ),
           );

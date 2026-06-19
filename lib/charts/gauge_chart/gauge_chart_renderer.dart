@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:save_points_chart/core/axis/axis_engine.dart';
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 
 /// Semi-circular gauge chart renderer.
 class GaugeChartRenderer extends ChartRenderer {
@@ -60,31 +61,41 @@ class GaugeChartRenderer extends ChartRenderer {
       }
     }
 
+    final arcRect = Rect.fromCircle(center: center, radius: radius);
+    final color = context.theme.seriesColor(0);
+
     final trackPaint = context.paintCache.get(
       key: 'gauge-track',
       color: context.theme.gridColor,
       strokeWidth: 14,
     );
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      trackPaint,
-    );
+    canvas.drawArc(arcRect, startAngle, sweepAngle, false, trackPaint);
 
-    final valuePaint = context.paintCache.get(
-      key: 'gauge-value',
-      color: context.theme.seriesColor(0),
-      strokeWidth: 14,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle * t,
-      false,
-      valuePaint,
-    );
+    if (t > 0) {
+      // Glow underlay.
+      canvas.drawArc(
+        arcRect,
+        startAngle,
+        sweepAngle * t,
+        false,
+        SeriesPaint.glow(color, strokeWidth: 18, blur: 7),
+      );
+      // Gradient value arc (color → brighter accent) with rounded ends.
+      final valuePaint = Paint()
+        ..shader = Gradient.sweep(
+          center,
+          [color, SeriesPaint.accent(color)],
+          null,
+          TileMode.clamp,
+          startAngle,
+          startAngle + sweepAngle,
+        )
+        ..strokeWidth = 14
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..isAntiAlias = true;
+      canvas.drawArc(arcRect, startAngle, sweepAngle * t, false, valuePaint);
+    }
 
     if (showAxis) {
       _drawMinMaxLabels(canvas, context, center, radius);

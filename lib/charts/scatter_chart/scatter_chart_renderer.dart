@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:save_points_chart/core/engine/chart_context.dart';
 import 'package:save_points_chart/core/engine/chart_renderer.dart';
+import 'package:save_points_chart/core/utils/series_paint.dart';
 
 /// Canvas-based scatter plot renderer.
 class ScatterChartRenderer extends ChartRenderer {
@@ -16,13 +17,21 @@ class ScatterChartRenderer extends ChartRenderer {
     for (var s = 0; s < context.config.series.length; s++) {
       final series = context.config.series[s];
       final color = series.style.color ?? context.theme.seriesColor(s);
-      final paint = context.paintCache.fill('scatter-$s', color);
+      final glow = SeriesPaint.glow(color, strokeWidth: 0, blur: 4)
+        ..style = PaintingStyle.fill;
 
       for (final point in series.points) {
         final y =
             context.viewport.minY + (point.y - context.viewport.minY) * anim;
         final offset = context.transformer.dataToCanvas(point.x, y);
-        canvas.drawCircle(offset, pointRadius, paint);
+        final rect = Rect.fromCircle(center: offset, radius: pointRadius);
+        // Soft glow then a radial-highlight point for depth.
+        canvas.drawCircle(offset, pointRadius + 2, glow);
+        canvas.drawCircle(
+          offset,
+          pointRadius,
+          SeriesPaint.radialFill(rect, color, opacity: series.style.opacity),
+        );
       }
     }
   }
