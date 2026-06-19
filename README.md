@@ -1,9 +1,28 @@
 # save_points_chart
 
-A modern Flutter charting library with canvas-based rendering, Material 3–friendly themes, smooth animations, and zero third-party runtime dependencies (Flutter SDK only).
+A modern Flutter charting library with canvas-based rendering, Material 3–friendly themes, smooth animations, and a single lightweight dependency (`pdf`, used only for PDF export — everything else is pure Flutter SDK).
 
 [![pub package](https://img.shields.io/pub/v/save_points_chart.svg)](https://pub.dev/packages/save_points_chart)
+[![pub points](https://img.shields.io/pub/points/save_points_chart.svg)](https://pub.dev/packages/save_points_chart/score)
+[![platform](https://img.shields.io/badge/platform-Flutter-02569B.svg?logo=flutter)](https://flutter.dev)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+
+## Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Chart types](#chart-types)
+- [Data model](#data-model)
+- [Convenience extensions](#convenience-extensions)
+- [Waterfall metadata](#waterfall-metadata)
+- [Theming](#theming)
+- [Interactions](#interactions)
+- [Export (PNG / PDF)](#export-png--pdf)
+- [Custom charts](#custom-charts)
+- [Architecture](#architecture)
+- [Example app](#example-app)
+- [Links](#links)
 
 ## Features
 
@@ -16,6 +35,14 @@ A modern Flutter charting library with canvas-based rendering, Material 3–frie
 - **Export** — snapshot charts as PNG; optional PDF reports via `ChartWidgetController` / `ChartCard`
 - **Accessibility** — `semanticLabel` on `ChartConfig` for screen readers
 - **Extensible engine** — layer stack, render pipeline, and `ChartRenderer` plugins for custom charts
+- **Lightweight** — pure-Flutter rendering; the only runtime dependency is `pdf`, pulled in for report export
+
+## Requirements
+
+| | Version |
+|---|---|
+| Dart SDK | `^3.12.0` |
+| Flutter | `>=1.17.0` |
 
 ## Installation
 
@@ -24,6 +51,12 @@ Add to `pubspec.yaml`:
 ```yaml
 dependencies:
   save_points_chart: ^1.9.1
+```
+
+Or from the command line:
+
+```bash
+flutter pub add save_points_chart
 ```
 
 Import the public API:
@@ -80,12 +113,14 @@ class TrafficChart extends StatelessWidget {
 }
 ```
 
+The same `ChartConfig` drops into any chart widget — swap `LineChart` for `BarChart`, `AreaChart`, `ScatterChart`, and so on without touching your data.
+
 ## Chart types
 
 | Widget | Description | Notable options |
 |--------|-------------|-----------------|
-| `LineChart` | Cartesian line series | `LineChartMode.straight` / `smooth`, `fillArea` |
-| `BarChart` | Vertical or horizontal bars | `BarChartOrientation`, `BarChartLayout.grouped` / `stacked` |
+| `LineChart` | Cartesian line series | `mode: LineChartMode.smooth` (default) / `straight`, `fillArea` |
+| `BarChart` | Vertical or horizontal bars | `orientation: BarChartOrientation`, `layout: BarChartLayout.grouped` (default) / `stacked` |
 | `AreaChart` | Filled area under lines | Shares line renderer with fill |
 | `PieChart` | Pie or donut slices | `isDonut`, `explodedIndex` |
 | `ScatterChart` | XY scatter plot | — |
@@ -100,6 +135,8 @@ class TrafficChart extends StatelessWidget {
 | `CandlestickChart` | OHLC-style financial bars | — |
 | `TimelineChart` | Event timeline | — |
 
+Every widget accepts a `controller` (`ChartWidgetController`) for export and an optional `theme` override.
+
 ## Data model
 
 ### `ChartPoint`
@@ -112,7 +149,7 @@ const ChartPoint(x: 0, y: 72, label: 'CPU');
 
 ### `ChartSeries`
 
-Named list of points with optional `SeriesStyle` (color, stroke, markers, gradient).
+Named list of points with optional `SeriesStyle`:
 
 ```dart
 ChartSeries(
@@ -123,29 +160,54 @@ ChartSeries(
 );
 ```
 
+`SeriesStyle` fields:
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `color` | theme palette | Stroke / fill base color |
+| `strokeWidth` | `2.0` | Line thickness |
+| `fillColor` | — | Area fill override |
+| `gradient` | — | Gradient fill (overrides `fillColor`) |
+| `showMarkers` | `false` | Draw point markers |
+| `markerRadius` | `4.0` | Marker size |
+| `opacity` | `1.0` | Series opacity |
+
 ### `ChartConfig`
 
 Global settings shared by all chart widgets:
 
-| Property | Purpose |
-|----------|---------|
-| `series` | One or more `ChartSeries` |
-| `title` / `subtitle` | Header text (dashboard template) |
-| `xAxisTitle` / `yAxisTitle` | Axis labels |
-| `theme` | Override `ChartTheme` |
-| `template` | `dashboard` or `plain` |
-| `showGrid` / `showAxis` | Cartesian chrome |
-| `showLegend` / `legendPosition` | Legend placement |
-| `animate` / `animationDuration` | Entry animation |
-| `curveTension` | Smooth line curvature (0–1) |
-| `viewport` | Zoom/pan bounds (`ChartViewport`) |
-| `semanticLabel` | Accessibility label |
+| Property | Default | Purpose |
+|----------|---------|---------|
+| `series` | `[]` | One or more `ChartSeries` |
+| `title` / `subtitle` | — | Header text (dashboard template) |
+| `xAxisTitle` / `yAxisTitle` | — | Axis labels |
+| `theme` | — | Override `ChartTheme` |
+| `template` | `dashboard` | `dashboard` or `plain` |
+| `showGrid` / `showAxis` | `true` | Cartesian chrome |
+| `showBorder` | `false` | Outer chart border |
+| `showLegend` / `legendPosition` | `false` / `bottom` | Legend toggle and placement |
+| `barBorderRadius` | `4` | Bar corner radius |
+| `animate` / `animationDuration` | `true` / `300ms` | Entry animation |
+| `curveTension` | `0.35` | Smooth line curvature (0–1) |
+| `viewport` | auto | Zoom/pan bounds (`ChartViewport`) |
+| `semanticLabel` | — | Accessibility label |
+
+`ChartConfig` is immutable — use `copyWith(...)` to derive variants.
+
+### `ChartViewport`
+
+Constrains the visible data-space region. Build one from your data with `ChartViewport.fromPoints(xs, ys, padding: 0.05)`, or set bounds explicitly:
+
+```dart
+const ChartViewport(minX: 0, maxX: 12, minY: 0, maxY: 300);
+```
 
 ## Convenience extensions
 
 ```dart
-// Iterable<num> → List<ChartPoint>
+// Iterable<num> → List<ChartPoint>  (x auto-indexed; tune with startX / step)
 [20, 25, 30].toChartPoints();
+[20, 25, 30].toChartPoints(startX: 2020, step: 1);
 
 // List<ChartPoint> → ChartSeries
 points.toSeries(id: 'a', name: 'Product A');
@@ -185,15 +247,15 @@ ChartConfig(
 );
 ```
 
-`ChartTheme` controls background, grid, axis, tooltip, crosshair, selection highlight, series palette, shadows, and typography. Per-series colors can override the palette via `SeriesStyle.color`.
+`ChartTheme` controls background, grid, axis, tooltip, crosshair, selection highlight, series palette, shadows, and typography. Per-series colors can override the palette via `SeriesStyle.color`. A `theme` set on a widget takes precedence over the one on `ChartConfig`.
 
 ## Interactions
 
 `ChartWidget` (used internally by every chart) supports:
 
 - **Tooltip** — hover/tap hit testing (`enableTooltip`, default `true`)
-- **Crosshair** — follows pointer on cartesian charts (`enableCrosshair`)
-- **Zoom & pan** — pinch/drag on cartesian charts (`enableZoomPan`)
+- **Crosshair** — follows pointer on cartesian charts (`enableCrosshair`, default `true`)
+- **Zoom & pan** — pinch/drag on cartesian charts (`enableZoomPan`, default `true`)
 - **Selection** — `onSelection: (ChartHitResult hit) { ... }`
 
 Pie, gauge, heatmap, and similar charts disable zoom/crosshair where it does not apply.
@@ -212,7 +274,7 @@ ChartCard(
 );
 
 // Programmatic export
-final pngBytes = await controller.exportPng();
+final pngBytes = await controller.exportPng();              // pixelRatio: 3 by default
 final pdfBytes = await controller.exportPdfFromConfig(config);
 ```
 
@@ -222,7 +284,7 @@ Low-level API without a controller:
 final bytes = await ChartExport.toPng(globalKey);
 ```
 
-Charts render inside a `RepaintBoundary`; exports capture the canvas (tooltips overlay is excluded).
+Charts render inside a `RepaintBoundary`; exports capture the canvas (the tooltip overlay is excluded).
 
 ## Custom charts
 
@@ -250,7 +312,7 @@ cd example
 flutter run
 ```
 
-The demo includes a dashboard layout and an “All charts” gallery with export buttons.
+The demo includes a dashboard layout and an "All charts" gallery with export buttons.
 
 ## Links
 
@@ -258,6 +320,10 @@ The demo includes a dashboard layout and an “All charts” gallery with export
 - [API documentation](https://pub.dev/documentation/save_points_chart/latest/)
 - [Repository](https://github.com/m7hamed-dev/save_points_chart)
 - [Issue tracker](https://github.com/m7hamed-dev/save_points_chart/issues)
+
+## Contributing
+
+Issues and pull requests are welcome on the [GitHub repository](https://github.com/m7hamed-dev/save_points_chart). Please run `flutter analyze` and `flutter test` before submitting.
 
 ## License
 
