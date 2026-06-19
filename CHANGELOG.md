@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - To snapshot a chart yourself, wrap it in a `RepaintBoundary` with a `GlobalKey`
   and use Flutter's `RenderRepaintBoundary.toImage()` in your app code.
 
-## [1.9.1] - 2026-04-17
+## [1.9.0] - 2026-04-17
 
 ### Added
 - **Interactive legend with tap-to-toggle visibility.** New `ChartLegend` widget renders a tappable, themeable legend for any chart, with hidden items shown dimmed and struck-through. Includes accessibility semantics (`toggled` state for screen readers).
