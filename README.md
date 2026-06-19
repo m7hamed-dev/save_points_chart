@@ -64,7 +64,7 @@ Add to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  save_points_chart: ^2.1.0
+  save_points_chart: ^1.9.2
 ```
 
 Or from the command line:
