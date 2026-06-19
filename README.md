@@ -9,10 +9,13 @@ A modern Flutter charting library with canvas-based rendering, Material 3–frie
 
 ## Contents
 
+- [What's new](#whats-new)
 - [Features](#features)
 - [Installation](#installation)
 - [Quick start](#quick-start)
 - [Chart types](#chart-types)
+- [Render styles](#render-styles)
+- [Smooth curves](#smooth-curves)
 - [Data model](#data-model)
 - [Convenience extensions](#convenience-extensions)
 - [Waterfall metadata](#waterfall-metadata)
@@ -23,12 +26,25 @@ A modern Flutter charting library with canvas-based rendering, Material 3–frie
 - [Example app](#example-app)
 - [Links](#links)
 
+## What's new
+
+- 🎨 **Render styles** — pick `gradient`, `flat`, or `glass` per chart via `ChartConfig.style`. See [Render styles](#render-styles).
+- ✨ **Modern visuals by default** — gradient fills, soft glow, and radial highlights across every chart type.
+- 📈 **Overshoot-free smooth curves** — monotone cubic interpolation keeps smoothed lines and stacked areas faithful to the data. See [Smooth curves](#smooth-curves).
+- 🌙 **Refreshed dark theme** — deep-navy gradient background, plus `ChartTheme.backgroundGradient` for custom gradient backdrops.
+- 🧭 **Upgraded example app** — navigation drawer, light/dark toggle, and a live render-style picker.
+
+> **Note:** the PNG/PDF export API (`ChartExport`, `ChartCard`, `ChartWidgetController`) was removed in 2.0.0, dropping the `pdf` dependency — the library is now pure Flutter SDK. See [CHANGELOG](CHANGELOG.md) for migration notes.
+
 ## Features
 
 - **15+ chart types** — line, bar, area, pie/donut, scatter, radar, gauge, sparkline, stacked area, waterfall, funnel, bubble, heatmap, candlestick, and timeline
 - **Unified API** — every chart uses `ChartConfig` + a typed widget (`LineChart`, `BarChart`, …)
+- **Render styles** ✨ — switch any chart between `ChartStyle.gradient` (default), `flat`, or `glass` with one field
+- **Modern visuals** — gradient fills, soft glow, and radial highlights out of the box
+- **Overshoot-free curves** — smooth lines use monotone cubic interpolation (no false peaks or dips between points)
 - **Interactions** — tooltips, crosshair, tap selection, pinch zoom & pan (where applicable)
-- **Theming** — `ChartTheme.light()`, `ChartTheme.dark()`, `ChartTheme.dashboard()`, or fully custom colors
+- **Theming** — `ChartTheme.light()`, `ChartTheme.dark()` (deep-navy gradient background), `ChartTheme.dashboard()`, or fully custom colors and gradients
 - **Templates** — `ChartTemplateStyle.dashboard` (title, legend, grid) or `plain` (minimal chrome)
 - **Animations** — configurable duration and curve tension for smooth line/area transitions
 - **Accessibility** — `semanticLabel` on `ChartConfig` for screen readers
@@ -135,6 +151,39 @@ The same `ChartConfig` drops into any chart widget — swap `LineChart` for `Bar
 
 Every widget accepts an optional `theme` override that takes precedence over the one on `ChartConfig`.
 
+## Render styles
+
+Set `style` on `ChartConfig` to change how series are painted — independent of the color theme. Every chart type honors it.
+
+```dart
+ChartConfig(
+  style: ChartStyle.glass, // gradient (default) · flat · glass
+  series: [...],
+);
+
+// or derive a variant
+config.copyWith(style: ChartStyle.flat);
+```
+
+| Style | Look |
+|-------|------|
+| `ChartStyle.gradient` *(default)* | Gradient fills & strokes, soft glow, radial highlights — vibrant and dimensional |
+| `ChartStyle.flat` | Solid fills, crisp strokes, no gradients or glow — calm and data-first |
+| `ChartStyle.glass` | Frosted translucent fills with a light highlight — glassmorphism |
+
+## Smooth curves
+
+Smooth lines (`LineChart`, `AreaChart`, `SparklineChart`, `StackedAreaChart`) use **monotone cubic interpolation** (Fritsch–Carlson) rather than a plain cardinal spline. The curve never overshoots the data — no false peaks, no dips below a baseline, no excursions below zero — so a smoothed line stays a faithful reading of the values while still looking smooth.
+
+```dart
+LineChart(
+  config: config,
+  mode: LineChartMode.smooth, // default; use .straight for polyline
+);
+```
+
+`curveTension` (on `ChartConfig`) applies to the cardinal fallback used for non-monotonic x data.
+
 ## Data model
 
 ### `ChartPoint`
@@ -181,6 +230,7 @@ Global settings shared by all chart widgets:
 | `xAxisTitle` / `yAxisTitle` | — | Axis labels |
 | `theme` | — | Override `ChartTheme` |
 | `template` | `dashboard` | `dashboard` or `plain` |
+| `style` | `gradient` | Render style — `gradient` / `flat` / `glass` |
 | `showGrid` / `showAxis` | `true` | Cartesian chrome |
 | `showBorder` | `false` | Outer chart border |
 | `showLegend` / `legendPosition` | `false` / `bottom` | Legend toggle and placement |
@@ -247,6 +297,20 @@ ChartConfig(
 
 `ChartTheme` controls background, grid, axis, tooltip, crosshair, selection highlight, series palette, shadows, and typography. Per-series colors can override the palette via `SeriesStyle.color`. A `theme` set on a widget takes precedence over the one on `ChartConfig`.
 
+Themes can paint a **gradient background** via the optional `backgroundGradient` field (the dark preset ships with a deep-navy gradient):
+
+```dart
+const ChartTheme(
+  backgroundColor: Color(0xFF121826), // fallback when gradient is null
+  backgroundGradient: LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF1B2438), Color(0xFF0D1220)],
+  ),
+  // …remaining theme fields
+);
+```
+
 ## Interactions
 
 `ChartWidget` (used internally by every chart) supports:
@@ -284,7 +348,7 @@ cd example
 flutter run
 ```
 
-The demo includes a dashboard layout and an "All charts" gallery.
+The demo includes a dashboard layout and an "All charts" gallery, with a navigation drawer, a **light/dark** toggle, and a **render-style** picker (gradient / flat / glass) in the app bar.
 
 ## Links
 
