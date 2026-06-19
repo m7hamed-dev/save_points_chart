@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-06-19
+
+### Added
+- **Render styles.** New `ChartStyle` enum (`gradient`, `flat`, `glass`) on
+  `ChartConfig.style` (default `gradient`) switches how every chart type is
+  painted, independent of the color theme.
+- **Modern visuals by default.** Gradient fills, gradient strokes, soft glow,
+  and radial highlights across line, area, bar, pie/donut, scatter, bubble,
+  radar, gauge, sparkline, stacked area, waterfall, and funnel charts.
+- **`ChartTheme.backgroundGradient`** — optional gradient backdrop painted by
+  the background layer; falls back to `backgroundColor` when null.
+
+### Changed
+- **Overshoot-free smooth curves.** Smooth lines/areas now use monotone cubic
+  interpolation (Fritsch–Carlson) instead of a cardinal spline, so smoothed
+  series no longer overshoot the data (no false peaks, dips, or sub-zero
+  excursions). `curveTension` now applies to the cardinal fallback used for
+  non-monotonic x data.
+- **Refreshed `ChartTheme.dark()`** — deep-navy gradient background with
+  navy-tinted grid and axis colors.
+- **Clearer chart chrome spacing** — title/subtitle, axis labels, axis titles,
+  and legends now reserve dedicated bands so they no longer crowd the plot or
+  clip at the edges.
+- **Example app** — navigation drawer for chart selection, light/dark theme
+  toggle, and a live render-style picker; opens on the "All charts" view.
+
 ## [2.0.0] - 2026-06-19
 
 ### Removed (breaking)
